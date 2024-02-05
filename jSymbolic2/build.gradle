@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'jvm-test-suite'
+    id "org.sonarqube" version "latest.release"
+}
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs("lib")
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: '../Third-Party-Jars', include: ['**/*.jar'], )
+    testImplementation fileTree(dir: '../Third-Party-Jars', include: ['**/*.jar'])
+    testImplementation 'junit:junit:+'
+    implementation 'org.testng:testng:+'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.9.2'
+}
+
+application {
+    mainClassName = "jsymbolic2.Main"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+sourceSets {
+    main.java.srcDirs = ['src']
+    main.resources.srcDirs = []
+    test.java.srcDirs = ['test/jsymbolic2/api', 'test/jsymbolic2/configuration',
+                         'test/jsymbolic2/features', 'test/jsymbolic2/featureutils',
+                         'test/jsymbolic2/processing']
+    test.resources.srcDirs = []
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes "Main-Class": "jsymbolic2.Main"
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+tasks.register('runJar', JavaExec) {
+    classpath = files(jar.archiveFile.get())
+}
+
+test {
+    ignoreFailures = true
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}

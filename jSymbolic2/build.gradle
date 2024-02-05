@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'jvm-test-suite'
+}
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    flatDir {
+        dirs("lib")
+    }
+}
+
+dependencies {
+    implementation 'org.testng:testng:7.1.0'
+    testImplementation 'junit:junit:4.13.2'
+    implementation fileTree(dir: '../Third-Party-Jars', include: '*.jar')
+    testImplementation fileTree(dir: '../Third-Party-Jars', include: '*.jar')
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.8.2"
+}
+
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+sourceSets {
+    main.java.srcDirs = ['src']
+    main.resources.srcDirs = []
+    test.java.srcDirs = ['test/jsymbolic2/api', 'test/jsymbolic2/configuration',
+                         'test/jsymbolic2/features', 'test/jsymbolic2/featureutils',
+                         'test/jsymbolic2/processing']
+    test.resources.srcDirs = []
+}
+
+jar {
+    manifest {
+        attributes "Main-Class": "jsymbolic2.Main"
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+task runJar(type: JavaExec) {
+    main = "-jar";
+    args jar.archiveFile.get()
+}
+
+test {
+    ignoreFailures = true
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}

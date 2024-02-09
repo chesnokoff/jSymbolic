@@ -1,6 +1,5 @@
 <features_to_extract>
 Acoustic Guitar Prevalence
-Duration
 Beat Histogram
 <input_files>
 ./test/jsymbolic/features/resources/Saint-Saens_LeCarnevalDesAnimmaux.mei

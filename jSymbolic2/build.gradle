@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'jvm-test-suite'
+    id "org.sonarqube" version "4.4.1.3373"
 }
 version '1.0-SNAPSHOT'
 
@@ -15,8 +16,8 @@ repositories {
 dependencies {
     implementation 'org.testng:testng:7.1.0'
     testImplementation 'junit:junit:4.13.2'
-    implementation fileTree(dir: '../Third-Party-Jars', include: '*.jar')
-    testImplementation fileTree(dir: '../Third-Party-Jars', include: '*.jar')
+    implementation fileTree(dir: '../Third-Party-Jars', include: ['**/*.jar'], )
+    testImplementation fileTree(dir: '../Third-Party-Jars', include: ['**/*.jar'])
     testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.8.2"
 }
 

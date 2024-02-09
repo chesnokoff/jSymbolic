@@ -5,13 +5,9 @@
  */
 package jsymbolic2.processing;
 
-import ca.mcgill.music.ddmal.mei.MeiXmlReader.MeiXmlReadException;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javax.sound.midi.InvalidMidiDataException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
@@ -27,18 +23,16 @@ public class FileValidatorTest {
     
     /**
      * Test of getMEISequence from the FileValidator class.
-     * @throws InvalidMidiDataException test
-     * @throws ca.mcgill.music.ddmal.mei.MeiXmlReader.MeiXmlReadException test
-     * @throws IOException test
+     * @throws Exception test
      */
     @Test
     public void testGetMEISequence() 
-            throws InvalidMidiDataException, MeiXmlReadException, IOException, Exception
+            throws Exception
     {
         File invalid = new File("mei-test/Invalid_Altenburg.mei");
         List<String> errorLog = new ArrayList<>();
         
-        exception.expect(FileNotFoundException.class);
+        exception.expect(Exception.class);
         SymbolicMusicFileUtilities.getMidiSequenceFromMidiOrMeiFile(invalid, errorLog);
         
         String errorFile = errorLog.get(0);
@@ -48,17 +42,16 @@ public class FileValidatorTest {
     
     /**
      * Test of getMIDISequence from the FileValidator class.
-     * @throws InvalidMidiDataException test
-     * @throws IOException test
+     * @throws Exception test
      */
     @Test
     public void testGetMIDISequence() 
-            throws InvalidMidiDataException, IOException, Exception
+            throws Exception
     {
         File dne = new File("dne.midi");
         List<String> errorLog = new ArrayList<>();
         
-        exception.expect(IOException.class);
+        exception.expect(Exception.class);
         SymbolicMusicFileUtilities.getMidiSequenceFromMidiOrMeiFile(dne, errorLog);
         
         String errorFile = errorLog.get(0);

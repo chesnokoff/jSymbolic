@@ -1,6 +1,5 @@
 <features_to_extract>
 Acoustic Guitar Prevalence
-Duration
 Beat Histogram
 <jSymbolic_options>
 window_size=1.5

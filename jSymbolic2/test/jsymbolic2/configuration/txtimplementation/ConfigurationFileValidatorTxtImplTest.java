@@ -69,7 +69,7 @@ public class ConfigurationFileValidatorTxtImplTest {
     @Test
     public void parseConfigFile() throws Exception {
         //Validate normal configuration files
-        List<String> featuresToSave = Arrays.asList("Duration", "Beat Histogram", "Acoustic Guitar Prevalence");
+        List<String> featuresToSave = Arrays.asList("Beat Histogram", "Acoustic Guitar Prevalence");
         ConfigurationOptionState opt = new ConfigurationOptionState(1.5,0.1,true,false,false,false);
         ConfigurationInputFiles input = new ConfigurationInputFiles();
         input.addValidFile(new File("./test/jsymbolic2/features/resources/Saint-Saens_LeCarnevalDesAnimmaux.mei"));
@@ -80,7 +80,7 @@ public class ConfigurationFileValidatorTxtImplTest {
         assertEquals(expecteddata,actualdata);
 
         //Validate configuration files with no IO
-        List<String> ioToSave = Arrays.asList("Duration", "Beat Histogram", "Acoustic Guitar Prevalence");
+        List<String> ioToSave = Arrays.asList("Beat Histogram", "Acoustic Guitar Prevalence");
         ConfigurationOptionState ioOpt = new ConfigurationOptionState(1.5,0.1,true,false,false,false);
         ConfigurationFileData expectedIOData = new ConfigurationFileData(ioToSave,ioOpt,null,noIOConfig,null);
         ConfigurationFileData actualIOData =
@@ -99,8 +99,7 @@ public class ConfigurationFileValidatorTxtImplTest {
 
     @Test
     public void validateFeatureSyntax() throws Exception {
-        List<String> expectedFeatures = Arrays.asList("Acoustic Guitar Prevalence",
-                "Duration", "Beat Histogram");
+        List<String> expectedFeatures = Arrays.asList("Acoustic Guitar Prevalence", "Beat Histogram");
         assertEquals(expectedFeatures,validate.validateFeatureSyntax(rawSampleConfig,sampleConfiguration));
 
         exception.expect(Exception.class);

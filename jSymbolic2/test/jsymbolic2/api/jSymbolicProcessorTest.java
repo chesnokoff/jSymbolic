@@ -34,7 +34,7 @@ public class jSymbolicProcessorTest {
 
     @Before
     public void setUp() throws Exception {
-        List<String> featureNames = Arrays.asList("Duration", "Acoustic Guitar Prevalence", "Beat Histogram");
+        List<String> featureNames = Arrays.asList("Acoustic Guitar Prevalence", "Beat Histogram");
         processor = new JsymbolicProcessorDeprecated(valuesPath, definitionsPath, false, false, featureNames, false, true, 10, 0.1, System.out, System.err);
         processorConfig = new JsymbolicProcessorDeprecated("./test/jsymbolic2/api/resources/sampleConfiguration.txt", System.out, System.err);
         processorConvert = new JsymbolicProcessorDeprecated("./test/jsymbolic2/api/resources/sampleConfigConvert.txt", System.out, System.err);
@@ -54,16 +54,14 @@ public class jSymbolicProcessorTest {
         DataSet[] dataSets = data.getFeatureValuesAndDefinitions().getFeatureVectors();
         DataSet dataSet = dataSets[0].sub_sets[0];
         assertEquals("Beat Histogram", dataSet.feature_names[0]);
-        assertEquals("Duration", dataSet.feature_names[1]);
-        assertEquals("Acoustic Guitar Prevalence", dataSet.feature_names[2]);
+        assertEquals("Acoustic Guitar Prevalence", dataSet.feature_names[1]);
 
         //Do it a 2nd time to test 1 processor can work on more than one file
         JsymbolicData data2 = processor.extractReturnAndSaveFeaturesFromFile(saintSaensTest, errorLog);
         DataSet[] dataSets2 = data2.getFeatureValuesAndDefinitions().getFeatureVectors();
         DataSet dataSet2 = dataSets2[0].sub_sets[0];
         assertEquals("Beat Histogram", dataSet.feature_names[0]);
-        assertEquals("Duration", dataSet.feature_names[1]);
-        assertEquals("Acoustic Guitar Prevalence", dataSet.feature_names[2]);
+        assertEquals("Acoustic Guitar Prevalence", dataSet.feature_names[1]);
 
         //Test that CSV and ARFF conversion is successful
         JsymbolicData convertData = processorConvert.extractReturnAndSaveFeaturesFromFile(saintSaensTest, errorLog);
@@ -99,14 +97,12 @@ public class jSymbolicProcessorTest {
         DataSet[] dataSetsSaint = chopinData.getFeatureValuesAndDefinitions().getFeatureVectors();
         DataSet dataSetSaint = dataSetsSaint[0].sub_sets[0];
         assertEquals("Beat Histogram", dataSetSaint.feature_names[0]);
-        assertEquals("Duration", dataSetSaint.feature_names[1]);
-        assertEquals("Acoustic Guitar Prevalence", dataSetSaint.feature_names[2]);
+        assertEquals("Acoustic Guitar Prevalence", dataSetSaint.feature_names[1]);
 
         DataSet[] dataSetsChopin = saintSaensData.getFeatureValuesAndDefinitions().getFeatureVectors();
         DataSet dataSetChopin = dataSetsChopin[0].sub_sets[0];
         assertEquals("Beat Histogram", dataSetChopin.feature_names[0]);
-        assertEquals("Duration", dataSetChopin.feature_names[1]);
-        assertEquals("Acoustic Guitar Prevalence", dataSetChopin.feature_names[2]);
+        assertEquals("Acoustic Guitar Prevalence", dataSetChopin.feature_names[1]);
 
         //Check for non existing files
         exception.expect(Exception.class);

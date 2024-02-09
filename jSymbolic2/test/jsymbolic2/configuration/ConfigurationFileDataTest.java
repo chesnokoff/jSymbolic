@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class ConfigurationFileDataTest {
     @Test
     public void getFeaturesToSaveBoolean() throws Exception {
-        List<String> inputFeatures = Arrays.asList("Brass Prevalence","Duration");
+        List<String> inputFeatures = Arrays.asList("Brass Prevalence");
         ConfigurationOptionState optionState = new ConfigurationOptionState(10,0.1,true,false,false,false);
         ConfigurationOutputFiles outputFiles = new ConfigurationOutputFiles("valuetest.xml","featuretest.xml");
         ConfigurationInputFiles inputFiles = new ConfigurationInputFiles();
@@ -25,8 +25,7 @@ public class ConfigurationFileDataTest {
 
         boolean[] expectedSave = new boolean[FeatureExtractorAccess.getNamesOfAllImplementedFeatures().size()];
         expectedSave = initializeArrayFalse(expectedSave);
-        expectedSave[121] = true; //Duration feature
-        expectedSave[137] = true; //Brass Fraction feature
+        expectedSave[211] = true; //Brass Fraction feature
         assertArrayEquals(expectedSave,data.getFeaturesToSaveBoolean());
     }
 

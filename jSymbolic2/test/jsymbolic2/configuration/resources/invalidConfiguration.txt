@@ -1,6 +1,5 @@
 <features_to_extrac>
 Acoustic Guitar Fractio
-Duration
 Beat Histogram
 <input_files>
 ./invalid.midi

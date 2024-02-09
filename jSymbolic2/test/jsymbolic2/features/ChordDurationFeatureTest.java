@@ -36,7 +36,7 @@ public class ChordDurationFeatureTest {
         other_features[0] = vertical_intervals;
         MIDIFeatureExtractor actual_common = new ChordDurationFeature();
         double[] actual_chord_type = actual_common.extractFeature(test_tracks, inter, other_features);
-        double[] expected_chord_type = {0.003906};
+        double[] expected_chord_type = {0.0078125};
         assertArrayEquals(expected_chord_type, actual_chord_type, 0.000001);
     }
 

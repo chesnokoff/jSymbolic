@@ -8,19 +8,19 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
-    flatDir {
-        dirs("lib")
-    }
 }
 
 dependencies {
-    implementation 'org.testng:testng:7.1.0'
+    implementation 'org.testng:testng:7.7.0'
     testImplementation 'junit:junit:4.13.2'
     implementation fileTree(dir: '../Third-Party-Jars', include: ['**/*.jar'], )
     testImplementation fileTree(dir: '../Third-Party-Jars', include: ['**/*.jar'])
-    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:5.8.2"
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.9.2'
 }
 
+application {
+    mainClassName = "jsymbolic2.Main"
+}
 
 java {
     toolchain {
@@ -38,6 +38,8 @@ sourceSets {
 }
 
 jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
     manifest {
         attributes "Main-Class": "jsymbolic2.Main"
     }

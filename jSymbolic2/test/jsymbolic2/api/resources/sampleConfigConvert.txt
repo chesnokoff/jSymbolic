@@ -11,6 +11,3 @@ convert_to_csv=true
 <output_files>
 feature_values_save_path=./test/jsymbolic2/api/resources/feature_values.xml
 feature_definitions_save_path=./test/jsymbolic2/api/resources/feature_definitions.xml
-<input_files>
-./test/jsymbolic2/api/resources/Saint-Saens_LeCarnevalDesAnimmaux.mei
-./test/jsymbolic2/api/resources/Chopin_Mazurka.midi

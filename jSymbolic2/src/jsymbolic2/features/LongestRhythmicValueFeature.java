@@ -4,6 +4,7 @@ import javax.sound.midi.*;
 import ace.datatypes.FeatureDefinition;
 import jsymbolic2.featureutils.MIDIFeatureExtractor;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * A feature calculator that finds the rhythmic value of the longest note in the piece, expressed as a
@@ -19,7 +20,7 @@ public class LongestRhythmicValueFeature
 {
 	/* CONSTRUCTOR ******************************************************************************************/
 
-	
+
 	/**
 	 * Basic constructor that sets the values of the fields inherited from this class' superclass.
 	 */
@@ -34,11 +35,11 @@ public class LongestRhythmicValueFeature
 		dependencies = null;
 		offsets = null;
 	}
-	
+
 
 	/* PUBLIC METHODS ***************************************************************************************/
-	
-	
+
+
 	/**
 	 * Extract this feature from the given sequence of MIDI data and its associated information.
 	 *
@@ -56,10 +57,10 @@ public class LongestRhythmicValueFeature
 	public double[] extractFeature( Sequence sequence,
 									MIDIIntermediateRepresentations sequence_info,
 									double[][] other_feature_values )
-	throws Exception
+			throws Exception
 	{
 		double value;
-		if (sequence_info != null)
+		if (sequence_info != null && ArrayUtils.isNotEmpty(sequence_info.rhythmic_value_of_each_note_in_quarter_notes))
 		{
 			int index_of_largest = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfLargest(sequence_info.rhythmic_value_of_each_note_in_quarter_notes);
 			value = sequence_info.rhythmic_value_of_each_note_in_quarter_notes[index_of_largest];

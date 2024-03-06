@@ -315,6 +315,103 @@ public class MIDIFeatureProcessor {
     }
 
     /**
+     * Extract the features from the provided Sequence.
+     *
+     * @param sequence Sequence to process.
+     * @param name     How to name sequence in DataBoard.
+     * @throws Exception When an unforeseen runtime exception occurs.
+     */
+    public void extractFeaturesFromSequence(Sequence sequence, String name)
+            throws Exception {
+        if (windowOverlapOffset > windowSize)
+            throw new Exception("Window overlap offset is greater than window size, this is not possible.");
+        // Prepare the windows for feature extraction with correct times
+        // Tick arrays have been added to account for multiple windows
+        Sequence[] windows;
+        double[] secondsPerTick = MIDIMethods.getSecondsPerTick(sequence);
+        int[] startTicks;
+        int[] endTicks;
+        try {
+            if (!saveFeaturesForEachWindow) {
+                List<int[]> startEndTickArrays = MIDIMethods.getStartEndTickArrays(sequence, sequence.getMicrosecondLength() / 1000000.0, 0.0, secondsPerTick);
+                startTicks = startEndTickArrays.get(0);
+                endTicks = startEndTickArrays.get(1);
+                windows = new Sequence[1];
+                windows[0] = sequence;
+            } else {
+                List<int[]> startEndTickArrays = MIDIMethods.getStartEndTickArrays(sequence, windowSize, windowOverlapOffset, secondsPerTick);
+                startTicks = startEndTickArrays.get(0);
+                endTicks = startEndTickArrays.get(1);
+                windows = MIDIMethods.breakSequenceIntoWindows(sequence, windowSize, windowOverlapOffset, startTicks, endTicks);
+            }
+        } catch (RuntimeException e) {
+            throw new Exception("An error occurred while processing the following file: " + name + ".\n");
+        }
+
+        // Extract the feature values from the samples
+        double[][][] windowFeatureValues = getFeatures(windows, null);
+
+        // Find the feature averages and standard deviations if appropriate
+        double[][] overallFeatureValues = null;
+        if (saveOverallRecordingFeatures) {
+            overallFeatureValues = generateOverallRecordingFeatures(windowFeatureValues);
+        }
+        addDataSet(windowFeatureValues, name, overallFeatureValues, startTicks, endTicks, secondsPerTick);
+    }
+
+    /**
+     * Extract the features from the provided MeiSequence.
+     *
+     * @param meiSequence MeiSequence to process.
+     * @param name        How to name sequence in DataBoard.
+     * @throws Exception When an unforeseen runtime exception occurs.
+     */
+    public void extractFeaturesFromMeiSequence(MeiSequence meiSequence, String name)
+            throws MeiXmlReadException, Exception {
+        if (windowOverlapOffset > windowSize)
+            throw new Exception("Window overlap offset is greater than window size, this is not possible.");
+        // Extract the data from the file and check for exceptions
+        Sequence fullSequence = null;
+        fullSequence = meiSequence.getSequence();
+
+        //Mei Specific Storage added here and null is set if the file is not an mei file
+        MeiSpecificStorage meiSpecificStorage = meiSequence.getNonMidiStorage();
+
+        // Prepare the windows for feature extraction with correct times
+        // Tick arrays have been added to account for multiple windows
+        Sequence[] windows;
+        double[] secondsPerTick = MIDIMethods.getSecondsPerTick(fullSequence);
+        int[] startTicks;
+        int[] endTicks;
+        try {
+            if (!saveFeaturesForEachWindow) {
+                List<int[]> startEndTickArrays = MIDIMethods.getStartEndTickArrays(fullSequence, fullSequence.getMicrosecondLength() / 1000000.0, 0.0, secondsPerTick);
+                startTicks = startEndTickArrays.get(0);
+                endTicks = startEndTickArrays.get(1);
+                windows = new Sequence[1];
+                windows[0] = fullSequence;
+            } else {
+                List<int[]> startEndTickArrays = MIDIMethods.getStartEndTickArrays(fullSequence, windowSize, windowOverlapOffset, secondsPerTick);
+                startTicks = startEndTickArrays.get(0);
+                endTicks = startEndTickArrays.get(1);
+                windows = MIDIMethods.breakSequenceIntoWindows(fullSequence, windowSize, windowOverlapOffset, startTicks, endTicks);
+            }
+        } catch (RuntimeException e) {
+            throw new Exception("An error occurred while processing the following file: " + name + ".\n");
+        }
+
+        // Extract the feature values from the samples
+        double[][][] windowFeatureValues = getFeatures(windows, meiSpecificStorage);
+
+        // Find the feature averages and standard deviations if appropriate
+        double[][] overallFeatureValues = null;
+        if (saveOverallRecordingFeatures) {
+            overallFeatureValues = generateOverallRecordingFeatures(windowFeatureValues);
+        }
+        addDataSet(windowFeatureValues, name, overallFeatureValues, startTicks, endTicks, secondsPerTick);
+    }
+
+    /**
      * Extracts features from each window of the given MIDI sequences. If the
      * passed windows parameter consists of only one window, then this could
      * be a whole unwindowed MIDI file.

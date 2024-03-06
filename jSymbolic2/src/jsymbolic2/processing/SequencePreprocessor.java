@@ -4,20 +4,41 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Track;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MIDIUtils {
-    public static final int DESIRED_MAX_PPQN = 1920;
-    public static final int DESIRED_MAX_TICK_LENGTH = 5_000_000;
-    // maximum 1h length
-    public static final long DESIRED_MAX_MICROSECONDS_LENGTH = 60 * 60 * 1_000_000L;
+public class SequencePreprocessor {
+    private final int desiredMaxPpqn;
+    private final int desiredMaxTickLength;
+    private final long desiredMaxMicrosecondsLength;
 
+    SequencePreprocessor() {
+        desiredMaxPpqn = 1920;
+        desiredMaxTickLength = 5_000_000;
+        // maximum 1h length
+        desiredMaxMicrosecondsLength = 60 * 60 * 1_000_000L;
+    }
 
-    public static Sequence checkAndLowerResolution(Sequence midiSequence) throws Exception {
-        if (midiSequence.getTickLength() > DESIRED_MAX_TICK_LENGTH) {
-            if (midiSequence.getResolution() > DESIRED_MAX_PPQN) {
-                return changeResolution(midiSequence, DESIRED_MAX_PPQN);
+    SequencePreprocessor(int desiredMaxPpqn, int desiredMaxTickLength, int desiredMaxMicrosecondsLength) {
+        this.desiredMaxPpqn = desiredMaxPpqn;
+        this.desiredMaxTickLength = desiredMaxTickLength;
+        this.desiredMaxMicrosecondsLength = desiredMaxMicrosecondsLength;
+    }
+
+    public ArrayList<Sequence> checkAndLowerResolution(List<Sequence> midiSequences) throws Exception {
+        ArrayList<Sequence> processedSequences = new ArrayList<>(midiSequences.size());
+        for (var sequence: midiSequences) {
+            processedSequences.add(checkAndLowerResolution(sequence));
+        }
+        return processedSequences;
+    }
+
+    public Sequence checkAndLowerResolution(Sequence midiSequence) throws Exception {
+        if (midiSequence.getTickLength() > desiredMaxTickLength) {
+            if (midiSequence.getResolution() > desiredMaxPpqn) {
+                return changeResolution(midiSequence, desiredMaxPpqn);
             }
-            if (midiSequence.getMicrosecondLength() > DESIRED_MAX_MICROSECONDS_LENGTH) {
+            if (midiSequence.getMicrosecondLength() > desiredMaxMicrosecondsLength) {
                 throw new Exception(String.format("Midi is too long! Ticks: %d, Seconds: %f",
                         midiSequence.getTickLength(),
                         midiSequence.getMicrosecondLength() / 1_000_000.0));
@@ -34,7 +55,7 @@ public class MIDIUtils {
      * @return New sequence with new resolution.
      * @throws InvalidMidiDataException throw if MIDI data is invalid.
      */
-    public static Sequence changeResolution(Sequence sourceSeq, int resolution) throws InvalidMidiDataException {
+    private Sequence changeResolution(Sequence sourceSeq, int resolution) throws InvalidMidiDataException {
         // sequence must be tick-based
         if (sourceSeq.getDivisionType() != Sequence.PPQ) {
             //throw new UnsupportedOperationException("SMPTE is not supported.");

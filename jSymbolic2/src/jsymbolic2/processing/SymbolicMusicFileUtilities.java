@@ -132,7 +132,6 @@ public class SymbolicMusicFileUtilities {
             error_log.add("The specified file, " + file + ", is not a valid MIDI or MEI file.");
             throw new Exception("The specified file, " + file + ", is not a valid MIDI or MEI file.");
         }
-        sequence = MIDIUtils.checkAndLowerResolution(sequence);
         return sequence;
     }
 
@@ -158,11 +157,6 @@ public class SymbolicMusicFileUtilities {
         } catch (InvalidMidiDataException e) {
             error_log.add("The specified file, " + file + ", is not a valid MIDI or MEI file.");
             throw e;
-        }
-        try {
-            sequence = MIDIUtils.checkAndLowerResolution(sequence);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
         return sequence;
     }
@@ -208,11 +202,6 @@ public class SymbolicMusicFileUtilities {
         } catch (MeiXmlReadException | InvalidMidiDataException e) {
             error_log.add("The specified file, " + file + ", is not a valid MIDI or MEI file.");
             throw e;
-        }
-        try {
-            sequence = MIDIUtils.checkAndLowerResolution(sequence);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
         return sequence;
     }

@@ -7,6 +7,7 @@ import javax.sound.midi.Sequence;
 
 import ace.datatypes.DataBoard;
 import ace.datatypes.DataSet;
+import jsymbolic2.featureutils.FeatureExtractorAccess;
 import jsymbolic2.featureutils.MEIFeatureExtractor;
 import mckay.utilities.sound.midi.MIDIMethods;
 import ace.datatypes.FeatureDefinition;
@@ -232,6 +233,19 @@ public class MIDIFeatureProcessor {
      */
     public MIDIFeatureExtractor[] getFinalFeaturesToBeExtracted() {
         return midiFeatureExtractors;
+    }
+
+    /**
+     * @return True if it has features for MEI files.
+     */
+    public boolean containsMeiFeatures() {
+        List<String> all_mei_specific_features = FeatureExtractorAccess.getNamesOfMeiSpecificFeatures();
+        for (MIDIFeatureExtractor feature : midiFeatureExtractors) {
+            if (all_mei_specific_features.contains(feature.getFeatureDefinition().name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

@@ -72,6 +72,7 @@ public class FeaturesSaver {
         File fileValues = new File(addExtension(filePathValues, "xml"));
         validateFile(fileValues);
         try {
+            UserFeedbackGenerator.printGeneratingAceXmlFeatureDefinitionsFile(status_print_stream, fileValues.getPath());
             UserFeedbackGenerator.printGeneratingAceXmlFeatureValuesFile(status_print_stream, fileValues.getPath());
             dataBoard.saveXMLFiles(null, fileDefinitions,
                     fileValues, null);

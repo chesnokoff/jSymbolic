@@ -1,16 +1,19 @@
 package jsymbolic2.processing;
 
+import ace.datatypes.DataBoard;
+import jsymbolic2.configuration.ConfigurationFileData;
+import jsymbolic2.featureutils.FeatureExtractorAccess;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import mckay.utilities.staticlibraries.FileMethods;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.ddmal.jmei2midi.MeiSequence;
+
+import javax.sound.midi.Sequence;
+import javax.swing.*;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
-
-import ace.datatypes.DataBoard;
-import jsymbolic2.configuration.ConfigurationFileData;
-import jsymbolic2.featureutils.MIDIFeatureExtractor;
-import jsymbolic2.featureutils.FeatureExtractorAccess;
-import mckay.utilities.staticlibraries.FileMethods;
 
 /**
  * Static methods for performing outer layer feature extraction jobs.
@@ -75,8 +78,12 @@ public final class FeatureExtractionJobProcessor {
                                                               PrintStream status_print_stream,
                                                               PrintStream error_print_stream,
                                                               boolean gui_processing) {
+        // To hold reports of errors that may occur. Note that this often simply duplicates what is written to
+        // error_print_stream.
+        List<String> error_log = new ArrayList<>();
+
         // Prepare the feature extractor
-        MIDIFeatureProcessor processor = null;
+        MIDIFeatureProcessor processor;
         try {
             processor = new MIDIFeatureProcessor(window_size,
                     window_overlap,
@@ -86,15 +93,38 @@ public final class FeatureExtractionJobProcessor {
                     save_overall_recording_features);
         } catch (Exception e) {
             UserFeedbackGenerator.printExceptionErrorMessage(error_print_stream, e);
-            System.exit(-1);
+            error_log.add(e + ":" + e.getMessage());
+            return error_log;
         }
 
-        // To hold reports of errors that may occur. Note that this often simply duplicates what is written to
-        // error_print_stream.
-        List<String> error_log = new ArrayList<>();
+        FilesPreprocessor filesPreprocessor = new FilesPreprocessor(paths_of_files_or_folders_to_parse,
+                error_print_stream, error_log);
+
+        FilesReader filesReader = new FilesReader();
+        List<MutablePair<String, Sequence>> midiPairs;
+        List<MutablePair<String, MeiSequence>> meiPairs;
+        try {
+            midiPairs = filesReader.extractMidi(filesPreprocessor.getMidiFilesList());
+            meiPairs = filesReader.extractMei(filesPreprocessor.getMeiFilesList());
+        } catch (Exception e) {
+            UserFeedbackGenerator.printExceptionErrorMessage(error_print_stream, e);
+            error_log.add(e + ":" + e.getMessage());
+            return error_log;
+        }
+
+        try {
+            SequencePreprocessor sequencePreprocessor = new SequencePreprocessor();
+            for (var pair : midiPairs) {
+                pair.setValue(sequencePreprocessor.checkAndLowerResolution(pair.getRight()));
+            }
+        } catch (Exception e) {
+            UserFeedbackGenerator.printExceptionErrorMessage(error_print_stream, e);
+            error_log.add(e + ":" + e.getMessage());
+            return error_log;
+        }
 
         // Extract features and save the feature values in DataBoard
-        DataBoard dataBoard = extractFeatures(paths_of_files_or_folders_to_parse,
+        DataBoard dataBoard = extractFeatures(midiPairs, meiPairs,
                 processor,
                 feature_values_save_path,
                 feature_definitions_save_path,
@@ -104,13 +134,18 @@ public final class FeatureExtractionJobProcessor {
                 gui_processing);
 
         // Save features from DataBoard
-        saveFeatures(dataBoard, feature_definitions_save_path,
-                feature_values_save_path,
-                true,
-                save_arff_file,
-                save_csv_file,
-                status_print_stream,
-                error_print_stream);
+        try {
+            saveFeatures(dataBoard, feature_definitions_save_path,
+                    feature_values_save_path,
+                    true,
+                    save_arff_file,
+                    save_csv_file,
+                    status_print_stream);
+        } catch (Exception e) {
+            UserFeedbackGenerator.printExceptionErrorMessage(error_print_stream, e);
+            error_log.add(e + ":" + e.getMessage());
+            return error_log;
+        }
 
         // Indicate that processing is done
         UserFeedbackGenerator.printExecutionFinished(status_print_stream);
@@ -326,8 +361,8 @@ public final class FeatureExtractionJobProcessor {
      * two cases, execution is terminated immediately. Also saves the feature definitions of the features
      * selected for extraction in an ACE XML feature definitions file.
      *
-     * @param files_and_folders_to_parse    A list of files and folders from which features should be
-     *                                      extracted.
+     * @param midiSequences                 A list of pairs. Key is name of sequence, value is Sequence to process.
+     * @param meiSequences                  A list of pairs. Key is name of sequence, value is MeiSequence to process.
      * @param processor                     The MIDIFeatureProcessor holding feature extraction settings.
      * @param feature_values_save_path      The path to save the extracted features to in the form of an ACE
      *                                      XML feature values file.
@@ -345,7 +380,8 @@ public final class FeatureExtractionJobProcessor {
      *                                      displayed and a direct printing	of the associated error message to
      *                                      standard error.
      */
-    private static DataBoard extractFeatures(List<File> files_and_folders_to_parse,
+    private static DataBoard extractFeatures(List<MutablePair<String, Sequence>> midiSequences,
+                                             List<MutablePair<String, MeiSequence>> meiSequences,
                                              MIDIFeatureProcessor processor,
                                              String feature_values_save_path,
                                              String feature_definitions_save_path,
@@ -353,40 +389,38 @@ public final class FeatureExtractionJobProcessor {
                                              PrintStream error_print_stream,
                                              List<String> error_log,
                                              boolean gui_processing) {
-        // Traverse any subdirectories in files_and_folders_to_parse to find qualifying files there
-        ArrayList<File> files_to_parse = SymbolicMusicFileUtilities.getFilteredFilesRecursiveTraversal(files_and_folders_to_parse,
-                false,
-                new MusicFilter(),
-                error_print_stream,
-                error_log);
-
-        // Remove all files from files_to_parse that are not valid MIDI or MEI files. Print error messages
-        // indicating any that are not. End execution if no valid files remain.
-        files_to_parse = SymbolicMusicFileUtilities.validateAndGetMidiAndMeiFiles(files_to_parse,
-                status_print_stream,
-                error_print_stream,
-                error_log);
-
         // Verify that, if MEI-specific features have been chosen to be extracted, then none of the files
         // chosen to be parsed are non-MEI files. End execution if some are.
-        verifyNoMeiFeaturesAndNonMeiFiles(files_to_parse, processor, error_print_stream);
 
-        if (files_to_parse.isEmpty()) {
+        if (midiSequences.isEmpty() && meiSequences.isEmpty()) {
             throw new IllegalArgumentException("There are no files to parse!");
         }
 
+        int midiSequenceNumberToProcess = midiSequences.size();
+        int meiSequenceNumberToProcess = meiSequences.size();
+        if (processor.containsMeiFeatures()) {
+            midiSequenceNumberToProcess = 0;
+        }
+        UserFeedbackGenerator.printFeatureExtractionStartingMessage(status_print_stream, midiSequenceNumberToProcess + meiSequenceNumberToProcess);
         // Extract features from each file
-        UserFeedbackGenerator.printGeneratingAceXmlFeatureDefinitionsFile(status_print_stream, feature_definitions_save_path);
-        UserFeedbackGenerator.printFeatureExtractionStartingMessage(status_print_stream, files_to_parse.size());
-        for (int i = 0; i < files_to_parse.size(); i++)
-            extractFeatures(files_to_parse.get(i).getPath(),
-                    processor,
-                    i + 1,
-                    files_to_parse.size(),
+        for (int i = 0; i < midiSequenceNumberToProcess; ++i) {
+            extractFeaturesFromSequence(midiSequences.get(i).getRight(),
+                    midiSequences.get(i).getLeft(),
+                    processor, i,
+                    midiSequenceNumberToProcess + meiSequenceNumberToProcess,
                     status_print_stream,
-                    error_print_stream,
-                    error_log,
-                    gui_processing);
+                    error_print_stream, error_log, gui_processing);
+
+        }
+        for (int i = 0; i < meiSequenceNumberToProcess; ++i) {
+            extractFeaturesFromMeiSequence(meiSequences.get(i).getRight(),
+                    midiSequences.get(i).getLeft(),
+                    processor, midiSequenceNumberToProcess + i,
+                    midiSequenceNumberToProcess + meiSequenceNumberToProcess,
+                    status_print_stream,
+                    error_print_stream, error_log, gui_processing);
+
+        }
         DataBoard dataBoard = null;
         try {
             dataBoard = processor.generateDataBoard();
@@ -401,7 +435,7 @@ public final class FeatureExtractionJobProcessor {
         // Indicate that feature extraction is done, and provide a summary of results
         UserFeedbackGenerator.printFeatureExtractionCompleteMessage(status_print_stream,
                 feature_values_save_path,
-                files_to_parse.size());
+                midiSequenceNumberToProcess + meiSequenceNumberToProcess);
 
         // Print the error log summary
         UserFeedbackGenerator.printErrorSummary(error_print_stream, error_log, gui_processing);
@@ -463,6 +497,102 @@ public final class FeatureExtractionJobProcessor {
             System.exit(-1);
         } catch (Exception e) {
             String error_message = "Problem extracting features from " + input_file_path + "." +
+                    "\n\tDetailed error message: " + e + ": " + e.getMessage();
+            UserFeedbackGenerator.printErrorMessage(error_print_stream, error_message);
+            error_log.add(error_message);
+            e.printStackTrace(error_print_stream);
+        }
+    }
+
+    /**
+     * Extracts all available features from a single MIDI file. Any errors encountered are printed to standard
+     * error. Save the features as they are extracted to an ACE XML feature values file, and save the feature
+     * definitions in an ACE XML feature definitions file.
+     *
+     * @param sequence                 The sequence to process.
+     * @param name                     Name of given sequence.
+     * @param processor                The MIDIFeatureProcessor to extract features with.
+     * @param current_extraction_index Indicates the number of this particular input file in the overall
+     *                                 extraction order.
+     * @param total_files_to_process   The total number of input files that are being processed.
+     * @param status_print_stream      A stream to print processing progress to.
+     * @param error_print_stream       A stream to print processing errors to.
+     * @param error_log                A list of errors encountered so far. Errors are added to it if
+     *                                 encountered.
+     * @param gui_processing           True if this method is being called by a GUI, false otherwise. If
+     *                                 it is true, then out of memory errors will result in an error window
+     *                                 being displayed and a direct printing of the associated error
+     *                                 message to standard error.
+     */
+    private static void extractFeaturesFromSequence(Sequence sequence,
+                                                    String name,
+                                                    MIDIFeatureProcessor processor,
+                                                    int current_extraction_index,
+                                                    int total_files_to_process,
+                                                    PrintStream status_print_stream,
+                                                    PrintStream error_print_stream,
+                                                    List<String> error_log,
+                                                    boolean gui_processing) {
+        try {
+            // Extract features from input_file_path and save them in an ACE XML feature values file
+            UserFeedbackGenerator.printFeatureExtractionProgressMessage(status_print_stream, name, current_extraction_index, total_files_to_process);
+            processor.extractFeaturesFromSequence(sequence, name);
+            UserFeedbackGenerator.printFeatureExtractionDoneAFileProgressMessage(status_print_stream, name, current_extraction_index, total_files_to_process);
+        } catch (OutOfMemoryError e) // Terminate execution if this happens
+        {
+            String error_message = "The Java Runtime ran out of memory while processing:\n" +
+                    "     " + name + "\n" +
+                    "Please rerun jSymbolic with more memory assigned to the Java runtime heap.\n\n";
+            UserFeedbackGenerator.printErrorMessage(error_print_stream, error_message);
+            if (gui_processing) {
+                System.err.println(error_message);
+                java.awt.Toolkit.getDefaultToolkit().beep();
+                JOptionPane.showMessageDialog(null,
+                        error_message,
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+            System.exit(-1);
+        } catch (Exception e) {
+            String error_message = "Problem extracting features from " + name + "." +
+                    "\n\tDetailed error message: " + e + ": " + e.getMessage();
+            UserFeedbackGenerator.printErrorMessage(error_print_stream, error_message);
+            error_log.add(error_message);
+            e.printStackTrace(error_print_stream);
+        }
+    }
+
+    private static void extractFeaturesFromMeiSequence(MeiSequence meiSequence,
+                                                       String name,
+                                                       MIDIFeatureProcessor processor,
+                                                       int current_extraction_index,
+                                                       int total_files_to_process,
+                                                       PrintStream status_print_stream,
+                                                       PrintStream error_print_stream,
+                                                       List<String> error_log,
+                                                       boolean gui_processing) {
+        try {
+            // Extract features from input_file_path and save them in an ACE XML feature values file
+            UserFeedbackGenerator.printFeatureExtractionProgressMessage(status_print_stream, name, current_extraction_index, total_files_to_process);
+            processor.extractFeaturesFromMeiSequence(meiSequence, name);
+            UserFeedbackGenerator.printFeatureExtractionDoneAFileProgressMessage(status_print_stream, name, current_extraction_index, total_files_to_process);
+        } catch (OutOfMemoryError e) // Terminate execution if this happens
+        {
+            String error_message = "The Java Runtime ran out of memory while processing:\n" +
+                    "     " + name + "\n" +
+                    "Please rerun jSymbolic with more memory assigned to the Java runtime heap.\n\n";
+            UserFeedbackGenerator.printErrorMessage(error_print_stream, error_message);
+            if (gui_processing) {
+                System.err.println(error_message);
+                java.awt.Toolkit.getDefaultToolkit().beep();
+                JOptionPane.showMessageDialog(null,
+                        error_message,
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+            System.exit(-1);
+        } catch (Exception e) {
+            String error_message = "Problem extracting features from " + name + "." +
                     "\n\tDetailed error message: " + e + ": " + e.getMessage();
             UserFeedbackGenerator.printErrorMessage(error_print_stream, error_message);
             error_log.add(error_message);
@@ -605,24 +735,19 @@ public final class FeatureExtractionJobProcessor {
                                      boolean save_xml_file,
                                      boolean save_arff_file,
                                      boolean save_csv_file,
-                                     PrintStream status_print_stream,
-                                     PrintStream error_print_stream) {
+                                     PrintStream status_print_stream) throws Exception {
         if (dataBoard.getNumOverall() < 1) {
             return;
         }
-        try {
-            if (save_xml_file) {
-                FeaturesSaver.SaveXML(dataBoard, featureDefinitionsSavePath, featureValuesSavePath,
-                        status_print_stream);
-            }
-            if (save_arff_file) {
-                FeaturesSaver.SaveARFF(dataBoard, featureValuesSavePath, status_print_stream);
-            }
-            if (save_csv_file) {
-                FeaturesSaver.SaveCSV(dataBoard, featureValuesSavePath, status_print_stream);
-            }
-        } catch (Exception e) {
-            UserFeedbackGenerator.printExceptionErrorMessage(error_print_stream, e);
+        if (save_xml_file) {
+            FeaturesSaver.SaveXML(dataBoard, featureDefinitionsSavePath, featureValuesSavePath,
+                    status_print_stream);
+        }
+        if (save_arff_file) {
+            FeaturesSaver.SaveARFF(dataBoard, featureValuesSavePath, status_print_stream);
+        }
+        if (save_csv_file) {
+            FeaturesSaver.SaveCSV(dataBoard, featureValuesSavePath, status_print_stream);
         }
     }
 }

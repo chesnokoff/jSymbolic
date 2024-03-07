@@ -19,7 +19,7 @@ public class ShortestRhythmicValueFeature
 {
 	/* CONSTRUCTOR ******************************************************************************************/
 
-	
+
 	/**
 	 * Basic constructor that sets the values of the fields inherited from this class' superclass.
 	 */
@@ -34,11 +34,11 @@ public class ShortestRhythmicValueFeature
 		dependencies = null;
 		offsets = null;
 	}
-	
+
 
 	/* PUBLIC METHODS ***************************************************************************************/
-	
-	
+
+
 	/**
 	 * Extract this feature from the given sequence of MIDI data and its associated information.
 	 *
@@ -56,10 +56,10 @@ public class ShortestRhythmicValueFeature
 	public double[] extractFeature( Sequence sequence,
 									MIDIIntermediateRepresentations sequence_info,
 									double[][] other_feature_values )
-	throws Exception
+			throws Exception
 	{
 		double value;
-		if (sequence_info != null)
+		if (sequence_info != null && sequence_info.rhythmic_value_of_each_note_in_quarter_notes.length != 0)
 		{
 			int index_of_smallest = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfSmallest(sequence_info.rhythmic_value_of_each_note_in_quarter_notes);
 			value = sequence_info.rhythmic_value_of_each_note_in_quarter_notes[index_of_smallest];

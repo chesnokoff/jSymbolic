@@ -15,8 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public abstract class MIDIFeatureExtractor
 {
 	/* FIELDS ***********************************************************************************************/
-	
-	
+
 	/**
 	 * The unique code identifying a feature that extends this class (see the HTML manual for identifying 
 	 * codes). Should be one or more letters identifying the feature group the feature belongs to, followed

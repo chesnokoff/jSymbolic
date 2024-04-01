@@ -1,0 +1,16 @@
+<jSymbolic_options>
+window_size=0.0
+window_overlap=0.0
+save_features_for_each_window=false
+save_overall_recording_features=true
+convert_to_arff=false
+convert_to_csv=false
+<input_files>
+jmh/resources/dataset/0_10000/00a3ba3fee47d7d1bb24b3a17e18061c.mid
+jmh/resources/dataset/0_10000/005ed798038238d8666457bc61ec5dd1.mid
+jmh/resources/dataset/0_10000/007237d19324d40117332173dcb16738.mid
+<output_files>
+feature_values_save_path=First Pitch_values.xml
+feature_definitions_save_path=First Pitch_definitions.xml
+<features_to_extract>
+First Pitch

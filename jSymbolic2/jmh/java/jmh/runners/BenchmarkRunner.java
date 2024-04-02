@@ -10,13 +10,19 @@ import java.util.concurrent.TimeUnit;
 
 public class BenchmarkRunner implements BenchmarkRunnerInterface {
 
+    // Regex to find benchmark classes to run
     private final String regexep;
+
+    // Number of forks
     private final int forks;
+
     private final int measurementIterations;
     private final int warmupIterations;
+    // Time units for measuring
     private final TimeUnit timeUnit;
     private final int threadsNumber;
 
+    // List of configs' paths
     private final List<String> configs;
 
 
@@ -31,6 +37,9 @@ public class BenchmarkRunner implements BenchmarkRunnerInterface {
         this.configs = configs;
     }
 
+    /**
+     * Starts benchmarking
+     */
     @Override
     public void run() {
         Options optSingleThread = new OptionsBuilder()

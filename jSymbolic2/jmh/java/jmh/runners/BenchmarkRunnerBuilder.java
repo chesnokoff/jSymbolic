@@ -4,7 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Build BenchmarkRunner with default parameters, that can be changed.
+ * It was decided to create this class to easily change default parameters of benchmarking
+ */
 public class BenchmarkRunnerBuilder implements BenchmarkRunnerBuilderInterface {
+
+    // Regex to find benchmark classes to run
     private String regexep = ".*Benchmark.";
     private int forks = 5;
     private int measurementIterations = 10;

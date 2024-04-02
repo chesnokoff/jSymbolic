@@ -1,7 +1,8 @@
 package jmh.runners;
 
-import org.openjdk.jmh.runner.RunnerException;
-
+/**
+ * This interface runs benchmark test
+ */
 public interface BenchmarkRunnerInterface {
     void run();
 }

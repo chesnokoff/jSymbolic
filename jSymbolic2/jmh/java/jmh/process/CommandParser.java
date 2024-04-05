@@ -73,14 +73,14 @@ public class CommandParser {
 
     private Options getOptions() {
         Options options = new Options();
-        options.addOption("h", "help", false, "regex for benchmark classes");
-        options.addOption("r", "regex", true, "regex for benchmark classes");
-        options.addOption("f", "fork", true, "regex for benchmark classes");
-        options.addOption("w", "warmup", true, "regex for benchmark classes");
-        options.addOption("i", "measure_iterations", true, "regex for benchmark classes");
-        options.addOption("u", "time_unit", true, "regex for benchmark classes");
-        options.addOption("c", "config", true, "regex for benchmark classes");
-        options.addOption("t", "threads", true, "regex for benchmark classes");
+        options.addOption("h", "help", false, "Show commands");
+        options.addOption("r", "regex", true, "Regex for benchmark classes.");
+        options.addOption("f", "fork", true, "Number of forks");
+        options.addOption("w", "warmup", true, "Warmup iterations number");
+        options.addOption("i", "measure_iterations", true, "Iterations number to measure");
+        options.addOption("u", "time_unit", true, "Measurement time units");
+        options.addOption("c", "config", true, "Paths of config files");
+        options.addOption("t", "threads", true, "Threads number");
         return options;
     }
 
@@ -90,16 +90,16 @@ public class CommandParser {
 
     public void printHelp() {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("ant", options);
+        formatter.printHelp("jmh", options);
     }
 
-    public BenchmarkRunnerBuilder generateBenchmarkBuilder() {
+    public BenchmarkRunnerInterface generateBenchmarkBuilder() {
         return new BenchmarkRunnerBuilder()
                 .setRegexep(regexep)
                 .setForks(forks)
                 .setMeasurementIterations(measurementIterations)
                 .setTimeUnit(timeUnit)
                 .setThreadsNumber(threadsNumber)
-                .setConfigFiles(configs);
+                .setConfigFiles(configs).createBenchmarkRunner();
     }
 }

@@ -20,6 +20,7 @@ public class BenchmarkRunnerBuilder implements BenchmarkRunnerBuilderInterface {
     private List<String> configs = new ArrayList<>();
 
     private int threadsNumber = 1;
+    private String path;
 
     public BenchmarkRunnerBuilder setRegexep(String regexep) {
         this.regexep = regexep;
@@ -48,6 +49,11 @@ public class BenchmarkRunnerBuilder implements BenchmarkRunnerBuilderInterface {
 
     public BenchmarkRunnerBuilder setThreadsNumber(int threadsNumber) {
         this.threadsNumber = threadsNumber;
+        return this;
+    }
+
+    public BenchmarkRunnerBuilder setResult(String path) {
+        this.path = path;
         return this;
     }
 

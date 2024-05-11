@@ -19,7 +19,7 @@ import java.util.List;
 @State(Scope.Thread)
 public class SimpleBenchmark {
 
-    @Param("jmh/resources/configs/all_features_config.txt")
+    @Param("jmh/resources/configs/all-features-config.txt")
     public static String configFilePath;
 
     @State(Scope.Thread)

@@ -25,7 +25,7 @@ public class CommandParser {
     private int warmupIterations = 5;
 
     private boolean neenHelp = false;
-    private TimeUnit timeUnit = TimeUnit.MILLISECONDS;
+    private TimeUnit timeUnit = TimeUnit.SECONDS;
 
     private List<String> configs = new ArrayList<>();
 

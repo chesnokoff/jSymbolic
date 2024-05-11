@@ -1,53 +1,6 @@
 import argparse
 import os
 
-
-class Command:
-    OUTPUT_DIR = "."
-
-    CONFIGS_DIR = "."
-
-    WINDOW_SIZE = 0.0
-
-    OVERLAP = 0.0
-
-    ARFF = False
-
-    CSV = False
-
-    CSV = False
-
-    SAVE_WINDOW = False
-
-    SAVE_OVERALL = False
-
-    INPUT_FILES = []
-
-    def __init__(self, args):
-        self.OUTPUT_DIR = os.path.relpath(os.path.normpath(args.output))
-        self.CONFIGS_DIR = os.path.relpath(os.path.normpath(args.path))
-        self.WINDOW_SIZE = args.window
-        self.OVERLAP = args.overlap
-        self.ARFF = args.arff
-        self.CSV = args.csv
-        self.SAVE_WINDOW = args.csv
-        self.SAVE_OVERALL = args.csv
-        self.INPUT_FILES = args.csv
-
-
-HISTOGRAM_FEATURES = ["Basic Pitch Histogram",
-                      "Pitch Class Histogram",
-                      "Folded Fifths Pitch Class Histogram",
-                      "Melodic Interval Histogram",
-                      "Vertical Interval Histogram",
-                      "Wrapped Vertical Interval Histogram",
-                      "Chord Type Histogram",
-                      "Rhythmic Value Histogram",
-                      "Rhythmic Value Median Run Lengths Histogram",
-                      "Rhythmic Value Variability in Run Lengths Histogram",
-                      "Beat Histogram Tempo Standardized",
-                      "Beat Histogram"]
-
 FEATURES = ["Number of Pitches",
             "Number of Pitch Classes",
             "Number of Common Pitches",
@@ -281,6 +234,52 @@ FEATURES = ["Number of Pitches",
             "Variation of Dynamics In Each Voice",
             "Average Note to Note Change in Dynamics"]
 
+HISTOGRAM_FEATURES = ["Basic Pitch Histogram",
+                      "Pitch Class Histogram",
+                      "Folded Fifths Pitch Class Histogram",
+                      "Melodic Interval Histogram",
+                      "Vertical Interval Histogram",
+                      "Wrapped Vertical Interval Histogram",
+                      "Chord Type Histogram",
+                      "Rhythmic Value Histogram",
+                      "Rhythmic Value Median Run Lengths Histogram",
+                      "Rhythmic Value Variability in Run Lengths Histogram",
+                      "Beat Histogram Tempo Standardized",
+                      "Beat Histogram"]
+
+
+class Command:
+    OUTPUT_DIR = "."
+
+    CONFIGS_DIR = "."
+
+    WINDOW_SIZE = 0.0
+
+    OVERLAP = 0.0
+
+    ARFF = False
+
+    CSV = False
+
+    CSV = False
+
+    SAVE_WINDOW = False
+
+    SAVE_OVERALL = True
+
+    INPUT_FILES = []
+
+    def __init__(self, args):
+        self.OUTPUT_DIR = os.path.relpath(os.path.normpath(args.output))
+        self.CONFIGS_DIR = os.path.relpath(os.path.normpath(args.path))
+        self.WINDOW_SIZE = args.window
+        self.OVERLAP = args.overlap
+        self.ARFF = args.arff
+        self.CSV = args.csv
+        self.SAVE_WINDOW = args.save_window
+        self.SAVE_OVERALL = args.save_overall
+        self.INPUT_FILES = args.input
+
 
 def tree(directory):
     files = []
@@ -288,20 +287,6 @@ def tree(directory):
         for f in filenames:
             files.append(os.path.relpath(os.path.join(dirpath, f)))
     return files
-
-
-def generate_part_of_config(command):
-    options = f"""<jSymbolic_options>
-window_size={command.WINDOW_SIZE}
-window_overlap={command.OVERLAP}
-save_features_for_each_window={str(command.SAVE_WINDOW).lower()}
-save_overall_recording_features={str(command.SAVE_OVERALL).lower()}
-convert_to_arff={str(command.ARFF).lower()}
-convert_to_csv={str(command.CSV).lower()}"""
-    input_files = "<input_files>\n"
-    for path in args.input:
-        input_files += '\n'.join(tree(path))
-    return '\n'.join([options, input_files])
 
 
 def get_args():
@@ -325,34 +310,48 @@ def get_args():
     return parser.parse_args()
 
 
-def generate_config_with_all_features():
+def generate_part_of_config(command):
+    options = f"""<jSymbolic_options>
+window_size={command.WINDOW_SIZE}
+window_overlap={command.OVERLAP}
+save_features_for_each_window={str(command.SAVE_WINDOW).lower()}
+save_overall_recording_features={str(command.SAVE_OVERALL).lower()}
+convert_to_arff={str(command.ARFF).lower()}
+convert_to_csv={str(command.CSV).lower()}"""
+    input_files = "<input_files>\n"
+    for path in command.INPUT_FILES:
+        input_files += '\n'.join(tree(path))
+    return '\n'.join([options, input_files])
+
+
+def generate_config_with_all_features(command):
     base_name = "all-features"
     output = f"""<output_files>
-feature_values_save_path={os.path.normpath(args.output) + "/" + base_name + "-values.xml"}
-feature_definitions_save_path={os.path.normpath(args.output) + "/" + base_name + "-definitions.xml"}"""
+feature_values_save_path={os.path.normpath(command.OUTPUT_DIR) + "/" + base_name + "-values.xml"}
+feature_definitions_save_path={os.path.normpath(command.OUTPUT_DIR) + "/" + base_name + "-definitions.xml"}"""
     features = "<features_to_extract>" + '\n' + '\n'.join(FEATURES) + '\n' + '\n'.join(
         HISTOGRAM_FEATURES)
-    with open(os.path.normpath(args.path) + '/' + base_name + "-config.txt", 'w+') as file:
+    with open(os.path.normpath(command.CONFIGS_DIR) + '/' + base_name + "-config.txt", 'w+') as file:
         file.write(config + '\n' + output + '\n' + features)
 
 
-def generate_config_no_histograms():
+def generate_config_no_histograms(command):
     base_name = "all-features-no-hist"
     output = f"""<output_files>
-feature_values_save_path={os.path.normpath(args.output) + "/" + base_name + "-values.xml"}
-feature_definitions_save_path={os.path.normpath(args.output) + "/" + base_name + "-definitions.xml"}"""
+feature_values_save_path={os.path.normpath(command.OUTPUT_DIR) + "/" + base_name + "-values.xml"}
+feature_definitions_save_path={os.path.normpath(command.OUTPUT_DIR) + "/" + base_name + "-definitions.xml"}"""
     features = "<features_to_extract>" + '\n' + '\n'.join(FEATURES)
-    with open(os.path.normpath(args.path) + '/' + base_name + "-config.txt", 'w+') as file:
+    with open(os.path.normpath(command.CONFIGS_DIR) + '/' + base_name + "-config.txt", 'w+') as file:
         file.write(config + '\n' + output + '\n' + features)
 
 
-def generate_config_for_feature(feature_name):
+def generate_config_for_feature(command, feature_name):
     base_name = feature_name.replace(" ", "-")
     output = f"""<output_files>
-feature_values_save_path={os.path.normpath(args.output) + "/" + base_name + "-values.xml"}
-feature_definitions_save_path={os.path.normpath(args.output) + "/" + base_name + "-definitions.xml"}"""
+feature_values_save_path={os.path.normpath(command.OUTPUT_DIR) + "/" + base_name + "-values.xml"}
+feature_definitions_save_path={os.path.normpath(command.OUTPUT_DIR) + "/" + base_name + "-definitions.xml"}"""
     features = "<features_to_extract>" + '\n' + feature_name
-    with open(os.path.normpath(args.path) + '/' + base_name + "-config.txt", 'w+') as file:
+    with open(os.path.normpath(command.CONFIGS_DIR) + '/' + base_name + "-config.txt", 'w+') as file:
         file.write(config + '\n' + output + '\n' + features)
 
 
@@ -360,7 +359,7 @@ if __name__ == "__main__":
     args = get_args()
     command = Command(args)
     config = generate_part_of_config(command)
-    generate_config_with_all_features()
-    generate_config_no_histograms()
+    generate_config_with_all_features(command)
+    generate_config_no_histograms(command)
     for feature in FEATURES:
-        generate_config_for_feature(feature)
+        generate_config_for_feature(command, feature)

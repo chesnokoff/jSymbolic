@@ -1,5 +1,39 @@
-import os
 import argparse
+import os
+
+
+class Command:
+    OUTPUT_DIR = "."
+
+    CONFIGS_DIR = "."
+
+    WINDOW_SIZE = 0.0
+
+    OVERLAP = 0.0
+
+    ARFF = False
+
+    CSV = False
+
+    CSV = False
+
+    SAVE_WINDOW = False
+
+    SAVE_OVERALL = False
+
+    INPUT_FILES = []
+
+    def __init__(self, args):
+        self.OUTPUT_DIR = os.path.relpath(os.path.normpath(args.output))
+        self.CONFIGS_DIR = os.path.relpath(os.path.normpath(args.path))
+        self.WINDOW_SIZE = args.window
+        self.OVERLAP = args.overlap
+        self.ARFF = args.arff
+        self.CSV = args.csv
+        self.SAVE_WINDOW = args.csv
+        self.SAVE_OVERALL = args.csv
+        self.INPUT_FILES = args.csv
+
 
 HISTOGRAM_FEATURES = ["Basic Pitch Histogram",
                       "Pitch Class Histogram",
@@ -256,21 +290,25 @@ def tree(directory):
     return files
 
 
-def generate_part_of_config():
+def generate_part_of_config(command):
     options = f"""<jSymbolic_options>
-window_size={args.window}
-window_overlap={args.overlap}
-save_features_for_each_window={str(args.save_window).lower()}
-save_overall_recording_features={str(args.save_overall).lower()}
-convert_to_arff={str(args.arff).lower()}
-convert_to_csv={str(args.csv).lower()}"""
+window_size={command.WINDOW_SIZE}
+window_overlap={command.OVERLAP}
+save_features_for_each_window={str(command.SAVE_WINDOW).lower()}
+save_overall_recording_features={str(command.SAVE_OVERALL).lower()}
+convert_to_arff={str(command.ARFF).lower()}
+convert_to_csv={str(command.CSV).lower()}"""
     input_files = "<input_files>\n"
     for path in args.input:
         input_files += '\n'.join(tree(path))
     return '\n'.join([options, input_files])
 
 
-def set_parser():
+def get_args():
+    parser = argparse.ArgumentParser(
+        prog='Configfiles creator',
+        description='Creates new configfiles based on arguments',
+        epilog='Text at the bottom of help')
     parser.add_argument("-w", "--window", type=float, default=0.0, help="Size of window")
     parser.add_argument("--overlap", type=float, default=0.0, help="Overlap of window")
     parser.add_argument("--arff", type=bool, default=False, help="Boolean save to arff")
@@ -278,52 +316,50 @@ def set_parser():
     parser.add_argument("--save-window", type=bool, default=False,
                         help="Save features for each window")
     parser.add_argument("--save-overall", type=bool, default=True, help="Save overall features")
-    parser.add_argument("-o", "--output", type=str, default='out.xml',
-                        help="Directory to save results of processing files")
+    parser.add_argument("-o", "--output", type=str, default='.',
+                        help="Directory where to save results of feature extraction")
     parser.add_argument("-i", "--input", action="append", required=True,
                         help="Input files to process")
-    parser.add_argument("-p", "--path", type=str, default='./config.txt',
-                        help="Where to save config files")
+    parser.add_argument("-p", "--path", type=str, default='.',
+                        help="Directory where to save config files")
+    return parser.parse_args()
 
 
 def generate_config_with_all_features():
-    base_name = "all_features"
+    base_name = "all-features"
     output = f"""<output_files>
-feature_values_save_path={args.output + base_name + "_values.xml"}
-feature_definitions_save_path={args.output + base_name + "_definitions.xml"}"""
-    features = "<features_to_extract>" + '\n' + '\n'.join(FEATURES) + '\n' + '\n'.join(HISTOGRAM_FEATURES)
-    with open(os.path.normpath(args.path) + '/' + base_name + "_config.txt", 'w+') as file:
+feature_values_save_path={os.path.normpath(args.output) + "/" + base_name + "-values.xml"}
+feature_definitions_save_path={os.path.normpath(args.output) + "/" + base_name + "-definitions.xml"}"""
+    features = "<features_to_extract>" + '\n' + '\n'.join(FEATURES) + '\n' + '\n'.join(
+        HISTOGRAM_FEATURES)
+    with open(os.path.normpath(args.path) + '/' + base_name + "-config.txt", 'w+') as file:
         file.write(config + '\n' + output + '\n' + features)
 
 
 def generate_config_no_histograms():
-    base_name = "all_features_no_hist"
+    base_name = "all-features-no-hist"
     output = f"""<output_files>
-feature_values_save_path={args.output + base_name + "_values.xml"}
-feature_definitions_save_path={args.output + base_name + "_definitions.xml"}"""
-    features = "<features_to_extract>" + '\n' +'\n'.join(FEATURES)
-    with open(os.path.normpath(args.path) + '/' + base_name + "_config.txt", 'w+') as file:
+feature_values_save_path={os.path.normpath(args.output) + "/" + base_name + "-values.xml"}
+feature_definitions_save_path={os.path.normpath(args.output) + "/" + base_name + "-definitions.xml"}"""
+    features = "<features_to_extract>" + '\n' + '\n'.join(FEATURES)
+    with open(os.path.normpath(args.path) + '/' + base_name + "-config.txt", 'w+') as file:
         file.write(config + '\n' + output + '\n' + features)
 
 
 def generate_config_for_feature(feature_name):
-    base_name = feature_name
+    base_name = feature_name.replace(" ", "-")
     output = f"""<output_files>
-feature_values_save_path={args.output + base_name + "_values.xml"}
-feature_definitions_save_path={args.output + base_name + "_definitions.xml"}"""
+feature_values_save_path={os.path.normpath(args.output) + "/" + base_name + "-values.xml"}
+feature_definitions_save_path={os.path.normpath(args.output) + "/" + base_name + "-definitions.xml"}"""
     features = "<features_to_extract>" + '\n' + feature_name
-    with open(os.path.normpath(args.path) + '/' + base_name + "_config.txt", 'w+') as file:
+    with open(os.path.normpath(args.path) + '/' + base_name + "-config.txt", 'w+') as file:
         file.write(config + '\n' + output + '\n' + features)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        prog='Configfiles creator',
-        description='Creates new configfiles based on arguments',
-        epilog='Text at the bottom of help')
-    set_parser()
-    args = parser.parse_args()
-    config = generate_part_of_config()
+    args = get_args()
+    command = Command(args)
+    config = generate_part_of_config(command)
     generate_config_with_all_features()
     generate_config_no_histograms()
     for feature in FEATURES:

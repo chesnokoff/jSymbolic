@@ -1,10 +1,13 @@
 package jmh.runners;
 
+import org.openjdk.jmh.results.RunResult;
+import org.openjdk.jmh.results.format.ResultFormatType;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -45,6 +48,9 @@ public class BenchmarkRunner implements BenchmarkRunnerInterface {
         Options optSingleThread = new OptionsBuilder()
                 .include(regexep)
                 .forks(forks)
+                .shouldDoGC(true)
+                .resultFormat(ResultFormatType.JSON)
+                .result("result.json")
                 .measurementIterations(measurementIterations)
                 .warmupIterations(warmupIterations)
                 .timeUnit(timeUnit)
@@ -52,7 +58,8 @@ public class BenchmarkRunner implements BenchmarkRunnerInterface {
                 .param("configFilePath", configs.toArray(new String[0]))
                 .build();
         try {
-            new Runner(optSingleThread).run();
+            Collection<RunResult> collection = new Runner(optSingleThread).run();
+
         } catch (RunnerException e) {
             throw new RuntimeException("Could not run benchmark. " + e);
         }

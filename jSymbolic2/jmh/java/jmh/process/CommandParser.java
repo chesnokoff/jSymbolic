@@ -20,7 +20,7 @@ public class CommandParser {
     private final Options options;
     // Regex to find benchmark classes to run
     private String regexep = ".*Benchmark.";
-    private int forks = 5;
+    private int forks = 1;
     private int measurementIterations = 10;
     private int warmupIterations = 5;
 
@@ -57,8 +57,8 @@ public class CommandParser {
         if (cmd.getOptionValue("w") != null) {
             warmupIterations = Integer.parseInt(cmd.getOptionValue("w"));
         }
-        if (EnumUtils.isValidEnum(TimeUnit.class, cmd.getOptionValue("t"))) {
-            timeUnit = TimeUnit.valueOf(cmd.getOptionValue("t"));
+        if (EnumUtils.isValidEnum(TimeUnit.class, cmd.getOptionValue("u"))) {
+            timeUnit = TimeUnit.valueOf(cmd.getOptionValue("u"));
         }
         if (cmd.getOptionValue("c") != null) {
             configs = Arrays.asList(cmd.getOptionValue("c").split(" "));
@@ -100,6 +100,7 @@ public class CommandParser {
                 .setMeasurementIterations(measurementIterations)
                 .setTimeUnit(timeUnit)
                 .setThreadsNumber(threadsNumber)
+                .setWarmupIterations(warmupIterations)
                 .setConfigFiles(configs).createBenchmarkRunner();
     }
 }

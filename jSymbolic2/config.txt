@@ -1,0 +1,14 @@
+<jSymbolic_options>
+window_size=0.0
+window_overlap=0.0
+save_features_for_each_window=false
+save_overall_recording_features=true
+convert_to_arff=false
+convert_to_csv=false
+<output_files>
+feature_values_save_path=out.xmlAcoustic Guitar Prevalence_values.xml
+feature_definitions_save_path=out.xmlAcoustic Guitar Prevalence_definitions.xml
+<features_to_extract>
+Acoustic Guitar Prevalence
+<input_files>
+jmh/resources/bad.mid

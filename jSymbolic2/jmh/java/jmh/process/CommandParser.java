@@ -22,7 +22,7 @@ public class CommandParser {
     private String regexep = ".*Benchmark.";
     private int forks = 1;
     private int measurementIterations = 10;
-    private int warmupIterations = 5;
+    private int warmupIterations = 20;
 
     private boolean neenHelp = false;
     private TimeUnit timeUnit = TimeUnit.SECONDS;
@@ -30,6 +30,8 @@ public class CommandParser {
     private List<String> configs = new ArrayList<>();
 
     private int threadsNumber = 1;
+
+    private String path_result = "result.json";
 
     public CommandParser(String[] args) {
         options = getOptions();
@@ -61,13 +63,16 @@ public class CommandParser {
             timeUnit = TimeUnit.valueOf(cmd.getOptionValue("u"));
         }
         if (cmd.getOptionValue("c") != null) {
-            configs = Arrays.asList(cmd.getOptionValue("c").split(" "));
+            configs = Arrays.asList(cmd.getOptionValue("c").split(";"));
         }
         if (cmd.getOptionValue("i") != null) {
             measurementIterations = Integer.parseInt(cmd.getOptionValue("i"));
         }
         if (cmd.getOptionValue("t") != null) {
             measurementIterations = Integer.parseInt(cmd.getOptionValue("t"));
+        }
+        if (cmd.getOptionValue("p") != null) {
+            path_result = cmd.getOptionValue("p");
         }
     }
 
@@ -81,6 +86,7 @@ public class CommandParser {
         options.addOption("u", "time_unit", true, "Measurement time units");
         options.addOption("c", "config", true, "Paths of config files");
         options.addOption("t", "threads", true, "Threads number");
+        options.addOption("p", "path", true, "Where to save results");
         return options;
     }
 
@@ -101,6 +107,7 @@ public class CommandParser {
                 .setTimeUnit(timeUnit)
                 .setThreadsNumber(threadsNumber)
                 .setWarmupIterations(warmupIterations)
+                .setResult(path_result)
                 .setConfigFiles(configs).createBenchmarkRunner();
     }
 }

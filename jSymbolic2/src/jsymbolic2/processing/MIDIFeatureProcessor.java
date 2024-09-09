@@ -1,25 +1,19 @@
 package jsymbolic2.processing;
 
-import java.io.File;
-import java.util.ArrayList;
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.Sequence;
-
 import ace.datatypes.DataBoard;
 import ace.datatypes.DataSet;
+import ace.datatypes.FeatureDefinition;
 import jsymbolic2.featureutils.FeatureExtractorAccess;
 import jsymbolic2.featureutils.MEIFeatureExtractor;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
 import mckay.utilities.sound.midi.MIDIMethods;
-import ace.datatypes.FeatureDefinition;
-import ca.mcgill.music.ddmal.mei.MeiXmlReader.MeiXmlReadException;
+import org.apache.commons.lang3.ArrayUtils;
+import org.ddmal.jmei2midi.meielements.meispecific.MeiSpecificStorage;
 
+import javax.sound.midi.Sequence;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import jsymbolic2.featureutils.MIDIFeatureExtractor;
-import org.apache.commons.lang3.ArrayUtils;
-import org.ddmal.jmei2midi.MeiSequence;
-import org.ddmal.jmei2midi.meielements.meispecific.MeiSpecificStorage;
 
 
 /**
@@ -125,8 +119,9 @@ public class MIDIFeatureProcessor {
     /**
      * Validates and stores the configuration to use for extracting features
      * from MIDI recordings.
+     * <p>
+     * meaning no overlap.
      *
-     *                                     meaning no overlap.
      * @param allFeatureExtractors         All features that can be
      *                                     extracted.
      * @param featuresToSaveAmongAll       Which features are to be
@@ -227,6 +222,7 @@ public class MIDIFeatureProcessor {
     }
 
     /*PUBLIC METHODS ********************************************************/
+
     /**
      * @return The features that are to be extracted (including dependencies of features to be saved, not
      * just the features to be saved themselves).
@@ -246,72 +242,6 @@ public class MIDIFeatureProcessor {
             }
         }
         return false;
-    }
-
-    /**
-     * Extract the features from the provided MIDI or MEI file. This may involve
-     * windowing, depending on the instantiation parameters of this object.
-     * @param recordingFile The music file to extract features from.
-     * @param errorLog      A List(String) that holds all the files with errors.
-     * @throws InvalidMidiDataException Thrown if the MIDI data is invalid.
-     * @throws MeiXmlReadException      Thrown if there is a problem reading in the MEI XML from the inputted file.
-     * @throws Exception                When an unforeseen runtime exception occurs.
-     */
-    public void extractFeatures(File recordingFile, List<String> errorLog)
-            throws InvalidMidiDataException, MeiXmlReadException, Exception {
-        if (windowOverlapOffset > windowSize)
-            throw new Exception("Window overlap offset is greater than window size, this is not possible.");
-        // Extract the data from the file and check for exceptions
-        Sequence fullSequence = null;
-        MeiSequence meiSequence = null;
-        if (SymbolicMusicFileUtilities.isValidMidiFile(recordingFile)) {
-            fullSequence = SymbolicMusicFileUtilities.getMidiSequenceFromMidiOrMeiFile(recordingFile, errorLog);
-        } else {
-            if (SymbolicMusicFileUtilities.isValidMeiFile(recordingFile)) {
-                meiSequence = SymbolicMusicFileUtilities.getMeiSequenceFromMeiFile(recordingFile, errorLog);
-                fullSequence = meiSequence.getSequence();
-            }
-        }
-
-        //Mei Specific Storage added here and null is set if the file is not an mei file
-        MeiSpecificStorage meiSpecificStorage = null;
-        if (meiSequence != null) {
-            meiSpecificStorage = meiSequence.getNonMidiStorage();
-        }
-
-        // Prepare the windows for feature extraction with correct times
-        // Tick arrays have been added to account for multiple windows
-        Sequence[] windows;
-        double[] secondsPerTick = MIDIMethods.getSecondsPerTick(fullSequence);
-        List<int[]> startEndTickArrays;
-        int[] startTicks;
-        int[] endTicks;
-        try {
-            if (!saveFeaturesForEachWindow) {
-                startEndTickArrays = MIDIMethods.getStartEndTickArrays(fullSequence, fullSequence.getMicrosecondLength() / 1000000.0, 0.0, secondsPerTick);
-                startTicks = startEndTickArrays.get(0);
-                endTicks = startEndTickArrays.get(1);
-                windows = new Sequence[1];
-                windows[0] = fullSequence;
-            } else {
-                startEndTickArrays = MIDIMethods.getStartEndTickArrays(fullSequence, windowSize, windowOverlapOffset, secondsPerTick);
-                startTicks = startEndTickArrays.get(0);
-                endTicks = startEndTickArrays.get(1);
-                windows = MIDIMethods.breakSequenceIntoWindows(fullSequence, windowSize, windowOverlapOffset, startTicks, endTicks);
-            }
-        } catch (RuntimeException e) {
-            throw new Exception("An error occurred while processing the following file: " + recordingFile + ".\n");
-        }
-
-        // Extract the feature values from the samples
-        double[][][] windowFeatureValues = getFeatures(windows, meiSpecificStorage);
-
-        // Find the feature averages and standard deviations if appropriate
-        double[][] overallFeatureValues = null;
-        if (saveOverallRecordingFeatures) {
-            overallFeatureValues = generateOverallRecordingFeatures(windowFeatureValues);
-        }
-        addDataSet(windowFeatureValues, recordingFile.getPath(), overallFeatureValues, startTicks, endTicks, secondsPerTick);
     }
 
     /**
@@ -443,6 +373,7 @@ public class MIDIFeatureProcessor {
 
     /**
      * Generates DataBoard based in list of DataSets that were constructed during features extractions
+     *
      * @return DataBoard of processed recordings
      * @throws Exception Throws an exception if it cannot create DataBoard object.
      */
@@ -474,61 +405,38 @@ public class MIDIFeatureProcessor {
      */
     private void findAndOrderFeaturesToExtract(MIDIFeatureExtractor[] allFeatureExtractors,
                                                boolean[] featuresToSaveAmongAll) {
-        // Find the names of all features
-        String[] allFeatureNames = new String[allFeatureExtractors.length];
-        for (int feat = 0; feat < allFeatureExtractors.length; feat++)
-            allFeatureNames[feat] = allFeatureExtractors[feat].getFeatureDefinition().name;
-
-        // Find the dependencies of each feature marked to be extracted.
-        // Mark an entry as null if that entry's matching feature is not set to be extracted.
-        // Note that an entry will also be null if the corresponding feature has no dependencies.
-        String[][] dependencies = new String[allFeatureExtractors.length][];
-        for (int feat = 0; feat < allFeatureExtractors.length; feat++) {
-            dependencies[feat] = null;
-            if (featuresToSaveAmongAll[feat])
-                dependencies[feat] = allFeatureExtractors[feat].getDepenedencies();
-        }
-
+        String[] allFeatureNames = getAllFeatureNames(allFeatureExtractors);
+        String[][] dependencies = getDependencies(allFeatureExtractors, featuresToSaveAmongAll);
         // Start off the array of which features to extract by making sure to extract all those features
         // whose values are marked to be saved.
         boolean[] featuresToExtractIncludingDependencies = new boolean[allFeatureExtractors.length];
         System.arraycopy(featuresToSaveAmongAll, 0, featuresToExtractIncludingDependencies,
                 0, allFeatureExtractors.length);
+        updateExtraDependencies(allFeatureExtractors, allFeatureNames, dependencies, featuresToExtractIncludingDependencies);
+        orderFeaturesToExtract(allFeatureExtractors, featuresToSaveAmongAll, allFeatureNames, dependencies, featuresToExtractIncludingDependencies);
+        prepareIndicies();
+        setMaxOffset();
+    }
 
-        // Update featuresToExtractIncludingDependencies to ALSO include those features that are not
-        // marked to be saved, but are needed as dependencies in order to calculate features that are
-        // marked to be saved. Also update dependencies to include any new dependencies that are introduced
-        // by scheduling new features to be extracted because they themselves are dependencies of other
-        // features.
-        boolean done = false;
-        while (!done) {
-            done = true;
-            for (int feat = 0; feat < allFeatureExtractors.length; feat++) {
-                if (dependencies[feat] != null) {
-                    for (int dep = 0; dep < dependencies[feat].length; dep++) {
-                        String thisDependencyName = dependencies[feat][dep];
-                        for (int j = 0; j < allFeatureExtractors.length; j++) {
-                            if (thisDependencyName.equals(allFeatureNames[j])) {
-                                if (!featuresToExtractIncludingDependencies[j]) {
-                                    featuresToExtractIncludingDependencies[j] = true;
-                                    dependencies[j] = allFeatureExtractors[j].getDepenedencies();
-                                    if (dependencies[j] != null) done = false;
-                                }
-                                j = allFeatureExtractors.length;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    /**
+     * Begin the process of finding the correct order to extract features in by filling the
+     * feature_extractors field with all features that are to be extracted (i.e. the combination of
+     * those features whose values are marked to be saved and those features that are needed in order
+     * to calculate those features marked to be saved). The ordering consists of the originally
+     * specified feature order, with dependent features added in before they are needed.
+     * Also note which of these have values that are actually to be saved by filling in
+     * features_to_save.
+     *
+     * @param allFeatureExtractors
+     * @param featuresToSaveAmongAll
+     * @param allFeatureNames
+     * @param dependencies
+     * @param featuresToExtractIncludingDependencies
+     */
+    private void orderFeaturesToExtract(MIDIFeatureExtractor[] allFeatureExtractors, boolean[] featuresToSaveAmongAll, String[] allFeatureNames, String[][] dependencies, boolean[] featuresToExtractIncludingDependencies) {
+        /**/
+        boolean done;
 
-        // Begin the process of finding the correct order to extract features in by filling the
-        // feature_extractors field with all features that are to be extracted (i.e. the combination of
-        // those features whose values are marked to be saved and those features that are needed in order
-        // to calculate those features marked to be saved). The ordering consists of the originally
-        // specified feature order, with dependent features added in before they are needed.
-        // Also note which of these have values that are actually to be saved by filling in
-        // features_to_save.
         int numberFeaturesToExtract = 0;
         for (int i = 0; i < featuresToExtractIncludingDependencies.length; i++)
             if (featuresToExtractIncludingDependencies[i])
@@ -587,9 +495,48 @@ public class MIDIFeatureProcessor {
                 }
             }
         }
+    }
 
-        // Find the indices of the feature extractor dependencies for each feature
-        // extractor
+    /**
+     * Update featuresToExtractIncludingDependencies to ALSO include those features that are not
+     * marked to be saved, but are needed as dependencies in order to calculate features that are
+     * marked to be saved. Also update dependencies to include any new dependencies that are introduced
+     * by scheduling new features to be extracted because they themselves are dependencies of other
+     * features.
+     *
+     * @param allFeatureExtractors
+     * @param allFeatureNames
+     * @param dependencies
+     * @param featuresToExtractIncludingDependencies
+     */
+    private void updateExtraDependencies(MIDIFeatureExtractor[] allFeatureExtractors, String[] allFeatureNames, String[][] dependencies, boolean[] featuresToExtractIncludingDependencies) {
+        boolean done = false;
+        while (!done) {
+            done = true;
+            for (int feat = 0; feat < allFeatureExtractors.length; feat++) {
+                if (dependencies[feat] != null) {
+                    for (int dep = 0; dep < dependencies[feat].length; dep++) {
+                        String thisDependencyName = dependencies[feat][dep];
+                        for (int j = 0; j < allFeatureExtractors.length; j++) {
+                            if (thisDependencyName.equals(allFeatureNames[j])) {
+                                if (!featuresToExtractIncludingDependencies[j]) {
+                                    featuresToExtractIncludingDependencies[j] = true;
+                                    dependencies[j] = allFeatureExtractors[j].getDepenedencies();
+                                    if (dependencies[j] != null) done = false;
+                                }
+                                j = allFeatureExtractors.length;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Find the indices of the feature extractor dependencies for each feature extractor
+     */
+    private void prepareIndicies() {
         featureExtractorDependencies = new int[midiFeatureExtractors.length][];
         String[] feature_names = new String[midiFeatureExtractors.length];
         for (int feat = 0; feat < feature_names.length; feat++)
@@ -605,8 +552,12 @@ public class MIDIFeatureProcessor {
                         if (featureDependenciesStr[i][j].equals(feature_names[k]))
                             featureExtractorDependencies[i][j] = k;
             }
+    }
 
-        // Find the maximum offset for each feature
+    /**
+     * Find the maximum offset for each feature
+     */
+    private void setMaxOffset() {
         maxFeatureOffsets = new int[midiFeatureExtractors.length];
         for (int feat = 0; feat < maxFeatureOffsets.length; feat++) {
             if (midiFeatureExtractors[feat].getDepenedencyOffsets() == null) {
@@ -619,6 +570,35 @@ public class MIDIFeatureProcessor {
                 maxFeatureOffsets[feat] = Math.max(Math.abs(offsetOfCurrentFeature), offsetOfCurrentFeature);
             }
         }
+    }
+
+    /** Find the dependencies of each feature marked to be extracted.
+     * Mark an entry as null if that entry's matching feature is not set to be extracted.
+     * Note that an entry will also be null if the corresponding feature has no dependencies.
+     * @param allFeatureExtractors
+     * @param featuresToSaveAmongAll
+     * @return
+     */
+    private String[][] getDependencies(MIDIFeatureExtractor[] allFeatureExtractors, boolean[] featuresToSaveAmongAll) {
+        String[][] dependencies = new String[allFeatureExtractors.length][];
+        for (int feat = 0; feat < allFeatureExtractors.length; feat++) {
+            dependencies[feat] = null;
+            if (featuresToSaveAmongAll[feat])
+                dependencies[feat] = allFeatureExtractors[feat].getDepenedencies();
+        }
+        return dependencies;
+    }
+
+    /**
+     * Find the names of all features
+     * @param allFeatureExtractors
+     * @return
+     */
+    private String[] getAllFeatureNames(MIDIFeatureExtractor[] allFeatureExtractors) {
+        String[] allFeatureNames = new String[allFeatureExtractors.length];
+        for (int feat = 0; feat < allFeatureExtractors.length; feat++)
+            allFeatureNames[feat] = allFeatureExtractors[feat].getFeatureDefinition().name;
+        return allFeatureNames;
     }
 
 
@@ -693,6 +673,7 @@ public class MIDIFeatureProcessor {
 
     /**
      * Generates FeatureDefinitions for overall features
+     *
      * @return array of overall FeatureDefinitions
      */
     private FeatureDefinition[] generateOverallFeatureDefinitions() {
@@ -712,15 +693,16 @@ public class MIDIFeatureProcessor {
 
     /**
      * Generates DataSet for current recording and adds it in list of DataSets
-     * @param windowFeatureValues The extracted window feature values
-     *                            for this recording. The first
-     *                            indice identifies the window, the
-     *                            second identifies the feature and
-     *                            the third identifies the feature
-     *                            value. The third dimension will
-     *                            be null if the given feature could
-     *                            not be extracted for the given
-     *                            window.
+     *
+     * @param windowFeatureValues  The extracted window feature values
+     *                             for this recording. The first
+     *                             indice identifies the window, the
+     *                             second identifies the feature and
+     *                             the third identifies the feature
+     *                             value. The third dimension will
+     *                             be null if the given feature could
+     *                             not be extracted for the given
+     *                             window.
      * @param overallFeatureValues The extracted overall average and
      *                             standard deviations of the window
      *                             feature values. The first indice
@@ -732,9 +714,9 @@ public class MIDIFeatureProcessor {
      *                             parameter. This value is null if
      *                             overall feature values were not
      *                             extracted.
-     * @param startTicks The start ticks that correspond to each MIDI window.
-     * @param endTicks The end ticks that correspond to each MIDI window.
-     * @param secondsPerTick The number of seconds in a MIDI tick given by the sequence.
+     * @param startTicks           The start ticks that correspond to each MIDI window.
+     * @param endTicks             The end ticks that correspond to each MIDI window.
+     * @param secondsPerTick       The number of seconds in a MIDI tick given by the sequence.
      */
     private void addDataSet(double[][][] windowFeatureValues, String identifier,
                             double[][] overallFeatureValues,

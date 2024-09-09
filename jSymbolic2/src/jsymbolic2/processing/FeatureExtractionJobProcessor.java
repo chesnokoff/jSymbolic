@@ -533,26 +533,26 @@ public final class FeatureExtractionJobProcessor {
                                                     PrintStream error_print_stream,
                                                     List<String> error_log,
                                                     boolean gui_processing) {
+        extractFeaturesFromMeiSequence(name, processor, current_extraction_index, total_files_to_process, status_print_stream, error_print_stream, error_log, gui_processing, null, sequence);
+    }
+
+
+    private static void extractFeaturesFromMeiSequence(String name,
+                                                       MIDIFeatureProcessor processor,
+                                                       int current_extraction_index,
+                                                       int total_files_to_process,
+                                                       PrintStream status_print_stream,
+                                                       PrintStream error_print_stream,
+                                                       List<String> error_log,
+                                                       boolean gui_processing, MeiSpecificStorage nonMidiStorage, Sequence sequence) {
         try {
             // Extract features from input_file_path and save them in an ACE XML feature values file
             UserFeedbackGenerator.printFeatureExtractionProgressMessage(status_print_stream, name, current_extraction_index, total_files_to_process);
-            processor.extractFeaturesFromSequence(sequence, name);
+            processor.extractFeaturesFromSequence(name, sequence, nonMidiStorage);
             UserFeedbackGenerator.printFeatureExtractionDoneAFileProgressMessage(status_print_stream, name, current_extraction_index, total_files_to_process);
         } catch (OutOfMemoryError e) // Terminate execution if this happens
         {
-            String error_message = "The Java Runtime ran out of memory while processing:\n" +
-                    "     " + name + "\n" +
-                    "Please rerun jSymbolic with more memory assigned to the Java runtime heap.\n\n";
-            UserFeedbackGenerator.printErrorMessage(error_print_stream, error_message);
-            if (gui_processing) {
-                System.err.println(error_message);
-                java.awt.Toolkit.getDefaultToolkit().beep();
-                JOptionPane.showMessageDialog(null,
-                        error_message,
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-            System.exit(-1);
+            processOutOfMemory(name, error_print_stream, gui_processing);
         } catch (Exception e) {
             String error_message = "Problem extracting features from " + name + "." +
                     "\n\tDetailed error message: " + e + ": " + e.getMessage();
@@ -562,42 +562,20 @@ public final class FeatureExtractionJobProcessor {
         }
     }
 
-    private static void extractFeaturesFromMeiSequence(MeiSequence meiSequence,
-                                                       String name,
-                                                       MIDIFeatureProcessor processor,
-                                                       int current_extraction_index,
-                                                       int total_files_to_process,
-                                                       PrintStream status_print_stream,
-                                                       PrintStream error_print_stream,
-                                                       List<String> error_log,
-                                                       boolean gui_processing) {
-        try {
-            // Extract features from input_file_path and save them in an ACE XML feature values file
-            UserFeedbackGenerator.printFeatureExtractionProgressMessage(status_print_stream, name, current_extraction_index, total_files_to_process);
-            processor.extractFeaturesFromMeiSequence(meiSequence, name);
-            UserFeedbackGenerator.printFeatureExtractionDoneAFileProgressMessage(status_print_stream, name, current_extraction_index, total_files_to_process);
-        } catch (OutOfMemoryError e) // Terminate execution if this happens
-        {
-            String error_message = "The Java Runtime ran out of memory while processing:\n" +
-                    "     " + name + "\n" +
-                    "Please rerun jSymbolic with more memory assigned to the Java runtime heap.\n\n";
-            UserFeedbackGenerator.printErrorMessage(error_print_stream, error_message);
-            if (gui_processing) {
-                System.err.println(error_message);
-                java.awt.Toolkit.getDefaultToolkit().beep();
-                JOptionPane.showMessageDialog(null,
-                        error_message,
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-            System.exit(-1);
-        } catch (Exception e) {
-            String error_message = "Problem extracting features from " + name + "." +
-                    "\n\tDetailed error message: " + e + ": " + e.getMessage();
-            UserFeedbackGenerator.printErrorMessage(error_print_stream, error_message);
-            error_log.add(error_message);
-            e.printStackTrace(error_print_stream);
+    private static void processOutOfMemory(String name, PrintStream error_print_stream, boolean gui_processing) {
+        String error_message = "The Java Runtime ran out of memory while processing:\n" +
+                "     " + name + "\n" +
+                "Please rerun jSymbolic with more memory assigned to the Java runtime heap.\n\n";
+        UserFeedbackGenerator.printErrorMessage(error_print_stream, error_message);
+        if (gui_processing) {
+            System.err.println(error_message);
+            java.awt.Toolkit.getDefaultToolkit().beep();
+            JOptionPane.showMessageDialog(null,
+                    error_message,
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
+        System.exit(-1);
     }
 
 

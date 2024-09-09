@@ -340,35 +340,49 @@ public class MIDIFeatureProcessor {
             // Find the correct feature
             MIDIFeatureExtractor feature = midiFeatureExtractors[feat];
 
-            // Find previously extracted feature values that this feature
-            // needs
-            double[][] otherFeatureValues = null;
-            if (featureExtractorDependencies[feat] != null) {
-                otherFeatureValues = new double[featureExtractorDependencies[feat].length][];
-                for (int i = 0; i < featureExtractorDependencies[feat].length; i++) {
-                    int featureIndice = featureExtractorDependencies[feat][i];
-                    /* TODO Check if this is a correct bug fix */
-                    if (feature.getDepenedencyOffsets() == null) {
-                        otherFeatureValues[i] = results[win][featureIndice];
-                    } else {
-                        int offset = feature.getDepenedencyOffsets()[i];
-                        otherFeatureValues[i] = results[win + offset][featureIndice];
-                    }
-                }
-            }
+            double[][] otherFeatureValues = findPreviousExtractedFeatures(results, win, feat, feature);
 
             //Check here if the file is an MEI file and if the feature is an MEI feature
             //Otherwise just extract the midi feature data
-            if (meiSpecificStorage != null && feature instanceof MEIFeatureExtractor) {
-                results[win][feat] = ((MEIFeatureExtractor) feature).extractMEIFeature(meiSpecificStorage, windows[win], intermediate, otherFeatureValues);
-            } else if (meiSpecificStorage == null && feature instanceof MEIFeatureExtractor) {
+            if (meiSpecificStorage == null && feature instanceof MEIFeatureExtractor) {
                 //Skip if this is a non-mei file as mei features are not valid
                 return;
-            } else {
-                // Store the extracted feature values
-                results[win][feat] = feature.extractFeature(windows[win], intermediate, otherFeatureValues);
             }
-        } else results[win][feat] = null;
+            if (meiSpecificStorage != null && feature instanceof MEIFeatureExtractor) {
+                results[win][feat] = ((MEIFeatureExtractor) feature).extractMEIFeature(meiSpecificStorage, windows[win], intermediate, otherFeatureValues);
+                return;
+            }
+            // Store the extracted feature values
+            results[win][feat] = feature.extractFeature(windows[win], intermediate, otherFeatureValues);
+            return;
+        }
+        results[win][feat] = null;
+    }
+
+    /**
+     * Find previously extracted feature values that this feature needs
+     * @param results
+     * @param win
+     * @param feat
+     * @param feature
+     * @return
+     */
+    private double[][] findPreviousExtractedFeatures(double[][][] results, int win, int feat, MIDIFeatureExtractor feature) {
+        double[][] otherFeatureValues = null;
+        if (featureExtractorDependencies[feat] != null) {
+            otherFeatureValues = new double[featureExtractorDependencies[feat].length][];
+            for (int i = 0; i < featureExtractorDependencies[feat].length; i++) {
+                int featureIndice = featureExtractorDependencies[feat][i];
+                /* TODO Check if this is a correct bug fix */
+                if (feature.getDepenedencyOffsets() == null) {
+                    otherFeatureValues[i] = results[win][featureIndice];
+                } else {
+                    int offset = feature.getDepenedencyOffsets()[i];
+                    otherFeatureValues[i] = results[win + offset][featureIndice];
+                }
+            }
+        }
+        return otherFeatureValues;
     }
 
     /**
@@ -378,10 +392,7 @@ public class MIDIFeatureProcessor {
      * @throws Exception Throws an exception if it cannot create DataBoard object.
      */
     public DataBoard generateDataBoard() throws Exception {
-        DataBoard dataBoard = new DataBoard(null,
-                null,
-                dataSets.toArray(new DataSet[0]),
-                null);
+        DataBoard dataBoard = new DataBoard(null, null, dataSets.toArray(new DataSet[0]), null);
         if (saveOverallRecordingFeatures) {
             dataBoard.feature_definitions = ArrayUtils.addAll(featureExtractorsDefinitions, overallFeatureDefinitions);
         } else {
@@ -434,13 +445,9 @@ public class MIDIFeatureProcessor {
      * @param featuresToExtractIncludingDependencies
      */
     private void orderFeaturesToExtract(MIDIFeatureExtractor[] allFeatureExtractors, boolean[] featuresToSaveAmongAll, String[] allFeatureNames, String[][] dependencies, boolean[] featuresToExtractIncludingDependencies) {
-        /**/
-        boolean done;
-
         int numberFeaturesToExtract = 0;
         for (int i = 0; i < featuresToExtractIncludingDependencies.length; i++)
-            if (featuresToExtractIncludingDependencies[i])
-                numberFeaturesToExtract++;
+            if (featuresToExtractIncludingDependencies[i]) numberFeaturesToExtract++;
         midiFeatureExtractors = new MIDIFeatureExtractor[numberFeaturesToExtract];
         featuresToSaveMask = new boolean[numberFeaturesToExtract];
         Arrays.fill(featuresToSaveMask, false);
@@ -448,9 +455,9 @@ public class MIDIFeatureProcessor {
         for (int i = 0; i < featureAdded.length; i++)
             featureAdded[i] = false;
         int currentPosition = 0;
-        done = false;
-        while (!done) {
-            done = true;
+        boolean inProcess = true;
+        while (inProcess) {
+            inProcess = false;
 
             // Add all features that have no remaining dependencies and remove
             // their dependencies from all unadded features
@@ -462,34 +469,45 @@ public class MIDIFeatureProcessor {
                         midiFeatureExtractors[currentPosition] = allFeatureExtractors[feat];
                         featuresToSaveMask[currentPosition] = featuresToSaveAmongAll[feat];
                         currentPosition++;
-                        done = false;
+                        inProcess = true;
+                        removeDependency(allFeatureExtractors, allFeatureNames, dependencies, featuresToExtractIncludingDependencies, feat);
+                    }
+                }
+            }
+        }
+    }
 
-                        // Remove this dependency from all features that have
-                        // it as a dependency and are marked to be extracted
-                        for (int i = 0; i < allFeatureExtractors.length; i++) {
-                            if (featuresToExtractIncludingDependencies[i] && dependencies[i] != null) {
-                                int numDefs = dependencies[i].length;
-                                for (int j = 0; j < numDefs; j++) {
-                                    if (dependencies[i][j].equals(allFeatureNames[feat])) {
-                                        if (dependencies[i].length == 1) {
-                                            dependencies[i] = null;
-                                            j = numDefs;
-                                        } else {
-                                            String[] temp = new String[dependencies[i].length - 1];
-                                            int m = 0;
-                                            for (int k = 0; k < dependencies[i].length; k++) {
-                                                if (k != j) {
-                                                    temp[m] = dependencies[i][k];
-                                                    m++;
-                                                }
-                                            }
-                                            dependencies[i] = temp;
-                                            j--;
-                                            numDefs--;
-                                        }
-                                    }
+    /**
+     * Remove this dependency from all features that have
+     * it as a dependency and are marked to be extracted
+     *
+     * @param allFeatureExtractors
+     * @param allFeatureNames
+     * @param dependencies
+     * @param featuresToExtractIncludingDependencies
+     * @param feat
+     */
+    private void removeDependency(MIDIFeatureExtractor[] allFeatureExtractors, String[] allFeatureNames, String[][] dependencies, boolean[] featuresToExtractIncludingDependencies, int feat) {
+        for (int i = 0; i < allFeatureExtractors.length; i++) {
+            if (featuresToExtractIncludingDependencies[i] && dependencies[i] != null) {
+                int numDefs = dependencies[i].length;
+                for (int j = 0; j < numDefs; j++) {
+                    if (dependencies[i][j].equals(allFeatureNames[feat])) {
+                        if (dependencies[i].length == 1) {
+                            dependencies[i] = null;
+                            j = numDefs;
+                        } else {
+                            String[] temp = new String[dependencies[i].length - 1];
+                            int m = 0;
+                            for (int k = 0; k < dependencies[i].length; k++) {
+                                if (k != j) {
+                                    temp[m] = dependencies[i][k];
+                                    m++;
                                 }
                             }
+                            dependencies[i] = temp;
+                            j--;
+                            numDefs--;
                         }
                     }
                 }
@@ -572,9 +590,11 @@ public class MIDIFeatureProcessor {
         }
     }
 
-    /** Find the dependencies of each feature marked to be extracted.
+    /**
+     * Find the dependencies of each feature marked to be extracted.
      * Mark an entry as null if that entry's matching feature is not set to be extracted.
      * Note that an entry will also be null if the corresponding feature has no dependencies.
+     *
      * @param allFeatureExtractors
      * @param featuresToSaveAmongAll
      * @return
@@ -583,14 +603,14 @@ public class MIDIFeatureProcessor {
         String[][] dependencies = new String[allFeatureExtractors.length][];
         for (int feat = 0; feat < allFeatureExtractors.length; feat++) {
             dependencies[feat] = null;
-            if (featuresToSaveAmongAll[feat])
-                dependencies[feat] = allFeatureExtractors[feat].getDepenedencies();
+            if (featuresToSaveAmongAll[feat]) dependencies[feat] = allFeatureExtractors[feat].getDepenedencies();
         }
         return dependencies;
     }
 
     /**
      * Find the names of all features
+     *
      * @param allFeatureExtractors
      * @return
      */

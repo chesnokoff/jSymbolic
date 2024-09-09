@@ -12,8 +12,7 @@ import jsymbolic2.configuration.*;
 import jsymbolic2.configuration.txtimplementation.ConfigurationFileValidatorTxtImpl;
 import jsymbolic2.configuration.txtimplementation.ConfigurationFileWriterTxtImpl;
 import jsymbolic2.featureutils.FeatureExtractorAccess;
-import jsymbolic2.processing.FeatureExtractionJobProcessor;
-import jsymbolic2.processing.SymbolicMusicFileUtilities;
+import jsymbolic2.processing.*;
 import mckay.utilities.staticlibraries.FileMethods;
 import mckay.utilities.staticlibraries.StringMethods;
 
@@ -673,18 +672,9 @@ public class ExtractionConfigurationsPanel
 
 			// Extract and save features. Update the text areas as progress continues.
 			List<String> error_log = FeatureExtractionJobProcessor.extractAndSaveSpecificFeatures(files_to_extract_features_from,
-			                                                                                       SymbolicMusicFileUtilities.correctFileExtension(feature_values_save_path_text_area.getText(), "xml"),
-			                                                                                       SymbolicMusicFileUtilities.correctFileExtension(feature_definitions_save_path_text_area.getText(), "xml"),
-			                                                                                       features_to_save,
-			                                                                                       save_windowed_features_only_radio_button.isSelected(),
-			                                                                                       save_overall_features_only_radio_button.isSelected(),
-			                                                                                       Double.parseDouble(window_length_text_area.getText()),
-			                                                                                       Double.parseDouble(window_overlap_fraction_text_area.getText()),
-			                                                                                       save_as_weka_arff_check_box.isSelected(),
-			                                                                                       save_as_csv_check_box.isSelected(),
-			                                                                                       outer_frame.status_print_stream,
-			                                                                                       outer_frame.error_print_stream,
-			                                                                                       true );
+					new SaveInfo(SymbolicMusicFileUtilities.correctFileExtension(feature_values_save_path_text_area.getText(), "xml"), SymbolicMusicFileUtilities.correctFileExtension(feature_definitions_save_path_text_area.getText(), "xml"), save_overall_features_only_radio_button.isSelected(), save_as_weka_arff_check_box.isSelected(), save_as_csv_check_box.isSelected()), features_to_save,
+					new WindowInfo(save_windowed_features_only_radio_button.isSelected(), Double.parseDouble(window_length_text_area.getText()), Double.parseDouble(window_overlap_fraction_text_area.getText())),
+					new PrintStreams(outer_frame.status_print_stream, outer_frame.error_print_stream), true );
 
 			// Beep when processing is finished and show a dialog box indicating whether any problems
 			// occurred during processing.

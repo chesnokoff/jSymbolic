@@ -3,8 +3,8 @@ package jsymbolic2.commandline;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import jsymbolic2.processing.FeatureExtractionJobProcessor;
-import jsymbolic2.processing.UserFeedbackGenerator;
+
+import jsymbolic2.processing.*;
 
 /**
  * Holder class for static methods related to command line processing.
@@ -47,8 +47,7 @@ public final class CommandLineUtilities
 		// Find out if CSV and/or ARFF files should be generated. Create reduced_args to hold the command line
 		// arguments with CSV or ARFF flags, if any, removed.
 		String[] reduced_args = new String[args.length];
-		for (int i = 0; i < reduced_args.length; i++)
-			reduced_args[i] = args[i];
+		System.arraycopy(args, 0, reduced_args, 0, reduced_args.length);
 		if (args.length > 2)
 		{
 			if ( args[0].equalsIgnoreCase(csv_flag) ||
@@ -56,10 +55,6 @@ public final class CommandLineUtilities
 			     args[1].equalsIgnoreCase(csv_flag) ||
 			     args[1].equalsIgnoreCase(arff_flag)) 
 			{
-				if (args[0].equalsIgnoreCase(csv_flag) || args[1].equalsIgnoreCase(csv_flag))
-					convert_to_csv = true;
-				if (args[0].equalsIgnoreCase(arff_flag) || args[1].equalsIgnoreCase(arff_flag))
-					convert_to_arff = true;
 
 				List<String> reduced_args_list = new ArrayList<>();
 				for (String arg : args)
@@ -70,6 +65,7 @@ public final class CommandLineUtilities
 		}
 
 		// If there are a proper number of command line arguments, assuming no windowing
+		PrintStreams printStreams = new PrintStreams(status_print_stream, error_print_stream);
 		if (reduced_args.length == 3)
 		{
 			String input_file_path = reduced_args[0];
@@ -79,19 +75,14 @@ public final class CommandLineUtilities
 			boolean save_overall_recording_features = true;
 			double window_size = 0.0;
 			double window_overlap = 0.0;
-			
+
+			SaveInfo saveInfo = new SaveInfo(ace_xml_feature_values_file_path, ace_xml_feature_definitions_file_path, save_overall_recording_features, convert_to_arff, convert_to_csv);
+			WindowInfo windowInfo = new WindowInfo(save_features_for_each_window, window_size, window_overlap);
 			FeatureExtractionJobProcessor.extractAndSaveDefaultFeatures( input_file_path,
-			                                                             ace_xml_feature_values_file_path,
-			                                                             ace_xml_feature_definitions_file_path,
-			                                                             save_features_for_each_window,
-			                                                             save_overall_recording_features,
-			                                                             window_size,
-			                                                             window_overlap,
-			                                                             convert_to_arff,
-			                                                             convert_to_csv,
-			                                                             status_print_stream,
-			                                                             error_print_stream,
-						                                                 false );
+					saveInfo,
+					windowInfo,
+					printStreams,
+					false );
 		}
 		else
 		{
@@ -107,19 +98,12 @@ public final class CommandLineUtilities
 				boolean save_overall_recording_features = false;
 				double window_size = Double.parseDouble(reduced_args[4]);
 				double window_overlap = Double.parseDouble(reduced_args[5]);
-				
+
+				SaveInfo saveInfo = new SaveInfo(ace_xml_feature_values_file_path, ace_xml_feature_definitions_file_path, save_overall_recording_features, convert_to_arff, convert_to_csv);
+				WindowInfo windowInfo = new WindowInfo(save_features_for_each_window, window_size, window_overlap);
 				FeatureExtractionJobProcessor.extractAndSaveDefaultFeatures( input_file_path,
-				                                                             ace_xml_feature_values_file_path,
-				                                                             ace_xml_feature_definitions_file_path,
-				                                                             save_features_for_each_window,
-				                                                             save_overall_recording_features,
-				                                                             window_size,
-				                                                             window_overlap,
-				                                                             convert_to_arff,
-				                                                             convert_to_csv,
-				                                                             status_print_stream,
-				                                                             error_print_stream,
-						                                                     false );
+						saveInfo, windowInfo,
+						printStreams, false );
 			} 
 			
 			// Indicate invalid choice of command line arguments

@@ -126,14 +126,6 @@ public class MIDIFeatureProcessor {
      * Validates and stores the configuration to use for extracting features
      * from MIDI recordings.
      *
-     * @param windowSize                   The size of the windows in
-     *                                     seconds that the MIDI
-     *                                     recordings are to be broken
-     *                                     into.
-     * @param windowOverlap                The fraction of overlap
-     *                                     between adjacent windows. Must
-     *                                     be between 0.0 and less than
-     *                                     1.0, with a value of 0.0
      *                                     meaning no overlap.
      * @param allFeatureExtractors         All features that can be
      *                                     extracted.
@@ -141,9 +133,6 @@ public class MIDIFeatureProcessor {
      *                                     saved. Entries correspond to
      *                                     the allFeatureExtractors
      *                                     parameter.
-     * @param saveFeaturesForEachWindow    Whether or not to save
-     *                                     features individually for each
-     *                                     window.
      * @param saveOverallRecordingFeatures Whetehr or not to save the
      *                                     average and standard deviation
      *                                     of each feature across all
@@ -154,22 +143,20 @@ public class MIDIFeatureProcessor {
      *                   in allFeatureExtractors have dependencies that do not
      *                   exist in allFeatureExtractors.
      */
-    public MIDIFeatureProcessor(double windowSize,
-                                double windowOverlap,
+    public MIDIFeatureProcessor(WindowInfo windowInfo,
                                 MIDIFeatureExtractor[] allFeatureExtractors,
                                 boolean[] featuresToSaveAmongAll,
-                                boolean saveFeaturesForEachWindow,
                                 boolean saveOverallRecordingFeatures) throws Exception {
-        checkWindowFlags(windowSize, windowOverlap, saveFeaturesForEachWindow, saveOverallRecordingFeatures);
+        checkWindowFlags(windowInfo.window_size(), windowInfo.window_overlap(), windowInfo.save_features_for_each_window(), saveOverallRecordingFeatures);
         checkAtLeastOneFlagToSaveWasSelected(featuresToSaveAmongAll);
         checkExtractors(allFeatureExtractors);
         // Save parameters as fields
-        this.windowSize = windowSize;
-        this.saveFeaturesForEachWindow = saveFeaturesForEachWindow;
+        this.windowSize = windowInfo.window_size();
+        this.saveFeaturesForEachWindow = windowInfo.save_features_for_each_window();
         this.saveOverallRecordingFeatures = saveOverallRecordingFeatures;
 
         // Calculate the window offset
-        windowOverlapOffset = windowOverlap * windowSize;
+        windowOverlapOffset = windowInfo.window_overlap() * windowSize;
         if (windowOverlapOffset > windowSize)
             throw new Exception("Window overlap offset is greater than window size, this is not possible.");
         // Find which features need to be extracted and in what order. Also find
@@ -401,41 +388,7 @@ public class MIDIFeatureProcessor {
 
             // Extract the features one by one
             for (int feat = 0; feat < midiFeatureExtractors.length; feat++) {
-                // Only extract this feature if enough previous information
-                // is available to extract this feature
-                if (win >= maxFeatureOffsets[feat]) {
-                    // Find the correct feature
-                    MIDIFeatureExtractor feature = midiFeatureExtractors[feat];
-
-                    // Find previously extracted feature values that this feature
-                    // needs
-                    double[][] otherFeatureValues = null;
-                    if (featureExtractorDependencies[feat] != null) {
-                        otherFeatureValues = new double[featureExtractorDependencies[feat].length][];
-                        for (int i = 0; i < featureExtractorDependencies[feat].length; i++) {
-                            int featureIndice = featureExtractorDependencies[feat][i];
-                            /* TODO Check if this is a correct bug fix */
-                            if (feature.getDepenedencyOffsets() == null) {
-                                otherFeatureValues[i] = results[win][featureIndice];
-                            } else {
-                                int offset = feature.getDepenedencyOffsets()[i];
-                                otherFeatureValues[i] = results[win + offset][featureIndice];
-                            }
-                        }
-                    }
-
-                    //Check here if the file is an MEI file and if the feature is an MEI feature
-                    //Otherwise just extract the midi feature data
-                    if (meiSpecificStorage != null && feature instanceof MEIFeatureExtractor) {
-                        results[win][feat] = ((MEIFeatureExtractor) feature).extractMEIFeature(meiSpecificStorage, windows[win], intermediate, otherFeatureValues);
-                    } else if (meiSpecificStorage == null && feature instanceof MEIFeatureExtractor) {
-                        //Skip if this is a non-mei file as mei features are not valid
-                        continue;
-                    } else {
-                        // Store the extracted feature values
-                        results[win][feat] = feature.extractFeature(windows[win], intermediate, otherFeatureValues);
-                    }
-                } else results[win][feat] = null;
+                processFeature(windows, meiSpecificStorage, results, win, intermediate, feat);
             }
         }
 
@@ -448,6 +401,44 @@ public class MIDIFeatureProcessor {
         }
         // Return the results
         return results;
+    }
+
+    private void processFeature(Sequence[] windows, MeiSpecificStorage meiSpecificStorage, double[][][] results, int win, MIDIIntermediateRepresentations intermediate, int feat) throws Exception {
+        // Only extract this feature if enough previous information
+        // is available to extract this feature
+        if (win >= maxFeatureOffsets[feat]) {
+            // Find the correct feature
+            MIDIFeatureExtractor feature = midiFeatureExtractors[feat];
+
+            // Find previously extracted feature values that this feature
+            // needs
+            double[][] otherFeatureValues = null;
+            if (featureExtractorDependencies[feat] != null) {
+                otherFeatureValues = new double[featureExtractorDependencies[feat].length][];
+                for (int i = 0; i < featureExtractorDependencies[feat].length; i++) {
+                    int featureIndice = featureExtractorDependencies[feat][i];
+                    /* TODO Check if this is a correct bug fix */
+                    if (feature.getDepenedencyOffsets() == null) {
+                        otherFeatureValues[i] = results[win][featureIndice];
+                    } else {
+                        int offset = feature.getDepenedencyOffsets()[i];
+                        otherFeatureValues[i] = results[win + offset][featureIndice];
+                    }
+                }
+            }
+
+            //Check here if the file is an MEI file and if the feature is an MEI feature
+            //Otherwise just extract the midi feature data
+            if (meiSpecificStorage != null && feature instanceof MEIFeatureExtractor) {
+                results[win][feat] = ((MEIFeatureExtractor) feature).extractMEIFeature(meiSpecificStorage, windows[win], intermediate, otherFeatureValues);
+            } else if (meiSpecificStorage == null && feature instanceof MEIFeatureExtractor) {
+                //Skip if this is a non-mei file as mei features are not valid
+                return;
+            } else {
+                // Store the extracted feature values
+                results[win][feat] = feature.extractFeature(windows[win], intermediate, otherFeatureValues);
+            }
+        } else results[win][feat] = null;
     }
 
     /**

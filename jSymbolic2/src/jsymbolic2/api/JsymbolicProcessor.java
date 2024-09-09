@@ -305,116 +305,23 @@ public class JsymbolicProcessor
 	 * @param path_of_file_or_folder_to_parse	The path of a file to extract features from, or of a directory
 	 *											holding files to extract features from.
 	 * @return									A list of errors that may have occurred during processing.
-	 *											Will be empty if no errors occurred. Note that this often 
+	 *											Will be empty if no errors occurred. Note that this often
 	 *											simply duplicates what is written to error_print_stream.
-	 */	
-	public List<String> extractAndSaveFeaturesFromFileOrDirectory(String path_of_file_or_folder_to_parse)
-	{
-		return FeatureExtractionJobProcessor.extractAndSaveSpecificFeatures( path_of_file_or_folder_to_parse,
-		                                                                     feature_values_save_path,
-		                                                                     feature_definitions_save_path,
-		                                                                     features_to_extract,
-		                                                                     save_features_for_each_window,
-		                                                                     save_features_for_overall_pieces,
-		                                                                     analysis_window_size,
-		                                                                     analysis_window_overlap,
-		                                                                     save_arff_file,
-		                                                                     save_csv_file,
-		                                                                     status_print_stream,
-		                                                                     error_print_stream,
-		                                                                     false );
-	}
-	
-	
-	/**
-	 * Extracts and saves features from the specified path_of_file_or_folder_to_parse. Carries out these
-	 * operations using the settings with which this JsymbolicProcessor object instantiated. If
-	 * path_of_file_or_folder_to_parse refers to a folder rather than a file, then all qualifying files (i.e.
-	 * MIDI or MEI) in it have their features extracted. Provides status updates as processing continues. Any
-	 * errors occurring during processing are reported on error_print_stream, and are also collected for
-	 * summarization at the end of processing. Processing continues even if errors are encountered, with three
-	 * exceptions: if the JVM runs out of memory, if an MEI-specific feature is set to be extracted from a
-	 * non-MEI file, or if MIDIFeatureProcessor cannot be initialized. In the latter three cases, execution is
-	 * terminated immediately.
-	 *
-	 * @param paths_of_files_or_folders_to_parse	A list of files and folders from which features should be 
-	 *												extracted.
-	 * @return										A list of errors that may have occurred during processing.
-	 *												Will be empty if no errors occurred. Note that this often 
-	 *												simply duplicates what is written to error_print_stream.
-	 */	
-	public List<String> extractAndSaveFeaturesFromFileOrDirectory(List<File> paths_of_files_or_folders_to_parse)
-	{
-		return FeatureExtractionJobProcessor.extractAndSaveSpecificFeatures( paths_of_files_or_folders_to_parse,
-		                                                                     feature_values_save_path,
-		                                                                     feature_definitions_save_path,
-		                                                                     features_to_extract,
-		                                                                     save_features_for_each_window,
-		                                                                     save_features_for_overall_pieces,
-		                                                                     analysis_window_size,
-		                                                                     analysis_window_overlap,
-		                                                                     save_arff_file,
-		                                                                     save_csv_file,
-		                                                                     status_print_stream,
-		                                                                     error_print_stream,
-		                                                                     false );
-	}
-	
-	
-	/**
-	 * Extracts and saves features from the input files (MIDI or MEI) specified in the provided configuration
-	 * settings file. Carries out these operations using the settings with which this JsymbolicProcessor
-	 * object was instantiated, NOT with any contrasting settings that may (or may not) be in the
-	 * configuration file referred to by configuration_file_path (only input files are parsed from this file).
-	 * Provides status updates as processing continues. Any errors occurring during processing are reported on
-	 * error_print_stream, and are also collected for summarization at the end of processing. Processing
-	 * continues even if errors are encountered, with three exceptions: if the JVM runs out of memory, if an
-	 * MEI-specific feature is set to be extracted from a non-MEI file, or if MIDIFeatureProcessor cannot be
-	 * initialized. In the latter three cases, execution is terminated immediately.
-	 *
-	 * @param configuration_file_path	The path of a configuration settings file holding paths to the files
-	 *									from which features are to be extracted.
-	 * @return							A list of errors that may have occurred during processing.	Will be
-	 *									empty if no errors occurred. Note that this often  simply duplicates
-	 *									what is written to error_print_stream. Will be null if no features
-	 *									could be successfully extracted
-	 */		
-	public List<String> extractAndSaveFeaturesFromConfigFile(String configuration_file_path)
-	{
-		List<File> input_file_list = null;
-		try
-		{
-			UserFeedbackGenerator.printParsingConfigFileMessage(status_print_stream, configuration_file_path);
-			List<ConfigFileHeaderEnum> config_file_headers_to_check = Arrays.asList(ConfigFileHeaderEnum.INPUT_FILE_HEADER);
-			ConfigurationFileData config_file_data = new ConfigurationFileValidatorTxtImpl().parseConfigFile( configuration_file_path,
-																											  config_file_headers_to_check,
-																											  error_print_stream );
-			input_file_list = config_file_data.getInputFileList().getValidFiles();
-		}
-		catch (Exception e)
-		{
-			UserFeedbackGenerator.printExceptionErrorMessage(System.err, e);
-		}
+	 */
+    public List<String> extractAndSaveFeaturesFromFileOrDirectory(String path_of_file_or_folder_to_parse) {
+        SaveInfo saveInfo = new SaveInfo(feature_values_save_path, feature_definitions_save_path, save_features_for_overall_pieces, save_arff_file, save_csv_file);
+        WindowInfo windowInfo = new WindowInfo(save_features_for_each_window, analysis_window_size, analysis_window_overlap);
+        PrintStreams printStreams = new PrintStreams(status_print_stream, error_print_stream);
+        return FeatureExtractionJobProcessor.extractAndSaveSpecificFeatures(List.of(new File(path_of_file_or_folder_to_parse)),
+                saveInfo,
+                features_to_extract,
+                windowInfo,
+                printStreams,
+                false);
+    }
 
-		if (input_file_list != null)
-			return FeatureExtractionJobProcessor.extractAndSaveSpecificFeatures( input_file_list,
-																				 feature_values_save_path,
-																				 feature_definitions_save_path,
-																				 features_to_extract,
-																				 save_features_for_each_window,
-																				 save_features_for_overall_pieces,
-																				 analysis_window_size,
-																				 analysis_window_overlap,
-																				 save_arff_file,
-																				 save_csv_file,
-																				 status_print_stream,
-																				 error_print_stream,
-		                                                                         false );
-		else return null;
-	}
-	
-	
-	/**
+
+    /**
 	 * Parse saved extracted feature values and associated metadata (e.g. feature definitions) and return them
 	 * in the form of an ace.datatypes.DataBoard object. Note that this method should only be called after
 	 * features have been successfully extracted and saved as an ACE XML feature values file at the

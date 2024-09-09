@@ -9,11 +9,7 @@ import java.util.List;
 import jsymbolic2.configuration.txtimplementation.ConfigurationFileValidatorTxtImpl;
 import jsymbolic2.configuration.ConfigFileHeaderEnum;
 import jsymbolic2.configuration.ConfigurationFileData;
-import jsymbolic2.processing.FeatureExtractionJobProcessor;
-import jsymbolic2.processing.MIDIReporter;
-import jsymbolic2.processing.MusicFilter;
-import jsymbolic2.processing.SymbolicMusicFileUtilities;
-import jsymbolic2.processing.UserFeedbackGenerator;
+import jsymbolic2.processing.*;
 
 /**
  * An enumerator for parsing command line arguments and directing execution appropriately. A given enum of the
@@ -248,9 +244,7 @@ public enum CommandLineSwitchEnum
 						                                                                        config_file_data,
 						                                                                        feature_values_save_path,
 						                                                                        feature_definitions_save_path,
-						                                                                        System.out,
-						                                                                        System.err,
-						                                                                        false );
+								new PrintStreams(System.out, System.err), false );
 					}
 					
 					// Run without configuration file if does not exist at default path
@@ -363,9 +357,7 @@ public enum CommandLineSwitchEnum
 																								config_file_data,
 																								feature_values_save_path,
 																								feature_definitions_save_path,
-																								System.out,
-																								System.err,
-						                                                                        false );
+								new PrintStreams(System.out, System.err), false );
 					}
 					catch (Exception e) { UserFeedbackGenerator.printExceptionErrorMessage(System.err, e); }
 				}
@@ -395,9 +387,7 @@ public enum CommandLineSwitchEnum
 																								config_file_data,
 																								feature_values_save_path,
 																								feature_definitions_save_path,
-																								System.out,
-																								System.err,
-						                                                                        false );
+								new PrintStreams(System.out, System.err), false );
 					}
 					catch (Exception e)
 					{

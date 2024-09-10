@@ -59,68 +59,43 @@ public final class FeatureExtractionJobProcessor {
         // error_print_stream.
         List<String> error_log = new ArrayList<>();
 
-        // Prepare the feature extractor
-        MIDIFeatureProcessor processor;
         try {
-            processor = new MIDIFeatureProcessor(windowInfo,
+            // Prepare the feature extractor
+            MIDIFeatureProcessor processor = new MIDIFeatureProcessor(windowInfo,
                     FeatureExtractorAccess.getAllImplementedFeatureExtractors(),
                     features_to_extract,
                     saveInfo.save_overall_recording_features());
-        } catch (Exception e) {
-            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.error_print_stream(), e);
-            error_log.add(e + ":" + e.getMessage());
-            return error_log;
-        }
+            FilesPreprocessor filesPreprocessor = new FilesPreprocessor(paths_of_files_or_folders_to_parse,
+                    printStreams.error_print_stream(), error_log);
 
-        FilesPreprocessor filesPreprocessor = new FilesPreprocessor(paths_of_files_or_folders_to_parse,
-                printStreams.error_print_stream(), error_log);
+            FilesReader filesReader = new FilesReader();
+            List<MutablePair<String, Sequence>> midiPairs = filesReader.extractMidi(filesPreprocessor.getMidiFilesList());
+            List<MutablePair<String, MeiSequence>> meiPairs = filesReader.extractMei(filesPreprocessor.getMeiFilesList());
 
-        FilesReader filesReader = new FilesReader();
-        List<MutablePair<String, Sequence>> midiPairs;
-        List<MutablePair<String, MeiSequence>> meiPairs;
-        try {
-            midiPairs = filesReader.extractMidi(filesPreprocessor.getMidiFilesList());
-            meiPairs = filesReader.extractMei(filesPreprocessor.getMeiFilesList());
-        } catch (Exception e) {
-            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.error_print_stream(), e);
-            error_log.add(e + ":" + e.getMessage());
-            return error_log;
-        }
-
-        try {
             SequencePreprocessor sequencePreprocessor = new SequencePreprocessor();
             for (var pair : midiPairs) {
                 pair.setValue(sequencePreprocessor.checkAndLowerResolution(pair.getRight()));
             }
-        } catch (Exception e) {
-            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.error_print_stream(), e);
-            error_log.add(e + ":" + e.getMessage());
-            return error_log;
-        }
+            // Extract features and save the feature values in DataBoard
+            DataBoard dataBoard = extractFeatures(midiPairs, meiPairs,
+                    processor,
+                    saveInfo.feature_values_save_path(),
+                    printStreams, error_log,
+                    gui_processing);
 
-        // Extract features and save the feature values in DataBoard
-        DataBoard dataBoard = extractFeatures(midiPairs, meiPairs,
-                processor,
-                saveInfo.feature_values_save_path(),
-                printStreams, error_log,
-                gui_processing);
-
-        // Save features from DataBoard
-        try {
+            // Save features from DataBoard
             saveFeatures(dataBoard, saveInfo.feature_definitions_save_path(),
                     saveInfo,
                     printStreams.status_print_stream());
+            // Indicate that processing is done
+            UserFeedbackGenerator.printExecutionFinished(printStreams.status_print_stream());
+            // Return any errors that may have occurred
+            return error_log;
         } catch (Exception e) {
             UserFeedbackGenerator.printExceptionErrorMessage(printStreams.error_print_stream(), e);
             error_log.add(e + ":" + e.getMessage());
             return error_log;
         }
-
-        // Indicate that processing is done
-        UserFeedbackGenerator.printExecutionFinished(printStreams.status_print_stream());
-
-        // Return any errors that may have occurred
-        return error_log;
     }
 
 

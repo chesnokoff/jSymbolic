@@ -1,7 +1,7 @@
 package jsymbolic2.processing;
 
 import ca.mcgill.music.ddmal.mei.MeiXmlReader;
-import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ddmal.jmei2midi.MeiSequence;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -10,26 +10,27 @@ import javax.sound.midi.Sequence;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class FilesReader {
-    public ArrayList<MutablePair<String, Sequence>> extractMidi(List<File> files) throws Exception {
-        ArrayList<MutablePair<String, Sequence>> sequences = new ArrayList<>(files.size());
+    public List<ImmutablePair<String, Sequence>> extractMidi(Collection<File> files) throws Exception {
+        List<ImmutablePair<String, Sequence>> sequences = new ArrayList<>(files.size());
         for (File file : files) {
-            sequences.add(MutablePair.of(file.getName(), extractMidi(file)));
+            sequences.add(ImmutablePair.of(file.getName(), extractMidi(file)));
         }
         return sequences;
     }
 
-    public ArrayList<MutablePair<String, MeiSequence>> extractMei(List<File> files) throws Exception {
-        ArrayList<MutablePair<String, MeiSequence>> sequences = new ArrayList<>(files.size());
+    public List<ImmutablePair<String, MeiSequence>> extractMei(Collection<File> files) throws Exception {
+        List<ImmutablePair<String, MeiSequence>> sequences = new ArrayList<>(files.size());
         for (File file : files) {
-            sequences.add(MutablePair.of(file.getName(), extractMei(file)));
+            sequences.add(ImmutablePair.of(file.getName(), extractMei(file)));
         }
         return sequences;
     }
 
-    public Sequence extractMidi(File file) throws Exception {
+    private Sequence extractMidi(File file) throws Exception {
         if (!file.exists() || file.isDirectory() || !file.canRead()) {
             throw new IllegalArgumentException("File " + file.getPath() + " is invalid.");
         }
@@ -44,7 +45,7 @@ public class FilesReader {
         return sequence;
     }
 
-    public MeiSequence extractMei(File file) throws Exception {
+    private MeiSequence extractMei(File file) throws Exception {
         if (!file.exists() || !file.isDirectory() || !file.canRead()) {
             throw new IllegalArgumentException("File " + file.getPath() + " is invalid.");
         }

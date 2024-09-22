@@ -1,6 +1,6 @@
 package jsymbolic2;
 
-import jsymbolic2.commandline.CommandLineSwitchEnum;
+import jsymbolic2.processing.cli.CLI;
 
 /**
  * The jSymbolic runnable class. See the README or manual for more details on jSymbolic.
@@ -17,7 +17,7 @@ public class Main
 	 */
 	public static void main(String[] args)
 	{
-		try { CommandLineSwitchEnum.runCommandLine(args); }
+		try { new CLI().run(args); }
 
 		// Note that this should never need to be executed, since internal processing should catch all errors.
 		catch (Exception e)

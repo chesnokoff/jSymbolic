@@ -3,7 +3,7 @@ package jsymbolic2.processing;
 import ace.datatypes.DataBoard;
 import jsymbolic2.configuration.ConfigurationFileData;
 import jsymbolic2.featureutils.FeatureExtractorAccess;
-import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.ddmal.jmei2midi.MeiSequence;
 import org.ddmal.jmei2midi.meielements.meispecific.MeiSpecificStorage;
 
@@ -69,8 +69,8 @@ public final class FeatureExtractionJobProcessor {
                     printStreams.error_print_stream(), error_log);
 
             FilesReader filesReader = new FilesReader();
-            List<MutablePair<String, Sequence>> midiPairs = filesReader.extractMidi(filesPreprocessor.getMidiFilesList());
-            List<MutablePair<String, MeiSequence>> meiPairs = filesReader.extractMei(filesPreprocessor.getMeiFilesList());
+            List<ImmutablePair<String, Sequence>> midiPairs = filesReader.extractMidi(filesPreprocessor.getMidiFilesList());
+            List<ImmutablePair<String, MeiSequence>> meiPairs = filesReader.extractMei(filesPreprocessor.getMeiFilesList());
 
             SequencePreprocessor sequencePreprocessor = new SequencePreprocessor();
             for (var pair : midiPairs) {
@@ -211,8 +211,8 @@ public final class FeatureExtractionJobProcessor {
      *                                      displayed and a direct printing	of the associated error message to
      *                                      standard error.
      */
-    private static DataBoard extractFeatures(List<MutablePair<String, Sequence>> midiSequences,
-                                             List<MutablePair<String, MeiSequence>> meiSequences,
+    private static DataBoard extractFeatures(List<ImmutablePair<String, Sequence>> midiSequences,
+                                             List<ImmutablePair<String, MeiSequence>> meiSequences,
                                              MIDIFeatureProcessor processor,
                                              String feature_values_save_path,
                                              PrintStreams printStreams, List<String> error_log,

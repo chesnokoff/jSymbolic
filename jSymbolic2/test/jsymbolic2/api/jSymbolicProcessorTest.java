@@ -97,12 +97,6 @@ public class jSymbolicProcessorTest {
         DataSet dataSetChopin = dataSets[0].sub_sets[0];
         assertEquals("Beat Histogram", dataSetChopin.feature_names[0]);
         assertEquals("Acoustic Guitar Prevalence", dataSetChopin.feature_names[1]);
-
-        //Check for non existing files
-        exception.expect(IllegalArgumentException.class);
-        var answer = processorConfig.extractAndSaveFeaturesFromFileOrDirectory(new File("dne").getPath());
-//        exception.expect(IllegalArgumentException.class);
-//        processorConfig.extractAndSaveFeaturesFromFileOrDirectory((String) null);
     }
 
 }

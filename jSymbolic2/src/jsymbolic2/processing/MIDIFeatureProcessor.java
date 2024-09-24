@@ -14,6 +14,7 @@ import javax.sound.midi.Sequence;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 
 /**
@@ -322,13 +323,13 @@ public class MIDIFeatureProcessor {
             }
         }
 
-        for (int win = 0; win < results.length; ++win) {
-            for (int feat = 0; feat < midiFeatureExtractors.length; ++feat) {
-                if (!featuresToSaveMask[feat]) {
-                    results[win][feat] = null;
-                }
-            }
-        }
+//        for (int win = 0; win < results.length; ++win) {
+//            for (int feat = 0; feat < midiFeatureExtractors.length; ++feat) {
+//                if (!featuresToSaveMask[feat]) {
+//                    results[win][feat] = null;
+//                }
+//            }
+//        }
         // Return the results
         return results;
     }
@@ -449,8 +450,7 @@ public class MIDIFeatureProcessor {
         for (int i = 0; i < featuresToExtractIncludingDependencies.length; i++)
             if (featuresToExtractIncludingDependencies[i]) numberFeaturesToExtract++;
         midiFeatureExtractors = new MIDIFeatureExtractor[numberFeaturesToExtract];
-        featuresToSaveMask = new boolean[numberFeaturesToExtract];
-        Arrays.fill(featuresToSaveMask, false);
+        featuresToSaveMask = featuresToSaveAmongAll;
         boolean[] featureAdded = new boolean[allFeatureExtractors.length];
         for (int i = 0; i < featureAdded.length; i++)
             featureAdded[i] = false;
@@ -467,7 +467,6 @@ public class MIDIFeatureProcessor {
                     {
                         featureAdded[feat] = true;
                         midiFeatureExtractors[currentPosition] = allFeatureExtractors[feat];
-                        featuresToSaveMask[currentPosition] = featuresToSaveAmongAll[feat];
                         currentPosition++;
                         inProcess = true;
                         removeDependency(allFeatureExtractors, allFeatureNames, dependencies, featuresToExtractIncludingDependencies, feat);
@@ -760,7 +759,10 @@ public class MIDIFeatureProcessor {
 
             DataSet windowDataSet = new DataSet(null, null,
                     startTime, endTime,
-                    windowFeatureValues[win], featureExtractorsNames, rootDataSet);
+                    windowFeatureValues[win], IntStream.range(0, featureExtractorsNames.length)
+                    .filter(i -> featuresToSaveMask[i])
+                    .mapToObj(i -> featureExtractorsNames[i])
+                    .toArray(String[]::new), rootDataSet);
             rootDataSet.sub_sets[win] = windowDataSet;
         }
         if (overallFeatureValues != null) {

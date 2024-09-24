@@ -67,15 +67,9 @@ public final class FeatureExtractionJobProcessor {
                     saveInfo.save_overall_recording_features());
             FilesPreprocessor filesPreprocessor = new FilesPreprocessor(paths_of_files_or_folders_to_parse,
                     printStreams.error_print_stream(), error_log);
-
-            FilesReader filesReader = new FilesReader();
+            FilesReader filesReader = new FilesReader(List.of(new SequencePreprocessor()));
             List<ImmutablePair<String, Sequence>> midiPairs = filesReader.extractMidi(filesPreprocessor.getMidiFilesList());
             List<ImmutablePair<String, MeiSequence>> meiPairs = filesReader.extractMei(filesPreprocessor.getMeiFilesList());
-
-            SequencePreprocessor sequencePreprocessor = new SequencePreprocessor();
-            for (var pair : midiPairs) {
-                pair.setValue(sequencePreprocessor.checkAndLowerResolution(pair.getRight()));
-            }
             // Extract features and save the feature values in DataBoard
             DataBoard dataBoard = extractFeatures(midiPairs, meiPairs,
                     processor,

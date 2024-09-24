@@ -4,10 +4,9 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Track;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.UnaryOperator;
 
-public class SequencePreprocessor {
+public class SequencePreprocessor implements UnaryOperator<Sequence> {
     private final int desiredMaxPpqn;
     private final int desiredMaxTickLength;
     private final long desiredMaxMicrosecondsLength;
@@ -25,21 +24,18 @@ public class SequencePreprocessor {
         this.desiredMaxMicrosecondsLength = desiredMaxMicrosecondsLength;
     }
 
-    public ArrayList<Sequence> checkAndLowerResolution(List<Sequence> midiSequences) throws Exception {
-        ArrayList<Sequence> processedSequences = new ArrayList<>(midiSequences.size());
-        for (var sequence: midiSequences) {
-            processedSequences.add(checkAndLowerResolution(sequence));
-        }
-        return processedSequences;
-    }
-
-    public Sequence checkAndLowerResolution(Sequence midiSequence) throws Exception {
+    @Override
+    public Sequence apply(Sequence midiSequence) {
         if (midiSequence.getTickLength() > desiredMaxTickLength) {
             if (midiSequence.getResolution() > desiredMaxPpqn) {
-                return changeResolution(midiSequence, desiredMaxPpqn);
+                try {
+                    return changeResolution(midiSequence, desiredMaxPpqn);
+                } catch (InvalidMidiDataException e) {
+                    throw new RuntimeException(e);
+                }
             }
             if (midiSequence.getMicrosecondLength() > desiredMaxMicrosecondsLength) {
-                throw new Exception(String.format("Midi is too long! Ticks: %d, Seconds: %f",
+                throw new RuntimeException(String.format("Midi is too long! Ticks: %d, Seconds: %f",
                         midiSequence.getTickLength(),
                         midiSequence.getMicrosecondLength() / 1_000_000.0));
             }
@@ -89,5 +85,4 @@ public class SequencePreprocessor {
 
         return seq;
     }
-
 }

@@ -12,12 +12,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.UnaryOperator;
 
 public class FilesReader {
+    private final Collection<UnaryOperator<Sequence>> sequenceOperators;
+
+    FilesReader(Collection<UnaryOperator<Sequence>> sequenceOperators) {
+        this.sequenceOperators = sequenceOperators;
+    }
+
     public List<ImmutablePair<String, Sequence>> extractMidi(Collection<File> files) throws Exception {
         List<ImmutablePair<String, Sequence>> sequences = new ArrayList<>(files.size());
         for (File file : files) {
-            sequences.add(ImmutablePair.of(file.getName(), extractMidi(file)));
+            Sequence sequence = extractMidi(file);
+            for (UnaryOperator<Sequence> sequenceOperator : sequenceOperators) {
+                sequence = sequenceOperator.apply(sequence);
+            }
+            sequences.add(ImmutablePair.of(file.getName(), sequence));
         }
         return sequences;
     }
@@ -46,7 +57,7 @@ public class FilesReader {
     }
 
     private MeiSequence extractMei(File file) throws Exception {
-        if (!file.exists() || !file.isDirectory() || !file.canRead()) {
+        if (!file.exists() || file.isDirectory() || !file.canRead()) {
             throw new IllegalArgumentException("File " + file.getPath() + " is invalid.");
         }
         MeiSequence sequence;

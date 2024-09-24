@@ -9,5 +9,5 @@ save_overall_recording_features=false
 convert_to_arff=false
 convert_to_csv=false
 <output_files>
-feature_values_save_path=test_value.xml
-feature_definitions_save_path=test_definition.xml
+feature_values_save_path=./test/jsymbolic2/api/resources/test_value.xml
+feature_definitions_save_path=./test/jsymbolic2/api/resources/test_definition.xml

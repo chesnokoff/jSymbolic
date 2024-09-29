@@ -2,7 +2,8 @@ plugins {
     id 'java'
     id 'application'
     id 'jvm-test-suite'
-    id "org.sonarqube" version "latest.release"
+    id "org.sonarqube" version "4.4.1.3373"
+    id 'jacoco'
 }
 version '1.0-SNAPSHOT'
 
@@ -12,6 +13,7 @@ repositories {
         dirs("lib")
     }
 }
+
 
 dependencies {
     implementation fileTree(dir: '../Third-Party-Jars', include: ['**/*.jar'], )
@@ -62,4 +64,14 @@ test {
     testLogging {
         events "passed", "skipped", "failed"
     }
+    finalizedBy(jacocoTestReport)
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+    dependsOn test // tests are required to run before generating the report
 }

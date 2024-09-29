@@ -362,6 +362,7 @@ public class MIDIFeatureProcessor {
 
     /**
      * Find previously extracted feature values that this feature needs
+     *
      * @param results
      * @param win
      * @param feat
@@ -395,9 +396,15 @@ public class MIDIFeatureProcessor {
     public DataBoard generateDataBoard() throws Exception {
         DataBoard dataBoard = new DataBoard(null, null, dataSets.toArray(new DataSet[0]), null);
         if (saveOverallRecordingFeatures) {
-            dataBoard.feature_definitions = ArrayUtils.addAll(featureExtractorsDefinitions, overallFeatureDefinitions);
+            dataBoard.feature_definitions = IntStream.range(0, featureExtractorsDefinitions.length)
+                    .filter(i -> featuresToSaveMask[i])
+                    .mapToObj(i -> featureExtractorsDefinitions[i])
+                    .toArray(FeatureDefinition[]::new);
         } else {
-            dataBoard.feature_definitions = featureExtractorsDefinitions;
+            dataBoard.feature_definitions = IntStream.range(0, featureExtractorsDefinitions.length)
+                    .filter(i -> featuresToSaveMask[i])
+                    .mapToObj(i -> featureExtractorsDefinitions[i])
+                    .toArray(FeatureDefinition[]::new);
         }
         return dataBoard;
     }
@@ -744,9 +751,12 @@ public class MIDIFeatureProcessor {
                             double[] secondsPerTick) {
         DataSet rootDataSet = new DataSet(identifier, null, Double.NaN, Double.NaN,
                 null, null, null);
-        if (windowFeatureValues.length == 1) {
+        if (saveOverallRecordingFeatures) {
             rootDataSet.feature_values = windowFeatureValues[0];
-            rootDataSet.feature_names = featureExtractorsNames;
+            rootDataSet.feature_names = IntStream.range(0, featureExtractorsNames.length)
+                    .filter(i -> featuresToSaveMask[i])
+                    .mapToObj(i -> featureExtractorsNames[i])
+                    .toArray(String[]::new);
             dataSets.add(rootDataSet);
             return;
         }

@@ -61,16 +61,16 @@ public class NoteDensityPerQuarterNoteFeature
 		{
 			// Find the total number of note ons
 			int count = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
-				count += sequence_info.channel_statistics[chan][0];
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
+				count += sequence_info.getChannel_statistics()[chan][0];
 
 			// Calculate the notes per second
 			double notes_per_second = 0.0;
-			if (sequence_info.sequence_duration != 0)
-				notes_per_second = (double) count / sequence_info.sequence_duration_precise;
+			if (sequence_info.getSequence_duration() != 0)
+				notes_per_second = (double) count / sequence_info.getSequence_duration_precise();
 
 			// Calculate the notes per quarter note
-			value = notes_per_second * sequence_info.average_quarter_note_duration_in_seconds;
+			value = notes_per_second * sequence_info.getAverage_quarter_note_duration_in_seconds();
 		}
 		else value = -1.0;
 

@@ -65,7 +65,7 @@ public class ContraryMotionFeature
 	throws Exception
 	{
 		double[] result = new double[1];
-		result[0] = sequence_info.contrary_motion_fraction;
+		result[0] = sequence_info.getContrary_motion_fraction();
 		return result;
 	}
 }

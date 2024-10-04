@@ -62,11 +62,11 @@ public class MeanPartialRestDurationFeature
 		double value;
 		if (sequence_info != null)
 		{
-			if (sequence_info.rest_durations_separated_by_channel == null)
+			if (sequence_info.getRest_durations_separated_by_channel() == null)
 				value = 0.0;
 			else
 			{
-				double[] rest_durations = mckay.utilities.staticlibraries.ArrayMethods.flattenMatrix(sequence_info.rest_durations_separated_by_channel);
+				double[] rest_durations = mckay.utilities.staticlibraries.ArrayMethods.flattenMatrix(sequence_info.getRest_durations_separated_by_channel());
 				value = mckay.utilities.staticlibraries.MathAndStatsMethods.getAverage(rest_durations);
 			}
 		}

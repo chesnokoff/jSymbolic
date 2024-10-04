@@ -66,9 +66,9 @@ public class RhythmicValueHistogramFeature
 		double[] result = null;
 		if (sequence_info != null)
 		{
-			result = new double[sequence_info.rhythmic_value_histogram.length];
+			result = new double[sequence_info.getRhythmic_value_histogram().length];
 			for (int value = 0; value < result.length; value++)
-				result[value] = sequence_info.rhythmic_value_histogram[value];
+				result[value] = sequence_info.getRhythmic_value_histogram()[value];
 		}
 		return result;
 	}

@@ -61,13 +61,13 @@ public class RelativeNoteDensityOfHighestLineFeature
 			// Find the channel with the highest average pitch
 			int max_so_far = 0;
 			int highest_chan = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
 			{
-				if (sequence_info.channel_statistics[chan][6] != 0 && chan != (10 - 1))
+				if (sequence_info.getChannel_statistics()[chan][6] != 0 && chan != (10 - 1))
 				{
-					if (sequence_info.channel_statistics[chan][6] > max_so_far)
+					if (sequence_info.getChannel_statistics()[chan][6] > max_so_far)
 					{
-						max_so_far = sequence_info.channel_statistics[chan][6];
+						max_so_far = sequence_info.getChannel_statistics()[chan][6];
 						highest_chan = chan;
 					}
 				}
@@ -75,18 +75,18 @@ public class RelativeNoteDensityOfHighestLineFeature
 
 			// Find the number of channels with no note ons (or that is channel 10)
 			int silent_count = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
-				if (sequence_info.channel_statistics[chan][0] == 0 || chan == (10 - 1))
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
+				if (sequence_info.getChannel_statistics()[chan][0] == 0 || chan == (10 - 1))
 					silent_count++;
 
 			// Find the average number of notes in each channel
-			double[] number_of_notes = new double[sequence_info.channel_statistics.length - silent_count];
+			double[] number_of_notes = new double[sequence_info.getChannel_statistics().length - silent_count];
 			int count = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
 			{
-				if (sequence_info.channel_statistics[chan][0] != 0 && chan != (10 - 1))
+				if (sequence_info.getChannel_statistics()[chan][0] != 0 && chan != (10 - 1))
 				{
-					number_of_notes[count] = (double) sequence_info.channel_statistics[chan][0];
+					number_of_notes[count] = (double) sequence_info.getChannel_statistics()[chan][0];
 					count++;
 				}
 			}

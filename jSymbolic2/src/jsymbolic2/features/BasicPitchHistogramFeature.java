@@ -62,9 +62,9 @@ public class BasicPitchHistogramFeature
 		double[] result = null;
 		if (sequence_info != null)
 		{
-			result = new double[sequence_info.basic_pitch_histogram.length];
+			result = new double[sequence_info.getBasic_pitch_histogram().length];
 			for (int pitch = 0; pitch < result.length; pitch++)
-				result[pitch] = sequence_info.basic_pitch_histogram[pitch];
+				result[pitch] = sequence_info.getBasic_pitch_histogram()[pitch];
 		}
 		return result;
 	}

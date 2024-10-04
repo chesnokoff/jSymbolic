@@ -60,10 +60,10 @@ public class MedianCompleteRestDurationFeature
 		double value;
 		if (sequence_info != null)
 		{
-			if (sequence_info.complete_rest_durations == null)
+			if (sequence_info.getComplete_rest_durations() == null)
 				value = 0.0;
 			else
-				value = mckay.utilities.staticlibraries.MathAndStatsMethods.getMedianValue(sequence_info.complete_rest_durations);
+				value = mckay.utilities.staticlibraries.MathAndStatsMethods.getMedianValue(sequence_info.getComplete_rest_durations());
 		}
 		else value = -1.0;
 

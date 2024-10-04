@@ -62,7 +62,7 @@ public class MeanRhythmicValueRunLengthFeature
 		if (sequence_info != null)
 		{
 			// Access the runs
-			LinkedList<Integer>[] runs_of_same_rhythmic_value = sequence_info.runs_of_same_rhythmic_value;
+			LinkedList<Integer>[] runs_of_same_rhythmic_value = sequence_info.getRuns_of_same_rhythmic_value();
 			LinkedList<Integer> collapsed_runs_of_same_rhythmic_value = new LinkedList<>();
 			for (int i = 0; i < runs_of_same_rhythmic_value.length; i++)
 				for (int j = 0; j < runs_of_same_rhythmic_value[i].size(); j++)

@@ -64,13 +64,13 @@ public class PitchClassHistogramFeature
 		if (sequence_info != null)
 		{
 			// Find index of bin with highest frequency
-			int index = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfLargest(sequence_info.pitch_class_histogram);
+			int index = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfLargest(sequence_info.getPitch_class_histogram());
 
 			// Construct new histogram starting with the bin of the most common pitch class
-			result = new double[sequence_info.pitch_class_histogram.length];
+			result = new double[sequence_info.getPitch_class_histogram().length];
 			for (int i = 0; i < result.length; i++)
 			{
-				result[i] = sequence_info.pitch_class_histogram[index];
+				result[i] = sequence_info.getPitch_class_histogram()[index];
 				index++;
 
 				// Wrap around

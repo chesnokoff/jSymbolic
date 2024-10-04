@@ -60,8 +60,8 @@ public class NumberOfCommonPitchesFeature
 		{
 			// Find the number of pitches
 			int count = 0;
-			for (int bin = 0; bin < sequence_info.basic_pitch_histogram.length; bin++)
-				if (sequence_info.basic_pitch_histogram[bin] >= 0.09)
+			for (int bin = 0; bin < sequence_info.getBasic_pitch_histogram().length; bin++)
+				if (sequence_info.getBasic_pitch_histogram()[bin] >= 0.09)
 					count++;
 
 			// Prepare the feature value

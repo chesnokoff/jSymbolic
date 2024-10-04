@@ -64,14 +64,14 @@ public class MetricalDiversityFeature
 			value = 1.0;
 
 			// If time signature specified
-			if (!((LinkedList) sequence_info.overall_metadata[1]).isEmpty())
+			if (!((LinkedList) sequence_info.getOverall_metadata()[1]).isEmpty())
 			{
 				// Convert data types
-				Object[] numerator_objects = ((LinkedList) sequence_info.overall_metadata[1]).toArray();
+				Object[] numerator_objects = ((LinkedList) sequence_info.getOverall_metadata()[1]).toArray();
 				int[] numerators = new int[numerator_objects.length];
 				for (int i = 0; i < numerators.length; i++)
 					numerators[i] = (Integer) numerator_objects[i];
-				Object[] denominator_objects = ((LinkedList) sequence_info.overall_metadata[2]).toArray();
+				Object[] denominator_objects = ((LinkedList) sequence_info.getOverall_metadata()[2]).toArray();
 				int[] denominators = new int[denominator_objects.length];
 				for (int i = 0; i < denominators.length; i++)
 					denominators[i] = (Integer) denominator_objects[i];

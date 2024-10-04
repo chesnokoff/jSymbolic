@@ -61,11 +61,11 @@ public class LongestPartialRestFeature
 		double value;
 		if (sequence_info != null)
 		{
-			if (sequence_info.rest_durations_separated_by_channel == null)
+			if (sequence_info.getRest_durations_separated_by_channel() == null)
 				value = 0.0;
 			else
 			{
-				double[] rest_durations = mckay.utilities.staticlibraries.ArrayMethods.flattenMatrix(sequence_info.rest_durations_separated_by_channel);
+				double[] rest_durations = mckay.utilities.staticlibraries.ArrayMethods.flattenMatrix(sequence_info.getRest_durations_separated_by_channel());
 				int index_of_largest = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfLargest(rest_durations);
 				value = rest_durations[index_of_largest];
 			}

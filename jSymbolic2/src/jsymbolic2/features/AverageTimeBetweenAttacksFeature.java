@@ -63,12 +63,12 @@ public class AverageTimeBetweenAttacksFeature
 
 			double time_so_far = 0.0;
 			int tick_of_last_attack = -1;
-			for (int tick = 0; tick < sequence_info.note_attack_tick_map.length; tick++)
+			for (int tick = 0; tick < sequence_info.getNote_attack_tick_map().length; tick++)
 			{
 				// Check if an attack occured on this tick
-				boolean attack = sequence_info.note_attack_tick_map[tick][16];
+				boolean attack = sequence_info.getNote_attack_tick_map()[tick][16];
 				if (!attack)
-					time_so_far += sequence_info.duration_of_ticks_in_seconds[tick];
+					time_so_far += sequence_info.getDuration_of_ticks_in_seconds()[tick];
 				else
 				{
 					if (tick_of_last_attack != -1)

@@ -60,9 +60,9 @@ public class DominantSpreadFeature
 		{
 			// Check all streaks
 			int max_count = 0;
-			for (int bin = 0; bin < sequence_info.fifths_pitch_histogram.length; bin++)
+			for (int bin = 0; bin < sequence_info.getFifths_pitch_histogram().length; bin++)
 			{
-				if (sequence_info.fifths_pitch_histogram[bin] >= 0.09)
+				if (sequence_info.getFifths_pitch_histogram()[bin] >= 0.09)
 				{
 					boolean done = false;
 					int count = 1;
@@ -70,7 +70,7 @@ public class DominantSpreadFeature
 					while (!done)
 					{
 						// Wrap around
-						if (i == sequence_info.fifths_pitch_histogram.length)
+						if (i == sequence_info.getFifths_pitch_histogram().length)
 							i = 0;
 
 						// If rereach starting point
@@ -80,7 +80,7 @@ public class DominantSpreadFeature
 						// Increment if sufficient fraction of notes are present in bin
 						else
 						{
-							if (sequence_info.fifths_pitch_histogram[i] >= 0.09)
+							if (sequence_info.getFifths_pitch_histogram()[i] >= 0.09)
 							{
 								count++;
 								i++;

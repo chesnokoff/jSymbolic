@@ -65,7 +65,7 @@ public class ObliqueMotionFeature
 	throws Exception
 	{
 		double[] result = new double[1];
-		result[0] = sequence_info.oblique_motion_fraction;
+		result[0] = sequence_info.getOblique_motion_fraction();
 		return result;
 	}
 }

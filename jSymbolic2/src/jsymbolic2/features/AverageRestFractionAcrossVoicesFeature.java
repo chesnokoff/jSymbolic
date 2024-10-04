@@ -60,8 +60,8 @@ public class AverageRestFractionAcrossVoicesFeature
 		if (sequence_info != null)
 		{
 			// Get information from sequence_info
-			int[][] channel_stats = sequence_info.channel_statistics;
-			double[] total_time_notes_sounding_per_channel = sequence_info.total_time_notes_sounding_per_channel; 
+			int[][] channel_stats = sequence_info.getChannel_statistics();
+			double[] total_time_notes_sounding_per_channel = sequence_info.getTotal_time_notes_sounding_per_channel();
 
 			// Find the total amount of rest time accumulated across channels, as well as the number of
 			// channels with notes
@@ -77,16 +77,16 @@ public class AverageRestFractionAcrossVoicesFeature
 				// Note there are notes this channel and accumulate the total amount of rest time
 				number_channels_with_notes++;
 				double total_non_silence_this_channel = total_time_notes_sounding_per_channel[channel];
-				total_rest_time_all_channels_combined += (sequence_info.sequence_duration_precise - total_non_silence_this_channel);
+				total_rest_time_all_channels_combined += (sequence_info.getSequence_duration_precise() - total_non_silence_this_channel);
 			}
 
 			// Find the average across channels, and then scale by duration
-			if (number_channels_with_notes == 0 || sequence_info.sequence_duration_precise == 0.0)
+			if (number_channels_with_notes == 0 || sequence_info.getSequence_duration_precise() == 0.0)
 				value = 0.0;
 			else
 			{
 				value = total_rest_time_all_channels_combined / (double) number_channels_with_notes;
-				value = value / sequence_info.sequence_duration_precise;
+				value = value / sequence_info.getSequence_duration_precise();
 			}
 		}
 		else value = -1.0;

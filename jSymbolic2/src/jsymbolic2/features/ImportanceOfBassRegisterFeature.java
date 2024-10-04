@@ -59,7 +59,7 @@ public class ImportanceOfBassRegisterFeature
 		{
 			value = 0.0;
 			for (int bin = 0; bin <= 54; bin++)
-				value += sequence_info.basic_pitch_histogram[bin];
+				value += sequence_info.getBasic_pitch_histogram()[bin];
 		}
 		else value = -1.0;
 

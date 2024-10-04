@@ -64,9 +64,9 @@ public class MicrotonePrevalenceFeature
 			// of the root list corresponds to a note that has at least one pitch bend message associated with
 			// it. Each such entry contains a list of all pitchbend messages (second MIDI data byte stored as 
 			// an Integer) associated with the note, in the order that they occurred.
-			LinkedList pitch_bends_list = sequence_info.pitch_bends_list;
+			LinkedList pitch_bends_list = sequence_info.getPitch_bends_list();
 			
-			if ( sequence_info.total_number_pitched_note_ons == 0 || // if there are no pitched notes
+			if ( sequence_info.getTotal_number_pitched_note_ons() == 0 || // if there are no pitched notes
 			     pitch_bends_list.isEmpty() ) // if there are no pitchbend messages
 				value = 0.0;
 			else
@@ -80,7 +80,7 @@ public class MicrotonePrevalenceFeature
 					if (bends_associated_with_this_note.size() == 1)
 						number_single_pitchbend_notes++;
 				}
-				value = number_single_pitchbend_notes / sequence_info.total_number_pitched_note_ons;
+				value = number_single_pitchbend_notes / sequence_info.getTotal_number_pitched_note_ons();
 			}
 		}
 		else value = -1.0;

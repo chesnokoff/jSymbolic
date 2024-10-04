@@ -60,14 +60,14 @@ public class DynamicRangeFeature
 		{
 			int max = -1;
 			int min = 128;
-			for (int i = 0; i < sequence_info.note_loudnesses.length; i++)
+			for (int i = 0; i < sequence_info.getNote_loudnesses().length; i++)
 			{
-				for (int j = 0; j < sequence_info.note_loudnesses[i].length; j++)
+				for (int j = 0; j < sequence_info.getNote_loudnesses()[i].length; j++)
 				{
-					if (sequence_info.note_loudnesses[i][j] > max)
-						max = sequence_info.note_loudnesses[i][j];
-					if (sequence_info.note_loudnesses[i][j] < min)
-						min = sequence_info.note_loudnesses[i][j];
+					if (sequence_info.getNote_loudnesses()[i][j] > max)
+						max = sequence_info.getNote_loudnesses()[i][j];
+					if (sequence_info.getNote_loudnesses()[i][j] < min)
+						min = sequence_info.getNote_loudnesses()[i][j];
 				}
 			}
 			

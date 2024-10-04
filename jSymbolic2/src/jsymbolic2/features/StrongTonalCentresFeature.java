@@ -60,22 +60,22 @@ public class StrongTonalCentresFeature
 		{
 			// Check all peaks
 			int peaks = 0;
-			for (int bin = 0; bin < sequence_info.fifths_pitch_histogram.length; bin++)
+			for (int bin = 0; bin < sequence_info.getFifths_pitch_histogram().length; bin++)
 			{
-				if (sequence_info.fifths_pitch_histogram[bin] >= 0.09)
+				if (sequence_info.getFifths_pitch_histogram()[bin] >= 0.09)
 				{
 					int left = bin - 1;;
 					int right = bin + 1;
 
 					// Account for wrap around
-					if (right == sequence_info.fifths_pitch_histogram.length)
+					if (right == sequence_info.getFifths_pitch_histogram().length)
 						right = 0;
 					if (left == -1)
-						left = sequence_info.fifths_pitch_histogram.length - 1;
+						left = sequence_info.getFifths_pitch_histogram().length - 1;
 
 					// Check if is a peak
-					if ( sequence_info.fifths_pitch_histogram[bin] > sequence_info.fifths_pitch_histogram[left] &&
-					     sequence_info.fifths_pitch_histogram[bin] > sequence_info.fifths_pitch_histogram[right] )
+					if ( sequence_info.getFifths_pitch_histogram()[bin] > sequence_info.getFifths_pitch_histogram()[left] &&
+					     sequence_info.getFifths_pitch_histogram()[bin] > sequence_info.getFifths_pitch_histogram()[right] )
 					{
 						peaks++;
 					}

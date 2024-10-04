@@ -60,17 +60,17 @@ public class PrevalenceOfMostCommonPitchFeature
 			// Find the highest bin
 			double max = 0;
 			int max_index = 0;
-			for (int bin = 0; bin < sequence_info.basic_pitch_histogram.length; bin++)
+			for (int bin = 0; bin < sequence_info.getBasic_pitch_histogram().length; bin++)
 			{
-				if (sequence_info.basic_pitch_histogram[bin] > max)
+				if (sequence_info.getBasic_pitch_histogram()[bin] > max)
 				{
-					max = sequence_info.basic_pitch_histogram[bin];
+					max = sequence_info.getBasic_pitch_histogram()[bin];
 					max_index = bin;
 				}
 			}
 
 			// Calculate the value
-			value = sequence_info.basic_pitch_histogram[max_index];
+			value = sequence_info.getBasic_pitch_histogram()[max_index];
 		}
 		else value = -1.0;
 

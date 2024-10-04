@@ -60,20 +60,20 @@ public class VoiceEqualityNoteDurationFeature
 		{
 			// Find the number of channels with no note ons
 			int silent_count = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
 			{
-				if (sequence_info.channel_statistics[chan][0] == 0)
+				if (sequence_info.getChannel_statistics()[chan][0] == 0)
 					silent_count++;
 			}
 
 			// Store the combined note durations in each channel with note ons
-			double[] durations = new double[sequence_info.channel_statistics.length - silent_count];
+			double[] durations = new double[sequence_info.getChannel_statistics().length - silent_count];
 			int count = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
 			{
-				if (sequence_info.channel_statistics[chan][0] != 0)
+				if (sequence_info.getChannel_statistics()[chan][0] != 0)
 				{
-					durations[count] = sequence_info.total_time_notes_sounding_per_channel[chan];
+					durations[count] = sequence_info.getTotal_time_notes_sounding_per_channel()[chan];
 					count++;
 				}
 			}

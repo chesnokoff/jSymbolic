@@ -59,9 +59,9 @@ public class RhythmicVariabilityTempoStandardizedFeature
 		if (sequence_info != null)
 		{
 			// Make the reduced histogram (excluding the first 40 empty bins)
-			double[] reduced_histogram = new double[sequence_info.beat_histogram_120_bpm_standardized.length - 40];
+			double[] reduced_histogram = new double[sequence_info.getBeat_histogram_120_bpm_standardized().length - 40];
 			for (int i = 0; i < reduced_histogram.length; i++)
-				reduced_histogram[i] = sequence_info.beat_histogram_120_bpm_standardized[i + 40];
+				reduced_histogram[i] = sequence_info.getBeat_histogram_120_bpm_standardized()[i + 40];
 
 			// Calculate the value
 			value = mckay.utilities.staticlibraries.MathAndStatsMethods.getStandardDeviation(reduced_histogram);

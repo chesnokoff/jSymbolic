@@ -60,20 +60,20 @@ public class VoiceEqualityMelodicLeapsFeature
 		{
 			// Find the number of channels with no note ons
 			int silent_count = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
 			{
-				if (sequence_info.channel_statistics[chan][0] == 0 || chan == (10 - 1))
+				if (sequence_info.getChannel_statistics()[chan][0] == 0 || chan == (10 - 1))
 					silent_count++;
 			}
 
 			// Store the number of note ons in each channel with note ons
-			double[] leap = new double[sequence_info.channel_statistics.length - silent_count];
+			double[] leap = new double[sequence_info.getChannel_statistics().length - silent_count];
 			int count = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
 			{
-				if (sequence_info.channel_statistics[chan][0] != 0 && chan != (10 - 1))
+				if (sequence_info.getChannel_statistics()[chan][0] != 0 && chan != (10 - 1))
 				{
-					leap[count] = (double) sequence_info.channel_statistics[chan][3];
+					leap[count] = (double) sequence_info.getChannel_statistics()[chan][3];
 					count++;
 				}
 			}

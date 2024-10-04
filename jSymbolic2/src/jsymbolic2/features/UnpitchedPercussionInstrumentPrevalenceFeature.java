@@ -60,10 +60,10 @@ public class UnpitchedPercussionInstrumentPrevalenceFeature
 		if (sequence_info != null)
 		{
 			int total_number_note_ons = 0;
-			for (int channel = 0; channel < sequence_info.channel_statistics.length; channel++)
-				total_number_note_ons += sequence_info.channel_statistics[channel][0];
+			for (int channel = 0; channel < sequence_info.getChannel_statistics().length; channel++)
+				total_number_note_ons += sequence_info.getChannel_statistics()[channel][0];
 
-			int number_unpitched_note_ons = sequence_info.channel_statistics[10 - 1][0];
+			int number_unpitched_note_ons = sequence_info.getChannel_statistics()[10 - 1][0];
 
 			if (total_number_note_ons == 0)
 				value = 0.0;

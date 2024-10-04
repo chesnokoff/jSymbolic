@@ -61,12 +61,12 @@ public class AverageRangeOfGlissandosFeature
 		double value;
 		if (sequence_info != null)
 		{
-			if (sequence_info.pitch_bends_list.isEmpty()) // If there are no pitch bends
+			if (sequence_info.getPitch_bends_list().isEmpty()) // If there are no pitch bends
 				value = 0.0;
 			else
 			{
 				// Generate array of pitch bends
-				Object[] notes_objects = sequence_info.pitch_bends_list.toArray();
+				Object[] notes_objects = sequence_info.getPitch_bends_list().toArray();
 				LinkedList[] notes = new LinkedList[notes_objects.length];
 				for (int i = 0; i < notes.length; i++)
 					notes[i] = (LinkedList) notes_objects[i];

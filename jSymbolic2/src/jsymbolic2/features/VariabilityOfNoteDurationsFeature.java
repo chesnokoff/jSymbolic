@@ -58,7 +58,7 @@ public class VariabilityOfNoteDurationsFeature
 		if (sequence_info != null)
 		{
 			// Put durations in an array
-			Object[] durations_obj = sequence_info.note_durations.toArray();
+			Object[] durations_obj = sequence_info.getNote_durations().toArray();
 			double[] durations = new double[durations_obj.length];
 			for (int i = 0; i < durations.length; i++)
 				durations[i] = ((Double) durations_obj[i]).doubleValue();

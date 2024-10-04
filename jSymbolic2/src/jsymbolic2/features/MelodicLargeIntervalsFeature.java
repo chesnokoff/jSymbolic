@@ -56,8 +56,8 @@ public class MelodicLargeIntervalsFeature
 	{
 		double value = 0.0;
 		if (sequence_info != null)
-			for (int i = 13; i < sequence_info.melodic_interval_histogram.length; i++)
-				value += sequence_info.melodic_interval_histogram[i];
+			for (int i = 13; i < sequence_info.getMelodic_interval_histogram().length; i++)
+				value += sequence_info.getMelodic_interval_histogram()[i];
 		else value = -1.0;
 
 		double[] result = new double[1];

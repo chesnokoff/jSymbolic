@@ -65,7 +65,7 @@ public class ParallelMotionFeature
 	throws Exception
 	{
 		double[] result = new double[1];
-		result[0] = sequence_info.parallel_motion_fraction;
+		result[0] = sequence_info.getParallel_motion_fraction();
 		return result;
 	}
 }

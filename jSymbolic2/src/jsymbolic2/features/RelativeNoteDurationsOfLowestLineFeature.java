@@ -59,7 +59,7 @@ public class RelativeNoteDurationsOfLowestLineFeature
 		if (sequence_info != null)
 		{
 			// Access pre-calculated information in sequence_info
-			int[][] channel_stats = sequence_info.channel_statistics;
+			int[][] channel_stats = sequence_info.getChannel_statistics();
 
 			// Find the channel with the lowest average pitch, while also accumulating note counts and note
 			// durations across channels

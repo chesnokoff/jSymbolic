@@ -59,26 +59,26 @@ public class RelativePrevalenceOfTopPitchesFeature
 		if (sequence_info != null)
 		{
 			// Find the highest bin
-			int max_index = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfLargest(sequence_info.basic_pitch_histogram);
+			int max_index = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfLargest(sequence_info.getBasic_pitch_histogram());
 
 			// Find the second highest bin
 			double second_max = 0;
 			int second_max_index = 0;
-			for (int bin = 0; bin < sequence_info.basic_pitch_histogram.length; bin++)
+			for (int bin = 0; bin < sequence_info.getBasic_pitch_histogram().length; bin++)
 			{
-				if (sequence_info.basic_pitch_histogram[bin] > second_max && bin != max_index)
+				if (sequence_info.getBasic_pitch_histogram()[bin] > second_max && bin != max_index)
 				{
-					second_max = sequence_info.basic_pitch_histogram[bin];
+					second_max = sequence_info.getBasic_pitch_histogram()[bin];
 					second_max_index = bin;
 				}
 			}
 
 			// Calculate the value
-			if (sequence_info.basic_pitch_histogram[max_index] == 0.0)
+			if (sequence_info.getBasic_pitch_histogram()[max_index] == 0.0)
 				value = 0.0;
 			else 
-				value = sequence_info.basic_pitch_histogram[second_max_index] /
-				        sequence_info.basic_pitch_histogram[max_index];
+				value = sequence_info.getBasic_pitch_histogram()[second_max_index] /
+				        sequence_info.getBasic_pitch_histogram()[max_index];
 		}
 		else value = -1.0;
 

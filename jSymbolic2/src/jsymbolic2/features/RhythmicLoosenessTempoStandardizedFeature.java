@@ -62,16 +62,16 @@ public class RhythmicLoosenessTempoStandardizedFeature
 		{
 			// Find the number of sufficiently large peaks
 			int count = 0;
-			for (int bin = 0; bin < sequence_info.beat_histogram_thresholded_table_120_bpm_standardized.length; bin++)
-				if (sequence_info.beat_histogram_thresholded_table_120_bpm_standardized[bin][2] > 0.001)
+			for (int bin = 0; bin < sequence_info.getBeat_histogram_thresholded_table_120_bpm_standardized().length; bin++)
+				if (sequence_info.getBeat_histogram_thresholded_table_120_bpm_standardized()[bin][2] > 0.001)
 					count++;
 
 			// Store the peak bins
 			int[] peak_bins = new int[count];
 			int so_far = 0;
-			for (int bin = 0; bin < sequence_info.beat_histogram_thresholded_table_120_bpm_standardized.length; bin++)
+			for (int bin = 0; bin < sequence_info.getBeat_histogram_thresholded_table_120_bpm_standardized().length; bin++)
 			{
-				if (sequence_info.beat_histogram_thresholded_table_120_bpm_standardized[bin][2] > 0.001)
+				if (sequence_info.getBeat_histogram_thresholded_table_120_bpm_standardized()[bin][2] > 0.001)
 				{
 					peak_bins[so_far] = bin;
 					so_far++;
@@ -83,14 +83,14 @@ public class RhythmicLoosenessTempoStandardizedFeature
 			for (int peak = 0; peak < peak_bins.length; peak++)
 			{
 				// 30% of this peak
-				double limit_value = 0.3 * sequence_info.beat_histogram_120_bpm_standardized[peak_bins[peak]];
+				double limit_value = 0.3 * sequence_info.getBeat_histogram_120_bpm_standardized()[peak_bins[peak]];
 
 				// Find left limit
 				int i = peak_bins[peak];
 				int left_index = 0;
 				while (i >= 0)
 				{
-					if (sequence_info.beat_histogram_120_bpm_standardized[i] < limit_value)
+					if (sequence_info.getBeat_histogram_120_bpm_standardized()[i] < limit_value)
 						i = -1;
 					else
 					{
@@ -102,10 +102,10 @@ public class RhythmicLoosenessTempoStandardizedFeature
 				// Find right limit
 				i = peak_bins[peak];
 				int right_index = 0;
-				while (i < sequence_info.beat_histogram_120_bpm_standardized.length)
+				while (i < sequence_info.getBeat_histogram_120_bpm_standardized().length)
 				{
-					if (sequence_info.beat_histogram_120_bpm_standardized[i] < limit_value)
-						i = sequence_info.beat_histogram_120_bpm_standardized.length + 1;
+					if (sequence_info.getBeat_histogram_120_bpm_standardized()[i] < limit_value)
+						i = sequence_info.getBeat_histogram_120_bpm_standardized().length + 1;
 					else
 					{
 						right_index = i;

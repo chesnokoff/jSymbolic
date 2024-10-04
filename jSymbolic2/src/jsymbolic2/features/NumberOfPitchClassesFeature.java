@@ -60,8 +60,8 @@ public class NumberOfPitchClassesFeature
 		{
 			// Find the number of pitches
 			int count = 0;
-			for (int bin = 0; bin < sequence_info.pitch_class_histogram.length; bin++)
-				if (sequence_info.pitch_class_histogram[bin] > 0.0)
+			for (int bin = 0; bin < sequence_info.getPitch_class_histogram().length; bin++)
+				if (sequence_info.getPitch_class_histogram()[bin] > 0.0)
 					count++;
 
 			// Calculate the value

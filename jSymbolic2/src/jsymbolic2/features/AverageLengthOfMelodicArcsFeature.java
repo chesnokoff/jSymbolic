@@ -63,9 +63,9 @@ public class AverageLengthOfMelodicArcsFeature
 			int total_number_intervening_intervals = 0;
 			int number_arcs = 0;
 			
-			for (int track = 0; track < sequence_info.melodic_intervals_by_track_and_channel.size(); track++)
+			for (int track = 0; track < sequence_info.getMelodic_intervals_by_track_and_channel().size(); track++)
 			{
-				LinkedList<Integer>[] melodic_intervals_by_channel = sequence_info.melodic_intervals_by_track_and_channel.get(track);
+				LinkedList<Integer>[] melodic_intervals_by_channel = sequence_info.getMelodic_intervals_by_track_and_channel().get(track);
 			
 				for (int chan = 0; chan < melodic_intervals_by_channel.length; chan++)
 				{

@@ -62,7 +62,7 @@ public class VerticalMajorThirdPrevalenceFeature
 		{
 			// All MIDI pitches (NOT including Channel 10 unpitched notes sounding at each MIDI tick, with
 			// ticks with no sounding notes excluded.
-			short[][] pitches_present_by_tick_excluding_rests = sequence_info.pitches_present_by_tick_excluding_rests;
+			short[][] pitches_present_by_tick_excluding_rests = sequence_info.getPitches_present_by_tick_excluding_rests();
 
 			double ticks_with_major_third = 0.0;
 			

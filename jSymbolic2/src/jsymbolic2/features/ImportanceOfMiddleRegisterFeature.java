@@ -59,7 +59,7 @@ public class ImportanceOfMiddleRegisterFeature
 		{
 			value = 0.0;
 			for (int bin = 55; bin <= 72; bin++)
-				value += sequence_info.basic_pitch_histogram[bin];
+				value += sequence_info.getBasic_pitch_histogram()[bin];
 		}
 		else value = -1.0;
 

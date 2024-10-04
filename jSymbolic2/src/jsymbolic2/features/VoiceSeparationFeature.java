@@ -60,8 +60,8 @@ public class VoiceSeparationFeature
 		{
 			// Find the number of channels with no note ons (or that is channel 10)
 			int silent_count = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
-				if (sequence_info.channel_statistics[chan][0] == 0 || chan == (10 - 1))
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
+				if (sequence_info.getChannel_statistics()[chan][0] == 0 || chan == (10 - 1))
 					silent_count++;
 
 			// If there's only one voice
@@ -70,13 +70,13 @@ public class VoiceSeparationFeature
 			else
 			{
 				// Store the average melodic interval of notes in the other channels
-				double[] average_pitches = new double[sequence_info.channel_statistics.length - silent_count];
+				double[] average_pitches = new double[sequence_info.getChannel_statistics().length - silent_count];
 				int count = 0;
-				for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
+				for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
 				{
-					if (sequence_info.channel_statistics[chan][0] != 0 && chan != (10 - 1))
+					if (sequence_info.getChannel_statistics()[chan][0] != 0 && chan != (10 - 1))
 					{
-						average_pitches[count] = (double) sequence_info.channel_statistics[chan][6];
+						average_pitches[count] = (double) sequence_info.getChannel_statistics()[chan][6];
 						count++;
 					}
 				}

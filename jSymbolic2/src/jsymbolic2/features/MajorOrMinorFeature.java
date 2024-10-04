@@ -58,7 +58,7 @@ public class MajorOrMinorFeature
 	{
 		double value;
 		if (sequence_info != null)
-			value = ((Integer) sequence_info.overall_metadata[0]).doubleValue();
+			value = ((Integer) sequence_info.getOverall_metadata()[0]).doubleValue();
 		else value = -1.0;
 
 		double[] result = new double[1];

@@ -59,7 +59,7 @@ public class AmountOfStaccatoFeature
 		if (sequence_info != null)
 		{
 			// Put durations in an array
-			Object[] durations_obj = sequence_info.note_durations.toArray();
+			Object[] durations_obj = sequence_info.getNote_durations().toArray();
 			double[] durations = new double[durations_obj.length];
 			for (int i = 0; i < durations.length; i++)
 				durations[i] = ((Double) durations_obj[i]).doubleValue();
@@ -72,8 +72,8 @@ public class AmountOfStaccatoFeature
 
 			// Find the total number of note ons
 			int count = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
-				count += sequence_info.channel_statistics[chan][0];
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
+				count += sequence_info.getChannel_statistics()[chan][0];
 
 			// Calculate feautre value
 			if (short_count == 0.0 || count == 0)

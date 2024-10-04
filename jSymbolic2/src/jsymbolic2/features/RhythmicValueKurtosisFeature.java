@@ -61,7 +61,7 @@ public class RhythmicValueKurtosisFeature
 	{
 		double value;
 		if (sequence_info != null)
-			value = mckay.utilities.staticlibraries.MathAndStatsMethods.getSampleExcessKurtosis(sequence_info.rhythmic_value_of_each_note_in_quarter_notes);
+			value = mckay.utilities.staticlibraries.MathAndStatsMethods.getSampleExcessKurtosis(sequence_info.getRhythmic_value_of_each_note_in_quarter_notes());
 		else value = -1.0;
 
 		double[] result = new double[1];

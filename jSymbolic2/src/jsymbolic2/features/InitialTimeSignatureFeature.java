@@ -62,18 +62,18 @@ public class InitialTimeSignatureFeature
 		{
 			result = new double[2];
 
-			if (((LinkedList) sequence_info.overall_metadata[1]).isEmpty())
+			if (((LinkedList) sequence_info.getOverall_metadata()[1]).isEmpty())
 			{
 				result[0] = 4.0;
 				result[1] = 4.0;
 			}
 			else
 			{
-				Object[] numerators_objects = ((LinkedList) sequence_info.overall_metadata[1]).toArray();
+				Object[] numerators_objects = ((LinkedList) sequence_info.getOverall_metadata()[1]).toArray();
 				double[] numerators = new double[numerators_objects.length];
 				for (int i = 0; i < numerators.length; i++)
 					numerators[i] = ((Integer) numerators_objects[i]).doubleValue();
-				Object[] denominators_objects = ((LinkedList) sequence_info.overall_metadata[2]).toArray();
+				Object[] denominators_objects = ((LinkedList) sequence_info.getOverall_metadata()[2]).toArray();
 				double[] denominators = new double[denominators_objects.length];
 				for (int i = 0; i < denominators.length; i++)
 					denominators[i] = ((Integer) denominators_objects[i]).doubleValue();

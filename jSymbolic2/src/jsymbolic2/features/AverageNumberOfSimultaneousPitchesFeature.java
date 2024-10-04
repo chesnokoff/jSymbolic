@@ -62,7 +62,7 @@ public class AverageNumberOfSimultaneousPitchesFeature
 		{
 			// All MIDI pitches (NOT including Channel 10 unpitched notes sounding at each MIDI tick, with
 			// ticks with no sounding notes excluded.
-			short[][] pitches_present_by_tick_excluding_rests = sequence_info.pitches_present_by_tick_excluding_rests;
+			short[][] pitches_present_by_tick_excluding_rests = sequence_info.getPitches_present_by_tick_excluding_rests();
 
 			// Will hold the number of pitches sounding each tick
 			short[] number_pitches_by_tick = new short[pitches_present_by_tick_excluding_rests.length];

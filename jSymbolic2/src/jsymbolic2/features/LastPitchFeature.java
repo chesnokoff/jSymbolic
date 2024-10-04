@@ -59,10 +59,10 @@ public class LastPitchFeature
 		if (sequence_info != null)
 		{
 			int lowest_last_pitch = 0;
-			if (sequence_info.pitches_present_by_tick_excluding_rests.length > 0)
+			if (sequence_info.getPitches_present_by_tick_excluding_rests().length > 0)
 			{
-				int last_tick_index = sequence_info.pitches_present_by_tick_excluding_rests.length;
-				lowest_last_pitch = sequence_info.pitches_present_by_tick_excluding_rests[last_tick_index-1][0];
+				int last_tick_index = sequence_info.getPitches_present_by_tick_excluding_rests().length;
+				lowest_last_pitch = sequence_info.getPitches_present_by_tick_excluding_rests()[last_tick_index-1][0];
 			}
 			
 			value = (double) lowest_last_pitch;

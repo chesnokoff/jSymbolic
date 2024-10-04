@@ -57,13 +57,13 @@ public class VariationOfDynamicsFeature
 		double value;
 		if (sequence_info != null)
 		{
-			double[] loudnesses = new double[sequence_info.total_number_note_ons];
+			double[] loudnesses = new double[sequence_info.getTotal_number_note_ons()];
 			int count = 0;
-			for (int i = 0; i < sequence_info.note_loudnesses.length; i++)
+			for (int i = 0; i < sequence_info.getNote_loudnesses().length; i++)
 			{
-				for (int j = 0; j < sequence_info.note_loudnesses[i].length; j++)
+				for (int j = 0; j < sequence_info.getNote_loudnesses()[i].length; j++)
 				{
-					loudnesses[count] = (double) sequence_info.note_loudnesses[i][j];
+					loudnesses[count] = (double) sequence_info.getNote_loudnesses()[i][j];
 					count++;
 				}
 			}

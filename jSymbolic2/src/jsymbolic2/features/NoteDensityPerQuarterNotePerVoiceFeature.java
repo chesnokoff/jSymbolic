@@ -62,7 +62,7 @@ public class NoteDensityPerQuarterNotePerVoiceFeature
 		if (sequence_info != null)
 		{
 			double note_density_per_quarter_note = other_feature_values[0][0];
-			value = note_density_per_quarter_note / sequence_info.number_of_active_voices;
+			value = note_density_per_quarter_note / sequence_info.getNumber_of_active_voices();
 		}
 		else value = -1.0;
 

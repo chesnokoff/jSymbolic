@@ -58,7 +58,7 @@ public class PitchKurtosisFeature
 	{
 		double value;
 		if (sequence_info != null)
-			value = mckay.utilities.staticlibraries.MathAndStatsMethods.getSampleExcessKurtosis(sequence_info.pitches_of_all_note_ons);
+			value = mckay.utilities.staticlibraries.MathAndStatsMethods.getSampleExcessKurtosis(sequence_info.getPitches_of_all_note_ons());
 		else value = -1.0;
 
 		double[] result = new double[1];

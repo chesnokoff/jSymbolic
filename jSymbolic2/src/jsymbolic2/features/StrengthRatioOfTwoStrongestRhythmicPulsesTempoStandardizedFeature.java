@@ -62,22 +62,22 @@ public class StrengthRatioOfTwoStrongestRhythmicPulsesTempoStandardizedFeature
 			// Find the bin with the highest magnitude
 			double highest_magnitude = 0.0;
 			int index_of_bin_with_highest_magnitude = 0;
-			for (int bin = 0; bin < sequence_info.beat_histogram_120_bpm_standardized.length; bin++)
+			for (int bin = 0; bin < sequence_info.getBeat_histogram_120_bpm_standardized().length; bin++)
 			{
-				if (sequence_info.beat_histogram_120_bpm_standardized[bin] > highest_magnitude)
+				if (sequence_info.getBeat_histogram_120_bpm_standardized()[bin] > highest_magnitude)
 				{
-					highest_magnitude = sequence_info.beat_histogram_120_bpm_standardized[bin];
+					highest_magnitude = sequence_info.getBeat_histogram_120_bpm_standardized()[bin];
 					index_of_bin_with_highest_magnitude = bin;
 				}
 			}
 
 			// Find the bin with the second highest magnitude
 			double second_highest_magnitude = 0.0;
-			for (int bin = 0; bin < sequence_info.beat_histogram_thresholded_table_120_bpm_standardized.length; bin++)
-				if ( sequence_info.beat_histogram_thresholded_table_120_bpm_standardized[bin][1] > second_highest_magnitude &&
+			for (int bin = 0; bin < sequence_info.getBeat_histogram_thresholded_table_120_bpm_standardized().length; bin++)
+				if ( sequence_info.getBeat_histogram_thresholded_table_120_bpm_standardized()[bin][1] > second_highest_magnitude &&
 				     bin != index_of_bin_with_highest_magnitude )
 				{
-					second_highest_magnitude = sequence_info.beat_histogram_thresholded_table_120_bpm_standardized[bin][1];
+					second_highest_magnitude = sequence_info.getBeat_histogram_thresholded_table_120_bpm_standardized()[bin][1];
 				}
 
 			// Calculate the feature value

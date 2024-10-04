@@ -87,7 +87,7 @@ public class ChordTypeHistogramFeature
 			int number_pitch_classes = 12;
 			
 			// The combined MIDI velocity of all (non-Channel 10) notes sounding on a MIDI tick by tick basis
-			short[][] pitch_strength_by_tick_chart = sequence_info.pitch_strength_by_tick_chart;
+			short[][] pitch_strength_by_tick_chart = sequence_info.getPitch_strength_by_tick_chart();
 
 			// Count the chord types tick by tick
 			for (int tick = 0; tick < pitch_strength_by_tick_chart.length; tick++)

@@ -59,9 +59,9 @@ public class MinorMajorMelodicThirdlRatioFeature
 		double value = 0.0;
 		if (sequence_info != null)
 		{
-			if ( sequence_info.melodic_interval_histogram[3] != 0 && 
-			     sequence_info.melodic_interval_histogram[4] != 0 )
-				value = sequence_info.melodic_interval_histogram[3] / sequence_info.melodic_interval_histogram[4];
+			if ( sequence_info.getMelodic_interval_histogram()[3] != 0 &&
+			     sequence_info.getMelodic_interval_histogram()[4] != 0 )
+				value = sequence_info.getMelodic_interval_histogram()[3] / sequence_info.getMelodic_interval_histogram()[4];
 			
 		}
 		else value = -1.0;

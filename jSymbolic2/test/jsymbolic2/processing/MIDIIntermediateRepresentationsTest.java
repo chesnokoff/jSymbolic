@@ -45,7 +45,7 @@ public class MIDIIntermediateRepresentationsTest {
         t1.add(e5);
 
         MIDIIntermediateRepresentations actual_representation = new MIDIIntermediateRepresentations(test_overlap);
-        short[][] actual_pitch_tick = actual_representation.pitch_strength_by_tick_chart;
+        short[][] actual_pitch_tick = actual_representation.getPitch_strength_by_tick_chart();
 
         short[][] expected_pitch_tick = new short[5][128];
         for(int x = 0; x < expected_pitch_tick.length; x++) {
@@ -77,7 +77,7 @@ public class MIDIIntermediateRepresentationsTest {
         t1_more.add(e_more1);
 
         MIDIIntermediateRepresentations actual_representation_more = new MIDIIntermediateRepresentations(test_more_notes);
-        short[][] actual_pitch_more = actual_representation_more.pitch_strength_by_tick_chart;
+        short[][] actual_pitch_more = actual_representation_more.getPitch_strength_by_tick_chart();
 
         short[][] expected_pitch_more = new short[6][128];
         for(int x = 0; x < expected_pitch_more.length; x++) {
@@ -108,7 +108,7 @@ public class MIDIIntermediateRepresentationsTest {
         t2_tracks.add(e_tracks1);
 
         MIDIIntermediateRepresentations actual_representation_tracks = new MIDIIntermediateRepresentations(test_tracks);
-        short[][] actual_pitch_tracks = actual_representation_tracks.pitch_strength_by_tick_chart;
+        short[][] actual_pitch_tracks = actual_representation_tracks.getPitch_strength_by_tick_chart();
 
         short[][] expected_pitch_tracks = new short[6][128];
         for(int x = 0; x < expected_pitch_tracks.length; x++) {

@@ -56,7 +56,7 @@ public class MelodicPerfectFifthsFeature
 	{
 		double value;
 		if (sequence_info != null)
-			value = sequence_info.melodic_interval_histogram[7];
+			value = sequence_info.getMelodic_interval_histogram()[7];
 		else value = -1.0;
 
 		double[] result = new double[1];

@@ -58,8 +58,8 @@ public class ImportanceOfHighRegisterFeature
 		if (sequence_info != null)
 		{
 			value = 0.0;
-			for (int bin = 73; bin < sequence_info.basic_pitch_histogram.length; bin++)
-				value += sequence_info.basic_pitch_histogram[bin];
+			for (int bin = 73; bin < sequence_info.getBasic_pitch_histogram().length; bin++)
+				value += sequence_info.getBasic_pitch_histogram()[bin];
 		}
 		else value = -1.0;
 

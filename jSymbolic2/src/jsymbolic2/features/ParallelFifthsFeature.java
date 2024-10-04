@@ -65,7 +65,7 @@ public class ParallelFifthsFeature
 	throws Exception
 	{
 		double[] result = new double[1];
-		result[0] = sequence_info.parallel_fifths_fraction;
+		result[0] = sequence_info.getParallel_fifths_fraction();
 		return result;
 	}
 }

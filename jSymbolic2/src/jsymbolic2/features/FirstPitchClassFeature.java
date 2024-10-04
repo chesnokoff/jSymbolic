@@ -62,8 +62,8 @@ public class FirstPitchClassFeature
 		if (sequence_info != null)
 		{
 			int lowest_first_pitch = 0;
-			if (sequence_info.pitches_present_by_tick_excluding_rests.length > 0)
-				lowest_first_pitch = sequence_info.pitches_present_by_tick_excluding_rests[0][0];
+			if (sequence_info.getPitches_present_by_tick_excluding_rests().length > 0)
+				lowest_first_pitch = sequence_info.getPitches_present_by_tick_excluding_rests()[0][0];
 			int lowest_first_pitch_class = lowest_first_pitch % 12;
 			
 			value = (double) lowest_first_pitch_class;

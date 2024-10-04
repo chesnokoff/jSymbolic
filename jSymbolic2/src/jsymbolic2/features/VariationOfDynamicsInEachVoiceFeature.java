@@ -61,20 +61,20 @@ public class VariationOfDynamicsInEachVoiceFeature
 		{
 			// Find number of channels with notes
 			int number_with_notes = 0;
-			for (int i = 0; i < sequence_info.channel_statistics.length; i++)
-				if (sequence_info.channel_statistics[i][0] != 0)
+			for (int i = 0; i < sequence_info.getChannel_statistics().length; i++)
+				if (sequence_info.getChannel_statistics()[i][0] != 0)
 					number_with_notes++;
 
 			// Calculate the standard deviations
 			double[] standard_deviations = new double[number_with_notes];
 			int count = 0;
-			for (int i = 0; i < sequence_info.note_loudnesses.length; i++)
+			for (int i = 0; i < sequence_info.getNote_loudnesses().length; i++)
 			{
-				if (sequence_info.note_loudnesses[i].length > 0)
+				if (sequence_info.getNote_loudnesses()[i].length > 0)
 				{
-					double[] loudnesses = new double[sequence_info.note_loudnesses[i].length];
-					for (int j = 0; j < sequence_info.note_loudnesses[i].length; j++)
-						loudnesses[j] = (double) sequence_info.note_loudnesses[i][j];
+					double[] loudnesses = new double[sequence_info.getNote_loudnesses()[i].length];
+					for (int j = 0; j < sequence_info.getNote_loudnesses()[i].length; j++)
+						loudnesses[j] = (double) sequence_info.getNote_loudnesses()[i][j];
 					standard_deviations[count] = mckay.utilities.staticlibraries.MathAndStatsMethods.getStandardDeviation(loudnesses);
 					count++;
 				}

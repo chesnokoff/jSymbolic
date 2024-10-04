@@ -73,7 +73,7 @@ public class MelodicEmbellishmentsFeature
 				if (channel != 10 - 1)  // Skip over the unpitched percussion channel
 				{
 					// Prepare a list of all notes on this channel sorted by start tick
-					List<NoteInfo> all_notes_in_this_channel = sequence_info.all_notes.getNotesOnChannel(channel);
+					List<NoteInfo> all_notes_in_this_channel = sequence_info.getAll_notes().getNotesOnChannel(channel);
 					all_notes_in_this_channel = CollectedNoteInfo.noteListToSortedNoteList(all_notes_in_this_channel);
 
 					// Prepare a map indicating all notes starting on any given MIDI tick, where the start tick
@@ -126,10 +126,10 @@ public class MelodicEmbellishmentsFeature
 			}
 			
 			// Find the final feature value
-			if (sequence_info.total_number_note_ons == 0)
+			if (sequence_info.getTotal_number_note_ons() == 0)
 				value = 0;
 			else
-				value = number_embelleshing_notes / sequence_info.total_number_note_ons;
+				value = number_embelleshing_notes / sequence_info.getTotal_number_note_ons();
 		}
 		else value = -1.0;
 

@@ -60,12 +60,12 @@ public class LongestCompleteRestFeature
 		double value;
 		if (sequence_info != null)
 		{
-			if (sequence_info.complete_rest_durations == null)
+			if (sequence_info.getComplete_rest_durations() == null)
 				value = 0.0;
 			else
 			{
-				int index_of_largest = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfLargest(sequence_info.complete_rest_durations);
-				value = sequence_info.complete_rest_durations[index_of_largest];
+				int index_of_largest = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfLargest(sequence_info.getComplete_rest_durations());
+				value = sequence_info.getComplete_rest_durations()[index_of_largest];
 			}
 		}
 		else value = -1.0;

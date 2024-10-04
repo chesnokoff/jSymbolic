@@ -60,8 +60,8 @@ public class VoiceOverlapFeature
 		if (sequence_info != null)
 		{
 			// Access pre-calculated information in sequence_info
-			int[][] channel_stats = sequence_info.channel_statistics;
-			List<List<Integer>> channel_pitch = sequence_info.list_of_note_on_pitches_by_channel;
+			int[][] channel_stats = sequence_info.getChannel_statistics();
+			List<List<Integer>> channel_pitch = sequence_info.getList_of_note_on_pitches_by_channel();
 
 			// Find notes that are within the range of any other channel
 			int notes_inside_range = 0;
@@ -87,7 +87,7 @@ public class VoiceOverlapFeature
 				}
 			}
 
-			double total_notes = sequence_info.total_number_note_ons;
+			double total_notes = sequence_info.getTotal_number_note_ons();
 			if (total_notes == 0.0)
 				value = 0.0;
 			else 

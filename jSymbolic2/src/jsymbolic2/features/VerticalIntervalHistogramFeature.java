@@ -69,10 +69,10 @@ public class VerticalIntervalHistogramFeature
 		{
 			// // Initialize the vertical_interval_histogram and get the value for unisons
 			vertical_interval_histogram = new double[128];
-			vertical_interval_histogram[0] = sequence_info.total_vertical_unison_velocity;
+			vertical_interval_histogram[0] = sequence_info.getTotal_vertical_unison_velocity();
 
 			// Get the pitch_strength_by_tick_chart
-			short[][] pitch_strength_by_tick_chart = sequence_info.pitch_strength_by_tick_chart;
+			short[][] pitch_strength_by_tick_chart = sequence_info.getPitch_strength_by_tick_chart();
 
 			// Fill in vertical_interval_histogram for all intervals other than unisons, up to 127 semitones
 			for (int tick = 0; tick < pitch_strength_by_tick_chart.length; tick++)

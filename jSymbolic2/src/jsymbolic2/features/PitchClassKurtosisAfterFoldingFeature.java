@@ -59,10 +59,10 @@ public class PitchClassKurtosisAfterFoldingFeature
 		double value;
 		if (sequence_info != null)
 		{
-			double[] folded_pitch_classes_of_all_note_ons = new double[sequence_info.pitch_classes_of_all_note_ons.length];
+			double[] folded_pitch_classes_of_all_note_ons = new double[sequence_info.getPitch_classes_of_all_note_ons().length];
 			for (int i = 0; i < folded_pitch_classes_of_all_note_ons.length; i++)
 			{
-				double pitch_class = (double) sequence_info.pitch_classes_of_all_note_ons[i];
+				double pitch_class = (double) sequence_info.getPitch_classes_of_all_note_ons()[i];
 				folded_pitch_classes_of_all_note_ons[i] = (7 * pitch_class) % 12;
 			}
 			value = mckay.utilities.staticlibraries.MathAndStatsMethods.getSampleExcessKurtosis(folded_pitch_classes_of_all_note_ons);

@@ -60,10 +60,10 @@ public class LongestRhythmicValueFeature
 			throws Exception
 	{
 		double value;
-		if (sequence_info != null && ArrayUtils.isNotEmpty(sequence_info.rhythmic_value_of_each_note_in_quarter_notes))
+		if (sequence_info != null && ArrayUtils.isNotEmpty(sequence_info.getRhythmic_value_of_each_note_in_quarter_notes()))
 		{
-			int index_of_largest = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfLargest(sequence_info.rhythmic_value_of_each_note_in_quarter_notes);
-			value = sequence_info.rhythmic_value_of_each_note_in_quarter_notes[index_of_largest];
+			int index_of_largest = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfLargest(sequence_info.getRhythmic_value_of_each_note_in_quarter_notes());
+			value = sequence_info.getRhythmic_value_of_each_note_in_quarter_notes()[index_of_largest];
 		}
 		else value = -1.0;
 

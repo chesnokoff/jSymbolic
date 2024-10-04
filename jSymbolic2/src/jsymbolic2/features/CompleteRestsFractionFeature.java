@@ -60,8 +60,8 @@ public class CompleteRestsFractionFeature
 		if (sequence_info != null)
 		{	
 			// Get information from sequence_info
-			short[][] pitch_strength_by_tick_chart = sequence_info.pitch_strength_by_tick_chart;
-			double[] seconds_per_tick = sequence_info.duration_of_ticks_in_seconds;
+			short[][] pitch_strength_by_tick_chart = sequence_info.getPitch_strength_by_tick_chart();
+			double[] seconds_per_tick = sequence_info.getDuration_of_ticks_in_seconds();
 			
 			// The number of ticks to examine (the minus 1 is because Java doesn't count the last tick
 			int ticks_to_test = pitch_strength_by_tick_chart.length - 1;
@@ -79,10 +79,10 @@ public class CompleteRestsFractionFeature
 			double total_complete_rests = DoubleStream.of(seconds_of_rest_per_tick).sum();
 			
 			// Divide by the length of the piece
-			if (sequence_info.sequence_duration_precise == 0.0)
+			if (sequence_info.getSequence_duration_precise() == 0.0)
 				value = 0.0;
 			else
-				value = total_complete_rests / sequence_info.sequence_duration_precise;
+				value = total_complete_rests / sequence_info.getSequence_duration_precise();
 		}
 		else value = -1.0;
 

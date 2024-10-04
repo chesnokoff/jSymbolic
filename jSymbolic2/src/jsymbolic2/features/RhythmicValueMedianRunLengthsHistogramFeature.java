@@ -68,10 +68,10 @@ public class RhythmicValueMedianRunLengthsHistogramFeature
 		if (sequence_info != null)
 		{
 			// Initialize result
-			result = new double[sequence_info.runs_of_same_rhythmic_value.length];
+			result = new double[sequence_info.getRuns_of_same_rhythmic_value().length];
 			
 			// Access the runs
-			LinkedList<Integer>[] runs_of_same_rhythmic_value = sequence_info.runs_of_same_rhythmic_value;
+			LinkedList<Integer>[] runs_of_same_rhythmic_value = sequence_info.getRuns_of_same_rhythmic_value();
 			
 			// Calculate the values of the histogram bin by bin
 			for (int i = 0; i < runs_of_same_rhythmic_value.length; i++)

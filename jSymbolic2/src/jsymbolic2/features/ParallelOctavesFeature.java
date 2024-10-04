@@ -65,7 +65,7 @@ public class ParallelOctavesFeature
 	throws Exception
 	{
 		double[] result = new double[1];
-		result[0] = sequence_info.parallel_octaves_fraction;
+		result[0] = sequence_info.getParallel_octaves_fraction();
 		return result;
 	}
 }

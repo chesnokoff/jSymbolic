@@ -61,7 +61,7 @@ public class MeanTempoFeature
 		{
 			// Access necessary information
 			double ticks_per_beat = (double) sequence.getResolution();
-			double[] duration_of_ticks_in_seconds = sequence_info.duration_of_ticks_in_seconds;
+			double[] duration_of_ticks_in_seconds = sequence_info.getDuration_of_ticks_in_seconds();
 
 			// Calculate all instantaneous tempos
 			double[] beats_per_minute = new double[duration_of_ticks_in_seconds.length];

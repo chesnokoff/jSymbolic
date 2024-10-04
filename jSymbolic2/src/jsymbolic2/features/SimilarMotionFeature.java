@@ -65,7 +65,7 @@ public class SimilarMotionFeature
 	throws Exception
 	{
 		double[] result = new double[1];
-		result[0] = sequence_info.similar_motion_fraction;
+		result[0] = sequence_info.getSimilar_motion_fraction();
 		return result;
 	}
 }

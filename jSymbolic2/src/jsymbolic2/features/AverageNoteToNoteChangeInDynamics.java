@@ -59,21 +59,21 @@ public class AverageNoteToNoteChangeInDynamics
 		{
 			// Find the total number of intervals between notes on each channel
 			int number_changes = 0;
-			for (int i = 0; i < sequence_info.note_loudnesses.length; i++)
-				if (sequence_info.note_loudnesses[i].length > 1)
-					number_changes += sequence_info.note_loudnesses[i].length;
+			for (int i = 0; i < sequence_info.getNote_loudnesses().length; i++)
+				if (sequence_info.getNote_loudnesses()[i].length > 1)
+					number_changes += sequence_info.getNote_loudnesses()[i].length;
 
 			// Find all of the loudness intervals
 			double[] loudness_intervals = new double[number_changes];
 			int count = 0;
-			for (int i = 0; i < sequence_info.note_loudnesses.length; i++)
+			for (int i = 0; i < sequence_info.getNote_loudnesses().length; i++)
 			{
-				if (sequence_info.note_loudnesses[i].length > 1)
+				if (sequence_info.getNote_loudnesses()[i].length > 1)
 				{
-					for (int j = 1; j < sequence_info.note_loudnesses[i].length; j++)
+					for (int j = 1; j < sequence_info.getNote_loudnesses()[i].length; j++)
 					{
-						loudness_intervals[count] = (double) Math.abs(sequence_info.note_loudnesses[i][j]
-								- sequence_info.note_loudnesses[i][j - 1]);
+						loudness_intervals[count] = (double) Math.abs(sequence_info.getNote_loudnesses()[i][j]
+								- sequence_info.getNote_loudnesses()[i][j - 1]);
 						count++;
 					}
 				}

@@ -69,7 +69,7 @@ public class NumberOfGraceNotesMeiFeature
 		double value;
 		if (sequence_info != null)
 		{
-			double total_number_pitched_note_ons = (double) sequence_info.total_number_pitched_note_ons;
+			double total_number_pitched_note_ons = (double) sequence_info.getTotal_number_pitched_note_ons();
 			double number_of_grace_notes = (double) meiSpecificStorage.getGraceNoteList().size();
 
 			if (total_number_pitched_note_ons == 0.0 || number_of_grace_notes == 0.0)

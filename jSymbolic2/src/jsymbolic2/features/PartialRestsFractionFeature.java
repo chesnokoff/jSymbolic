@@ -61,16 +61,16 @@ public class PartialRestsFractionFeature
 		if (sequence_info != null)
 		{
 			// The number of note ons per channel
-			int[] notes_per_channel = new int[sequence_info.channel_statistics.length];
+			int[] notes_per_channel = new int[sequence_info.getChannel_statistics().length];
 			for (int i = 0; i < notes_per_channel.length; i++)
-				notes_per_channel[i] = sequence_info.channel_statistics[i][0];
+				notes_per_channel[i] = sequence_info.getChannel_statistics()[i][0];
 			
 			// Tick by tick (first index) indication of whether a note is sounding on each channel (second
 			// index).
-			boolean[][] note_sounding_on_a_channel_tick_map = sequence_info.note_sounding_on_a_channel_tick_map;
+			boolean[][] note_sounding_on_a_channel_tick_map = sequence_info.getNote_sounding_on_a_channel_tick_map();
 			
 			// The duration of each tick
-			double[] seconds_per_tick = sequence_info.duration_of_ticks_in_seconds;
+			double[] seconds_per_tick = sequence_info.getDuration_of_ticks_in_seconds();
 
 			// Set non_empty_channels to true for channels that have at least one note
 			boolean[] non_empty_channels = new boolean[notes_per_channel.length];
@@ -104,10 +104,10 @@ public class PartialRestsFractionFeature
 			double total_partial_rest_time = DoubleStream.of(seconds_of_rest_per_tick).sum();
 			
 			// Divide by the length of the piece
-			if (sequence_info.sequence_duration_precise == 0.0)
+			if (sequence_info.getSequence_duration_precise() == 0.0)
 				value = 0.0;
 			else
-				value = total_partial_rest_time / sequence_info.sequence_duration_precise;
+				value = total_partial_rest_time / sequence_info.getSequence_duration_precise();
 		}
 		else value = -1.0;
 

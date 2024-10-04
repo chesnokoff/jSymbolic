@@ -62,9 +62,9 @@ public class FoldedFifthsPitchClassHistogramFeature
 		double[] result = null;
 		if (sequence_info != null)
 		{
-			result = new double[sequence_info.fifths_pitch_histogram.length];
+			result = new double[sequence_info.getFifths_pitch_histogram().length];
 			for (int pitch = 0; pitch < result.length; pitch++)
-				result[pitch] = sequence_info.fifths_pitch_histogram[pitch];
+				result[pitch] = sequence_info.getFifths_pitch_histogram()[pitch];
 		}
 		return result;
 	}

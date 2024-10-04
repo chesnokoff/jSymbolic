@@ -59,17 +59,17 @@ public class IntervalBetweenMostPrevalenttPitchesFeature
 		if (sequence_info != null)
 		{
 			// Find the highest bin
-			int max_index = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfLargest(sequence_info.basic_pitch_histogram);
+			int max_index = mckay.utilities.staticlibraries.MathAndStatsMethods.getIndexOfLargest(sequence_info.getBasic_pitch_histogram());
 
 			// Find the second highest bin
 			double second_max = 0;
 			int second_max_index = 0;
-			for (int bin = 0; bin < sequence_info.basic_pitch_histogram.length; bin++)
+			for (int bin = 0; bin < sequence_info.getBasic_pitch_histogram().length; bin++)
 			{
-				if (sequence_info.basic_pitch_histogram[bin] > second_max
+				if (sequence_info.getBasic_pitch_histogram()[bin] > second_max
 						&& bin != max_index)
 				{
-					second_max = sequence_info.basic_pitch_histogram[bin];
+					second_max = sequence_info.getBasic_pitch_histogram()[bin];
 					second_max_index = bin;
 				}
 			}

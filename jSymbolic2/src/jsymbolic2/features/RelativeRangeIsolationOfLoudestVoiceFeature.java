@@ -61,8 +61,8 @@ public class RelativeRangeIsolationOfLoudestVoiceFeature
 		if (sequence_info != null)
 		{
 			// Get information from sequence_info 
-			int[][] channel_statistics = sequence_info.channel_statistics;
-			List<List<Integer>> list_of_note_on_pitches_by_channel = sequence_info.list_of_note_on_pitches_by_channel;
+			int[][] channel_statistics = sequence_info.getChannel_statistics();
+			List<List<Integer>> list_of_note_on_pitches_by_channel = sequence_info.getList_of_note_on_pitches_by_channel();
 
 			// Find the loudest non-Channel 10 channel
 			int index_of_loudest_channel = 0;

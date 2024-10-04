@@ -61,8 +61,8 @@ public class NumberOfRelativelyStrongRhythmicPulsesTempoStandardizedFeature
 		{
 			// Find the number of sufficiently large peaks
 			int count = 0;
-			for (int bin = 0; bin < sequence_info.beat_histogram_thresholded_table_120_bpm_standardized.length; bin++)
-				if (sequence_info.beat_histogram_thresholded_table_120_bpm_standardized[bin][2] > 0.001)
+			for (int bin = 0; bin < sequence_info.getBeat_histogram_thresholded_table_120_bpm_standardized().length; bin++)
+				if (sequence_info.getBeat_histogram_thresholded_table_120_bpm_standardized()[bin][2] > 0.001)
 					count++;
 
 			// Calculate the value

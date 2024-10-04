@@ -60,12 +60,12 @@ public class VibratoPrevalenceFeature
 		double value;
 		if (sequence_info != null)
 		{
-			if (sequence_info.pitch_bends_list.isEmpty()) // If there are no pitch bends
+			if (sequence_info.getPitch_bends_list().isEmpty()) // If there are no pitch bends
 				value = 0.0;
 			else
 			{
 				// Generate array of pitch bends
-				Object[] notes_objects = sequence_info.pitch_bends_list.toArray();
+				Object[] notes_objects = sequence_info.getPitch_bends_list().toArray();
 				LinkedList[] notes = new LinkedList[notes_objects.length];
 				for (int i = 0; i < notes.length; i++)
 					notes[i] = (LinkedList) notes_objects[i];
@@ -109,10 +109,10 @@ public class VibratoPrevalenceFeature
 				}
 
 				// Calculate the value
-				if (sequence_info.total_number_pitched_note_ons == 0)
+				if (sequence_info.getTotal_number_pitched_note_ons() == 0)
 					value = 0.0;
 				else 
-					value = (double) notes_with_vibrato / (double) sequence_info.total_number_pitched_note_ons;
+					value = (double) notes_with_vibrato / (double) sequence_info.getTotal_number_pitched_note_ons();
 			}
 		}
 		else value = -1.0;

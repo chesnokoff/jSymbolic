@@ -63,13 +63,13 @@ public class RelativeRangeOfLoudestVoiceFeature
 			// Find the loudest channel
 			int max_so_far = -1;
 			int loudest_chan = -1;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
 			{
-				if (sequence_info.channel_statistics[chan][0] != 0 && chan != (10 - 1))
+				if (sequence_info.getChannel_statistics()[chan][0] != 0 && chan != (10 - 1))
 				{
-					if (sequence_info.channel_statistics[chan][2] > max_so_far)
+					if (sequence_info.getChannel_statistics()[chan][2] > max_so_far)
 					{
-						max_so_far = sequence_info.channel_statistics[chan][2];
+						max_so_far = sequence_info.getChannel_statistics()[chan][2];
 						loudest_chan = chan;
 					}
 				}
@@ -79,20 +79,20 @@ public class RelativeRangeOfLoudestVoiceFeature
 			else
 			{
 				// Find the range of the loudest channel
-				double loudest_range = (double) (sequence_info.channel_statistics[loudest_chan][5]
-						- sequence_info.channel_statistics[loudest_chan][4]);
+				double loudest_range = (double) (sequence_info.getChannel_statistics()[loudest_chan][5]
+						- sequence_info.getChannel_statistics()[loudest_chan][4]);
 
 				// Finde the overall range
 				int lowest = 128;
 				int highest = -1;
-				for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
+				for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
 				{
-					if (sequence_info.channel_statistics[chan][0] != 0 && chan != (10 - 1))
+					if (sequence_info.getChannel_statistics()[chan][0] != 0 && chan != (10 - 1))
 					{
-						if (sequence_info.channel_statistics[chan][4] < lowest)
-							lowest = sequence_info.channel_statistics[chan][4];
-						if (sequence_info.channel_statistics[chan][5] > highest)
-							highest = sequence_info.channel_statistics[chan][5];
+						if (sequence_info.getChannel_statistics()[chan][4] < lowest)
+							lowest = sequence_info.getChannel_statistics()[chan][4];
+						if (sequence_info.getChannel_statistics()[chan][5] > highest)
+							highest = sequence_info.getChannel_statistics()[chan][5];
 					}
 				}
 

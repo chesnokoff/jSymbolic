@@ -66,7 +66,7 @@ public class NoteDensityPerQuarterNoteVariabilityFeature
 		{	
 			// Break MIDI sequence into MIDI windows of 8 quarter notes duration each
 			double window_size_quarter_notes = 8.0;
-			double window_size_seconds = window_size_quarter_notes * sequence_info.average_quarter_note_duration_in_seconds;
+			double window_size_seconds = window_size_quarter_notes * sequence_info.getAverage_quarter_note_duration_in_seconds();
 			double window_overlap = 0.0;
 			double[] seconds_per_tick = MIDIMethods.getSecondsPerTick(sequence);
 			List<int[]> startEndTickArrays = MIDIMethods.getStartEndTickArrays(sequence, window_size_seconds, window_overlap, seconds_per_tick);

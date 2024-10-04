@@ -61,8 +61,8 @@ public class VariabilityAcrossVoicesOfCombinedRestsFeature extends MIDIFeatureEx
 		if (sequence_info != null)
 		{
 			// Get information from sequence_info
-			int[][] channel_stats = sequence_info.channel_statistics;
-			double[] total_time_notes_sounding_per_channel = sequence_info.total_time_notes_sounding_per_channel; 
+			int[][] channel_stats = sequence_info.getChannel_statistics();
+			double[] total_time_notes_sounding_per_channel = sequence_info.getTotal_time_notes_sounding_per_channel();
 			
 			// Find which channels have notes, and what the total amount of rest is per channel
 			ArrayList<Double> total_rest_time_per_channel = new ArrayList<>();
@@ -72,14 +72,14 @@ public class VariabilityAcrossVoicesOfCombinedRestsFeature extends MIDIFeatureEx
 				if (total_notes_on_this_channel > 0)
 				{
 					double total_non_silence_this_channel = total_time_notes_sounding_per_channel[channel];
-					total_rest_time_per_channel.add(sequence_info.sequence_duration_precise - total_non_silence_this_channel);
+					total_rest_time_per_channel.add(sequence_info.getSequence_duration_precise() - total_non_silence_this_channel);
 				}
 			}
 			
 			// Convert to an array, and express as a fraction of a quarter note
 			double[] total_rest_time_per_channel_array = new double[total_rest_time_per_channel.size()];
 			for (int i = 0; i < total_rest_time_per_channel_array.length; i++)
-				total_rest_time_per_channel_array[i] = total_rest_time_per_channel.get(i) / sequence_info.average_quarter_note_duration_in_seconds;
+				total_rest_time_per_channel_array[i] = total_rest_time_per_channel.get(i) / sequence_info.getAverage_quarter_note_duration_in_seconds();
 
 			// Calculate the standard deviation
 			if (total_rest_time_per_channel_array.length == 0)

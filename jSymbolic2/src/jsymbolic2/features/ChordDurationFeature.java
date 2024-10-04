@@ -68,7 +68,7 @@ public class ChordDurationFeature
 			// indicates the MIDI tick (after removal of rest ticks) and the second dimension indicates the 
 			// note index (there will be one entry for each pitch class sounding during the given MIDI tick).
 			// Each entry indicates the pitch class (0 to 11, where 0 is C) of one of the sounding notes.
-			short[][] pitch_classes_present_by_tick_excluding_rests = sequence_info.pitch_classes_present_by_tick_excluding_rests;
+			short[][] pitch_classes_present_by_tick_excluding_rests = sequence_info.getPitch_classes_present_by_tick_excluding_rests();
 
 			// The duration in ticks of each chord
 			ArrayList<Integer> chord_durations_in_ticks = new ArrayList<>();
@@ -105,10 +105,10 @@ public class ChordDurationFeature
 			// Convert from ticks to seconds to quarter notes
 			// NOTE: This is imperfect, because it does not take into account tempo change messages. Rather,
 			// it assumes the tick duration is the same everywhere as on the same tick.
-			double initial_duration_of_a_tick_in_seconds = sequence_info.duration_of_ticks_in_seconds[0];
+			double initial_duration_of_a_tick_in_seconds = sequence_info.getDuration_of_ticks_in_seconds()[0];
 			double seconds_per_chord = average_ticks_per_chord * initial_duration_of_a_tick_in_seconds;
-			if (sequence_info.average_quarter_note_duration_in_seconds != 0.0)
-				value = seconds_per_chord / sequence_info.average_quarter_note_duration_in_seconds;
+			if (sequence_info.getAverage_quarter_note_duration_in_seconds() != 0.0)
+				value = seconds_per_chord / sequence_info.getAverage_quarter_note_duration_in_seconds();
 			else value = 0.0;
 		}
 		else value = -1.0;

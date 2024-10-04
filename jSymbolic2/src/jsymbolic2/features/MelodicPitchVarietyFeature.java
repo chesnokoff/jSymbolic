@@ -83,7 +83,7 @@ public class MelodicPitchVarietyFeature
 					final int max_notes_that_can_go_by = 16;
 
 					// Prepare a list of all notes on this channel sorted by start tick
-					List<NoteInfo> all_notes_in_this_channel = sequence_info.all_notes.getNotesOnChannel(channel);
+					List<NoteInfo> all_notes_in_this_channel = sequence_info.getAll_notes().getNotesOnChannel(channel);
 					all_notes_in_this_channel = CollectedNoteInfo.noteListToSortedNoteList(all_notes_in_this_channel);
 
 					// Prepare a map indicating all notes starting on any given MIDI tick, where the start 

@@ -63,7 +63,7 @@ public class MeanRhythmicValueOffsetFeature
 	{
 		double value;
 		if (sequence_info != null)
-			value = mckay.utilities.staticlibraries.MathAndStatsMethods.getAverage(sequence_info.rhythmic_value_offsets);
+			value = mckay.utilities.staticlibraries.MathAndStatsMethods.getAverage(sequence_info.getRhythmic_value_offsets());
 		else value = -1.0;
 
 		double[] result = new double[1];

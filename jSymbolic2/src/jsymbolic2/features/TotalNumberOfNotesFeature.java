@@ -55,7 +55,7 @@ public class TotalNumberOfNotesFeature
 	throws Exception
 	{
 		double[] result = new double[1];
-		result[0] = (double) sequence_info.total_number_note_ons;
+		result[0] = (double) sequence_info.getTotal_number_note_ons();
 		return result;
 	}
 }

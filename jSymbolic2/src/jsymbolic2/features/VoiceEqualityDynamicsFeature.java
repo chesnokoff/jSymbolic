@@ -60,20 +60,20 @@ public class VoiceEqualityDynamicsFeature
 		{
 			// Find the number of channels with no note ons
 			int silent_count = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
 			{
-				if (sequence_info.channel_statistics[chan][0] == 0)
+				if (sequence_info.getChannel_statistics()[chan][0] == 0)
 					silent_count++;
 			}
 
 			// Store the number of note ons in each channel with note ons
-			double[] dynamics = new double[sequence_info.channel_statistics.length - silent_count];
+			double[] dynamics = new double[sequence_info.getChannel_statistics().length - silent_count];
 			int count = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
 			{
-				if (sequence_info.channel_statistics[chan][0] != 0)
+				if (sequence_info.getChannel_statistics()[chan][0] != 0)
 				{
-					dynamics[count] = (double) sequence_info.channel_statistics[chan][2];
+					dynamics[count] = (double) sequence_info.getChannel_statistics()[chan][2];
 					count++;
 				}
 			}

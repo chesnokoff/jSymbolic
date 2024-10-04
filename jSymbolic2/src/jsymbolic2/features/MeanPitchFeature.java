@@ -60,20 +60,20 @@ public class MeanPitchFeature
 		{
 			// Find the total pitch
 			double cumulative_pitch_values = 0;
-			for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
+			for (int chan = 0; chan < sequence_info.getChannel_statistics().length; chan++)
 			{
 				if (chan != (10 - 1)) // Exclude the unpitched percussion Channel 10
 				{
-					cumulative_pitch_values += sequence_info.channel_statistics[chan][6]
-							* sequence_info.channel_statistics[chan][0];
+					cumulative_pitch_values += sequence_info.getChannel_statistics()[chan][6]
+							* sequence_info.getChannel_statistics()[chan][0];
 				}
 			}
 
 			// Calculate the feature value
-			if (sequence_info.total_number_pitched_note_ons == 0)
+			if (sequence_info.getTotal_number_pitched_note_ons() == 0)
 				value = 0.0;
 			else 
-				value = cumulative_pitch_values / (double) sequence_info.total_number_pitched_note_ons;
+				value = cumulative_pitch_values / (double) sequence_info.getTotal_number_pitched_note_ons();
 		}
 		else value = -1.0;
 

@@ -59,7 +59,7 @@ public class BrassPrevalenceFeature
 		if (sequence_info != null)
 		{
 			int[] instruments = { 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67 };
-			value = jsymbolic2.processing.MIDIIntermediateRepresentations.calculateInstrumentGroupFrequency(instruments, sequence_info);
+			value = MIDIIntermediateRepresentations.calculateInstrumentGroupFrequency(instruments, sequence_info);
 		}
 		else value = -1.0;
 

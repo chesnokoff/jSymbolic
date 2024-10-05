@@ -1050,11 +1050,10 @@ public class MIDIIntermediateRepresentations
 				MidiMessage message = event.getMessage();
 
 				// If message is a MetaMessage (which tempo change messages are)
-				if (message instanceof MetaMessage)
+				if (message instanceof MetaMessage meta_message)
 				{
-					MetaMessage meta_message = (MetaMessage) message;
 
-					if (meta_message.getType() == 0x51) // tempo change message
+                    if (meta_message.getType() == 0x51) // tempo change message
 					{
 						// Find the number of PPQ ticks per beat
 						int ticks_per_beat = sequence.getResolution();
@@ -1078,11 +1077,10 @@ public class MIDIIntermediateRepresentations
 				}
 
 				// If message is a ShortMessage (which volume controller messages are)
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
 
-					if (short_message.getCommand() == 0xb0) // Controller message
+                    if (short_message.getCommand() == 0xb0) // Controller message
 					{
 						if (short_message.getData1() == 7) // Volume controller
 						{
@@ -1136,10 +1134,9 @@ public class MIDIIntermediateRepresentations
 				MidiMessage message = event.getMessage();
 
 				// If message is a ShortMessage (which Note Ons, Note Offs and Program Change messages are)
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
-					if (short_message.getChannel() != 10 - 1) // not channel 10 (percussion)
+                    if (short_message.getChannel() != 10 - 1) // not channel 10 (percussion)
 					{
 						// If a Program Change message is encountered, then update current_patch_numbers
 						if (short_message.getCommand() == 0xc0)
@@ -1206,10 +1203,9 @@ public class MIDIIntermediateRepresentations
 				MidiMessage message = event.getMessage();
 
 				// If message is a ShortMessage (which Note Ons are)
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
-					if (short_message.getChannel() == 10 - 1) // is channel 10 (percussion)
+                    if (short_message.getChannel() == 10 - 1) // is channel 10 (percussion)
 					{
 						// If a Note On message is encountered, then increment appropriate row of
 						// non_pitched_instrument_prevalence
@@ -1247,10 +1243,9 @@ public class MIDIIntermediateRepresentations
 				MidiMessage message = event.getMessage();
 
 				// If message is a ShortMessage (which Note Ons are)
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
-					if (short_message.getCommand() == 0x90)
+                    if (short_message.getCommand() == 0x90)
 						if (short_message.getData2() != 0) // not velocity 0
 							total_number_note_ons++;
 				}
@@ -1348,11 +1343,10 @@ public class MIDIIntermediateRepresentations
 				MidiMessage message = event.getMessage();
 
 				// If message is a ShortMessage (which Note Ons are)
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
 
-					// If a Note On message is encountered
+                    // If a Note On message is encountered
 					if (short_message.getCommand() == 0x90)
 					{
 						if (short_message.getData2() != 0) // not velocity 0
@@ -1538,10 +1532,9 @@ public class MIDIIntermediateRepresentations
 				int current_tick = (int) event.getTick();
 
 				// Mark rhythm_score with combined loudness on a tick with a note on
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
-					if (short_message.getCommand() == 0x90) // note on
+                    if (short_message.getCommand() == 0x90) // note on
 						rhythm_score[current_tick] += (int) (((double) short_message.getData2()) * volume_of_channels_tick_map[current_tick][short_message.getChannel()]);
 				}
 			}
@@ -1607,11 +1600,10 @@ public class MIDIIntermediateRepresentations
 				MidiMessage message = event.getMessage();
 
 				// If message is a ShortMessage (which Note Ons are)
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
 
-					// If a Note On message is encountered
+                    // If a Note On message is encountered
 					if (short_message.getCommand() == 0x90)
 					{
 						if (short_message.getData2() != 0) // not velocity 0
@@ -1659,10 +1651,9 @@ public class MIDIIntermediateRepresentations
 				MidiMessage message = event.getMessage();
 
 				// If message is a ShortMessage (which Note Ons are)
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
-					if (short_message.getCommand() == 0x90) // note on
+                    if (short_message.getCommand() == 0x90) // note on
 						if (short_message.getData2() != 0) // not velocity 0
 							note_attack_tick_map[(int) event.getTick()][short_message.getChannel()] = true;
 				}
@@ -1715,10 +1706,9 @@ public class MIDIIntermediateRepresentations
 				MidiMessage message = event.getMessage();
 
 				// Increment pitch of a note on
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
-					if (short_message.getChannel() != 10 - 1) // not channel 10 (percussion)
+                    if (short_message.getChannel() != 10 - 1) // not channel 10 (percussion)
 						if (short_message.getCommand() == 0x90) // note on
 							if (short_message.getData2() != 0) // not velocity 0
 								basic_pitch_histogram[short_message.getData1()]++;
@@ -1768,10 +1758,9 @@ public class MIDIIntermediateRepresentations
 			{
 				MidiEvent event = track.get(n_event);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
-					if (short_message.getChannel() != 10 - 1) // not channel 10 (percussion)
+                    if (short_message.getChannel() != 10 - 1) // not channel 10 (percussion)
 					{
 						// If message is a pitch bend
 						if (short_message.getCommand() == 0xe0)
@@ -1850,10 +1839,9 @@ public class MIDIIntermediateRepresentations
 			{
 				MidiEvent event = track.get(n_event);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
-					if (short_message.getCommand() == 0x90) // note on
+                    if (short_message.getCommand() == 0x90) // note on
 					{
 						if (short_message.getChannel() != 10 - 1) // not channel 10 (percussion)
 						{
@@ -1952,10 +1940,9 @@ public class MIDIIntermediateRepresentations
 			Track this_track = tracks[track_i];
 			for (int event_i = 0; event_i < this_track.size(); event_i++)
 			{
-				if (this_track.get(event_i).getMessage() instanceof ShortMessage) // If message is a ShortMessage (which Note Ons and Note Offs are)
+				if (this_track.get(event_i).getMessage() instanceof ShortMessage short_message) // If message is a ShortMessage (which Note Ons and Note Offs are)
 				{
-					ShortMessage short_message = (ShortMessage) this_track.get(event_i).getMessage();
-					if (short_message.getCommand() == 0x90) // Note On
+                    if (short_message.getCommand() == 0x90) // Note On
 					{
 						// Note information about this Note On
 						int on_tick = (int) this_track.get(event_i).getTick();
@@ -2005,10 +1992,9 @@ public class MIDIIntermediateRepresentations
 							for (int i = event_i + 1; i < this_track.size(); i++)
 							{
 								MidiEvent end_event = this_track.get(i);
-								if (end_event.getMessage() instanceof ShortMessage)
+								if (end_event.getMessage() instanceof ShortMessage end_message)
 								{
-									ShortMessage end_message = (ShortMessage) end_event.getMessage();
-									if (end_message.getChannel() == on_channel) // Must be on same channel as Note On
+                                    if (end_message.getChannel() == on_channel) // Must be on same channel as Note On
 									{
 										if (end_message.getCommand() == 0x80) // Note off
 										{
@@ -2148,10 +2134,9 @@ public class MIDIIntermediateRepresentations
 			{
 				MidiEvent event = track.get(n_event);
 				MidiMessage message = event.getMessage();
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
-					if ( short_message.getChannel() != 10 - 1 && // is not on Channel 10
+                    if ( short_message.getChannel() != 10 - 1 && // is not on Channel 10
 						 short_message.getCommand() == 0x90 && // is a Note On message
 						 short_message.getData2() != 0 ) // does not have velocity 0
 					{
@@ -2405,10 +2390,9 @@ public class MIDIIntermediateRepresentations
 			for (int n_event = 0; n_event < tracks[n_track].size(); n_event++)
 			{
 				MidiEvent event = tracks[n_track].get(n_event);
-				if (event.getMessage() instanceof ShortMessage)
+				if (event.getMessage() instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) event.getMessage();
-					if (short_message.getCommand() == 0x90) // Note on
+                    if (short_message.getCommand() == 0x90) // Note on
 					{
 						if (short_message.getData2() != 0) // Not velocity 0
 						{
@@ -2578,10 +2562,9 @@ public class MIDIIntermediateRepresentations
 		{
 			MidiEvent end_event = track.get(i);
 			MidiMessage end_message = end_event.getMessage();
-			if (end_message instanceof ShortMessage)
+			if (end_message instanceof ShortMessage end_short_message)
 			{
-				ShortMessage end_short_message = (ShortMessage) end_message;
-				if (end_short_message.getChannel() == note_on.getChannel()) // must be on same channel
+                if (end_short_message.getChannel() == note_on.getChannel()) // must be on same channel
 				{
 					if (end_short_message.getCommand() == 0x80) // note off
 					{
@@ -2646,11 +2629,10 @@ public class MIDIIntermediateRepresentations
 		{
 			MidiEvent event = midi_track.get(n_event);
 			MidiMessage message = event.getMessage();
-			if (message instanceof ShortMessage)
+			if (message instanceof ShortMessage short_message)
 			{
 				// Is this a Note Off message (or equivalent Note On with velocity 0)?
-				ShortMessage short_message = (ShortMessage) message;
-				if (     short_message.getCommand() == 0x80
+                if (     short_message.getCommand() == 0x80
 				     || (short_message.getCommand() == 0x90 && short_message.getData2() == 0))
 				{
 					// Is this Note Off message on the same channel, and does it have the same pitch as the

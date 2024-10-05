@@ -1473,27 +1473,24 @@ public class MIDIIntermediateRepresentations
 		// of the note in quarter notes (e.g. 0.5 dorresponds to a duration of an eighth note).
 		rhythmic_value_of_each_note_in_quarter_notes = new double[total_notes];
 		int rvofeniqn_index = 0;
-		for (int i = 0; i < rhythmic_duration_note_counts.length; i++)
-		{
-			double quarter_note_fraction = 0.0;
-			switch (i)
-			{
-				case 0: quarter_note_fraction = 1.0 / 8.0; break;
-				case 1: quarter_note_fraction = 1.0 / 4.0; break;
-				case 2: quarter_note_fraction = 1.0 / 2.0; break;
-				case 3: quarter_note_fraction = 1.0 * 3.0 / 4.0; break;
-				case 4: quarter_note_fraction = 1.0; break;
-				case 5: quarter_note_fraction = 1.0 * 1.5; break;
-				case 6: quarter_note_fraction = 1.0 * 2.0; break;
-				case 7: quarter_note_fraction = 1.0 * 3.0; break;
-				case 8: quarter_note_fraction = 1.0 * 4.0; break;
-				case 9: quarter_note_fraction = 1.0 * 6.0; break;
-				case 10:quarter_note_fraction = 1.0 * 8.0; break;
-				case 11: quarter_note_fraction = 1.0 * 12.0; break;
-			}
-			
-			for (int j = 0; j < rhythmic_duration_note_counts[i]; j++)
-			{
+		for (int i = 0; i < rhythmic_duration_note_counts.length; i++) {
+			double quarter_note_fraction = switch (i) {
+                case 0 -> 1.0 / 8.0;
+                case 1 -> 1.0 / 4.0;
+                case 2 -> 1.0 / 2.0;
+                case 3 -> 1.0 * 3.0 / 4.0;
+                case 4 -> 1.0;
+                case 5 -> 1.0 * 1.5;
+                case 6 -> 1.0 * 2.0;
+                case 7 -> 1.0 * 3.0;
+                case 8 -> 1.0 * 4.0;
+                case 9 -> 1.0 * 6.0;
+                case 10 -> 1.0 * 8.0;
+                case 11 -> 1.0 * 12.0;
+                default -> 0.0;
+            };
+
+            for (int j = 0; j < rhythmic_duration_note_counts[i]; j++) {
 				rhythmic_value_of_each_note_in_quarter_notes[rvofeniqn_index] = quarter_note_fraction;
 				rvofeniqn_index++;
 			}

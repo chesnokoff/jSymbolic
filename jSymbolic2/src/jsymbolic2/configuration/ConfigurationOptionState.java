@@ -71,11 +71,8 @@ public class ConfigurationOptionState {
     @Override
     public int hashCode() {
         int result;
-        long temp;
-        temp = Double.doubleToLongBits(window_size);
-        result = (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(window_overlap);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = Double.hashCode(window_size);
+        result = 31 * result + Double.hashCode(window_overlap);
         result = 31 * result + (save_features_for_each_window ? 1 : 0);
         result = 31 * result + (save_overall_recording_features ? 1 : 0);
         result = 31 * result + (convert_to_arff ? 1 : 0);

@@ -304,12 +304,11 @@ public class MIDIReporter
 					}
 					
 					// If this is a ShortMessage
-					if (message instanceof ShortMessage)
+					if (message instanceof ShortMessage short_message)
 					{
 						// This ShortMessage
-						ShortMessage short_message = (ShortMessage) message;
 
-						// This MIDI channel
+                        // This MIDI channel
 						int channel = short_message.getChannel();
 
 						// If this is a MIDI Program Change message
@@ -1016,12 +1015,11 @@ public class MIDIReporter
 						long event_tick = event.getTick();
 
 						// If this is a ShortMessage (which Program Change messages are)
-						if (message instanceof ShortMessage)
+						if (message instanceof ShortMessage short_message)
 						{
 							// This ShortMessage
-							ShortMessage short_message = (ShortMessage) message;
 
-							// This MIDI channel
+                            // This MIDI channel
 							int channel = short_message.getChannel();
 
 							// Only add to the report if there is at least one message on this channel in this
@@ -1100,12 +1098,11 @@ public class MIDIReporter
 						long event_tick = event.getTick();
 
 						// If this is a ShortMessage (which Channel Volume messages are)
-						if (message instanceof ShortMessage)
+						if (message instanceof ShortMessage short_message)
 						{
 							// This ShortMessage
-							ShortMessage short_message = (ShortMessage) message;
 
-							// This MIDI channel
+                            // This MIDI channel
 							int channel = short_message.getChannel();
 
 							// Only add to the report if there is at least one message on this channel in this
@@ -1211,12 +1208,11 @@ public class MIDIReporter
 							long start_tick = event.getTick();
 
 							// If this is a ShortMessage (which Note Ons are)
-							if (message instanceof ShortMessage)
+							if (message instanceof ShortMessage short_message)
 							{
 								// This ShortMessage
-								ShortMessage short_message = (ShortMessage) message;
 
-								// This MIDI channel
+                                // This MIDI channel
 								int channel = short_message.getChannel();
 
 								// Only add to the report if there is at least one message on this channel in
@@ -1353,11 +1349,10 @@ public class MIDIReporter
 		{
 			MidiEvent event = midi_track.get(ev);
 			MidiMessage message = event.getMessage();
-			if (message instanceof ShortMessage)
+			if (message instanceof ShortMessage short_message)
 			{
 				// Is this a Note Off message (or equivalent Note On with velocity 0)?
-				ShortMessage short_message = (ShortMessage) message;
-				if (     short_message.getCommand() == 0x80
+                if (     short_message.getCommand() == 0x80
 				     || (short_message.getCommand() == 0x90 && short_message.getData2() == 0))
 				{
 					// Is this Note Off message on the same channel, and does it have the same pitch as the
@@ -1394,10 +1389,9 @@ public class MIDIReporter
 		{
 			MidiEvent end_event = track.get(i);
 			MidiMessage end_message = end_event.getMessage();
-			if (end_message instanceof ShortMessage)
+			if (end_message instanceof ShortMessage end_short_message)
 			{
-				ShortMessage end_short_message = (ShortMessage) end_message;
-				if (end_short_message.getChannel() == note_on.getChannel()) // must be on same channel
+                if (end_short_message.getChannel() == note_on.getChannel()) // must be on same channel
 				{
 					if (end_short_message.getCommand() == 0x80) // note off
 					{
@@ -1490,11 +1484,10 @@ public class MIDIReporter
 				MidiMessage message = event.getMessage();
 
 				// If message is a ShortMessage (which Note Ons are)
-				if (message instanceof ShortMessage)
+				if (message instanceof ShortMessage short_message)
 				{
-					ShortMessage short_message = (ShortMessage) message;
 
-					// If a Note On message is encountered
+                    // If a Note On message is encountered
 					if (short_message.getCommand() == 0x90)
 					{
 						if (short_message.getData2() != 0) // not velocity 0

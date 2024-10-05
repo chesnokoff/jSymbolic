@@ -404,7 +404,7 @@ public class MIDIReporter
 					is_channel_10_used[file][0] = "Present";
 			
 			// Do rhythmic value offset processing
-			double[] rhythmic_value_offsets = getRhytmicValueOffsets(reporters[file].getMidiSequence());
+			double[] rhythmic_value_offsets = getRhytmicValueOffsets(reporters[file].sequence);
 			double median_rhthymic_value_offset = MathAndStatsMethods.getMedianValue(rhythmic_value_offsets);
 			double rhthymic_value_offset_stdev = MathAndStatsMethods.getStandardDeviation(rhythmic_value_offsets);
 			DecimalFormat formatter = new java.text.DecimalFormat("#.###");
@@ -430,7 +430,7 @@ public class MIDIReporter
 			else channels_duplicated_on_multiple_tracks[file] = null;
 					
 			// Store the MIDI file type of this file
-			MidiFileFormat this_midi_file_format = reporters[file].getMidiFileFormat();
+			MidiFileFormat this_midi_file_format = reporters[file].midi_file_format;
 			if (this_midi_file_format == null)
 				unique_mid_file_types_found[file][0] = "MEI (translated into MIDI for this report)";
 			else

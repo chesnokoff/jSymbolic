@@ -966,8 +966,8 @@ public class MIDIIntermediateRepresentations
 					// Check time signature, based on first time signature
 					if (((MetaMessage) message).getType() == 0x58)
 					{
-						((LinkedList) overall_metadata[1]).add(new Integer((int) (data[0] & 0xFF)));
-						((LinkedList) overall_metadata[2]).add(new Integer((int) (1 << (data[1] & 0xFF))));
+						((LinkedList) overall_metadata[1]).add(Integer.valueOf(data[0] & 0xFF));
+						((LinkedList) overall_metadata[2]).add(Integer.valueOf(1 << (data[1] & 0xFF)));
 					}
 
 					// Check initial tempo

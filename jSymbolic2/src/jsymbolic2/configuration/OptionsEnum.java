@@ -61,24 +61,19 @@ public enum OptionsEnum {
      * otherwise if its not one of the enum types, then false.
      */
     public boolean checkValue(String value) {
-        switch (this) {
-            case window_size:
+        return switch (this) {
+            case window_size ->
                 //Greater than 0.1 as per the GUI checks
-                return value.matches("\\d*\\.?\\d*") && (Double.parseDouble(value) >= 0.0);
-            case window_overlap:
+                    value.matches("\\d*\\.?\\d*") && (Double.parseDouble(value) >= 0.0);
+            case window_overlap ->
                 //Between 0 and 1 (not inclusive) as per the GUI checks
-                return value.matches("0?.\\d*") && (Double.parseDouble(value) >= 0) && (Double.parseDouble(value) < 1.0);
-            case save_features_for_each_window:
-                return isBoolean(value);
-            case save_overall_recording_features:
-                return isBoolean(value);
-            case convert_to_arff:
-                return isBoolean(value);
-            case convert_to_csv:
-                return isBoolean(value);
-            default:
-                return false;
-        }
+                    value.matches("0?.\\d*") && (Double.parseDouble(value) >= 0) && (Double.parseDouble(value) < 1.0);
+            case save_features_for_each_window -> isBoolean(value);
+            case save_overall_recording_features -> isBoolean(value);
+            case convert_to_arff -> isBoolean(value);
+            case convert_to_csv -> isBoolean(value);
+            default -> false;
+        };
     }
 
     /**

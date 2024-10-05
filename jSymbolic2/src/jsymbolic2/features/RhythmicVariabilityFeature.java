@@ -59,8 +59,7 @@ public class RhythmicVariabilityFeature
 		{
 			// Make the reduced histogram (excluding the first 40 empty bins)
 			double[] reduced_histogram = new double[sequence_info.beat_histogram.length - 40];
-			for (int i = 0; i < reduced_histogram.length; i++)
-				reduced_histogram[i] = sequence_info.beat_histogram[i + 40];
+            System.arraycopy(sequence_info.beat_histogram, 40, reduced_histogram, 0, reduced_histogram.length);
 
 			// Calculate the value
 			value = mckay.utilities.staticlibraries.MathAndStatsMethods.getStandardDeviation(reduced_histogram);

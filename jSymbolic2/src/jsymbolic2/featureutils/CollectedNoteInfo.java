@@ -67,10 +67,9 @@ public class CollectedNoteInfo
 			for (int event_i = 0; event_i < this_track.size(); event_i++)
 			{
 				MidiEvent this_event = this_track.get(event_i);
-				if (this_event.getMessage() instanceof ShortMessage)
+				if (this_event.getMessage() instanceof ShortMessage start_message)
 				{
-					ShortMessage start_message = (ShortMessage) this_event.getMessage();
-					if (start_message.getCommand() == 0x90) // If a Note On message is encountered
+                    if (start_message.getCommand() == 0x90) // If a Note On message is encountered
 					{
 						if (start_message.getData2() != 0) // If not velocity 0
 						{
@@ -82,10 +81,9 @@ public class CollectedNoteInfo
 							int event_start_tick = (int) this_event.getTick();
 							for (int i = event_i + 1; i < this_track.size(); i++)
 							{
-								if (this_track.get(i).getMessage() instanceof ShortMessage)
+								if (this_track.get(i).getMessage() instanceof ShortMessage end_message)
 								{
-									ShortMessage end_message = (ShortMessage) this_track.get(i).getMessage();
-									if (end_message.getChannel() == start_message.getChannel()) // Must be on same channel as Note On was
+                                    if (end_message.getChannel() == start_message.getChannel()) // Must be on same channel as Note On was
 									{
 										if (end_message.getCommand() == 0x80) // Note Off
 										{

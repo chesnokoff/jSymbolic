@@ -62,8 +62,7 @@ public class BeatHistogramFeature
 		if (sequence_info != null)
 		{
 			result = new double[sequence_info.beat_histogram.length - 40];
-			for (int i = 0; i < result.length; i++)
-				result[i] = sequence_info.beat_histogram[i + 40];
+            System.arraycopy(sequence_info.beat_histogram, 40, result, 0, result.length);
 		}
 		return result;
 	}

@@ -956,9 +956,9 @@ public class MIDIIntermediateRepresentations
 						if (!key_sig_found)
 						{
 							if (data[1] == 0) // major
-								overall_metadata[0] = new Integer(0);
+								overall_metadata[0] = 0;
 							else if (data[1] == 1) // minor
-								overall_metadata[0] = new Integer(1);
+								overall_metadata[0] = 1;
 								key_sig_found = true;
 						}
 					}
@@ -1630,7 +1630,7 @@ public class MIDIIntermediateRepresentations
 								duration += duration_of_ticks_in_seconds[i];
 
 							// Add note to list
-							note_durations.add(new Double(duration));
+							note_durations.add(duration);
 						}
 					}
 				}

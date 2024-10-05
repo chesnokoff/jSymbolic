@@ -247,7 +247,7 @@ public class CollectedNoteInfo
 			sorted_list.add(note);
 		
 		// Sort and return the copy of note_list
-		sorted_list.sort((s1, s2) -> ((Integer) s1.getStartTick()).compareTo(s2.getStartTick()));
+		sorted_list.sort((s1, s2) -> Integer.compare(s1.getStartTick(), s2.getStartTick()));
 		return sorted_list;
 	}
 }

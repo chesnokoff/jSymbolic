@@ -67,8 +67,7 @@ public class BeatHistogramTempoStandardizedFeature
 		if (sequence_info != null)
 		{
 			result = new double[sequence_info.beat_histogram_120_bpm_standardized.length - 40];
-			for (int i = 0; i < result.length; i++)
-				result[i] = sequence_info.beat_histogram_120_bpm_standardized[i + 40];
+            System.arraycopy(sequence_info.beat_histogram_120_bpm_standardized, 40, result, 0, result.length);
 		}
 		return result;
 	}

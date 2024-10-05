@@ -60,10 +60,8 @@ public class AverageNumberOfIndependentVoicesFeature
 		{
 			// Instantiate of the variable holding the number of voices sounding at each tick
 			int[] number_sounding = new int[sequence_info.note_sounding_on_a_channel_tick_map.length];
-			for (int i = 0; i < number_sounding.length; i++)
-				number_sounding[i] = 0;
 
-			// Find the number of voices sounding at each tick
+            // Find the number of voices sounding at each tick
 			int rest_count = 0;
 			for (int tick = 0; tick < sequence_info.note_sounding_on_a_channel_tick_map.length; tick++)
 			{

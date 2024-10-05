@@ -64,7 +64,7 @@ public class StrongTonalCentresFeature
 			{
 				if (sequence_info.fifths_pitch_histogram[bin] >= 0.09)
 				{
-					int left = bin - 1;;
+					int left = bin - 1;
 					int right = bin + 1;
 
 					// Account for wrap around

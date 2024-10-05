@@ -79,7 +79,7 @@ public class VibratoPrevalenceFeature
 				}
 
 				// Find the number of changes of direction of bend bend for each note
-				int notes_with_vibrato = 0;;
+				int notes_with_vibrato = 0;
 				for (int note = 0; note < pitch_bends.length; note++)
 				{
 					int changes = 0;

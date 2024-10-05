@@ -121,28 +121,35 @@ public final class CommandLineUtilities
 	 */
 	public static String getCommandLineCorrectUsage()
 	{
-		return "\nProper usage of jSymbolic via the command line requires one of the following command line argument configurations (see the manual for more details):\n\n"
-				+ "1) No arguments (automaticallys run the GUI under default settings)\n"
-				+ "2) <SymbolicMusicFileOrDirectoryInputPath> <AceXmlFeatureValuesOutputPath> <AceXmlFeatureDefinitionsOutputPath>\n"
-				+ "\t-arff and/or -csv can be optionally be added before the above arguments.\n"
-				+ "3) -window <SymbolicMusicFileInputPath> <AceXmlFeatureValuesOutputPath> <AceXmlFeatureDefinitionsOutputPath> <WindowLength> <WindowOverlapFraction>\n"
-				+ "\t-arff and/or -csv can be optionally be added before the above arguments.\n"
-				+ "4) -configrun <ConfigurationFilePath>\n"
-				+ "5) -configrun <ConfigurationFilePath> <SymbolicMusicFileInputPath> <AceXmlFeatureValuesOutputPath> <AceXmlFeatureDefinitionsOutputPath>\n"
-				+ "6) -configgui <ConfigurationFilePath>\n"
-				+ "7) -validateconfigallheaders <ConfigurationFilePath>\n"
-				+ "8) -validateconfigfeatureoption <ConfigurationFilePath>\n"
-				+ "9) -consistencycheck <MidiFileOrMeiFileOrDirectoryPath>\n"
-				+ "10) -mididump <MidiFileOrMeiFileOrDirectoryPath>\n"
-				+ "11) -help\n\n"
-				+ "Command line variable descriptions:\n"
-				+ "* SymbolicMusicFileOrDirectoryInputPath: The file path of the MIDI or MEI file from which features are to be extracted. May alternatively be a directory holding one or more such files (sub-folders are searched recursively, and files must have qualifying MIDI or MEI extensions to be included).\n"
-				+ "* AceXmlFeatureValuesOutputPath: The path of the ACE XML file to which extracted feature values will be saved.\n"
-				+ "* AceXmlFeatureDefinitionsOutputPath: The path of the ACE XML file to to which metadata descriptions of the extracted features will be saved.\n"
-				+ "* WindowLength: The duration in seconds of windows to be used during windowed feature extraction.\n"
-				+ "* WindowOverlapFraction: A value between 0 and 1 specifying the fractional overlap between consecutive windows.\n"
-				+ "* ConfigurationFilePath: The path of a configuration file to load jSymbolic settings from.\n"
-				+ "* MidiOrMeiOrDirectoryPath: The path of a MIDI or MEI file to parse and report on. May alternatively be a directory holding one or more such files (sub-folders are searched recursively, and files must have qualifying MIDI or MEI extensions to be included). MEI files are converted to MIDI as part of this process.\n\n"
-				+ "NOTE: All specified file paths must either be absolute or relative to the directory holding jSymbolic2.jar.\n\n";
+		return """
+                
+                Proper usage of jSymbolic via the command line requires one of the following command line argument configurations (see the manual for more details):
+                
+                1) No arguments (automaticallys run the GUI under default settings)
+                2) <SymbolicMusicFileOrDirectoryInputPath> <AceXmlFeatureValuesOutputPath> <AceXmlFeatureDefinitionsOutputPath>
+                \t-arff and/or -csv can be optionally be added before the above arguments.
+                3) -window <SymbolicMusicFileInputPath> <AceXmlFeatureValuesOutputPath> <AceXmlFeatureDefinitionsOutputPath> <WindowLength> <WindowOverlapFraction>
+                \t-arff and/or -csv can be optionally be added before the above arguments.
+                4) -configrun <ConfigurationFilePath>
+                5) -configrun <ConfigurationFilePath> <SymbolicMusicFileInputPath> <AceXmlFeatureValuesOutputPath> <AceXmlFeatureDefinitionsOutputPath>
+                6) -configgui <ConfigurationFilePath>
+                7) -validateconfigallheaders <ConfigurationFilePath>
+                8) -validateconfigfeatureoption <ConfigurationFilePath>
+                9) -consistencycheck <MidiFileOrMeiFileOrDirectoryPath>
+                10) -mididump <MidiFileOrMeiFileOrDirectoryPath>
+                11) -help
+                
+                Command line variable descriptions:
+                * SymbolicMusicFileOrDirectoryInputPath: The file path of the MIDI or MEI file from which features are to be extracted. May alternatively be a directory holding one or more such files (sub-folders are searched recursively, and files must have qualifying MIDI or MEI extensions to be included).
+                * AceXmlFeatureValuesOutputPath: The path of the ACE XML file to which extracted feature values will be saved.
+                * AceXmlFeatureDefinitionsOutputPath: The path of the ACE XML file to to which metadata descriptions of the extracted features will be saved.
+                * WindowLength: The duration in seconds of windows to be used during windowed feature extraction.
+                * WindowOverlapFraction: A value between 0 and 1 specifying the fractional overlap between consecutive windows.
+                * ConfigurationFilePath: The path of a configuration file to load jSymbolic settings from.
+                * MidiOrMeiOrDirectoryPath: The path of a MIDI or MEI file to parse and report on. May alternatively be a directory holding one or more such files (sub-folders are searched recursively, and files must have qualifying MIDI or MEI extensions to be included). MEI files are converted to MIDI as part of this process.
+                
+                NOTE: All specified file paths must either be absolute or relative to the directory holding jSymbolic2.jar.
+                
+                """;
 	}
 }

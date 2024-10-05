@@ -67,8 +67,7 @@ public class RhythmicValueHistogramFeature
 		if (sequence_info != null)
 		{
 			result = new double[sequence_info.rhythmic_value_histogram.length];
-			for (int value = 0; value < result.length; value++)
-				result[value] = sequence_info.rhythmic_value_histogram[value];
+            System.arraycopy(sequence_info.rhythmic_value_histogram, 0, result, 0, result.length);
 		}
 		return result;
 	}

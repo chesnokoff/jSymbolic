@@ -71,8 +71,7 @@ public class MelodicIntervalHistogramFeature
 		if (sequence_info != null)
 		{
 			result = new double[sequence_info.melodic_interval_histogram.length];
-			for (int pitch = 0; pitch < result.length; pitch++)
-				result[pitch] = sequence_info.melodic_interval_histogram[pitch];
+            System.arraycopy(sequence_info.melodic_interval_histogram, 0, result, 0, result.length);
 		}
 		return result;
 	}

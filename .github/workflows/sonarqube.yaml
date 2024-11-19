@@ -31,7 +31,7 @@ jobs:
             ./gradlew build sonar \
             -Dsonar.projectKey=jSymbolic2 \
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-            -Dsonar.ti=token=${{ secrets.SONAR_TOKEN }} \
+            -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
             -Dsonar.branch.name=${GITHUB_REF##*/} \
             -Dsonar.binaries=build/classes \
             -Dsonar.dynamicAnalysis=reuseReports \

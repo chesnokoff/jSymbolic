@@ -1,6 +1,6 @@
 package jsymbolic2.features;
 
-import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.featureutils.Feature;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.midiUtilities.MidiBuildEvent;
 import org.junit.After;
@@ -53,19 +53,19 @@ public class RatioOfPrevalenceOfTwoMostCommonVerticalIntervalsFeatureTest {
         double[] vertical_intervals = new WrappedVerticalIntervalHistogramFeature().extractFeature(test_tracks, inter, vertical_interval_other_features);
         double[][] other_features = new double[2][];
         other_features[0] = vertical_intervals;
-        MIDIFeatureExtractor common_interval_feature = new MostCommonVerticalIntervalFeature();
+        Feature common_interval_feature = new MostCommonVerticalIntervalFeature();
         double[] most_common_vertical_interval = common_interval_feature.extractFeature(test_tracks, inter, other_features);
         other_features[1] = most_common_vertical_interval;
-        MIDIFeatureExtractor seccond_common_feature = new SecondMostCommonVerticalIntervalFeature();
+        Feature seccond_common_feature = new SecondMostCommonVerticalIntervalFeature();
         double[] second_common_value = seccond_common_feature.extractFeature(test_tracks, inter, other_features);
-        MIDIFeatureExtractor prevalence_common = new PrevalenceOfMostCommonVerticalIntervalFeature();
+        Feature prevalence_common = new PrevalenceOfMostCommonVerticalIntervalFeature();
         double[] prevalence_value = prevalence_common.extractFeature(test_tracks, inter, other_features);
         other_features[1] = second_common_value;
-        MIDIFeatureExtractor second_prevalence_feature = new PrevalenceOfSecondMostCommonVerticalIntervalFeature();
+        Feature second_prevalence_feature = new PrevalenceOfSecondMostCommonVerticalIntervalFeature();
         double[] second_prevalence_value = second_prevalence_feature.extractFeature(test_tracks, inter, other_features);
         other_features[0] = prevalence_value;
         other_features[1] = second_prevalence_value;
-        MIDIFeatureExtractor actual_common = new PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature();
+        Feature actual_common = new PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature();
         double[] actual_prevalence = actual_common.extractFeature(test_tracks, inter, other_features);
         double[] expected_prevalence = {0.3333};
         assertArrayEquals(expected_prevalence, actual_prevalence, 0.0001);

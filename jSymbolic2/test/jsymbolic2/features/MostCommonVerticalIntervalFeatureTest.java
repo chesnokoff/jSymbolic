@@ -1,6 +1,6 @@
 package jsymbolic2.features;
 
-import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.featureutils.Feature;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.midiUtilities.MidiBuildEvent;
 import org.junit.After;
@@ -51,7 +51,7 @@ public class MostCommonVerticalIntervalFeatureTest {
         double[] unwrapped_vertical_intervals = new VerticalIntervalHistogramFeature().extractFeature(test_tracks, inter, null);
         double[][] vertical_interval_other_features = new double[1][];
         vertical_interval_other_features[0] = unwrapped_vertical_intervals;
-        MIDIFeatureExtractor actual_common = new MostCommonVerticalIntervalFeature();
+        Feature actual_common = new MostCommonVerticalIntervalFeature();
         double[] vertical_intervals = new WrappedVerticalIntervalHistogramFeature().extractFeature(test_tracks, inter, vertical_interval_other_features);
         double[][] other_features = new double[1][];
         other_features[0] = vertical_intervals;

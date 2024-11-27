@@ -1,6 +1,8 @@
 package jsymbolic2.gui;
 
 import javax.swing.table.DefaultTableModel;
+
+import jsymbolic2.featureutils.Feature;
 import jsymbolic2.featureutils.MEIFeatureExtractor;
 import jsymbolic2.featureutils.MIDIFeatureExtractor;
 
@@ -77,7 +79,7 @@ public class FeatureSelectorTableModel
 	 *								to the order of the MIDIFeatureExtractor objects passed to the features
 	 *								parameter.
 	 */
-	public void fillTable(MIDIFeatureExtractor[] features, boolean[] feature_save_defaults)
+	public void fillTable(Feature[] features, boolean[] feature_save_defaults)
 	{
 		// Remove all rows in the table
 		while (getRowCount() != 0)
@@ -92,7 +94,7 @@ public class FeatureSelectorTableModel
 
 			row_contents[1] = features[i].getFeatureDefinition().name;
 
-			row_contents[2] = features[i].getFeatureCode();
+			row_contents[2] = features[i].getCode();
 
 			if (features[i].getFeatureDefinition().dimensions > 0)
 				row_contents[3] = features[i].getFeatureDefinition().dimensions;

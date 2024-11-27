@@ -1,6 +1,6 @@
 package jsymbolic2.features;
 
-import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.featureutils.Feature;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.midiUtilities.MidiBuildEvent;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class ChordDurationFeatureTest {
         double[] vertical_intervals = new ChordTypeHistogramFeature().extractFeature(test_tracks, inter, null);
         double[][] other_features = new double[1][];
         other_features[0] = vertical_intervals;
-        MIDIFeatureExtractor actual_common = new ChordDurationFeature();
+        Feature actual_common = new ChordDurationFeature();
         double[] actual_chord_type = actual_common.extractFeature(test_tracks, inter, other_features);
         double[] expected_chord_type = {0.0078125};
         assertArrayEquals(expected_chord_type, actual_chord_type, 0.000001);

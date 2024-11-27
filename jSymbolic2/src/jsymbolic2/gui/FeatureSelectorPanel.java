@@ -7,6 +7,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
 import jsymbolic2.configuration.*;
+import jsymbolic2.featureutils.Feature;
 import jsymbolic2.featureutils.FeatureExtractorAccess;
 import jsymbolic2.featureutils.MEIFeatureExtractor;
 import jsymbolic2.featureutils.MIDIFeatureExtractor;
@@ -53,7 +54,7 @@ public class FeatureSelectorPanel
 	/**
 	 * Hold one instance of each implemented feature.
 	 */
-	private final MIDIFeatureExtractor[] all_feature_extractors;
+	private final Feature[] all_feature_extractors;
 
 	/**
 	 * The default features to save during feature extraction. Ordering matches those of the features in the
@@ -294,13 +295,13 @@ public class FeatureSelectorPanel
 
 						String text
 								= "NAME: " + definition.name + "\n"
-								+ "CODE: " + all_feature_extractors[row_clicked].getFeatureCode() + "\n"
+								+ "CODE: " + all_feature_extractors[row_clicked].getCode() + "\n"
 								+ "DESCRIPTION: " + definition.description + "\n"
 								+ "DIMENSIONS: " + definition.dimensions + "\n"
 								+ "MEI-SPECIFIC: " + mei_specific + "\n"
 								+ "IS SEQUENTIAL: " + definition.is_sequential + "\n";
 
-						String[] dependencies = all_feature_extractors[row_clicked].getDepenedencies();
+						String[] dependencies = all_feature_extractors[row_clicked].getDependencies();
 						if (dependencies == null)
 							text += "DEPENDENCIES: none";
 						else

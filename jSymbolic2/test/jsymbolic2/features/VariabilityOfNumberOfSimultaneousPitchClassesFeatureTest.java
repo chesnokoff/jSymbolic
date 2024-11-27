@@ -1,6 +1,6 @@
 package jsymbolic2.features;
 
-import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.featureutils.Feature;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.midiUtilities.MidiBuildEvent;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class VariabilityOfNumberOfSimultaneousPitchClassesFeatureTest {
         t1_tracks.add(e_tracks6);
 
         MIDIIntermediateRepresentations inter = new MIDIIntermediateRepresentations(test_tracks);
-        MIDIFeatureExtractor actual_common = new VariabilityOfNumberOfSimultaneousPitchClassesFeature();
+        Feature actual_common = new VariabilityOfNumberOfSimultaneousPitchClassesFeature();
         double[] actual_chord_type = actual_common.extractFeature(test_tracks, inter, null);
         double[] expected_chord_type = {0.7071};
         assertArrayEquals(expected_chord_type, actual_chord_type, 0.001);

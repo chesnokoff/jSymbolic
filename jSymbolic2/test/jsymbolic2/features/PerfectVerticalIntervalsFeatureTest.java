@@ -1,6 +1,6 @@
 package jsymbolic2.features;
 
-import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.featureutils.Feature;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.midiUtilities.MidiBuildEvent;
 import org.junit.After;
@@ -53,7 +53,7 @@ public class PerfectVerticalIntervalsFeatureTest {
         double[] vertical_intervals = new WrappedVerticalIntervalHistogramFeature().extractFeature(test_tracks, inter, vertical_interval_other_features);
         double[][] other_features = new double[1][];
         other_features[0] = vertical_intervals;
-        MIDIFeatureExtractor actual_common = new PerfectVerticalIntervalsFeature();
+        Feature actual_common = new PerfectVerticalIntervalsFeature();
         double[] actual_chord_type = actual_common.extractFeature(test_tracks, inter, other_features);
         double[] expected_chord_type = {0.8};
         assertArrayEquals(expected_chord_type, actual_chord_type, 0.01);

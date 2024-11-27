@@ -1,6 +1,6 @@
 package jsymbolic2.features;
 
-import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.featureutils.Feature;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.midiUtilities.MidiBuildEvent;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class AverageVariabilityOfRestDurationsAcrossVoicesFeatureTest {
         t2_tracks.add(e_tracks8);
 
         MIDIIntermediateRepresentations inter = new MIDIIntermediateRepresentations(test_tracks);
-        MIDIFeatureExtractor actual_common = new VariabilityAcrossVoicesOfCombinedRestsFeature();
+        Feature actual_common = new VariabilityAcrossVoicesOfCombinedRestsFeature();
         double[] actual_rest = actual_common.extractFeature(test_tracks, inter, null);
         double[] expected_rest = {6.36396};
         assertArrayEquals(expected_rest, actual_rest, 0.00001);

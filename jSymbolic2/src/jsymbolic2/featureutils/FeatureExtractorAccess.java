@@ -28,7 +28,7 @@ public final class FeatureExtractorAccess
 	 * extractor (including MEIFeatureExtractor features). These are ordered in the same order in which they
 	 * are presented in the jSymbolic manual.
 	 */
-	private static final MIDIFeatureExtractor[] all_implemented_feature_extractors;
+	private static final Feature[] all_implemented_feature_extractors;
 
 	/**
 	 * An array with one entry for every feature implemented as a MIDIFeatureExtractor (including
@@ -68,7 +68,7 @@ public final class FeatureExtractorAccess
 	 */
 	static
 	{
-		all_implemented_feature_extractors = new MIDIFeatureExtractor[]
+		all_implemented_feature_extractors = new Feature[]
 		{
 			// Add features based on pitch statistics
 			new BasicPitchHistogramFeature(),
@@ -329,10 +329,6 @@ public final class FeatureExtractorAccess
 			new VariationOfDynamicsFeature(),
 			new VariationOfDynamicsInEachVoiceFeature(),
 			new AverageNoteToNoteChangeInDynamics(),
-			
-			// Add MEI-specific features
-			new NumberOfGraceNotesMeiFeature(),
-			new NumberOfSlursMeiFeature()
 		};
 
 		default_features_to_save = new boolean[]
@@ -603,8 +599,8 @@ public final class FeatureExtractorAccess
 		};
 
 		names_of_all_implemented_features = new ArrayList<>();
-		List<MIDIFeatureExtractor> all_extractors = Arrays.asList(all_implemented_feature_extractors);
-		for (MIDIFeatureExtractor fe : all_extractors)
+		List<Feature> all_extractors = Arrays.asList(all_implemented_feature_extractors);
+		for (Feature fe : all_extractors)
 			names_of_all_implemented_features.add(fe.getFeatureDefinition().name);
 
 		names_of_default_features_to_save = new ArrayList<>();
@@ -613,7 +609,7 @@ public final class FeatureExtractorAccess
 				names_of_default_features_to_save.add(names_of_all_implemented_features.get(i));
 
 		names_of_mei_specific_features = new ArrayList<>();
-		for (MIDIFeatureExtractor feature : all_implemented_feature_extractors)
+		for (Feature feature : all_implemented_feature_extractors)
 		{
 			if (feature instanceof MEIFeatureExtractor)
 			{
@@ -638,7 +634,7 @@ public final class FeatureExtractorAccess
 	 *			feature extractor (including MEIFeatureExtractor features). These are ordered in the same 
 	 *			order in which they are presented in the jSymbolic manual.
 	 */
-	public static MIDIFeatureExtractor[] getAllImplementedFeatureExtractors()
+	public static Feature[] getAllImplementedFeatureExtractors()
 	{
 		return all_implemented_feature_extractors;
 	}
@@ -778,7 +774,7 @@ public final class FeatureExtractorAccess
 		{
             if (features_to_include[i])
             {
-                MIDIFeatureExtractor feat = all_implemented_feature_extractors[i];
+				Feature feat = all_implemented_feature_extractors[i];
 
                 total_unique_features++;
                 
@@ -790,7 +786,7 @@ public final class FeatureExtractorAccess
                 if (feat.getFeatureDefinition().is_sequential)
                     total_sequential_features++;
 
-                char code = feat.getFeatureCode().charAt(0);
+                char code = feat.getCode().charAt(0);
                 switch (code)
                 {
                     case 'P':
@@ -879,7 +875,7 @@ public final class FeatureExtractorAccess
 		// features that have not themselves been added to all_implemented_feature_extractors
 		for (int feat = 0; feat < all_implemented_feature_extractors.length; feat++)
 		{
-			String[] dependencies = all_implemented_feature_extractors[feat].getDepenedencies();
+			String[] dependencies = all_implemented_feature_extractors[feat].getDependencies();
 			if (dependencies != null)
 			{
 				for (int dep = 0; dep < dependencies.length; dep++)
@@ -916,13 +912,13 @@ public final class FeatureExtractorAccess
 		// all_implemented_feature_extractors
 		String[] all_feature_codes = new String[all_implemented_feature_extractors.length];
 		for (int i = 0; i < all_feature_codes.length; i++)
-			all_feature_codes[i] = all_implemented_feature_extractors[i].getFeatureCode();
+			all_feature_codes[i] = all_implemented_feature_extractors[i].getCode();
 		int[][] duplicate_codes = mckay.utilities.staticlibraries.StringMethods.getIndexesOfDuplicateEntries(all_feature_codes);
 		if (duplicate_codes != null)
 		{
 			for (int i = 0; i < duplicate_codes.length; i++)
 			{
-				String duplicated_feature_code = all_implemented_feature_extractors[duplicate_codes[i][0]].getFeatureCode();
+				String duplicated_feature_code = all_implemented_feature_extractors[duplicate_codes[i][0]].getCode();
 				int number_of_occurrences = duplicate_codes[i].length;
 				problem_report += "WARNING: The feature code " + duplicated_feature_code + " has been added to jSymbolic in " + number_of_occurrences + " features. No feature code should be used more than once. This is not a serious problem, but it could result in confusion or redundant feature extraction.\n";
 			}
@@ -936,7 +932,7 @@ public final class FeatureExtractorAccess
 		{
 			try
 			{
-				String[] split_code = all_implemented_feature_extractors[feat].getFeatureCode().split("-");
+				String[] split_code = all_implemented_feature_extractors[feat].getCode().split("-");
 				String this_group = split_code[0];
 				int this_number = Integer.parseInt(split_code[1]);
 
@@ -945,10 +941,10 @@ public final class FeatureExtractorAccess
 					if (this_group.equals(last_group))
 					{
 						if (this_number != (last_number + 1))
-							problem_report += "WARNING: The feature " + all_implemented_feature_extractors[feat].getFeatureCode() + " has been added to jSymbolic out of sequence (its code does not numerically follow the previous feature in its group). This is not a serious problem, but it could result in confusion.\n";
+							problem_report += "WARNING: The feature " + all_implemented_feature_extractors[feat].getCode() + " has been added to jSymbolic out of sequence (its code does not numerically follow the previous feature in its group). This is not a serious problem, but it could result in confusion.\n";
 					}
 					else if (this_number != 1)
-						problem_report += "WARNING: The feature " + all_implemented_feature_extractors[feat].getFeatureCode() + " has been added to jSymbolic out of sequence (a new feature group should be numbered as 0). This is not a serious problem, but it could result in confusion.\n";
+						problem_report += "WARNING: The feature " + all_implemented_feature_extractors[feat].getCode() + " has been added to jSymbolic out of sequence (a new feature group should be numbered as 0). This is not a serious problem, but it could result in confusion.\n";
 				}
 
 				last_group = this_group;
@@ -956,7 +952,7 @@ public final class FeatureExtractorAccess
 			}
 			catch (Exception e)
 			{
-				problem_report += "WARNING: The feature " + all_implemented_feature_extractors[feat].getFeatureCode() + " has an improperly formatted code. The code should consist of one or more letters identifying the feature group the feature belongs to, followed by a hyphen, followed by the number of the feature within that group. For example, a code of I-7 would be appropriate for the seventh feature of the Instrumentation feature group. This is not a serious problem, but it could result in confusion.\n";
+				problem_report += "WARNING: The feature " + all_implemented_feature_extractors[feat].getCode() + " has an improperly formatted code. The code should consist of one or more letters identifying the feature group the feature belongs to, followed by a hyphen, followed by the number of the feature within that group. For example, a code of I-7 would be appropriate for the seventh feature of the Instrumentation feature group. This is not a serious problem, but it could result in confusion.\n";
 			}
 		}
 		
@@ -996,8 +992,8 @@ public final class FeatureExtractorAccess
 	{
 		System.out.println("ALL " + all_implemented_feature_extractors.length + " IMPLEMENTED FEATURES:");
 		for (int i = 0; i < all_implemented_feature_extractors.length; i++)
-			System.out.println( (i+1) + ":\t" + all_implemented_feature_extractors[i].getFeatureCode() + "\t" +
-			                    all_implemented_feature_extractors[i].definition.name);
+			System.out.println( (i+1) + ":\t" + all_implemented_feature_extractors[i].getCode() + "\t" +
+			                    all_implemented_feature_extractors[i].getName());
 	}
 	
 	/**
@@ -1009,12 +1005,12 @@ public final class FeatureExtractorAccess
 		System.out.println("FEATURES WHOSE CALCULATION DEPENDS ON OTHER FEATURES:");
 		for (int i = 0; i < all_implemented_feature_extractors.length; i++)
 		{
-			if (all_implemented_feature_extractors[i].dependencies != null)
+			if (all_implemented_feature_extractors[i].getDependencies() != null)
 			{
-				System.out.println(all_implemented_feature_extractors[i].getFeatureCode() + "\t" +
-			                        all_implemented_feature_extractors[i].definition.name);
-				for (int j = 0; j < all_implemented_feature_extractors[i].dependencies.length; j++)
-					System.out.println("\tDEPENDS ON: " + all_implemented_feature_extractors[i].dependencies[j]);
+				System.out.println(all_implemented_feature_extractors[i].getCode() + "\t" +
+			                        all_implemented_feature_extractors[i].getName());
+				for (int j = 0; j < all_implemented_feature_extractors[i].getDependencies().length; j++)
+					System.out.println("\tDEPENDS ON: " + all_implemented_feature_extractors[i].getDependencies()[j]);
 			}
 		}
 	}

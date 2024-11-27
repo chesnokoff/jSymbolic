@@ -28,8 +28,7 @@ public class MostCommonVerticalIntervalFeature
 		boolean is_sequential = true;
 		int dimensions = 1;
 		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = new String[1];
-		dependencies[0] = "Wrapped Vertical Interval Histogram";
+		dependencies = new String[]{"Wrapped Vertical Interval Histogram"};
 		offsets = null;
 	}
 	

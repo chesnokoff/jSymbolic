@@ -30,8 +30,7 @@ public class NoteDensityPerQuarterNotePerVoiceFeature
 		boolean is_sequential = true;
 		int dimensions = 1;
 		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = new String[1];
-		dependencies[0] = "Note Density per Quarter Note";
+		dependencies = new String[]{"Note Density per Quarter Note"};
 		offsets = null;
 	}
 	

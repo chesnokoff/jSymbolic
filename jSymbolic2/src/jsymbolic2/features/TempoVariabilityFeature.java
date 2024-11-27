@@ -1,64 +1,60 @@
 package jsymbolic2.features;
 
+import jsymbolic2.featureutils.Feature;
+import javax.sound.midi.*;
 import ace.datatypes.FeatureDefinition;
 import jsymbolic2.featureutils.MIDIFeatureExtractor;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
-
-import javax.sound.midi.Sequence;
 
 /**
  * A feature calculator that finds the standard deviation of the tempo in beats per minute.
  *
  * @author Cory McKay
  */
-public class TempoVariabilityFeature
-        extends MIDIFeatureExtractor {
-    /* CONSTRUCTOR ******************************************************************************************/
+public class TempoVariabilityFeature implements Feature {
 
-
-    /**
-     * Basic constructor that sets the values of the fields inherited from this class' superclass.
-     */
-    public TempoVariabilityFeature() {
-        code = "RT-3";
-        String name = "Tempo Variability";
-        String description = "Standard deviation of the tempo in beats per minute.";
-        boolean is_sequential = true;
-        int dimensions = 1;
-        definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-        dependencies = null;
-        offsets = null;
+    @Override()
+    public int getDimensions() {
+        return 1;
     }
 
+    @Override()
+    public String getName() {
+        return "Tempo Variability";
+    }
 
-    /* PUBLIC METHODS ***************************************************************************************/
+    @Override()
+    public String[] getDependencies() {
+        return null;
+    }
 
+    @Override()
+    public int[] getDependencyOffsets() {
+        return null;
+    }
 
-    /**
-     * Extract this feature from the given sequence of MIDI data and its associated information.
-     *
-     * @param sequence             The MIDI data to extract the feature from.
-     * @param sequence_info        Additional data already extracted from the the MIDI sequence.
-     * @param other_feature_values The values of other features that may be needed to calculate this feature.
-     *                             The order and offsets of these features must be the same as those returned
-     *                             by this class' getDependencies and getDependencyOffsets methods,
-     *                             respectively. The first indice indicates the feature/window, and the
-     *                             second indicates the value.
-     * @throws Exception Throws an informative exception if the feature cannot be calculated.
-     * @return The extracted feature value(s).
-     */
-    @Override
-    public double[] extractFeature(Sequence sequence,
-                                   MIDIIntermediateRepresentations sequence_info,
-                                   double[][] other_feature_values)
-            throws Exception {
+    @Override()
+    public String getCode() {
+        return "RT-3";
+    }
+
+    @Override()
+    public String getDescription() {
+        return "Standard deviation of the tempo in beats per minute.";
+    }
+
+    @Override()
+    public boolean isSequential() {
+        return true;
+    }
+
+    @Override()
+    public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;
-
-        if (null != sequence_info) {
+        if (sequence_info != null) {
             // Access necessary information
-            double ticks_per_beat = sequence.getResolution();
+            double ticks_per_beat = (double) sequence.getResolution();
             double[] duration_of_ticks_in_seconds = sequence_info.duration_of_ticks_in_seconds;
-
             // Calculate all instantaneous tempos
             double[] beats_per_minute = new double[duration_of_ticks_in_seconds.length];
             for (int i = 0; i < beats_per_minute.length; i++) {
@@ -66,11 +62,10 @@ public class TempoVariabilityFeature
                 double beats_per_second = ticks_per_second / ticks_per_beat;
                 beats_per_minute[i] = beats_per_second * 60.0;
             }
-
             // Calculate the final feature value
             value = mckay.utilities.staticlibraries.MathAndStatsMethods.getStandardDeviation(beats_per_minute);
-        } else value = -1.0;
-
+        } else
+            value = -1.0;
         double[] result = new double[1];
         result[0] = value;
         return result;

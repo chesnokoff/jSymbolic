@@ -1,10 +1,10 @@
 package jsymbolic2.features;
 
+import jsymbolic2.featureutils.Feature;
+import javax.sound.midi.*;
 import ace.datatypes.FeatureDefinition;
 import jsymbolic2.featureutils.MIDIFeatureExtractor;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
-
-import javax.sound.midi.Sequence;
 
 /**
  * A feature vector indicating the fraction of (unpitched) notes played with each of the 47 MIDI Percussion
@@ -16,56 +16,53 @@ import javax.sound.midi.Sequence;
  *
  * @author Cory McKay
  */
-public class NotePrevalenceOfUnpitchedInstrumentsFeature
-        extends MIDIFeatureExtractor {
-    /* CONSTRUCTOR ******************************************************************************************/
+public class NotePrevalenceOfUnpitchedInstrumentsFeature implements Feature {
 
-
-    /**
-     * Basic constructor that sets the values of the fields inherited from this class' superclass.
-     */
-    public NotePrevalenceOfUnpitchedInstrumentsFeature() {
-        code = "I-4";
-        String name = "Note Prevalence of Unpitched Instruments";
-        String description = "A feature vector indicating the fraction of (unpitched) notes played with each of the 47 MIDI Percussion Key Map instruments. Has one entry for each of these 47 instruments, and the value of each is set to the number of Note Ons played with the corresponding instrument, divided by the total number of Note Ons in the piece. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the ones that meet the official standard (they are correspondingly indexed in this feature vector from 0 to 46, such that index 0 corresponds to Acoustic Bass Drum, index 4 corresponds to Hand Clap, etc.).";
-        boolean is_sequential = true;
-        int dimensions = 47;
-        definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-        dependencies = null;
-        offsets = null;
+    @Override()
+    public int getDimensions() {
+        return 47;
     }
 
+    @Override()
+    public String getName() {
+        return "Note Prevalence of Unpitched Instruments";
+    }
 
-    /* PUBLIC METHODS ***************************************************************************************/
+    @Override()
+    public String[] getDependencies() {
+        return null;
+    }
 
+    @Override()
+    public int[] getDependencyOffsets() {
+        return null;
+    }
 
-    /**
-     * Extract this feature from the given sequence of MIDI data and its associated information.
-     *
-     * @param sequence             The MIDI data to extract the feature from.
-     * @param sequence_info        Additional data already extracted from the the MIDI sequence.
-     * @param other_feature_values The values of other features that may be needed to calculate this feature.
-     *                             The order and offsets of these features must be the same as those returned
-     *                             by this class' getDependencies and getDependencyOffsets methods,
-     *                             respectively. The first indice indicates the feature/window, and the
-     *                             second indicates the value.
-     * @throws Exception Throws an informative exception if the feature cannot be calculated.
-     * @return The extracted feature value(s).
-     */
-    @Override
-    public double[] extractFeature(Sequence sequence,
-                                   MIDIIntermediateRepresentations sequence_info,
-                                   double[][] other_feature_values)
-            throws Exception {
+    @Override()
+    public String getCode() {
+        return "I-4";
+    }
+
+    @Override()
+    public String getDescription() {
+        return "A feature vector indicating the fraction of (unpitched) notes played with each of the 47 MIDI Percussion Key Map instruments. Has one entry for each of these 47 instruments, and the value of each is set to the number of Note Ons played with the corresponding instrument, divided by the total number of Note Ons in the piece. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the ones that meet the official standard (they are correspondingly indexed in this feature vector from 0 to 46, such that index 0 corresponds to Acoustic Bass Drum, index 4 corresponds to Hand Clap, etc.).";
+    }
+
+    @Override()
+    public boolean isSequential() {
+        return true;
+    }
+
+    @Override()
+    public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double[] result = null;
-        if (null != sequence_info) {
+        if (sequence_info != null) {
             result = new double[47];
-            for (int instrument = 35; 82 > instrument; instrument++) {
-                if (0 == sequence_info.total_number_note_ons)
+            for (int instrument = 35; instrument < 82; instrument++) {
+                if (sequence_info.total_number_note_ons == 0)
                     result[instrument - 35] = 0.0;
                 else
-                    result[instrument - 35] = sequence_info.non_pitched_instrument_prevalence[instrument] /
-                            (double) sequence_info.total_number_note_ons;
+                    result[instrument - 35] = sequence_info.non_pitched_instrument_prevalence[instrument] / (double) sequence_info.total_number_note_ons;
             }
         }
         return result;

@@ -1,10 +1,10 @@
 package jsymbolic2.features;
 
+import jsymbolic2.featureutils.Feature;
+import javax.sound.midi.*;
 import ace.datatypes.FeatureDefinition;
 import jsymbolic2.featureutils.MIDIFeatureExtractor;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
-
-import javax.sound.midi.Sequence;
 
 /**
  * A feature calculator that finds the average number of notes per second. Takes into account all notes in all
@@ -12,61 +12,57 @@ import javax.sound.midi.Sequence;
  *
  * @author Cory McKay
  */
-public class NoteDensityFeature
-        extends MIDIFeatureExtractor {
-    /* CONSTRUCTOR ******************************************************************************************/
+public class NoteDensityFeature implements Feature {
 
-
-    /**
-     * Basic constructor that sets the values of the fields inherited from this class' superclass.
-     */
-    public NoteDensityFeature() {
-        code = "RT-5";
-        String name = "Note Density";
-        String description = "Average number of notes per second. Takes into account all notes in all voices, including both pitched and unpitched notes.";
-        boolean is_sequential = true;
-        int dimensions = 1;
-        definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-        dependencies = null;
-        offsets = null;
+    @Override()
+    public int getDimensions() {
+        return 1;
     }
 
+    @Override()
+    public String getName() {
+        return "Note Density";
+    }
 
-    /* PUBLIC METHODS ***************************************************************************************/
+    @Override()
+    public String[] getDependencies() {
+        return null;
+    }
 
+    @Override()
+    public int[] getDependencyOffsets() {
+        return null;
+    }
 
-    /**
-     * Extract this feature from the given sequence of MIDI data and its associated information.
-     *
-     * @param sequence             The MIDI data to extract the feature from.
-     * @param sequence_info        Additional data already extracted from the the MIDI sequence.
-     * @param other_feature_values The values of other features that may be needed to calculate this feature.
-     *                             The order and offsets of these features must be the same as those returned
-     *                             by this class' getDependencies and getDependencyOffsets methods,
-     *                             respectively. The first indice indicates the feature/window, and the
-     *                             second indicates the value.
-     * @throws Exception Throws an informative exception if the feature cannot be calculated.
-     * @return The extracted feature value(s).
-     */
-    @Override
-    public double[] extractFeature(Sequence sequence,
-                                   MIDIIntermediateRepresentations sequence_info,
-                                   double[][] other_feature_values)
-            throws Exception {
+    @Override()
+    public String getCode() {
+        return "RT-5";
+    }
+
+    @Override()
+    public String getDescription() {
+        return "Average number of notes per second. Takes into account all notes in all voices, including both pitched and unpitched notes.";
+    }
+
+    @Override()
+    public boolean isSequential() {
+        return true;
+    }
+
+    @Override()
+    public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;
-        if (null != sequence_info) {
+        if (sequence_info != null) {
             // Find the total number of note ons
             int count = 0;
-            for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++)
-                count += sequence_info.channel_statistics[chan][0];
-
+            for (int chan = 0; chan < sequence_info.channel_statistics.length; chan++) count += sequence_info.channel_statistics[chan][0];
             // Calculate the feature value
-            if (0 == sequence_info.sequence_duration)
+            if (sequence_info.sequence_duration == 0)
                 value = 0.0;
             else
-                value = count / sequence_info.sequence_duration_precise;
-        } else value = -1.0;
-
+                value = (double) count / sequence_info.sequence_duration_precise;
+        } else
+            value = -1.0;
         double[] result = new double[1];
         result[0] = value;
         return result;

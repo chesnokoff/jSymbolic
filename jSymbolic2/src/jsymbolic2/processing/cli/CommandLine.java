@@ -3,7 +3,11 @@ package jsymbolic2.processing.cli;
 import jsymbolic2.configuration.ConfigFileHeaderEnum;
 import jsymbolic2.configuration.ConfigurationFileData;
 import jsymbolic2.configuration.txtimplementation.ConfigurationFileValidatorTxtImpl;
-import jsymbolic2.processing.*;
+import jsymbolic2.processing.FeatureExtractionJobProcessor;
+import jsymbolic2.processing.PrintStreams;
+import jsymbolic2.processing.SaveInfo;
+import jsymbolic2.processing.UserFeedbackGenerator;
+import jsymbolic2.processing.WindowInfo;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -31,7 +35,7 @@ class CommandLine implements Consumer<String[]> {
     @Override
     public void accept(String[] args) {
         // Try parsing default configuration file if it exists
-        if (args.length == 3 && Files.exists(Paths.get(default_config_file_path))) {
+        if (3 == args.length && Files.exists(Paths.get(default_config_file_path))) {
             // Try loading configuration file at default path
             try {
                 processWithConfigFile(args);
@@ -47,7 +51,7 @@ class CommandLine implements Consumer<String[]> {
         // Run without configuration file if does not exist at default path
         // Or run without configuration file if does not exist at default path if three are some other
         // number of command line arguments than 3
-        if (args.length == 3) {
+        if (3 == args.length) {
             UserFeedbackGenerator.simplePrintln(printStreams.status_print_stream(), "NON-CRITICAL WARNING: Could not find a configurations file called " + default_config_file_path + " in the jSymbolic home directory that is valid under current settings. As a result, processing will continue using standard settings (unless specified manually). Although a default configurations file is by no means necessary to use jSymbolic, it is often convenient. You can save one at anytime either manually or using the jSymbolic GUI, if you wish (see the manual for more details).\n");
         }
         parseNoConfigFileCommandLineAndExtractAndSaveFeatures(args);
@@ -72,12 +76,12 @@ class CommandLine implements Consumer<String[]> {
         // arguments with CSV or ARFF flags, if any, removed.
         String[] reduced_args = new String[args.length];
         System.arraycopy(args, 0, reduced_args, 0, reduced_args.length);
-        if (args.length > 2 && firstOrSecondArgumentIsArffOrCsvFlag(args)) {
+        if (2 < args.length && firstOrSecondArgumentIsArffOrCsvFlag(args)) {
             reduced_args = createReducedArgs(args);
         }
 
         // If there are a proper number of command line arguments, assuming no windowing
-        if (reduced_args.length == 3) {
+        if (3 == reduced_args.length) {
             processNoWindowing(reduced_args);
             return;
         }
@@ -148,7 +152,7 @@ class CommandLine implements Consumer<String[]> {
         String windowSizePattern = "\\d*.?\\d*";
         String windowFlag = "-window";
         String windowOffsetPattern = "0?.\\d*";
-        return reduced_args.length == 6 && reduced_args[0].equals(windowFlag) &&
+        return 6 == reduced_args.length && reduced_args[0].equals(windowFlag) &&
                 reduced_args[4].matches(windowSizePattern) &&
                 reduced_args[5].matches(windowOffsetPattern);
     }

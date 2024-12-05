@@ -18,8 +18,7 @@ public class ConfigurationOptionState {
                                     boolean save_features_for_each_window,
                                     boolean save_overall_recording_features,
                                     boolean convert_to_arff,
-                                    boolean convert_to_csv)
-    {
+                                    boolean convert_to_csv) {
         this.window_size = window_size;
         this.window_overlap = window_overlap;
         this.save_features_for_each_window = save_features_for_each_window;
@@ -55,12 +54,12 @@ public class ConfigurationOptionState {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
 
         ConfigurationOptionState that = (ConfigurationOptionState) o;
 
-        if (Double.compare(that.window_size, window_size) != 0) return false;
-        if (Double.compare(that.window_overlap, window_overlap) != 0) return false;
+        if (0 != Double.compare(that.window_size, window_size)) return false;
+        if (0 != Double.compare(that.window_overlap, window_overlap)) return false;
         if (save_features_for_each_window != that.save_features_for_each_window) return false;
         if (save_overall_recording_features != that.save_overall_recording_features) return false;
         if (convert_to_arff != that.convert_to_arff) return false;

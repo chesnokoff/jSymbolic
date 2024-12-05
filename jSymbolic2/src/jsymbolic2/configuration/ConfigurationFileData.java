@@ -4,6 +4,7 @@ import jsymbolic2.featureutils.FeatureExtractorAccess;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A state object for all the data specified by a configuration file. This is to be used in order to conveniently
@@ -46,11 +47,12 @@ public class ConfigurationFileData {
 
     /**
      * Constructor
-     * @param featuresToSave Name of features to save for this configuration file.
-     * @param optionState State of the options for this configuration file.
-     * @param outputFileList All the output file paths for this configuration file.
+     *
+     * @param featuresToSave        Name of features to save for this configuration file.
+     * @param optionState           State of the options for this configuration file.
+     * @param outputFileList        All the output file paths for this configuration file.
      * @param configurationFilePath File path for the configuration file.
-     * @param inputFileList Valid and invalid files for this configuration file.
+     * @param inputFileList         Valid and invalid files for this configuration file.
      * @throws Exception Thrown if a particular feature is non-existing in jSymbolic.
      */
     public ConfigurationFileData(List<String> featuresToSave,
@@ -58,14 +60,13 @@ public class ConfigurationFileData {
                                  ConfigurationOutputFiles outputFileList,
                                  String configurationFilePath,
                                  ConfigurationInputFiles inputFileList)
-            throws Exception
-    {
+            throws Exception {
         this.featuresToSave = featuresToSave;
         this.optionState = optionState;
         this.outputFileList = outputFileList;
         this.configurationFilePath = configurationFilePath;
         this.inputFileList = inputFileList;
-        this.featuresToSaveBoolean = FeatureExtractorAccess.findSpecifiedFeatures(featuresToSave);
+        featuresToSaveBoolean = FeatureExtractorAccess.findSpecifiedFeatures(featuresToSave);
     }
 
     /**
@@ -85,7 +86,6 @@ public class ConfigurationFileData {
     }
 
     /**
-     *
      * @return The window size from the option state of the configuration file.
      */
     public double getWindowSize() {
@@ -93,7 +93,6 @@ public class ConfigurationFileData {
     }
 
     /**
-     *
      * @return The window overlap of the option state of the configuration file.
      */
     public double getWindowOverlap() {
@@ -101,7 +100,6 @@ public class ConfigurationFileData {
     }
 
     /**
-     *
      * @return True if configuration file specifies that piece must be split up into windows,
      * otherwise false.
      */
@@ -110,7 +108,6 @@ public class ConfigurationFileData {
     }
 
     /**
-     *
      * @return True if configuration specifies that features must only be saved for overall piece,
      * otherwise false.
      */
@@ -119,7 +116,6 @@ public class ConfigurationFileData {
     }
 
     /**
-     *
      * @return True if the ARFF format must be converted to as specified by configuration file, otherwise false.
      */
     public boolean convertToArff() {
@@ -127,7 +123,6 @@ public class ConfigurationFileData {
     }
 
     /**
-     *
      * @return True if the CSV format must be converted to as specified by the configuration file, otherwise false.
      */
     public boolean convertToCsv() {
@@ -135,7 +130,6 @@ public class ConfigurationFileData {
     }
 
     /**
-     *
      * @return The path that the feature value ACE XML file will be saved to.
      */
     public String getFeatureValueSavePath() {
@@ -143,7 +137,6 @@ public class ConfigurationFileData {
     }
 
     /**
-     *
      * @return The path that the feature value ACE XML file will be saved to.
      */
     public String getFeatureDefinitionSavePath() {
@@ -151,7 +144,6 @@ public class ConfigurationFileData {
     }
 
     /**
-     *
      * @return The path that the configuration file is saved at.
      */
     public String getConfigurationFilePath() {
@@ -159,7 +151,6 @@ public class ConfigurationFileData {
     }
 
     /**
-     *
      * @return The list of input files specified by the configuration file.
      */
     public ConfigurationInputFiles getInputFileList() {
@@ -167,7 +158,6 @@ public class ConfigurationFileData {
     }
 
     /**
-     *
      * @return The state of the options specified by the configuration file.
      */
     public ConfigurationOptionState getOptionState() {
@@ -175,7 +165,6 @@ public class ConfigurationFileData {
     }
 
     /**
-     *
      * @return The list of output files specified by the configuration file.
      */
     public ConfigurationOutputFiles getOutputFileList() {
@@ -185,30 +174,30 @@ public class ConfigurationFileData {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
 
         ConfigurationFileData that = (ConfigurationFileData) o;
 
-        if (featuresToSave != null ? !featuresToSave.equals(that.featuresToSave) : that.featuresToSave != null)
+        if (!Objects.equals(featuresToSave, that.featuresToSave))
             return false;
         if (!Arrays.equals(featuresToSaveBoolean, that.featuresToSaveBoolean)) return false;
-        if (optionState != null ? !optionState.equals(that.optionState) : that.optionState != null) return false;
-        if (outputFileList != null ? !outputFileList.equals(that.outputFileList) : that.outputFileList != null)
+        if (!Objects.equals(optionState, that.optionState)) return false;
+        if (!Objects.equals(outputFileList, that.outputFileList))
             return false;
-        if (configurationFilePath != null ? !configurationFilePath.equals(that.configurationFilePath) : that.configurationFilePath != null)
+        if (!Objects.equals(configurationFilePath, that.configurationFilePath))
             return false;
-        return inputFileList != null ? inputFileList.equals(that.inputFileList) : that.inputFileList == null;
+        return Objects.equals(inputFileList, that.inputFileList);
 
     }
 
     @Override
     public int hashCode() {
-        int result = featuresToSave != null ? featuresToSave.hashCode() : 0;
+        int result = null != featuresToSave ? featuresToSave.hashCode() : 0;
         result = 31 * result + Arrays.hashCode(featuresToSaveBoolean);
-        result = 31 * result + (optionState != null ? optionState.hashCode() : 0);
-        result = 31 * result + (outputFileList != null ? outputFileList.hashCode() : 0);
-        result = 31 * result + (configurationFilePath != null ? configurationFilePath.hashCode() : 0);
-        result = 31 * result + (inputFileList != null ? inputFileList.hashCode() : 0);
+        result = 31 * result + (null != optionState ? optionState.hashCode() : 0);
+        result = 31 * result + (null != outputFileList ? outputFileList.hashCode() : 0);
+        result = 31 * result + (null != configurationFilePath ? configurationFilePath.hashCode() : 0);
+        result = 31 * result + (null != inputFileList ? inputFileList.hashCode() : 0);
         return result;
     }
 }

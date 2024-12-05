@@ -1,6 +1,10 @@
 package jsymbolic2.processing.cli;
 
-import jsymbolic2.processing.*;
+import jsymbolic2.processing.MIDIReporter;
+import jsymbolic2.processing.MusicFilter;
+import jsymbolic2.processing.PrintStreams;
+import jsymbolic2.processing.SymbolicMusicFileUtilities;
+import jsymbolic2.processing.UserFeedbackGenerator;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,7 +20,7 @@ class ConsistencyCheck implements Consumer<String[]> {
     @Override
     public void accept(String[] args) {
         // Check valid number of command line arguments
-        if (args.length != 2) {
+        if (2 != args.length) {
             UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.error_print_stream(), args);
         }
         try {
@@ -28,7 +32,7 @@ class ConsistencyCheck implements Consumer<String[]> {
                     new ArrayList<>());
 
             // Prepare and output the reports
-            if (midi_or_mei_file_list != null) {
+            if (null != midi_or_mei_file_list) {
                 String report = MIDIReporter.prepareConsistencyReports(midi_or_mei_file_list,
                         true,
                         true,

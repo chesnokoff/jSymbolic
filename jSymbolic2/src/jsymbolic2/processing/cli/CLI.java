@@ -26,7 +26,7 @@ public class CLI {
     public void run(String[] args) {
         {
             // If there are no command line arguments
-            if (args == null || args.length == 0) {
+            if (null == args || 0 == args.length) {
                 new PlainGui(printStreams).accept(args);
                 return;
             }

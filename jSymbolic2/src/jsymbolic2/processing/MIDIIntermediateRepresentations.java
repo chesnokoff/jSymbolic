@@ -1,14 +1,19 @@
 package jsymbolic2.processing;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import javax.sound.midi.*;
-
 import jsymbolic2.featureutils.CollectedNoteInfo;
 import jsymbolic2.featureutils.NoteInfo;
 import mckay.utilities.staticlibraries.ArrayMethods;
 import mckay.utilities.staticlibraries.MathAndStatsMethods;
+
+import javax.sound.midi.MetaMessage;
+import javax.sound.midi.MidiEvent;
+import javax.sound.midi.MidiMessage;
+import javax.sound.midi.Sequence;
+import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Track;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * An object of this class is instantiated with a MIDI sequence. The constructor parses this sequence and
@@ -16,10 +21,10 @@ import mckay.utilities.staticlibraries.MathAndStatsMethods;
  * information stored in the fields of an object of this class can be useful in calculating a range of
  * features.
  *
- * <p>After instantiation, an object of this class should simply have its public fields accessed (no changes 
+ * <p>After instantiation, an object of this class should simply have its public fields accessed (no changes
  * to these fields should be made). All public methods are simply static convenience classes for interpreting
  * information stored in public fields (they should never change values in the public fields). Private methods
- * and fields are only used to fill the public fields with values during instantiation, and should not be 
+ * and fields are only used to fill the public fields with values during instantiation, and should not be
  * used in any other context.</p>
  *
  * <p>It should be noted that this design is messy. Ultimately, each of the public fields of this class should
@@ -28,7 +33,7 @@ import mckay.utilities.staticlibraries.MathAndStatsMethods;
  * <p><b>Important Notes:</b></p>
  *
  * <ul>
- * <li>Instrument patches are numbered one unit lower here than in their General MIDI patch names, so 
+ * <li>Instrument patches are numbered one unit lower here than in their General MIDI patch names, so
  * remember to raise by one when processing.</li>
  *
  * <li>Channels are numbered 1 lower here than in proper MIDI, so, for example, check for Channel 9 when
@@ -154,20 +159,20 @@ public class MIDIIntermediateRepresentations {
     /**
      * A normalized histogram where the value of each bin specifies the fraction of all notes in the piece
      * with a rhythmic value corresponding to that of the given bin. The bins are numbered as follows:
-     *
-     *		0: thirty second notes (or less)
-     *		1: sixteenth notes
-     *		2: eighth notes
-     *		3: dotted eighth notes
-     *		4: quarter notes
-     *		5: dotted quarter notes
-     *		6: half notes
-     *		7: dotted half notes
-     *		8: whole notes
-     *		9: dotted whole notes
-     *		10: double whole notes
-     *		11: dotted double whole notes (or more)
-     *
+     * <p>
+     * 0: thirty second notes (or less)
+     * 1: sixteenth notes
+     * 2: eighth notes
+     * 3: dotted eighth notes
+     * 4: quarter notes
+     * 5: dotted quarter notes
+     * 6: half notes
+     * 7: dotted half notes
+     * 8: whole notes
+     * 9: dotted whole notes
+     * 10: double whole notes
+     * 11: dotted double whole notes (or more)
+     * <p>
      * Both pitched and unpitched notes are included in this histogram. Tempo is, of course, not relevant to
      * this feature. Notes with durations not precisely matching one of these rhythmic note values are mapped
      * to the closest note value (to filter out the effects of rubato or uneven human rhythmic performances,
@@ -633,8 +638,8 @@ public class MIDIIntermediateRepresentations {
      * Parse the specified MIDI sequence and fill this object's fields with the appropriate information
      * extracted from the sequence.
      *
-     * @param    midi_sequence    The MIDI sequence to extract information from.
-     * @throws Exception        Informative exceptions are thrown if problems are encountered during parsing.
+     * @param midi_sequence The MIDI sequence to extract information from.
+     * @throws Exception Informative exceptions are thrown if problems are encountered during parsing.
      */
     public MIDIIntermediateRepresentations(Sequence midi_sequence)
             throws Exception {
@@ -642,14 +647,14 @@ public class MIDIIntermediateRepresentations {
         // Fill sequence and all_tracks fields otherwise.
         sequence = midi_sequence;
         tracks = sequence.getTracks();
-        if (sequence.getDivisionType() != Sequence.PPQ)
+        if (Sequence.PPQ != sequence.getDivisionType())
             throw new Exception("The MIDI sequence uses SMPTE time encoding.\n"
                     + "Only PPQ time encoding is accepted by this software.");
-        if (((double) sequence.getTickLength()) > ((double) Integer.MAX_VALUE) - 1.0)
+        if (Integer.MAX_VALUE - 1.0 < ((double) sequence.getTickLength()))
             throw new Exception("The MIDI sequence could not be processed because it is too long.");
 
         // Caclulate mean_ticks_per_second
-        mean_ticks_per_second = ((double) sequence.getTickLength()) / ((double) sequence.getMicrosecondLength() / 1000000.0);
+        mean_ticks_per_second = sequence.getTickLength() / (sequence.getMicrosecondLength() / 1000000.0);
 
         // Fill in the public fields of this class
         // Commented out code is for the purpose of testing calculated values in case changes are made
@@ -711,8 +716,8 @@ public class MIDIIntermediateRepresentations {
      * MIDIIntermediateRepresentations has been generated that are played by one of the General MIDI patches
      * included in the the given set of MIDI instrument patch numbers.
      *
-     * @param    instruments        An array holding the General MIDI patches of interest.
-     * @param    sequence_info    Data extracted from a MIDI sequence.
+     * @param instruments   An array holding the General MIDI patches of interest.
+     * @param sequence_info Data extracted from a MIDI sequence.
      * @return The fraction of Note Ons played by the specified MIDI instrument patches.
      */
     public static double calculateInstrumentGroupFrequency(int[] instruments,
@@ -720,10 +725,10 @@ public class MIDIIntermediateRepresentations {
         int notes_played = 0;
         for (int i = 0; i < instruments.length; i++)
             notes_played += sequence_info.pitched_instrument_prevalence[instruments[i]][0];
-        if (sequence_info.total_number_note_ons == 0)
+        if (0 == sequence_info.total_number_note_ons)
             return 0.0;
         else
-            return ((double) notes_played) / ((double) sequence_info.total_number_note_ons);
+            return ((double) notes_played) / sequence_info.total_number_note_ons;
     }
 
 
@@ -759,31 +764,31 @@ public class MIDIIntermediateRepresentations {
                     byte[] data = ((MetaMessage) message).getData();
 
                     // Check if major or minor, based on first key signature
-                    if (((MetaMessage) message).getType() == 0x59) {
+                    if (0x59 == ((MetaMessage) message).getType()) {
                         if (!key_sig_found) {
-                            if (data[1] == 0) // major
+                            if (0 == data[1]) // major
                                 overall_metadata[0] = 0;
-                            else if (data[1] == 1) // minor
+                            else if (1 == data[1]) // minor
                                 overall_metadata[0] = 1;
                             key_sig_found = true;
                         }
                     }
 
                     // Check time signature, based on first time signature
-                    if (((MetaMessage) message).getType() == 0x58) {
+                    if (0x58 == ((MetaMessage) message).getType()) {
                         ((LinkedList) overall_metadata[1]).add(Integer.valueOf(data[0] & 0xFF));
                         ((LinkedList) overall_metadata[2]).add(Integer.valueOf(1 << (data[1] & 0xFF)));
                     }
 
                     // Check initial tempo
-                    if (((MetaMessage) message).getType() == 0x51) {
+                    if (0x51 == ((MetaMessage) message).getType()) {
                         if (!tempo_found) {
                             // Find tempo in microseconds per beat
                             int ms_tempo = ((data[0] & 0xFF) << 16) | ((data[1] & 0xFF) << 8) | (data[2] & 0xFF);
 
                             // Convert to beats per minute
-                            float ms_tempo_float = (float) ms_tempo;
-                            if (ms_tempo_float <= 0) ms_tempo_float = 0.1f;
+                            float ms_tempo_float = ms_tempo;
+                            if (0 >= ms_tempo_float) ms_tempo_float = 0.1f;
                             int bpm = Math.round(60000000.0f / ms_tempo_float);
                             overall_metadata[3] = bpm;
 
@@ -816,7 +821,7 @@ public class MIDIIntermediateRepresentations {
      * Calculate the value of the average_tick_duration field.
      */
     private void generateAverageTickDuration() {
-        average_tick_duration = sequence_duration_precise / ((double) sequence.getTickLength());
+        average_tick_duration = sequence_duration_precise / sequence.getTickLength();
     }
 
 
@@ -849,7 +854,7 @@ public class MIDIIntermediateRepresentations {
                 // If message is a MetaMessage (which tempo change messages are)
                 if (message instanceof MetaMessage meta_message) {
 
-                    if (meta_message.getType() == 0x51) // tempo change message
+                    if (0x51 == meta_message.getType()) // tempo change message
                     {
                         // Find the number of PPQ ticks per beat
                         int ticks_per_beat = sequence.getResolution();
@@ -861,7 +866,7 @@ public class MIDIIntermediateRepresentations {
                                 | (meta_data[2] & 0xFF);
 
                         // Find the number of seconds per tick
-                        double current_seconds_per_tick = ((double) microseconds_per_beat) / ((double) ticks_per_beat);
+                        double current_seconds_per_tick = ((double) microseconds_per_beat) / ticks_per_beat;
                         current_seconds_per_tick = current_seconds_per_tick / 1000000.0;
 
                         // System.out.println("Tick: " + event.getTick() + "  Current: " + current_seconds_per_tick  + "   Average: " + (1.0 / mean_ticks_per_second));
@@ -875,13 +880,13 @@ public class MIDIIntermediateRepresentations {
                 // If message is a ShortMessage (which volume controller messages are)
                 if (message instanceof ShortMessage short_message) {
 
-                    if (short_message.getCommand() == 0xb0) // Controller message
+                    if (0xb0 == short_message.getCommand()) // Controller message
                     {
-                        if (short_message.getData1() == 7) // Volume controller
+                        if (7 == short_message.getData1()) // Volume controller
                         {
                             // Make all subsequent channel volumes be at the given channel
                             for (int i = (int) event.getTick(); i < duration_of_ticks_in_seconds.length; i++)
-                                volume_of_channels_tick_map[i][short_message.getChannel()] = ((double) short_message.getData2()) / 127.0;
+                                volume_of_channels_tick_map[i][short_message.getChannel()] = short_message.getData2() / 127.0;
 
                             //System.out.println("-> " + event.getTick() + " " + short_message.getChannel() + " " + short_message.getData2());
                         }
@@ -926,17 +931,17 @@ public class MIDIIntermediateRepresentations {
 
                 // If message is a ShortMessage (which Note Ons, Note Offs and Program Change messages are)
                 if (message instanceof ShortMessage short_message) {
-                    if (short_message.getChannel() != 10 - 1) // not channel 10 (percussion)
+                    if (10 - 1 != short_message.getChannel()) // not channel 10 (percussion)
                     {
                         // If a Program Change message is encountered, then update current_patch_numbers
-                        if (short_message.getCommand() == 0xc0)
+                        if (0xc0 == short_message.getCommand())
                             current_patch_numbers[short_message.getChannel()] = short_message.getData1();
 
                         // If a Note On message is encountered, then increment first column of
                         // pitched_instrument_prevalence and note that have started playing/ the appropriate
                         // instrument
-                        if (short_message.getCommand() == 0x90) {
-                            if (short_message.getData2() != 0) // not velocity 0
+                        if (0x90 == short_message.getCommand()) {
+                            if (0 != short_message.getData2()) // not velocity 0
                             {
                                 // Increment the Note On count in pitched_instrument_prevalence
                                 pitched_instrument_prevalence[current_patch_numbers[short_message.getChannel()]][0]++;
@@ -944,7 +949,7 @@ public class MIDIIntermediateRepresentations {
                                 // Look ahead to find the corresponding note off for this note on. Defaults
                                 // to the last tick if no corresponding note off is found.
                                 int event_start_tick = (int) event.getTick();
-                                int event_end_tick = findCorrespondingNoteOffEndTick(short_message, n_event, track);
+                                int event_end_tick = MIDIIntermediateRepresentations.findCorrespondingNoteOffEndTick(short_message, n_event, track);
 
                                 // Fill in pitched_instrumentation_tick_map for all the ticks corresponding to this note
                                 for (int i = event_start_tick; i < event_end_tick; i++)
@@ -990,12 +995,12 @@ public class MIDIIntermediateRepresentations {
 
                 // If message is a ShortMessage (which Note Ons are)
                 if (message instanceof ShortMessage short_message) {
-                    if (short_message.getChannel() == 10 - 1) // is channel 10 (percussion)
+                    if (10 - 1 == short_message.getChannel()) // is channel 10 (percussion)
                     {
                         // If a Note On message is encountered, then increment appropriate row of
                         // non_pitched_instrument_prevalence
-                        if (short_message.getCommand() == 0x90) {
-                            if (short_message.getData2() != 0) // not velocity 0
+                        if (0x90 == short_message.getCommand()) {
+                            if (0 != short_message.getData2()) // not velocity 0
                             {
                                 // Increment the Note On count in non_pitched_instrument_prevalence
                                 non_pitched_instrument_prevalence[short_message.getData1()]++;
@@ -1025,8 +1030,8 @@ public class MIDIIntermediateRepresentations {
 
                 // If message is a ShortMessage (which Note Ons are)
                 if (message instanceof ShortMessage short_message) {
-                    if (short_message.getCommand() == 0x90)
-                        if (short_message.getData2() != 0) // not velocity 0
+                    if (0x90 == short_message.getCommand())
+                        if (0 != short_message.getData2()) // not velocity 0
                             total_number_note_ons++;
                 }
             }
@@ -1068,10 +1073,10 @@ public class MIDIIntermediateRepresentations {
         int ticks_per_dotted_double_whole_note = ppqn_ticks_per_beat * 12;
 
         // The average duration in seconds of a quarter note
-        average_quarter_note_duration_in_seconds = (double) ticks_per_quarter_note * average_tick_duration;
+        average_quarter_note_duration_in_seconds = ticks_per_quarter_note * average_tick_duration;
 
         // The number of ticks corresponding to each note value in the form of an array
-        int central_ticks_per_note_value[] = new int[]{ticks_per_thirty_second_note, // i=0
+        int[] central_ticks_per_note_value = {ticks_per_thirty_second_note, // i=0
                 ticks_per_sixteenth_note, // i=1
                 ticks_per_eighth_note, // i=2
                 ticks_per_dotted_eighth_note, // i=3
@@ -1085,7 +1090,7 @@ public class MIDIIntermediateRepresentations {
                 ticks_per_dotted_double_whole_note}; // i=11
 
         // The lowest number of ticks that a note of the given value can have
-        int lower_bound_ticks_per_note_value[] = new int[central_ticks_per_note_value.length];
+        int[] lower_bound_ticks_per_note_value = new int[central_ticks_per_note_value.length];
         lower_bound_ticks_per_note_value[0] = 0;
         for (int i = 1; i < lower_bound_ticks_per_note_value.length; i++)
             lower_bound_ticks_per_note_value[i] = central_ticks_per_note_value[i - 1] + ((central_ticks_per_note_value[i] - central_ticks_per_note_value[i - 1]) / 2);
@@ -1121,13 +1126,13 @@ public class MIDIIntermediateRepresentations {
                 if (message instanceof ShortMessage short_message) {
 
                     // If a Note On message is encountered
-                    if (short_message.getCommand() == 0x90) {
-                        if (short_message.getData2() != 0) // not velocity 0
+                    if (0x90 == short_message.getCommand()) {
+                        if (0 != short_message.getData2()) // not velocity 0
                         {
                             // Look ahead to find the corresponding note off for this note on. Defaults
                             // to the last tick if no corresponding note off is found.
                             int event_start_tick = (int) event.getTick();
-                            int event_end_tick = findCorrespondingNoteOffEndTick(short_message, n_event, track);
+                            int event_end_tick = MIDIIntermediateRepresentations.findCorrespondingNoteOffEndTick(short_message, n_event, track);
 
                             // Calculate duration in ticks of the note
                             int duration_in_ticks = event_end_tick - event_start_tick;
@@ -1145,8 +1150,8 @@ public class MIDIIntermediateRepresentations {
                                     ordered_rhythmic_values_by_channel[short_message.getChannel()].add(i);
 
                                     // Fill in quantization_offsets_in_quarter_note_fractions
-                                    double quantization_offset_in_ticks = (double) Math.abs(duration_in_ticks - central_ticks_per_note_value[i]);
-                                    double quantization_offset_in_quarter_note_fractions = quantization_offset_in_ticks / (double) central_ticks_per_note_value[4];
+                                    double quantization_offset_in_ticks = Math.abs(duration_in_ticks - central_ticks_per_note_value[i]);
+                                    double quantization_offset_in_quarter_note_fractions = quantization_offset_in_ticks / central_ticks_per_note_value[4];
                                     // System.out.println("\t\tOffset: " + quantization_offset_in_ticks + " ticks " + quantization_offset_in_quarter_note_fractions + " quarter note fractions");
                                     quantization_offsets_in_quarter_note_fractions.add(quantization_offset_in_quarter_note_fractions);
                                 } else if (duration_in_ticks < lower_bound_ticks_per_note_value[i + 1]) {
@@ -1158,8 +1163,8 @@ public class MIDIIntermediateRepresentations {
                                     ordered_rhythmic_values_by_channel[short_message.getChannel()].add(i);
 
                                     // Fill in quantization_offsets_in_quarter_note_fractions
-                                    double quantization_offset_in_ticks = (double) Math.abs(duration_in_ticks - central_ticks_per_note_value[i]);
-                                    double quantization_offset_in_quarter_note_fractions = quantization_offset_in_ticks / (double) central_ticks_per_note_value[4];
+                                    double quantization_offset_in_ticks = Math.abs(duration_in_ticks - central_ticks_per_note_value[i]);
+                                    double quantization_offset_in_quarter_note_fractions = quantization_offset_in_ticks / central_ticks_per_note_value[4];
                                     // System.out.println("\t\tOffset: " + quantization_offset_in_ticks + " ticks " + quantization_offset_in_quarter_note_fractions + " quarter note fractions");
                                     quantization_offsets_in_quarter_note_fractions.add(quantization_offset_in_quarter_note_fractions);
 
@@ -1179,7 +1184,7 @@ public class MIDIIntermediateRepresentations {
                 for (int note = 0; note < ordered_rhythmic_values_by_channel[chan].size(); note++) {
                     int this_rhythmic_value = ordered_rhythmic_values_by_channel[chan].get(note);
                     // System.out.println("Track: " + n_track + " Channel : " + chan + " Rhythmic Value: " + this_rhythmic_value);
-                    if (last_rhythmic_value == -1) {
+                    if (-1 == last_rhythmic_value) {
                         last_rhythmic_value = this_rhythmic_value;
                         current_run_length = 1;
                     } else if (this_rhythmic_value == last_rhythmic_value)
@@ -1191,7 +1196,7 @@ public class MIDIIntermediateRepresentations {
                         current_run_length = 1;
                     }
                 }
-                if (last_rhythmic_value != -1) {
+                if (-1 != last_rhythmic_value) {
                     runs_of_same_rhythmic_value[last_rhythmic_value].add(current_run_length);
                     // System.out.println("\t2) ADD Rhythmic Value: " + last_rhythmic_value + " Run Length: " + current_run_length);
                 }
@@ -1206,9 +1211,9 @@ public class MIDIIntermediateRepresentations {
         // Calculate the normalized fraction of notes corresponding to each rhythmic value
         rhythmic_value_histogram = new double[rhythmic_duration_note_counts.length];
         for (int i = 0; i < rhythmic_value_histogram.length; i++) {
-            if (total_notes == 0)
+            if (0 == total_notes)
                 rhythmic_value_histogram[i] = 0.0;
-            else rhythmic_value_histogram[i] = ((double) rhythmic_duration_note_counts[i]) / (double) total_notes;
+            else rhythmic_value_histogram[i] = ((double) rhythmic_duration_note_counts[i]) / total_notes;
         }
 
         // Construct an array with one entry for each note, where the value indicates the quantized duration
@@ -1220,15 +1225,15 @@ public class MIDIIntermediateRepresentations {
                 case 0 -> 1.0 / 8.0;
                 case 1 -> 1.0 / 4.0;
                 case 2 -> 1.0 / 2.0;
-                case 3 -> 1.0 * 3.0 / 4.0;
+                case 3 -> 3.0 / 4.0;
                 case 4 -> 1.0;
-                case 5 -> 1.0 * 1.5;
-                case 6 -> 1.0 * 2.0;
-                case 7 -> 1.0 * 3.0;
-                case 8 -> 1.0 * 4.0;
-                case 9 -> 1.0 * 6.0;
-                case 10 -> 1.0 * 8.0;
-                case 11 -> 1.0 * 12.0;
+                case 5 -> 1.5;
+                case 6 -> 2.0;
+                case 7 -> 3.0;
+                case 8 -> 4.0;
+                case 9 -> 6.0;
+                case 10 -> 8.0;
+                case 11 -> 12.0;
                 default -> 0.0;
             };
 
@@ -1277,32 +1282,32 @@ public class MIDIIntermediateRepresentations {
 
                 // Mark rhythm_score with combined loudness on a tick with a note on
                 if (message instanceof ShortMessage short_message) {
-                    if (short_message.getCommand() == 0x90) // note on
-                        rhythm_score[current_tick] += (int) (((double) short_message.getData2()) * volume_of_channels_tick_map[current_tick][short_message.getChannel()]);
+                    if (0x90 == short_message.getCommand()) // note on
+                        rhythm_score[current_tick] += (int) (short_message.getData2() * volume_of_channels_tick_map[current_tick][short_message.getChannel()]);
                 }
             }
         }
 
         // Histogram based on tick interval bins
-        double[] tick_histogram = new double[convertBPMtoTicks(min_BPM - 1, mean_ticks_per_second)];
-        for (int lag = convertBPMtoTicks(max_BPM, mean_ticks_per_second); lag < tick_histogram.length; lag++)
-            tick_histogram[lag] = autoCorrelate(rhythm_score, lag);
+        double[] tick_histogram = new double[MIDIIntermediateRepresentations.convertBPMtoTicks(min_BPM - 1, mean_ticks_per_second)];
+        for (int lag = MIDIIntermediateRepresentations.convertBPMtoTicks(max_BPM, mean_ticks_per_second); lag < tick_histogram.length; lag++)
+            tick_histogram[lag] = MIDIIntermediateRepresentations.autoCorrelate(rhythm_score, lag);
 
         // Histogram based on tick interval bins (standardized to 120 BPM)
         int ticks_per_beat = sequence.getResolution();
         int ticks_per_second_at_120_bpm = ticks_per_beat * 2;
-        double[] tick_histogram_120_bpm_standardized = new double[convertBPMtoTicks(min_BPM - 1, ticks_per_second_at_120_bpm)];
-        for (int lag = convertBPMtoTicks(max_BPM, ticks_per_second_at_120_bpm); lag < tick_histogram_120_bpm_standardized.length; lag++)
-            tick_histogram_120_bpm_standardized[lag] = autoCorrelate(rhythm_score, lag);
+        double[] tick_histogram_120_bpm_standardized = new double[MIDIIntermediateRepresentations.convertBPMtoTicks(min_BPM - 1, ticks_per_second_at_120_bpm)];
+        for (int lag = MIDIIntermediateRepresentations.convertBPMtoTicks(max_BPM, ticks_per_second_at_120_bpm); lag < tick_histogram_120_bpm_standardized.length; lag++)
+            tick_histogram_120_bpm_standardized[lag] = MIDIIntermediateRepresentations.autoCorrelate(rhythm_score, lag);
 
         // Histograms with tick intervals collected into beats per minute bins
         for (int bin = min_BPM; bin <= max_BPM; bin++) {
             beat_histogram[bin] = 0.0;
-            for (int tick = convertBPMtoTicks(bin, mean_ticks_per_second); tick < convertBPMtoTicks(bin - 1, mean_ticks_per_second); tick++)
+            for (int tick = MIDIIntermediateRepresentations.convertBPMtoTicks(bin, mean_ticks_per_second); tick < MIDIIntermediateRepresentations.convertBPMtoTicks(bin - 1, mean_ticks_per_second); tick++)
                 beat_histogram[bin] += tick_histogram[tick];
 
             beat_histogram_120_bpm_standardized[bin] = 0.0;
-            for (int tick = convertBPMtoTicks(bin, ticks_per_second_at_120_bpm); tick < convertBPMtoTicks(bin - 1, ticks_per_second_at_120_bpm); tick++)
+            for (int tick = MIDIIntermediateRepresentations.convertBPMtoTicks(bin, ticks_per_second_at_120_bpm); tick < MIDIIntermediateRepresentations.convertBPMtoTicks(bin - 1, ticks_per_second_at_120_bpm); tick++)
                 beat_histogram_120_bpm_standardized[bin] += tick_histogram_120_bpm_standardized[tick];
         }
 
@@ -1341,13 +1346,13 @@ public class MIDIIntermediateRepresentations {
                 if (message instanceof ShortMessage short_message) {
 
                     // If a Note On message is encountered
-                    if (short_message.getCommand() == 0x90) {
-                        if (short_message.getData2() != 0) // not velocity 0
+                    if (0x90 == short_message.getCommand()) {
+                        if (0 != short_message.getData2()) // not velocity 0
                         {
                             // Look ahead to find the corresponding note off for this note on. Defaults
                             // to the last tick if no corresponding note off is found.
                             int event_start_tick = (int) event.getTick();
-                            int event_end_tick = findCorrespondingNoteOffEndTick(short_message, n_event, track);
+                            int event_end_tick = MIDIIntermediateRepresentations.findCorrespondingNoteOffEndTick(short_message, n_event, track);
 
                             // Calculate duration of note
                             double duration = 0;
@@ -1385,8 +1390,8 @@ public class MIDIIntermediateRepresentations {
 
                 // If message is a ShortMessage (which Note Ons are)
                 if (message instanceof ShortMessage short_message) {
-                    if (short_message.getCommand() == 0x90) // note on
-                        if (short_message.getData2() != 0) // not velocity 0
+                    if (0x90 == short_message.getCommand()) // note on
+                        if (0 != short_message.getData2()) // not velocity 0
                             note_attack_tick_map[(int) event.getTick()][short_message.getChannel()] = true;
                 }
             }
@@ -1432,9 +1437,9 @@ public class MIDIIntermediateRepresentations {
 
                 // Increment pitch of a note on
                 if (message instanceof ShortMessage short_message) {
-                    if (short_message.getChannel() != 10 - 1) // not channel 10 (percussion)
-                        if (short_message.getCommand() == 0x90) // note on
-                            if (short_message.getData2() != 0) // not velocity 0
+                    if (10 - 1 != short_message.getChannel()) // not channel 10 (percussion)
+                        if (0x90 == short_message.getCommand()) // note on
+                            if (0 != short_message.getData2()) // not velocity 0
                                 basic_pitch_histogram[short_message.getData1()]++;
                 }
             }
@@ -1469,7 +1474,7 @@ public class MIDIIntermediateRepresentations {
         // The lists of pitch bends for the most recently found note on each channel. An entry will be null
         // unless a pitch bend message has been received on the given channel since the last Note Off on that
         // channel
-        LinkedList going[] = new LinkedList[16];
+        LinkedList[] going = new LinkedList[16];
         for (int i = 0; i < going.length; i++)
             going[i] = null;
 
@@ -1480,14 +1485,14 @@ public class MIDIIntermediateRepresentations {
                 MidiEvent event = track.get(n_event);
                 MidiMessage message = event.getMessage();
                 if (message instanceof ShortMessage short_message) {
-                    if (short_message.getChannel() != 10 - 1) // not channel 10 (percussion)
+                    if (10 - 1 != short_message.getChannel()) // not channel 10 (percussion)
                     {
                         // If message is a pitch bend
-                        if (short_message.getCommand() == 0xe0) {
+                        if (0xe0 == short_message.getCommand()) {
                             int pitch_bend_value = short_message.getData2();
 
                             // If a pitch bend has already been given for this note
-                            if (going[short_message.getChannel()] != null)
+                            if (null != going[short_message.getChannel()])
                                 going[short_message.getChannel()].add(pitch_bend_value);
 
                                 // If a pitch bend has not already been given for this note
@@ -1501,11 +1506,11 @@ public class MIDIIntermediateRepresentations {
                         }
 
                         // If message is a Note Off
-                        else if (short_message.getCommand() == 0x80) // note off
+                        else if (0x80 == short_message.getCommand()) // note off
                             going[short_message.getChannel()] = null;
-                        else if (short_message.getCommand() == 0x90) // note on with velocity 0
+                        else if (0x90 == short_message.getCommand()) // note on with velocity 0
                         {
-                            if (short_message.getData2() == 0) // velocity 0
+                            if (0 == short_message.getData2()) // velocity 0
                                 going[short_message.getChannel()] = null;
                         }
                     }
@@ -1555,14 +1560,14 @@ public class MIDIIntermediateRepresentations {
                 MidiEvent event = track.get(n_event);
                 MidiMessage message = event.getMessage();
                 if (message instanceof ShortMessage short_message) {
-                    if (short_message.getCommand() == 0x90) // note on
+                    if (0x90 == short_message.getCommand()) // note on
                     {
-                        if (short_message.getChannel() != 10 - 1) // not channel 10 (percussion)
+                        if (10 - 1 != short_message.getChannel()) // not channel 10 (percussion)
                         {
-                            if (short_message.getData2() != 0) // not velocity 0
+                            if (0 != short_message.getData2()) // not velocity 0
                             {
                                 int current_tick = (int) event.getTick();
-                                if (previous_pitches[short_message.getChannel()] != -1) {
+                                if (-1 != previous_pitches[short_message.getChannel()]) {
                                     // Check if the note is occuring on the same tick as the previous note
                                     // on this channel (which would indicate a vertical interval, not a
                                     // melodic interval)
@@ -1600,7 +1605,7 @@ public class MIDIIntermediateRepresentations {
 
         // Instantiate list_of_note_on_pitches_by_channel with one empty list per channel
         list_of_note_on_pitches_by_channel = new ArrayList<>(16);
-        for (int channel = 0; channel < 16; channel++)
+        for (int channel = 0; 16 > channel; channel++)
             list_of_note_on_pitches_by_channel.add(new ArrayList<>());
 
         // Instantiate note_sounding_on_a_channel_tick_map and initialize entries to false
@@ -1651,7 +1656,7 @@ public class MIDIIntermediateRepresentations {
             for (int event_i = 0; event_i < this_track.size(); event_i++) {
                 if (this_track.get(event_i).getMessage() instanceof ShortMessage short_message) // If message is a ShortMessage (which Note Ons and Note Offs are)
                 {
-                    if (short_message.getCommand() == 0x90) // Note On
+                    if (0x90 == short_message.getCommand()) // Note On
                     {
                         // Note information about this Note On
                         int on_tick = (int) this_track.get(event_i).getTick();
@@ -1660,7 +1665,7 @@ public class MIDIIntermediateRepresentations {
                         int on_velocity = short_message.getData2();
 
                         // Update values based on this Note On
-                        if (on_velocity != 0) // Not velocity 0
+                        if (0 != on_velocity) // Not velocity 0
                         {
                             // Add the pitch of this note to list_of_note_on_pitches_by_channel
                             list_of_note_on_pitches_by_channel.get(on_channel).add(on_pitch);
@@ -1669,7 +1674,7 @@ public class MIDIIntermediateRepresentations {
                             channel_statistics[on_channel][0]++;
 
                             // Total the loudnesses of Note Ons for each channel
-                            channel_statistics[on_channel][2] += (int) (((double) on_velocity) * volume_of_channels_tick_map[on_tick][on_channel]);
+                            channel_statistics[on_channel][2] += (int) (on_velocity * volume_of_channels_tick_map[on_tick][on_channel]);
 
                             // Update sum_of_pitches
                             sum_of_pitches[on_channel] += on_pitch;
@@ -1683,7 +1688,7 @@ public class MIDIIntermediateRepresentations {
                                 highest_pitch_so_far[on_channel] = on_pitch;
 
                             // Update variables relating to melodic intervals
-                            if (previous_pitch[on_channel] != -1) {
+                            if (-1 != previous_pitch[on_channel]) {
                                 // Check if the note is occuring on the same tick as the previous note on this
                                 // channel (which would indicate a vertical interval, not a melodic leap)
                                 if (on_tick != tick_of_last_note_on[on_channel]) {
@@ -1701,7 +1706,7 @@ public class MIDIIntermediateRepresentations {
                                 if (end_event.getMessage() instanceof ShortMessage end_message) {
                                     if (end_message.getChannel() == on_channel) // Must be on same channel as Note On
                                     {
-                                        if (end_message.getCommand() == 0x80) // Note off
+                                        if (0x80 == end_message.getCommand()) // Note off
                                         {
                                             if (end_message.getData1() == on_pitch) // Pitch must match
                                             {
@@ -1709,9 +1714,9 @@ public class MIDIIntermediateRepresentations {
                                                 break;
                                             }
                                         }
-                                        if (end_message.getCommand() == 0x90) // Note On (with velocity 0 is equivalent to Note Off)
+                                        if (0x90 == end_message.getCommand()) // Note On (with velocity 0 is equivalent to Note Off)
                                         {
-                                            if (end_message.getData2() == 0) // Velocity 0
+                                            if (0 == end_message.getData2()) // Velocity 0
                                             {
                                                 if (end_message.getData1() == on_pitch) //Pitch must match
                                                 {
@@ -1748,12 +1753,12 @@ public class MIDIIntermediateRepresentations {
         // Fill column 2 of channel_statistics by dividing by the total number of notes per channel notes on
         // each channel
         for (int i = 0; i < channel_statistics.length; i++)
-            channel_statistics[i][2] = (int) (((double) channel_statistics[i][2]) / ((double) channel_statistics[i][0]));
+            channel_statistics[i][2] = (int) (((double) channel_statistics[i][2]) / channel_statistics[i][0]);
 
         // Fill column 3 of channel_statistics by dividing the total melodic leaps in semi-tones by the number
         // of melodic intervals for each channel
         for (int i = 0; i < channel_statistics.length; i++)
-            channel_statistics[i][3] = (int) (((double) sum_of_melodic_intervals[i]) / ((double) total_number_melodic_intervals[i]));
+            channel_statistics[i][3] = (int) (((double) sum_of_melodic_intervals[i]) / total_number_melodic_intervals[i]);
 
         // Fill columns 4 and 5 (lowest and highest pitches) of channel_statistics
         for (int i = 0; i < channel_statistics.length; i++) {
@@ -1763,7 +1768,7 @@ public class MIDIIntermediateRepresentations {
 
         // Fill column 6 of channel_statistics
         for (int i = 0; i < channel_statistics.length; i++) {
-            if (channel_statistics[i][0] == 0)
+            if (0 == channel_statistics[i][0])
                 channel_statistics[i][6] = 0;
             else
                 channel_statistics[i][6] = sum_of_pitches[i] / channel_statistics[i][0];
@@ -1772,9 +1777,9 @@ public class MIDIIntermediateRepresentations {
         // Calculate number_of_active_voices
         int num_of_active_voices = 0;
         for (int chan = 0; chan < channel_statistics.length; chan++)
-            if (channel_statistics[chan][0] != 0)
+            if (0 != channel_statistics[chan][0])
                 num_of_active_voices++;
-        number_of_active_voices = (double) num_of_active_voices;
+        number_of_active_voices = num_of_active_voices;
     }
 
 
@@ -1785,13 +1790,13 @@ public class MIDIIntermediateRepresentations {
         List<NoteInfo> all_notes_in_piece = all_notes.getNoteList();
         List<Short> list_of_midi_pitches_of_all_notes_in_piece = new ArrayList<>();
         for (NoteInfo this_note : all_notes_in_piece)
-            if (this_note.getChannel() != 10 - 1) // Excluding Channel 10
+            if (10 - 1 != this_note.getChannel()) // Excluding Channel 10
                 list_of_midi_pitches_of_all_notes_in_piece.add((short) (this_note.getPitch()));
 
         pitches_of_all_note_ons = new short[list_of_midi_pitches_of_all_notes_in_piece.size()];
         pitch_classes_of_all_note_ons = new short[list_of_midi_pitches_of_all_notes_in_piece.size()];
         for (int i = 0; i < pitch_classes_of_all_note_ons.length; i++) {
-            short pitch = (short) list_of_midi_pitches_of_all_notes_in_piece.get(i);
+            short pitch = list_of_midi_pitches_of_all_notes_in_piece.get(i);
             pitches_of_all_note_ons[i] = pitch;
 
             short pitch_class = (short) (pitch % 12);
@@ -1833,11 +1838,11 @@ public class MIDIIntermediateRepresentations {
                 MidiEvent event = track.get(n_event);
                 MidiMessage message = event.getMessage();
                 if (message instanceof ShortMessage short_message) {
-                    if (short_message.getChannel() != 10 - 1 && // is not on Channel 10
-                            short_message.getCommand() == 0x90 && // is a Note On message
-                            short_message.getData2() != 0) // does not have velocity 0
+                    if (10 - 1 != short_message.getChannel() && // is not on Channel 10
+                            0x90 == short_message.getCommand() && // is a Note On message
+                            0 != short_message.getData2()) // does not have velocity 0
                     {
-                        total_vertical_unison_velocity = lookAheadForNoteOffAndUpdate(
+                        total_vertical_unison_velocity = MIDIIntermediateRepresentations.lookAheadForNoteOffAndUpdate(
                                 track,
                                 n_event,
                                 (int) event.getTick(),
@@ -1870,7 +1875,7 @@ public class MIDIIntermediateRepresentations {
             // Find the MIDI pitch numbers of all pitches found this tick
             ArrayList<Short> pitches_this_tick = new ArrayList<>();
             for (int pitch = 0; pitch < pitch_strength_by_tick_chart[tick].length; pitch++)
-                if (pitch_strength_by_tick_chart[tick][pitch] != 0)
+                if (0 != pitch_strength_by_tick_chart[tick][pitch])
                     pitches_this_tick.add((short) pitch);
 
             // If not a rest
@@ -1885,7 +1890,7 @@ public class MIDIIntermediateRepresentations {
                 ArrayList<Short> pitch_classes_this_tick = new ArrayList<>();
                 for (int i = 0; i < these_pitches.length; i++) {
                     short pitch_class = (short) (these_pitches[i] % 12);
-                    if (i == 0)
+                    if (0 == i)
                         pitch_classes_this_tick.add(pitch_class);
                     else {
                         boolean repeated_pitch_class = false;
@@ -1940,13 +1945,13 @@ public class MIDIIntermediateRepresentations {
         // Iterate through all ticks on which one or more pitches were sounding
         for (int tick = 0; tick < pitches_present_by_tick_excluding_rests.length; tick++) {
             // Fill previous_pitches and move to the next tick if it has not been filled yet
-            if (previous_pitches == null || previous_pitches.length == 0) {
+            if (null == previous_pitches || 0 == previous_pitches.length) {
                 previous_pitches = pitches_present_by_tick_excluding_rests[tick];
                 continue;
             }
 
             // Update current_pitches and previous_pitches
-            if (current_pitches == null || current_pitches.length == 0)
+            if (null == current_pitches || 0 == current_pitches.length)
                 current_pitches = pitches_present_by_tick_excluding_rests[tick];
             else {
                 previous_pitches = current_pitches;
@@ -1978,14 +1983,16 @@ public class MIDIIntermediateRepresentations {
             }
 
             // Move on to the next tick if only one or no notes are sounding
-            if (current_pitches.length <= 1)
+            if (1 >= current_pitches.length)
                 continue;
 
             // Move on to the next tick if current_pitches and previous_pitches are the same
             boolean prev_and_cur_are_identical = true;
             for (int i = 0; i < current_pitches.length; i++)
-                if (previous_pitches[i] != current_pitches[i])
+                if (previous_pitches[i] != current_pitches[i]) {
                     prev_and_cur_are_identical = false;
+                    break;
+                }
             if (prev_and_cur_are_identical)
                 continue;
 
@@ -2010,8 +2017,8 @@ public class MIDIIntermediateRepresentations {
                         oblique_count++;
 
                         // Note contrary motion
-                    else if (((cur_bottom_pitch - prev_bottom_pitch) < 0 && (cur_top_pitch - prev_top_pitch) > 0) ||
-                            ((cur_bottom_pitch - prev_bottom_pitch) > 0 && (cur_top_pitch - prev_top_pitch) < 0))
+                    else if ((0 > (cur_bottom_pitch - prev_bottom_pitch) && 0 < (cur_top_pitch - prev_top_pitch)) ||
+                            (0 < (cur_bottom_pitch - prev_bottom_pitch) && 0 > (cur_top_pitch - prev_top_pitch)))
                         contrary_count++;
 
                         // Note parallel motion
@@ -2019,9 +2026,9 @@ public class MIDIIntermediateRepresentations {
                         parallel_count++;
 
                         // Also look for parallel fifths and octaves
-                        if ((cur_top_pitch - cur_bottom_pitch) == 7)
+                        if (7 == (cur_top_pitch - cur_bottom_pitch))
                             parallel_fifths_count++;
-                        if ((cur_top_pitch - cur_bottom_pitch) == 12)
+                        if (12 == (cur_top_pitch - cur_bottom_pitch))
                             parallel_octaves_count++;
                     }
 
@@ -2032,17 +2039,17 @@ public class MIDIIntermediateRepresentations {
         }
 
         // Caculate the total amount of qualifying motion
-        double total_motion_count = (double) parallel_count + (double) similar_count +
-                (double) contrary_count + (double) oblique_count;
+        double total_motion_count = (double) parallel_count + similar_count +
+                contrary_count + oblique_count;
 
         // Calculate the fractions of each type of motion
-        if (total_motion_count > 0.0) {
-            parallel_motion_fraction = ((double) parallel_count) / total_motion_count;
-            similar_motion_fraction = ((double) similar_count) / total_motion_count;
-            contrary_motion_fraction = ((double) contrary_count) / total_motion_count;
-            oblique_motion_fraction = ((double) oblique_count) / total_motion_count;
-            parallel_fifths_fraction = ((double) parallel_fifths_count) / total_motion_count;
-            parallel_octaves_fraction = ((double) parallel_octaves_count) / total_motion_count;
+        if (0.0 < total_motion_count) {
+            parallel_motion_fraction = parallel_count / total_motion_count;
+            similar_motion_fraction = similar_count / total_motion_count;
+            contrary_motion_fraction = contrary_count / total_motion_count;
+            oblique_motion_fraction = oblique_count / total_motion_count;
+            parallel_fifths_fraction = parallel_fifths_count / total_motion_count;
+            parallel_octaves_fraction = parallel_octaves_count / total_motion_count;
         }
     }
 
@@ -2066,13 +2073,13 @@ public class MIDIIntermediateRepresentations {
             for (int n_event = 0; n_event < tracks[n_track].size(); n_event++) {
                 MidiEvent event = tracks[n_track].get(n_event);
                 if (event.getMessage() instanceof ShortMessage short_message) {
-                    if (short_message.getCommand() == 0x90) // Note on
+                    if (0x90 == short_message.getCommand()) // Note on
                     {
-                        if (short_message.getData2() != 0) // Not velocity 0
+                        if (0 != short_message.getData2()) // Not velocity 0
                         {
                             int channel = short_message.getChannel();
                             int tick = (int) event.getTick();
-                            note_loudnesses[channel][notes_so_far[channel]] = (int) (((double) short_message.getData2()) * volume_of_channels_tick_map[tick][channel]);
+                            note_loudnesses[channel][notes_so_far[channel]] = (int) (short_message.getData2() * volume_of_channels_tick_map[tick][channel]);
                             notes_so_far[channel]++;
                         }
                     }
@@ -2089,9 +2096,7 @@ public class MIDIIntermediateRepresentations {
         // Set non_empty_channels to true for channels that have at least one note
         boolean[] non_empty_channels = new boolean[channel_statistics.length];
         for (int i = 0; i < non_empty_channels.length; i++) {
-            if (channel_statistics[i][0] != 0)
-                non_empty_channels[i] = true;
-            else non_empty_channels[i] = false;
+            non_empty_channels[i] = 0 != channel_statistics[i][0];
         }
 
         // A list of the duration of all rests (in seconds) in each channel, in the order that they appear
@@ -2116,24 +2121,24 @@ public class MIDIIntermediateRepresentations {
                 ArrayList<Double> rest_durations_on_this_channel = new ArrayList<>();
                 double current_rest_duration = 0.0;
                 for (int tick = 0; tick < seconds_of_rest_per_tick.length; tick++) {
-                    if (seconds_of_rest_per_tick[tick] == 0.0 && current_rest_duration != 0.0) {
+                    if (0.0 == seconds_of_rest_per_tick[tick] && 0.0 != current_rest_duration) {
                         rest_durations_on_this_channel.add(current_rest_duration);
                         current_rest_duration = 0.0;
-                    } else if (seconds_of_rest_per_tick[tick] != 0.0)
+                    } else if (0.0 != seconds_of_rest_per_tick[tick])
                         current_rest_duration += seconds_of_rest_per_tick[tick];
                 }
-                if (current_rest_duration != 0.0)
+                if (0.0 != current_rest_duration)
                     rest_durations_on_this_channel.add(current_rest_duration);
 
                 // Add the list of durations to rest_dration_list
-                if (rest_durations_on_this_channel.size() > 0)
+                if (0 < rest_durations_on_this_channel.size())
                     rest_dration_list.add(rest_durations_on_this_channel);
             }
         }
 
         // Fill rest_durations_separated_by_channel based on rest_dration_list, after conversion from seconds
         // to fraction of a quarter note
-        if (rest_dration_list.size() > 0) {
+        if (0 < rest_dration_list.size()) {
             rest_durations_separated_by_channel = new double[rest_dration_list.size()][];
             for (int i = 0; i < rest_durations_separated_by_channel.length; i++) {
                 rest_durations_separated_by_channel[i] = new double[rest_dration_list.get(i).size()];
@@ -2145,7 +2150,7 @@ public class MIDIIntermediateRepresentations {
         }
 
         // Filter out all rests shorter than 0.1 of a quarter note.
-        if (rest_durations_separated_by_channel != null)
+        if (null != rest_durations_separated_by_channel)
             rest_durations_separated_by_channel = ArrayMethods.removeEntriesLessThan(rest_durations_separated_by_channel, 0.1);
     }
 
@@ -2172,18 +2177,18 @@ public class MIDIIntermediateRepresentations {
         // Find the duration of each complete rest
         double current_rest_duration = 0.0;
         for (int tick = 0; tick < seconds_of_rest_per_tick.length; tick++) {
-            if (seconds_of_rest_per_tick[tick] == 0.0 && current_rest_duration != 0.0) {
+            if (0.0 == seconds_of_rest_per_tick[tick] && 0.0 != current_rest_duration) {
                 complete_rest_durations_list.add(current_rest_duration);
                 current_rest_duration = 0.0;
-            } else if (seconds_of_rest_per_tick[tick] != 0.0)
+            } else if (0.0 != seconds_of_rest_per_tick[tick])
                 current_rest_duration += seconds_of_rest_per_tick[tick];
         }
-        if (current_rest_duration != 0.0)
+        if (0.0 != current_rest_duration)
             complete_rest_durations_list.add(current_rest_duration);
 
         // Fill complete_rest_durations based on complete_rest_durations_list, after conversion from seconds
         // to fraction of a quarter note
-        if (complete_rest_durations_list.size() > 0) {
+        if (0 < complete_rest_durations_list.size()) {
             complete_rest_durations = new double[complete_rest_durations_list.size()];
             for (int i = 0; i < complete_rest_durations.length; i++) {
                 double quarter_note_value = complete_rest_durations_list.get(i) / average_quarter_note_duration_in_seconds;
@@ -2192,7 +2197,7 @@ public class MIDIIntermediateRepresentations {
         }
 
         // Filter out all rests shorter than 0.1 of a quarter note.
-        if (complete_rest_durations != null)
+        if (null != complete_rest_durations)
             complete_rest_durations = ArrayMethods.removeEntriesLessThan(complete_rest_durations, 0.1);
     }
 
@@ -2204,11 +2209,11 @@ public class MIDIIntermediateRepresentations {
      * Look ahead on a MIDI track to find the tick corresponding to the note off (or velocity 0 note on) for
      * the specified note on.
      *
-     * @param note_on                The note on message for which the note off is being searched for.
-     * @param note_on_start_tick    The MIDI tick on which note_on occurred.
-     * @param track                    The MIDI track on which note_on is found.
+     * @param note_on            The note on message for which the note off is being searched for.
+     * @param note_on_start_tick The MIDI tick on which note_on occurred.
+     * @param track              The MIDI track on which note_on is found.
      * @return The tick of the note off corresponding to note_on. If the note off never
-     *								occurs, then the last tick is returned.
+     * occurs, then the last tick is returned.
      */
     private static int findCorrespondingNoteOffEndTick(ShortMessage note_on,
                                                        int note_on_start_tick,
@@ -2219,14 +2224,14 @@ public class MIDIIntermediateRepresentations {
             if (end_message instanceof ShortMessage end_short_message) {
                 if (end_short_message.getChannel() == note_on.getChannel()) // must be on same channel
                 {
-                    if (end_short_message.getCommand() == 0x80) // note off
+                    if (0x80 == end_short_message.getCommand()) // note off
                     {
                         if (end_short_message.getData1() == note_on.getData1()) // same pitch
                             return (int) end_event.getTick();
                     }
-                    if (end_short_message.getCommand() == 0x90) // note on (with vel 0 is equiv to note off)
+                    if (0x90 == end_short_message.getCommand()) // note on (with vel 0 is equiv to note off)
                     {
-                        if (end_short_message.getData2() == 0) // velocity 0
+                        if (0 == end_short_message.getData2()) // velocity 0
                             if (end_short_message.getData1() == note_on.getData1()) // same pitch
                                 return (int) end_event.getTick();
                     }
@@ -2245,28 +2250,28 @@ public class MIDIIntermediateRepresentations {
      * correspondingly. Also return an updated version of total_vertical_unison_velocity_so_far.
      *
      * @param midi_track                                    The track the Note On occurred on.
-     * @param note_on_event_index                            The event index of the Note On event.
-     * @param note_on_tick                                    The MIDI tick the Note On occurred at.
-     * @param note_on_channel                                The MIDI channel the Note On occurred on.
-     * @param note_on_pitch                                    The MIDI pitch of the Note On.
-     * @param note_on_velocity                                The MIDI velocity of the Not On.
-     * @param number_notes_sounding_by_tick_and_pitch_chart    A chart indicating the number of notes sounding at
-     *														each pitch during each tick. The first index
-     *														indicates the MIDI tick and the second index
-     *														indicates the MIDI pitch (this is always set to
-     *														size 128). Each entry indicates the number of
-     *														notes sounding.
-     * @param pitch_strength_by_tick_chart_to_fill            A chart indicating what pitches are sounding
-     *														during each tick. The first index indicates MIDI
-     *														tick and the second indicates MIDI pitch (this is
-     *														always set to size 128). Each entry indicates the
-     *														cumulative velocity of all notes (not including
-     *														Channel 10 non-pitched percussion instruments)
-     *														sounding at that tick on that pitch.
-     * @param total_vertical_unison_velocity_so_far            Total velocity (so far) of all notes involved in a
-     *														vertical unison.
+     * @param note_on_event_index                           The event index of the Note On event.
+     * @param note_on_tick                                  The MIDI tick the Note On occurred at.
+     * @param note_on_channel                               The MIDI channel the Note On occurred on.
+     * @param note_on_pitch                                 The MIDI pitch of the Note On.
+     * @param note_on_velocity                              The MIDI velocity of the Not On.
+     * @param number_notes_sounding_by_tick_and_pitch_chart A chart indicating the number of notes sounding at
+     *                                                      each pitch during each tick. The first index
+     *                                                      indicates the MIDI tick and the second index
+     *                                                      indicates the MIDI pitch (this is always set to
+     *                                                      size 128). Each entry indicates the number of
+     *                                                      notes sounding.
+     * @param pitch_strength_by_tick_chart_to_fill          A chart indicating what pitches are sounding
+     *                                                      during each tick. The first index indicates MIDI
+     *                                                      tick and the second indicates MIDI pitch (this is
+     *                                                      always set to size 128). Each entry indicates the
+     *                                                      cumulative velocity of all notes (not including
+     *                                                      Channel 10 non-pitched percussion instruments)
+     *                                                      sounding at that tick on that pitch.
+     * @param total_vertical_unison_velocity_so_far         Total velocity (so far) of all notes involved in a
+     *                                                      vertical unison.
      * @return The value of total_vertical_unison_velocity_so_far
-     *														after updating to account for this Note On.
+     * after updating to account for this Note On.
      */
     private static int lookAheadForNoteOffAndUpdate(Track midi_track,
                                                     int note_on_event_index,
@@ -2282,8 +2287,8 @@ public class MIDIIntermediateRepresentations {
             MidiMessage message = event.getMessage();
             if (message instanceof ShortMessage short_message) {
                 // Is this a Note Off message (or equivalent Note On with velocity 0)?
-                if (short_message.getCommand() == 0x80
-                        || (short_message.getCommand() == 0x90 && short_message.getData2() == 0)) {
+                if (0x80 == short_message.getCommand()
+                        || (0x90 == short_message.getCommand() && 0 == short_message.getData2())) {
                     // Is this Note Off message on the same channel, and does it have the same pitch as the
                     // Note On message under consideration?
                     if (short_message.getChannel() == note_on_channel && short_message.getData1() == note_on_pitch) {
@@ -2292,11 +2297,11 @@ public class MIDIIntermediateRepresentations {
                         int note_off_tick = (int) event.getTick();
                         for (int tick = note_on_tick; tick < note_off_tick; tick++) {
                             // Update total_vertical_unison_velocity_so_far
-                            if (number_notes_sounding_by_tick_and_pitch_chart[tick][note_on_pitch] > 0) {
+                            if (0 < number_notes_sounding_by_tick_and_pitch_chart[tick][note_on_pitch]) {
                                 int number_previously_detected_notes_at_this_pitch = number_notes_sounding_by_tick_and_pitch_chart[tick][note_on_pitch];
-                                if (number_previously_detected_notes_at_this_pitch == 1)
+                                if (1 == number_previously_detected_notes_at_this_pitch)
                                     total_vertical_unison_velocity_so_far += pitch_strength_by_tick_chart_to_fill[tick][note_on_pitch] + note_on_velocity;
-                                else if (number_previously_detected_notes_at_this_pitch > 1)
+                                else if (1 < number_previously_detected_notes_at_this_pitch)
                                     total_vertical_unison_velocity_so_far += note_on_velocity;
                             }
 
@@ -2325,28 +2330,28 @@ public class MIDIIntermediateRepresentations {
      * Finds the number of MIDI ticks corresponding to the duration of a single beat at the given tempo in
      * beats per minute (assuming the specified average tempo in ticks per second).
      *
-     * @param    bpm                    The tempo to convert, in beats per minute.
-     * @param    ticks_per_second    The number of MIDI ticks in one second.
+     * @param bpm              The tempo to convert, in beats per minute.
+     * @param ticks_per_second The number of MIDI ticks in one second.
      * @return The number of MIDI ticks in one beat at the given bpm tempo.
      */
     private static int convertBPMtoTicks(int bpm, double ticks_per_second) {
-        return (int) ((ticks_per_second * 60.0) / (double) bpm);
+        return (int) ((ticks_per_second * 60.0) / bpm);
     }
 
 
     /**
      * Perform an autocorrelation calculation as follows on the specified data with the specified lag:
-     *
+     * <p>
      * y[lag] = (1/N) SUM(n to N){ x[n] * x[n-lag] }
      *
-     * @param    data    The data to be correlated.
-     * @param    lag        The lag for each data point.
+     * @param data The data to be correlated.
+     * @param lag  The lag for each data point.
      * @return The resultant auto correlation.
      */
     private static double autoCorrelate(int[] data, int lag) {
         double result = 0.0;
         for (int i = lag; i < data.length; i++)
-            result += (double) (data[i] * data[i - lag]);
-        return result / (double) data.length; // divide by N
+            result += (data[i] * data[i - lag]);
+        return result / data.length; // divide by N
     }
 }

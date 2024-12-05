@@ -1,8 +1,14 @@
 package jsymbolic2.processing;
 
+import ca.mcgill.music.ddmal.mei.MeiXmlReader;
+import org.ddmal.jmei2midi.MeiSequence;
+
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Sequence;
 import java.io.File;
-import java.io.IOException;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,13 +16,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.Sequence;
-
-import ca.mcgill.music.ddmal.mei.MeiXmlReader;
-import ca.mcgill.music.ddmal.mei.MeiXmlReader.MeiXmlReadException;
-import org.ddmal.jmei2midi.MeiSequence;
 
 /**
  * A class holding static methods for validating and parsing MIDI and MEI files. Many of these methods in
@@ -26,7 +25,8 @@ import org.ddmal.jmei2midi.MeiSequence;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class SymbolicMusicFileUtilities {
+public enum SymbolicMusicFileUtilities {
+    ;
     /* PUBLIC STATIC METHODS ********************************************************************************/
 
 
@@ -54,14 +54,14 @@ public class SymbolicMusicFileUtilities {
         // Note which files are valid and which are not
         for (File file : files_to_test) {
 
-            if (isValidMidiFile(file) || isValidMeiFile(file))
+            if (SymbolicMusicFileUtilities.isValidMidiFile(file) || SymbolicMusicFileUtilities.isValidMeiFile(file))
                 valid_files.add(file);
             else invalid_files.add(file);
         }
 
         // Output error messages if any of the files listed
         if (!invalid_files.isEmpty()) {
-            String invalid_file_paths = new String();
+            String invalid_file_paths = "";
             for (File file : invalid_files)
                 invalid_file_paths += file.getAbsolutePath() + " ";
             String error_string = "The following " + invalid_files.size() + " files cannot be processed because they are not valid MIDI or MEI files, and were thus removed from the list of files to process: " + invalid_file_paths;
@@ -105,7 +105,7 @@ public class SymbolicMusicFileUtilities {
     public static boolean isValidMeiFile(File file) {
         try {
             MeiXmlReader.loadFile(file);
-        } catch (MeiXmlReadException e) {
+        } catch (MeiXmlReader.MeiXmlReadException e) {
             return false;
         }
         return true;
@@ -118,16 +118,16 @@ public class SymbolicMusicFileUtilities {
      *
      * @param file      A MIDI or MEI file to parse.
      * @param error_log Errors that occur during processing are added to this list.
-     * @throws Exception An informative Exception is thrown if file is not a valid MIDI or MEI file.
      * @return A MIDI Sequence parsed from the given file.
+     * @throws Exception An informative Exception is thrown if file is not a valid MIDI or MEI file.
      */
     public static Sequence getMidiSequenceFromMidiOrMeiFile(File file, List<String> error_log)
             throws Exception {
         Sequence sequence = null;
-        if (isValidMidiFile(file))
-            sequence = getMidiSequenceFromMidiFile(file, error_log);
-        else if (isValidMeiFile(file))
-            sequence = getMidiSequenceFromMeiFile(file, error_log);
+        if (SymbolicMusicFileUtilities.isValidMidiFile(file))
+            sequence = SymbolicMusicFileUtilities.getMidiSequenceFromMidiFile(file, error_log);
+        else if (SymbolicMusicFileUtilities.isValidMeiFile(file))
+            sequence = SymbolicMusicFileUtilities.getMidiSequenceFromMeiFile(file, error_log);
         else {
             error_log.add("The specified file, " + file + ", is not a valid MIDI or MEI file.");
             throw new Exception("The specified file, " + file + ", is not a valid MIDI or MEI file.");
@@ -142,9 +142,9 @@ public class SymbolicMusicFileUtilities {
      *
      * @param file      A MIDI file to parse.
      * @param error_log Errors that occur during processing are added to this list.
+     * @return An MeiSequence parsed from the given MEI file.
      * @throws IOException              Thrown if there is a problem accessing the given file.
      * @throws InvalidMidiDataException Thrown if the given file is not a valid MIDI file.
-     * @return An MeiSequence parsed from the given MEI file.
      */
     public static Sequence getMidiSequenceFromMidiFile(File file, List<String> error_log)
             throws IOException, InvalidMidiDataException {
@@ -168,15 +168,15 @@ public class SymbolicMusicFileUtilities {
      *
      * @param file      An MEI file to parse.
      * @param error_log Errors that occur during processing are added to this list.
-     * @throws MeiXmlReadException      Thrown if there is a problem parsing the MEI in the given file.
-     * @throws InvalidMidiDataException Thrown if MIDI data extracted from the given MEI file is invalid.
      * @return An MeiSequence parsed from the given MEI file.
+     * @throws MeiXmlReader.MeiXmlReadException Thrown if there is a problem parsing the MEI in the given file.
+     * @throws InvalidMidiDataException         Thrown if MIDI data extracted from the given MEI file is invalid.
      */
     public static MeiSequence getMeiSequenceFromMeiFile(File file, List<String> error_log)
-            throws InvalidMidiDataException, MeiXmlReadException {
+            throws InvalidMidiDataException, MeiXmlReader.MeiXmlReadException {
         try {
             return new MeiSequence(file);
-        } catch (InvalidMidiDataException | MeiXmlReadException e) {
+        } catch (InvalidMidiDataException | MeiXmlReader.MeiXmlReadException e) {
             error_log.add("The specified file, " + file + ", is not a valid MEI file.");
             throw e;
         }
@@ -189,17 +189,17 @@ public class SymbolicMusicFileUtilities {
      *
      * @param file      An MEI file to parse.
      * @param error_log Errors that occur during processing are added to this list.
-     * @throws MeiXmlReadException      Thrown if there is a problem parsing the MEI in the given file.
-     * @throws InvalidMidiDataException Thrown if MIDI data extracted from the given MEI file is invalid.
      * @return A MIDI Sequence parsed from the given MEI file.
+     * @throws MeiXmlReader.MeiXmlReadException Thrown if there is a problem parsing the MEI in the given file.
+     * @throws InvalidMidiDataException         Thrown if MIDI data extracted from the given MEI file is invalid.
      */
     public static Sequence getMidiSequenceFromMeiFile(File file, List<String> error_log)
-            throws MeiXmlReadException, InvalidMidiDataException {
+            throws MeiXmlReader.MeiXmlReadException, InvalidMidiDataException {
         Sequence sequence = null;
         try {
             MeiSequence meiSequence = new MeiSequence(file);
             sequence = meiSequence.getSequence();
-        } catch (MeiXmlReadException | InvalidMidiDataException e) {
+        } catch (MeiXmlReader.MeiXmlReadException | InvalidMidiDataException e) {
             error_log.add("The specified file, " + file + ", is not a valid MIDI or MEI file.");
             throw e;
         }
@@ -241,7 +241,7 @@ public class SymbolicMusicFileUtilities {
         if (files_found[0].isDirectory()) {
             List directory_to_parse_dummy_list = new ArrayList<>();
             directory_to_parse_dummy_list.add(files_found[0]);
-            ArrayList<File> qualifying_files = getFilteredFilesRecursiveTraversal(directory_to_parse_dummy_list,
+            ArrayList<File> qualifying_files = SymbolicMusicFileUtilities.getFilteredFilesRecursiveTraversal(directory_to_parse_dummy_list,
                     false,
                     file_filter,
                     error_print_stream,
@@ -297,14 +297,12 @@ public class SymbolicMusicFileUtilities {
                         complete_file_list.add(path_in_subfolder.toFile());
                 } catch (IOException ioe) {
                     String error_message = "Could not traverse files from this folder: " + file.getAbsolutePath();
-                    if (error_print_stream != null)
+                    if (null != error_print_stream)
                         UserFeedbackGenerator.printWarningMessage(error_print_stream, error_message);
                     error_log.add(error_message);
                 }
             } else {
-                boolean pass_this_file = true;
-                if (filter_explicitly_specified_files && !MusicFilter.passesFilter(file))
-                    pass_this_file = false;
+                boolean pass_this_file = !filter_explicitly_specified_files || MusicFilter.passesFilter(file);
                 if (pass_this_file)
                     complete_file_list.add(file);
             }

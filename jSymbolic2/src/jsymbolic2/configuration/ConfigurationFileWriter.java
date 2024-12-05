@@ -4,7 +4,7 @@ import jsymbolic2.configuration.txtimplementation.ConfigurationFileExtensionEnum
 import jsymbolic2.processing.SymbolicMusicFileUtilities;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -39,8 +39,9 @@ public abstract class ConfigurationFileWriter {
 
     /**
      * Add appropriately formatted options to the raw line by line raw configuration file.
+     *
      * @param rawConfigFile List of string for the raw line by line configuration file.
-     * @param optionState The state of the options sections that needs to be written to the configuration file.
+     * @param optionState   The state of the options sections that needs to be written to the configuration file.
      * @return A raw line by line configuration file that now has the properly formatted configuration
      * option state.
      */
@@ -48,7 +49,8 @@ public abstract class ConfigurationFileWriter {
 
     /**
      * Add appropriately formatted features to the raw line by line raw configuration file.
-     * @param rawConfigFile List of string for the raw line by line configuration file.
+     *
+     * @param rawConfigFile  List of string for the raw line by line configuration file.
      * @param featuresToSave The names of all the features that need to be saved in the configuration file.
      * @return A raw line by line configuration file that now has the properly formatted configuration
      * feature state.
@@ -57,8 +59,9 @@ public abstract class ConfigurationFileWriter {
 
     /**
      * Add appropriately formatted input files to the raw line by line raw configuration file.
+     *
      * @param rawConfigFile List of string for the raw line by line configuration file.
-     * @param inputFiles The input files that need to be added to the configuration file.
+     * @param inputFiles    The input files that need to be added to the configuration file.
      * @return A raw line by line configuration file that now has the properly formatted configuration
      * input file state.
      */
@@ -66,8 +69,9 @@ public abstract class ConfigurationFileWriter {
 
     /**
      * Add appropriately formatted output files to the raw line by line raw configuration file.
+     *
      * @param rawConfigFile List of string for the raw line by line configuration file.
-     * @param outputFiles The output files that need to be added to the configuration file.
+     * @param outputFiles   The output files that need to be added to the configuration file.
      * @return A raw line by line configuration file that now has the properly formatted configuration
      * output file state.
      */
@@ -76,32 +80,32 @@ public abstract class ConfigurationFileWriter {
     /**
      * The template method pattern which correctly uses the abstract methods to build up the raw line by line
      * configuration file. It then writes the file to disk with the appropriate extension.
+     *
      * @param configurationFileData The data that needs to be written to the configuration file.
-     * @param headersToWrite The headers and corresponding sections that need to be written to the configuration file.
+     * @param headersToWrite        The headers and corresponding sections that need to be written to the configuration file.
      * @throws IOException Thrown if any writing problems occur on the local system.
      */
     public void write(ConfigurationFileData configurationFileData, List<ConfigFileHeaderEnum> headersToWrite)
-            throws IOException
-    {
+            throws IOException {
         List<String> rawConfigFile = new ArrayList<>();
 
-        if(headersToWrite.contains(ConfigFileHeaderEnum.OPTION_HEADER)) {
-            addFormattedOptions(rawConfigFile,configurationFileData.getOptionState());
+        if (headersToWrite.contains(ConfigFileHeaderEnum.OPTION_HEADER)) {
+            addFormattedOptions(rawConfigFile, configurationFileData.getOptionState());
         }
 
-        if(headersToWrite.contains(ConfigFileHeaderEnum.FEATURE_HEADER)) {
-            addFormattedFeatures(rawConfigFile,configurationFileData.getFeaturesToSave());
+        if (headersToWrite.contains(ConfigFileHeaderEnum.FEATURE_HEADER)) {
+            addFormattedFeatures(rawConfigFile, configurationFileData.getFeaturesToSave());
         }
 
-        if(headersToWrite.contains(ConfigFileHeaderEnum.INPUT_FILE_HEADER)) {
-            addFormattedInputFiles(rawConfigFile,configurationFileData.getInputFileList());
+        if (headersToWrite.contains(ConfigFileHeaderEnum.INPUT_FILE_HEADER)) {
+            addFormattedInputFiles(rawConfigFile, configurationFileData.getInputFileList());
         }
 
-        if(headersToWrite.contains(ConfigFileHeaderEnum.OUTPUT_FILE_HEADER)) {
-            addFormattedOutputFiles(rawConfigFile,configurationFileData.getOutputFileList());
+        if (headersToWrite.contains(ConfigFileHeaderEnum.OUTPUT_FILE_HEADER)) {
+            addFormattedOutputFiles(rawConfigFile, configurationFileData.getOutputFileList());
         }
 
         String correctConfigFileName = SymbolicMusicFileUtilities.correctFileExtension(configurationFileData.getConfigurationFilePath(), ConfigurationFileExtensionEnum.txt.name());
-        Files.write(Paths.get(correctConfigFileName), rawConfigFile, Charset.forName("ISO-8859-1"));
+        Files.write(Paths.get(correctConfigFileName), rawConfigFile, StandardCharsets.ISO_8859_1);
     }
 }

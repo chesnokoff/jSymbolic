@@ -28,7 +28,7 @@ class ConfigRun implements Consumer<String[]> {
         // The path of the configuration file
         String config_file_path = args[1];
         // If only configuration file path is specified in args
-        if (args.length == 2) {
+        if (2 == args.length) {
             try {
                 processWithConfigFileOnly(config_file_path, printStreams);
             } catch (Exception e) {
@@ -41,11 +41,11 @@ class ConfigRun implements Consumer<String[]> {
         // file path
 
         // Must be either 2 or 5 command line arguments for CONFIG_RUN option
-        if (args.length != 5) {
+        if (5 != args.length) {
             UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.error_print_stream(), args);
         }
 
-        processFiveArguments(args, config_file_path, printStreams);
+        ConfigRun.processFiveArguments(args, config_file_path, printStreams);
     }
 
     private static void processFiveArguments(String[] args, String config_file_path, PrintStreams printStreams) {

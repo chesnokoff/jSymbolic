@@ -10,12 +10,12 @@ public enum ConfigurationFileDelimiterEnum {
     EQUAL("=");
 
     private final String delimiter;
-    ConfigurationFileDelimiterEnum(String delimiter){
+
+    ConfigurationFileDelimiterEnum(String delimiter) {
         this.delimiter = delimiter;
     }
 
     /**
-     *
      * @return The string format of the enum. In this case an "=" sign.
      */
     @Override

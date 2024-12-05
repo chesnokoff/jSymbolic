@@ -29,7 +29,7 @@ public class FilesPreprocessor {
                         fullListOfFiles.add(path_in_subfolder.toFile());
                 } catch (IOException ioe) {
                     String error_message = "Could not traverse files from this folder: " + file.getAbsolutePath();
-                    if (errorPrintStream != null)
+                    if (null != errorPrintStream)
                         UserFeedbackGenerator.printWarningMessage(errorPrintStream, error_message);
                     errorLog.add(error_message);
                 }
@@ -69,7 +69,7 @@ public class FilesPreprocessor {
     }
 
     private boolean validateFile(File file) {
-        if (file == null) {
+        if (null == file) {
             return false;
         }
         if (!file.exists()) {
@@ -81,10 +81,7 @@ public class FilesPreprocessor {
         if (!file.isFile()) {
             return false;
         }
-        if (!file.canRead()) {
-            return false;
-        }
-        return true;
+        return file.canRead();
     }
 
     private boolean isValidMidiFile(File file) {

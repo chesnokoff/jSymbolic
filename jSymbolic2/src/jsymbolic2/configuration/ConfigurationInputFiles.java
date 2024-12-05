@@ -3,6 +3,7 @@ package jsymbolic2.configuration;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A List for both the valid and invalid input files in the configuration file.
@@ -14,8 +15,8 @@ public class ConfigurationInputFiles {
     private List<File> invalidFiles;
 
     public ConfigurationInputFiles() {
-        this.validFiles = new ArrayList<>();
-        this.invalidFiles = new ArrayList<>();
+        validFiles = new ArrayList<>();
+        invalidFiles = new ArrayList<>();
     }
 
     public List<File> getInvalidFiles() {
@@ -37,19 +38,19 @@ public class ConfigurationInputFiles {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (null == o || getClass() != o.getClass()) return false;
 
         ConfigurationInputFiles that = (ConfigurationInputFiles) o;
 
-        if (validFiles != null ? !validFiles.equals(that.validFiles) : that.validFiles != null) return false;
-        return invalidFiles != null ? invalidFiles.equals(that.invalidFiles) : that.invalidFiles == null;
+        if (!Objects.equals(validFiles, that.validFiles)) return false;
+        return Objects.equals(invalidFiles, that.invalidFiles);
 
     }
 
     @Override
     public int hashCode() {
-        int result = validFiles != null ? validFiles.hashCode() : 0;
-        result = 31 * result + (invalidFiles != null ? invalidFiles.hashCode() : 0);
+        int result = null != validFiles ? validFiles.hashCode() : 0;
+        result = 31 * result + (null != invalidFiles ? invalidFiles.hashCode() : 0);
         return result;
     }
 }

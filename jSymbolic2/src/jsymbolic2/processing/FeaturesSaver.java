@@ -8,7 +8,8 @@ import java.io.PrintStream;
 /**
  * This class is used to save extracted features to files. Extracted features are passed in DataBoard
  */
-public class FeaturesSaver {
+public enum FeaturesSaver {
+    ;
 
     /**
      * Validates filepath to write and writes into CSV file
@@ -20,8 +21,8 @@ public class FeaturesSaver {
      */
     static void SaveCSV(DataBoard dataBoard, String filePath, PrintStream status_print_stream)
             throws RuntimeException {
-        File file = new File(addExtension(filePath, "csv"));
-        validateFile(file);
+        File file = new File(FeaturesSaver.addExtension(filePath, "csv"));
+        FeaturesSaver.validateFile(file);
         try {
             UserFeedbackGenerator.printGeneratingCsvFile(status_print_stream, file.getPath());
             dataBoard.saveToCSV(file, true,
@@ -42,8 +43,8 @@ public class FeaturesSaver {
      */
     static void SaveARFF(DataBoard dataBoard, String filePath,
                          PrintStream status_print_stream) throws RuntimeException {
-        File file = new File(addExtension(filePath, "arff"));
-        validateFile(file);
+        File file = new File(FeaturesSaver.addExtension(filePath, "arff"));
+        FeaturesSaver.validateFile(file);
         try {
             UserFeedbackGenerator.printGeneratingArffFile(status_print_stream, file.getPath());
             dataBoard.saveToARFF("Music", file,
@@ -65,12 +66,12 @@ public class FeaturesSaver {
     static void SaveXML(DataBoard dataBoard, String filePathDefinitions, String filePathValues,
                         PrintStream status_print_stream) throws RuntimeException {
         File fileDefinitions = null;
-        if (filePathDefinitions != null) {
-            fileDefinitions = new File(addExtension(filePathDefinitions, "xml"));
-            validateFile(fileDefinitions);
+        if (null != filePathDefinitions) {
+            fileDefinitions = new File(FeaturesSaver.addExtension(filePathDefinitions, "xml"));
+            FeaturesSaver.validateFile(fileDefinitions);
         }
-        File fileValues = new File(addExtension(filePathValues, "xml"));
-        validateFile(fileValues);
+        File fileValues = new File(FeaturesSaver.addExtension(filePathValues, "xml"));
+        FeaturesSaver.validateFile(fileValues);
         try {
             UserFeedbackGenerator.printGeneratingAceXmlFeatureDefinitionsFile(status_print_stream, fileValues.getPath());
             UserFeedbackGenerator.printGeneratingAceXmlFeatureValuesFile(status_print_stream, fileValues.getPath());
@@ -99,7 +100,7 @@ public class FeaturesSaver {
         nameBuilder.delete(0, nameIndex + 1);
         dirBuilder.delete(nameIndex + 1, filePath.length());
         if (nameBuilder.toString().contains(".")) {
-            int dotIndex = nameBuilder.toString().indexOf(".");
+            int dotIndex = nameBuilder.toString().indexOf('.');
             nameBuilder.delete(dotIndex, nameBuilder.length());
             nameBuilder.append(".").append(extension);
         }

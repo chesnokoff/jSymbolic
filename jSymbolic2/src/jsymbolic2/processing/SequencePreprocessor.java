@@ -53,7 +53,7 @@ public class SequencePreprocessor implements UnaryOperator<Sequence> {
      */
     private Sequence changeResolution(Sequence sourceSeq, int resolution) throws InvalidMidiDataException {
         // sequence must be tick-based
-        if (sourceSeq.getDivisionType() != Sequence.PPQ) {
+        if (Sequence.PPQ != sourceSeq.getDivisionType()) {
             //throw new UnsupportedOperationException("SMPTE is not supported.");
             return sourceSeq;
         }

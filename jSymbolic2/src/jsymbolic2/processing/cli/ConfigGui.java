@@ -16,7 +16,7 @@ class ConfigGui implements Consumer<String[]> {
 
     @Override
     public void accept(String[] args) {
-        if (args.length != 2)
+        if (2 != args.length)
             UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.error_print_stream(), args);
 
         String config_file_path = args[1];

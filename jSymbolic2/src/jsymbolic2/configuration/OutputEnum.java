@@ -7,5 +7,5 @@ package jsymbolic2.configuration;
  */
 public enum OutputEnum {
     feature_values_save_path,
-    feature_definitions_save_path;
+    feature_definitions_save_path
 }

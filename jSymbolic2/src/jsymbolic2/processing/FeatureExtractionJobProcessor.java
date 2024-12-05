@@ -19,7 +19,8 @@ import java.util.List;
  *
  * @author Cory McKay and Tristano Tenaglia
  */
-public final class FeatureExtractionJobProcessor {
+public enum FeatureExtractionJobProcessor {
+    ;
     /* PUBLIC STATIC METHODS ********************************************************************************/
 
     /**
@@ -71,14 +72,14 @@ public final class FeatureExtractionJobProcessor {
             List<ImmutablePair<String, Sequence>> midiPairs = filesReader.extractMidi(filesPreprocessor.getMidiFilesList());
             List<ImmutablePair<String, MeiSequence>> meiPairs = filesReader.extractMei(filesPreprocessor.getMeiFilesList());
             // Extract features and save the feature values in DataBoard
-            DataBoard dataBoard = extractFeatures(midiPairs, meiPairs,
+            DataBoard dataBoard = FeatureExtractionJobProcessor.extractFeatures(midiPairs, meiPairs,
                     processor,
                     saveInfo.feature_values_save_path(),
                     printStreams, error_log,
                     gui_processing);
 
             // Save features from DataBoard
-            saveFeatures(dataBoard, saveInfo.feature_definitions_save_path(),
+            FeatureExtractionJobProcessor.saveFeatures(dataBoard, saveInfo.feature_definitions_save_path(),
                     saveInfo,
                     printStreams.status_print_stream());
             // Indicate that processing is done
@@ -123,7 +124,7 @@ public final class FeatureExtractionJobProcessor {
     public static List<String> extractAndSaveDefaultFeatures(String path_of_file_or_folder_to_parse,
                                                              SaveInfo saveInfo, WindowInfo windowInfo,
                                                              PrintStreams printStreams, boolean gui_processing) {
-        return extractAndSaveSpecificFeatures(List.of(new File(path_of_file_or_folder_to_parse)),
+        return FeatureExtractionJobProcessor.extractAndSaveSpecificFeatures(List.of(new File(path_of_file_or_folder_to_parse)),
                 saveInfo,
                 FeatureExtractorAccess.getDefaultFeaturesToSave(),
                 windowInfo,
@@ -172,7 +173,7 @@ public final class FeatureExtractionJobProcessor {
                                                                         PrintStreams printStreams, boolean gui_processing) {
         SaveInfo saveInfo = new SaveInfo(feature_values_save_path, feature_definitions_save_path, config_file_data.saveOverall(), config_file_data.convertToArff(), config_file_data.convertToCsv());
         WindowInfo windowInfo = new WindowInfo(config_file_data.saveWindow(), config_file_data.getWindowSize(), config_file_data.getWindowOverlap());
-        return extractAndSaveSpecificFeatures(paths_of_files_or_folders_to_parse,
+        return FeatureExtractionJobProcessor.extractAndSaveSpecificFeatures(paths_of_files_or_folders_to_parse,
                 saveInfo, config_file_data.getFeaturesToSaveBoolean(),
                 windowInfo,
                 printStreams, gui_processing);
@@ -190,20 +191,20 @@ public final class FeatureExtractionJobProcessor {
      * two cases, execution is terminated immediately. Also saves the feature definitions of the features
      * selected for extraction in an ACE XML feature definitions file.
      *
-     * @param midiSequences                 A list of pairs. Key is name of sequence, value is Sequence to process.
-     * @param meiSequences                  A list of pairs. Key is name of sequence, value is MeiSequence to process.
-     * @param processor                     The MIDIFeatureProcessor holding feature extraction settings.
-     * @param feature_values_save_path      The path to save the extracted features to in the form of an ACE
-     *                                      XML feature values file.
+     * @param midiSequences            A list of pairs. Key is name of sequence, value is Sequence to process.
+     * @param meiSequences             A list of pairs. Key is name of sequence, value is MeiSequence to process.
+     * @param processor                The MIDIFeatureProcessor holding feature extraction settings.
+     * @param feature_values_save_path The path to save the extracted features to in the form of an ACE
+     *                                 XML feature values file.
      * @param printStreams
-     * @param error_log                     A list of errors encountered so far. Errors are added to it if
-     *                                      encountered. This will be printed to error_print_stream at the end
-     *                                      of processing.
-     * @param gui_processing                True if this method is being called by a GUI, false otherwise. If
-     *                                      it is true, then error summaries will only be partially printed,
-     *                                      and out of memory errors will result in an error window being
-     *                                      displayed and a direct printing	of the associated error message to
-     *                                      standard error.
+     * @param error_log                A list of errors encountered so far. Errors are added to it if
+     *                                 encountered. This will be printed to error_print_stream at the end
+     *                                 of processing.
+     * @param gui_processing           True if this method is being called by a GUI, false otherwise. If
+     *                                 it is true, then error summaries will only be partially printed,
+     *                                 and out of memory errors will result in an error window being
+     *                                 displayed and a direct printing	of the associated error message to
+     *                                 standard error.
      */
     private static DataBoard extractFeatures(List<ImmutablePair<String, Sequence>> midiSequences,
                                              List<ImmutablePair<String, MeiSequence>> meiSequences,
@@ -226,14 +227,14 @@ public final class FeatureExtractionJobProcessor {
         UserFeedbackGenerator.printFeatureExtractionStartingMessage(printStreams.status_print_stream(), midiSequenceNumberToProcess + meiSequenceNumberToProcess);
         // Extract features from each file
         for (int i = 0; i < midiSequenceNumberToProcess; ++i) {
-            extractFeaturesFromSequence(midiSequences.get(i).getLeft(), midiSequences.get(i).getRight(),
+            FeatureExtractionJobProcessor.extractFeaturesFromSequence(midiSequences.get(i).getLeft(), midiSequences.get(i).getRight(),
                     processor, i,
                     midiSequenceNumberToProcess + meiSequenceNumberToProcess,
                     printStreams, error_log, gui_processing);
 
         }
         for (int i = 0; i < meiSequenceNumberToProcess; ++i) {
-            extractFeaturesFromMeiSequence(
+            FeatureExtractionJobProcessor.extractFeaturesFromMeiSequence(
                     midiSequences.get(i).getLeft(),
                     processor,
                     midiSequenceNumberToProcess + i,
@@ -292,7 +293,7 @@ public final class FeatureExtractionJobProcessor {
                                                     int total_files_to_process,
                                                     PrintStreams printStreams, List<String> error_log,
                                                     boolean gui_processing) {
-        extractFeaturesFromMeiSequence(name, processor, current_extraction_index, total_files_to_process, printStreams, error_log, gui_processing, null, sequence);
+        FeatureExtractionJobProcessor.extractFeaturesFromMeiSequence(name, processor, current_extraction_index, total_files_to_process, printStreams, error_log, gui_processing, null, sequence);
     }
 
 
@@ -310,7 +311,7 @@ public final class FeatureExtractionJobProcessor {
             UserFeedbackGenerator.printFeatureExtractionDoneAFileProgressMessage(printStreams.status_print_stream(), name, current_extraction_index, total_files_to_process);
         } catch (OutOfMemoryError e) // Terminate execution if this happens
         {
-            processOutOfMemory(name, printStreams.error_print_stream(), gui_processing);
+            FeatureExtractionJobProcessor.processOutOfMemory(name, printStreams.error_print_stream(), gui_processing);
         } catch (Exception e) {
             String error_message = "Problem extracting features from " + name + "." +
                     "\n\tDetailed error message: " + e + ": " + e.getMessage();
@@ -355,7 +356,7 @@ public final class FeatureExtractionJobProcessor {
                                      String featureDefinitionsSavePath,
                                      SaveInfo saveInfo,
                                      PrintStream status_print_stream) {
-        if (dataBoard.getNumOverall() < 1) {
+        if (1 > dataBoard.getNumOverall()) {
             return;
         }
         FeaturesSaver.SaveXML(dataBoard, featureDefinitionsSavePath, saveInfo.feature_values_save_path(),

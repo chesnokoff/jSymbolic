@@ -33,7 +33,7 @@ import java.util.stream.IntStream;
  *
  * @author Cory McKay and Tristano Tenaglia
  */
-public class MIDIFeatureProcessor {
+public class MIDIFeatureProcessor implements MIDIFeatureProcessorForkJoinPool {
     /* FIELDS ****************************************************************/
 
     /**
@@ -233,6 +233,7 @@ public class MIDIFeatureProcessor {
      * @return The features that are to be extracted (including dependencies of features to be saved, not
      * just the features to be saved themselves).
      */
+    @Override
     public MIDIFeatureExtractor[] getFinalFeaturesToBeExtracted() {
         return midiFeatureExtractors;
     }
@@ -240,6 +241,7 @@ public class MIDIFeatureProcessor {
     /**
      * @return True if it has features for MEI files.
      */
+    @Override
     public boolean containsMeiFeatures() {
         List<String> all_mei_specific_features = FeatureExtractorAccess.getNamesOfMeiSpecificFeatures();
         for (MIDIFeatureExtractor feature : midiFeatureExtractors) {
@@ -258,6 +260,7 @@ public class MIDIFeatureProcessor {
      * @param meiSpecificStorage
      * @throws Exception When an unforeseen runtime exception occurs.
      */
+    @Override
     public void extractFeaturesFromSequence(String name, Sequence sequence, MeiSpecificStorage meiSpecificStorage)
             throws Exception {
         // Extract the data from the file and check for exceptions
@@ -309,6 +312,7 @@ public class MIDIFeatureProcessor {
      * for the given window.
      * @throws Exception Throws an exception if a problem occurs.
      */
+    @Override
     public double[][][] getFeatures(Sequence[] windows, MeiSpecificStorage meiSpecificStorage) throws Exception {
         // The extracted feature values for this recording. The first indice
         // identifies the window, the second identifies the feature and the
@@ -398,6 +402,7 @@ public class MIDIFeatureProcessor {
      * @return DataBoard of processed recordings
      * @throws Exception Throws an exception if it cannot create DataBoard object.
      */
+    @Override
     public DataBoard generateDataBoard() throws Exception {
         DataBoard dataBoard = new DataBoard(null, null, dataSets.toArray(new DataSet[0]), null);
         if (saveOverallRecordingFeatures) {

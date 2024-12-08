@@ -11,7 +11,14 @@ import org.ddmal.jmei2midi.meielements.meispecific.MeiSpecificStorage;
 
 import javax.sound.midi.Sequence;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CountedCompleter;
+import java.util.concurrent.ForkJoinPool;
 import java.util.stream.IntStream;
 
 
@@ -35,6 +42,8 @@ import java.util.stream.IntStream;
  */
 public class MIDIFeatureProcessor implements MIDIFeatureProcessorForkJoinPool {
     /* FIELDS ****************************************************************/
+
+    private static Map<String, MIDIFeatureExtractor> name2feature = new HashMap<>();
 
     /**
      * The window size in seconds used for dividing up the recordings to
@@ -149,6 +158,9 @@ public class MIDIFeatureProcessor implements MIDIFeatureProcessorForkJoinPool {
         saveFeaturesForEachWindow = windowInfo.save_features_for_each_window();
         this.saveOverallRecordingFeatures = saveOverallRecordingFeatures;
 
+        for (MIDIFeatureExtractor allFeatureExtractor : allFeatureExtractors) {
+            name2feature.put(allFeatureExtractor.getFeatureDefinition().name, allFeatureExtractor);
+        }
         // Calculate the window offset
         windowOverlapOffset = windowInfo.window_overlap() * windowSize;
         if (windowOverlapOffset > windowSize)
@@ -293,6 +305,54 @@ public class MIDIFeatureProcessor implements MIDIFeatureProcessorForkJoinPool {
         addDataSet(windowFeatureValues, name, overallFeatureValues, startTicks, endTicks, secondsPerTick);
     }
 
+    private static class Worker extends CountedCompleter<Void> {
+        private final List<Sequence> sequences;
+        private final List<MIDIIntermediateRepresentations> representations;
+        private final ConcurrentMap<MIDIFeatureExtractor, double[][]> map;
+        private final MIDIFeatureExtractor featureExtractor;
+
+        private Worker(CountedCompleter<?> completer,
+                       List<Sequence> sequences,
+                       List<MIDIIntermediateRepresentations> representations,
+                       ConcurrentMap<MIDIFeatureExtractor, double[][]> map,
+                       MIDIFeatureExtractor featureExtractor) {
+            super(completer);
+            this.sequences = sequences;
+            this.representations = representations;
+            this.map = map;
+            this.featureExtractor = featureExtractor;
+        }
+
+        @Override
+        public void compute() {
+            List<Worker> workers = new ArrayList<>();
+            for (String depenedency : featureExtractor.getDepenedencies())
+                workers.add(new Worker(this, sequences, representations, map, name2feature.get(depenedency)));
+            addToPendingCount(workers.size());
+            for (Worker worker : workers) worker.fork();
+        }
+
+        @Override
+        public void onCompletion(CountedCompleter<?> caller) {
+            double[][] results = new double[sequences.size()][];
+            for (int i = 0; i < representations.size(); i++) {
+                double[][][] dependencies = new double[sequences.size()][featureExtractor.getDepenedencies().length][];
+                for (int j = 0; j < featureExtractor.getDepenedencies().length; j++) {
+                    String depenedency = featureExtractor.getDepenedencies()[j];
+                    dependencies[i][j] = map.get(name2feature.get(depenedency))[i];
+                }
+                try {
+                    results[i] = featureExtractor.extractFeature(sequences.get(i),
+                            representations.get(i),
+                            dependencies[i]);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            map.putIfAbsent(featureExtractor, results);
+        }
+    }
+
     /**
      * Extracts features from each window of the given MIDI sequences. If the
      * passed windows parameter consists of only one window, then this could
@@ -322,24 +382,33 @@ public class MIDIFeatureProcessor implements MIDIFeatureProcessorForkJoinPool {
         // Extract features from each window one by one and add save the results.
         // The last window is zero-padded at the end if it falls off the edge of the
         // provided samples.
+        List<MIDIIntermediateRepresentations> representations = new ArrayList<>();
         for (int win = 0; win < windows.length; win++) {
             // Extract information from sequence that is needed to extract features
             MIDIIntermediateRepresentations intermediate = new MIDIIntermediateRepresentations(windows[win]);
 
+            representations.add(intermediate);
             // Extract the features one by one
-            for (int feat = 0; feat < midiFeatureExtractors.length; feat++) {
-                processFeature(windows, meiSpecificStorage, results, win, intermediate, feat);
+//            for (int feat = 0; feat < midiFeatureExtractors.length; feat++)
+//                processFeature(windows, meiSpecificStorage, results, win, intermediate, feat);
+        }
+        ForkJoinPool pool = new ForkJoinPool(20);
+        ConcurrentHashMap<MIDIFeatureExtractor, double[][]> resultsMap = new ConcurrentHashMap<>();
+        IntStream.range(0, featureExtractorsDefinitions.length)
+                .filter(i -> featuresToSaveMask[i])
+                .mapToObj(i -> name2feature.get(featureExtractorsDefinitions[i].name))
+                .forEach(featureDefinition -> pool.submit(new Worker(null,
+                        Arrays.stream(windows).toList(),
+                        representations,
+                        resultsMap,
+                        featureDefinition)));
+        for (int i = 0; i < results.length; i++) {
+            int cnt = 0;
+            for (Map.Entry<MIDIFeatureExtractor, double[][]> entry : resultsMap.entrySet()) {
+                results[i][cnt] = entry.getValue()[i];
+                cnt++;
             }
         }
-
-//        for (int win = 0; win < results.length; ++win) {
-//            for (int feat = 0; feat < midiFeatureExtractors.length; ++feat) {
-//                if (!featuresToSaveMask[feat]) {
-//                    results[win][feat] = null;
-//                }
-//            }
-//        }
-        // Return the results
         return results;
     }
 

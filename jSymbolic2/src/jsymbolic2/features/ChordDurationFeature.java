@@ -20,23 +20,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class ChordDurationFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Chord Duration";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -47,11 +32,6 @@ public class ChordDurationFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Average duration a chord in units of time corresponding to the duration of an idealized quarter note. A \"chord\" here is considered to stay the same as long as no new pitch classes are added, and no pitch classes are taken away. This \"chord\" may consist of any number of pitch classes, even only one. A \"chord\" is not considered to end if it is split by one or more rests (although the rests themselves are not counted in the duration of the \"chord\").";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

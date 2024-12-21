@@ -14,23 +14,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class MelodicSixthsFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Melodic Sixths";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -41,11 +26,6 @@ public class MelodicSixthsFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Fraction of melodic intervals that are major or minor sixths.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

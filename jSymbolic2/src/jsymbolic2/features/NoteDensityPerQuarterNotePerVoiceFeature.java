@@ -17,11 +17,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class NoteDensityPerQuarterNotePerVoiceFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Note Density per Quarter Note per Voice";
     }
@@ -32,11 +27,6 @@ public class NoteDensityPerQuarterNotePerVoiceFeature implements Feature {
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "R-11";
     }
@@ -44,11 +34,6 @@ public class NoteDensityPerQuarterNotePerVoiceFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Average number of note onsets per unit of time corresponding to an idealized quarter note, divided by the total number of voices present (i.e. the number of MIDI channels that contain one or more notes in the piece). Takes into account all notes in all voices, including both pitched and unpitched notes.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

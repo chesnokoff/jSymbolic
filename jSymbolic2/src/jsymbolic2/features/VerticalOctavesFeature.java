@@ -16,11 +16,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class VerticalOctavesFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Vertical Octaves";
     }
@@ -31,11 +26,6 @@ public class VerticalOctavesFeature implements Feature {
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "C-22";
     }
@@ -43,11 +33,6 @@ public class VerticalOctavesFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Fraction of all wrapped vertical intervals that are octaves. This is weighted by how long intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note).";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

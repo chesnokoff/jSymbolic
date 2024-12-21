@@ -17,11 +17,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class DiminishedAndAugmentedTriadsFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Diminished and Augmented Triads";
     }
@@ -32,11 +27,6 @@ public class DiminishedAndAugmentedTriadsFeature implements Feature {
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "C-30";
     }
@@ -44,11 +34,6 @@ public class DiminishedAndAugmentedTriadsFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Fraction of all simultaneously sounding pitch groups that are either diminished or augmented triads. This is weighted by how long pitch groups are held (e.g. a pitch group lasting a whole note will be weighted four times as strongly as a pitch group lasting a quarter note).";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

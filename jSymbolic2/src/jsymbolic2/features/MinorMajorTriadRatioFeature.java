@@ -18,11 +18,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class MinorMajorTriadRatioFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Minor Major Triad Ratio";
     }
@@ -33,11 +28,6 @@ public class MinorMajorTriadRatioFeature implements Feature {
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "C-35";
     }
@@ -45,11 +35,6 @@ public class MinorMajorTriadRatioFeature implements Feature {
     @Override()
     public String getDescription() {
         return "The prevalence of minor triads divided by the prevalence of major triads. This is weighted by how long the chords are held (e.g. a chord lasting a whole note will be weighted four times as strongly as a chord lasting a quarter note). Set to 0 if there are no minor triads or if there are no major triads.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

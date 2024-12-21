@@ -21,23 +21,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class MelodicEmbellishmentsFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Melodic Embellishments";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -48,11 +33,6 @@ public class MelodicEmbellishmentsFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Fraction of all notes that are surrounded on both sides by MIDI Note Ons on the same MIDI channel that have durations at least three times as long as the central note. Set to 0 if there are no notes in the piece.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

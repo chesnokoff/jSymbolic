@@ -18,11 +18,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class VerticalDissonanceRatioFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Vertical Dissonance Ratio";
     }
@@ -33,11 +28,6 @@ public class VerticalDissonanceRatioFeature implements Feature {
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "C-24";
     }
@@ -45,11 +35,6 @@ public class VerticalDissonanceRatioFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Ratio of all wrapped vertical intervals that are dissonant (2nds, tritones, and 7ths to all wrapped vertical intervals that are consonant (unisons, 3rds, 4ths, 5ths, 6ths, octaves). This is weighted by how long each of these intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note). Set to 0 if there are no dissonant vertical intervals or no consonant vertical intervals.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

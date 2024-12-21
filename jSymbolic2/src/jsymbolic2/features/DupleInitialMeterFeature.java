@@ -15,11 +15,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class DupleInitialMeterFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Duple Initial Meter";
     }
@@ -30,11 +25,6 @@ public class DupleInitialMeterFeature implements Feature {
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "R-5";
     }
@@ -42,11 +32,6 @@ public class DupleInitialMeterFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Set to 1 if the initial meter is a standard simple or compound duple meter (i.e. if the numerator of the time signature is 2 or 6) and to 0 otherwise.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

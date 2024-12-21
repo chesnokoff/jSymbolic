@@ -15,11 +15,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class DistanceBetweenTwoMostCommonVerticalIntervalsFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Distance Between Two Most Common Vertical Intervals";
     }
@@ -30,11 +25,6 @@ public class DistanceBetweenTwoMostCommonVerticalIntervalsFeature implements Fea
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "C-10";
     }
@@ -42,11 +32,6 @@ public class DistanceBetweenTwoMostCommonVerticalIntervalsFeature implements Fea
     @Override()
     public String getDescription() {
         return "The interval in semitones between the wrapped vertical interval histogram bins with the two most common vertical intervals.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

@@ -12,6 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
+@SuppressWarnings("ALL")
 public class AverageNoteToNoteChangeInDynamics implements Feature {
 
     @Override()
@@ -25,16 +26,6 @@ public class AverageNoteToNoteChangeInDynamics implements Feature {
     }
 
     @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "D-4";
     }
@@ -42,11 +33,6 @@ public class AverageNoteToNoteChangeInDynamics implements Feature {
     @Override()
     public String getDescription() {
         return "Average change of loudness from one note to the next note in the same MIDI channel. ";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

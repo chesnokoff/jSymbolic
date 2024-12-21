@@ -29,16 +29,6 @@ public class BasicPitchHistogramFeature implements Feature {
     }
 
     @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "P-1";
     }
@@ -46,11 +36,6 @@ public class BasicPitchHistogramFeature implements Feature {
     @Override()
     public String getDescription() {
         return "A feature vector consisting of bin magnitudes of the basic pitch histogram described in the jSymbolic manual. Each bin corresponds to one of the 128 MIDI pitches, ordered from lowest to highest, and with an interval of a semitone between each (enharmonic equivalents are assigned the same pitch number). Bin 60 corresponds to middle C. The magnitude of of each bin is proportional to the the number of times notes occurred at the bin's pitch in the piece, relative to all other pitches in the piece (the histogram is normalized).";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

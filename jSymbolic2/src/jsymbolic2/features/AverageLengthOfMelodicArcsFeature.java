@@ -17,23 +17,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class AverageLengthOfMelodicArcsFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Average Length of Melodic Arcs";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -44,11 +29,6 @@ public class AverageLengthOfMelodicArcsFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Average number of notes that separate melodic peaks and troughs. Similar assumptions are made in the calculation of this feature as for the Melodic Interval Histogram. Set to 0 if no melodic arcs are found.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

@@ -16,23 +16,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class DirectionOfMelodicMotionFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Direction of Melodic Motion";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -43,11 +28,6 @@ public class DirectionOfMelodicMotionFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Fraction of melodic intervals that are rising in pitch. Set to zero if no rising or falling melodic intervals are found.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

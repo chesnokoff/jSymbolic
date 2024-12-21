@@ -30,16 +30,6 @@ public class PitchClassHistogramFeature implements Feature {
     }
 
     @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "P-2";
     }
@@ -47,11 +37,6 @@ public class PitchClassHistogramFeature implements Feature {
     @Override()
     public String getDescription() {
         return "A feature vector consisting of bin magnitudes of the pitch class histogram described in the jSymbolic manual. Each bin corresponds to one of the 12 pitch classes, ordered in increasing pitch with an interval of a semitone between each (enharmonic equivalents are assigned the same pitch class number). The first bin corresponds to the most common pitch class in the piece under consideration (it does NOT correspond to a set pitch class). The magnitude of of each bin is proportional to the the number of times notes occurred at the bin's pitch class in the piece, relative to all other pitch classes in the piece (the histogram is normalized).";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

@@ -15,23 +15,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class DominantSpreadFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Dominant Spread";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -42,11 +27,6 @@ public class DominantSpreadFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Largest number of consecutive pitch classes separated by perfect 5ths that each individually account for at least 9% of the total notes in the piece.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

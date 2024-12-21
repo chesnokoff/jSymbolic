@@ -16,23 +16,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class VariationOfDynamicsInEachVoiceFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Variation of Dynamics In Each Voice";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -43,11 +28,6 @@ public class VariationOfDynamicsInEachVoiceFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Standard deviations of note loudness levels within each MIDI channel, averaged across all channels. Only channels that contain at least one note are included in this calculation.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

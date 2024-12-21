@@ -14,23 +14,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class MaximumNoteDurationFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Maximum Note Duration";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -41,11 +26,6 @@ public class MaximumNoteDurationFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Duration of the longest note in the piece (in seconds).";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

@@ -16,11 +16,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class DifferenceBetweenMostCommonRhythmicValuesFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Difference Between Most Common Rhythmic Values";
     }
@@ -31,11 +26,6 @@ public class DifferenceBetweenMostCommonRhythmicValuesFeature implements Feature
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "R-29";
     }
@@ -43,11 +33,6 @@ public class DifferenceBetweenMostCommonRhythmicValuesFeature implements Feature
     @Override()
     public String getDescription() {
         return "A measure of the difference between the two most common rhythmic values in the music. Measured in number of bins in the Rhythmic Value Histogram separating the two most common rhythmic values.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

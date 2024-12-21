@@ -28,16 +28,6 @@ public class TimePrevalenceOfPitchedInstrumentsFeature implements Feature {
     }
 
     @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "I-5";
     }
@@ -45,11 +35,6 @@ public class TimePrevalenceOfPitchedInstrumentsFeature implements Feature {
     @Override()
     public String getDescription() {
         return "A feature vector indicating the fraction of time during which (pitched) notes are being sounded by each of the 128 General MIDI Instrument patches (0 is Acoustic Piano, 40 is Violin, etc.). Has one entry for each of these instruments, and the value of each is set to to the total time in seconds in a piece during which at least one note is being sounded with the corresponding MIDI patch, divided by the total length of the piece in seconds.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

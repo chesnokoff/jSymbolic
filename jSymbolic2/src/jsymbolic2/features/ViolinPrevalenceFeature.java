@@ -15,23 +15,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class ViolinPrevalenceFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Violin Prevalence";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -42,11 +27,6 @@ public class ViolinPrevalenceFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Fraction of all Note Ons played by violin instruments (General MIDI patches 41 or 111).";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

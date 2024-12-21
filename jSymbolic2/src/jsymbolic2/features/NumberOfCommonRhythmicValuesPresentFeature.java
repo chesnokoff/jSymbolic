@@ -16,11 +16,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class NumberOfCommonRhythmicValuesPresentFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Number of Common Rhythmic Values Present";
     }
@@ -31,11 +26,6 @@ public class NumberOfCommonRhythmicValuesPresentFeature implements Feature {
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "R-16";
     }
@@ -43,11 +33,6 @@ public class NumberOfCommonRhythmicValuesPresentFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Number of different quantized rhythmic values (e.g. quarter notes, dotted quarter notes, half notes, etc.) that represent at least 15% of the rhythmic values in the music. This is found by finding all non-zero entries in the Rhythmic Value Histogram.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

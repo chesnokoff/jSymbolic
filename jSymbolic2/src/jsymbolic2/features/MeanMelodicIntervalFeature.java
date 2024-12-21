@@ -15,23 +15,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class MeanMelodicIntervalFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Mean Melodic Interval";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -42,11 +27,6 @@ public class MeanMelodicIntervalFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Mean average (in semitones) of the intervals involved in each of the melodic intervals in the piece.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

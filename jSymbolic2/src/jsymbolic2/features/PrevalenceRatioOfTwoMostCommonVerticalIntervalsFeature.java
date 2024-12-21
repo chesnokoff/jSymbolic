@@ -16,11 +16,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Prevalence Ratio of Two Most Common Vertical Intervals";
     }
@@ -31,11 +26,6 @@ public class PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature implements F
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "C-13";
     }
@@ -43,11 +33,6 @@ public class PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature implements F
     @Override()
     public String getDescription() {
         return "Ratio between the fraction of notes corresponding to the second most common vertical interval on the wrapped vertical interval histogram and the fraction of vertical intervals corresponding to the most common vertical interval. Set to 0 if either of these prevalences are 0.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

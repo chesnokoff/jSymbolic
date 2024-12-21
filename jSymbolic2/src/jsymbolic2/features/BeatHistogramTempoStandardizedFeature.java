@@ -33,16 +33,6 @@ public class BeatHistogramTempoStandardizedFeature implements Feature {
     }
 
     @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "R-53";
     }
@@ -50,11 +40,6 @@ public class BeatHistogramTempoStandardizedFeature implements Feature {
     @Override()
     public String getDescription() {
         return "A feature vector consisting of the bin magnitudes of the beat histogram described in the jSymbolic manual. However, the tempo of the music is standardized to 120 BPM throughout the piece before this histogram is calculated. This means that variations in tempo within a single piece are in effect eliminated for the purposes of this histogram. The tempo-independent beat histograms of different pieces can also be compared in a way that is independent of potential tempo differences between the pieces. Rubato and dynamics do still influence the tempo-independent beat histogram, however. Also, the first 40 bins are not included in this feature vector, as is the case with the basic beat histogram. Each bin corresponds to a different beats per minute periodicity, with tempo increasing with the bin index. The magnitude of each bin is proportional to the cumulative loudness (MIDI velocity) of the notes that occur at that bin's rhythmic periodicity. The histogram is normalized.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

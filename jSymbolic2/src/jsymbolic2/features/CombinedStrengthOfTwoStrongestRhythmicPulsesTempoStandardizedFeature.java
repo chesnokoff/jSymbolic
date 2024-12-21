@@ -15,23 +15,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class CombinedStrengthOfTwoStrongestRhythmicPulsesTempoStandardizedFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Combined Strength of Two Strongest Rhythmic Pulses - Tempo Standardized";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -42,11 +27,6 @@ public class CombinedStrengthOfTwoStrongestRhythmicPulsesTempoStandardizedFeatur
     @Override()
     public String getDescription() {
         return "Sum of the magnitudes of the two tempo-standardized beat histogram peaks with the highest magnitudes.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

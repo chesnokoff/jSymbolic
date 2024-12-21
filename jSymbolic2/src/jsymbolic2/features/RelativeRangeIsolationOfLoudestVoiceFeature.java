@@ -17,23 +17,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class RelativeRangeIsolationOfLoudestVoiceFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Relative Range Isolation of Loudest Voice";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -44,11 +29,6 @@ public class RelativeRangeIsolationOfLoudestVoiceFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Number of pitched notes in the MIDI channel with the highest average loudness that fall outside the range of any other pitched channel, divided by the total number of notes in the channel with the highest average loudness. Set to 0 if there are only 0 or 1 channels containing pitched notes.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

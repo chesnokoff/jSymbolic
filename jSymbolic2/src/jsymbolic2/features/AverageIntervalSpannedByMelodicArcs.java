@@ -17,23 +17,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class AverageIntervalSpannedByMelodicArcs implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Average Interval Spanned by Melodic Arcs";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -44,11 +29,6 @@ public class AverageIntervalSpannedByMelodicArcs implements Feature {
     @Override()
     public String getDescription() {
         return "Average melodic interval (in semitones) separating the top note of melodic peaks and the bottom note of adjacent melodic troughs. Similar assumptions are made in the calculation of this feature as for the Melodic Interval Histogram.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

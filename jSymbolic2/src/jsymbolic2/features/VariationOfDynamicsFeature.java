@@ -14,23 +14,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class VariationOfDynamicsFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Variation of Dynamics";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -41,11 +26,6 @@ public class VariationOfDynamicsFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Standard deviation of loudness levels across all notes.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

@@ -17,23 +17,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class RhythmicLoosenessTempoStandardizedFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Rhythmic Looseness - Tempo Standardized";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -44,11 +29,6 @@ public class RhythmicLoosenessTempoStandardizedFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Average width of tempo-standardized beat histogram peaks. The width of a peak is defined here as the distance (in beats per minute) between the two points on the peak in question that have magnitudes closest to 30% of the height of the peak. Only peaks with magnitudes at least 30% as high as the highest peak are considered in this calculation.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

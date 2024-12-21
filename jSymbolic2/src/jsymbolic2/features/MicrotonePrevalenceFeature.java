@@ -17,23 +17,8 @@ import java.util.LinkedList;
 public class MicrotonePrevalenceFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Microtone Prevalence";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -44,11 +29,6 @@ public class MicrotonePrevalenceFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Number of pitched notes that are each associated with exactly one MIDI Pitch Bend message, divided by the total number of pitched Note Ons in the piece. Set to 0 if there are no pitched Note Ons in the piece.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

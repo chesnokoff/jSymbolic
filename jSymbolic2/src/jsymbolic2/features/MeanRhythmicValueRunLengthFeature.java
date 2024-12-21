@@ -18,23 +18,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class MeanRhythmicValueRunLengthFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Mean Rhythmic Value Run Length";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -45,11 +30,6 @@ public class MeanRhythmicValueRunLengthFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Mean number of notes of the same rhythmic value that occur consecutively (either vertically or horizontally) in the same voice (MIDI channel and track). This calculation includes both pitched and unpitched notes, is calculated after rhythmic quantization and not influenced by neither tempo nor dynamics.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

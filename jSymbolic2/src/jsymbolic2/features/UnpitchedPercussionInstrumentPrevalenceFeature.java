@@ -16,23 +16,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class UnpitchedPercussionInstrumentPrevalenceFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Unpitched Percussion Instrument Prevalence";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -43,11 +28,6 @@ public class UnpitchedPercussionInstrumentPrevalenceFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Fraction of all Note Ons played by (unpitched) MIDI Percussion Key Map instruments. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the ones that meet the official standard.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

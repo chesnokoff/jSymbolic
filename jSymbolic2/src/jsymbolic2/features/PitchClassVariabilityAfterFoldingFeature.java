@@ -16,23 +16,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class PitchClassVariabilityAfterFoldingFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Pitch Class Variability After Folding";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -43,11 +28,6 @@ public class PitchClassVariabilityAfterFoldingFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Standard deviation of the pitch classes in the piece after being folded by perfect fifths as described for the folded fifths pitch class histogram. Provides a measure of how close the pitch classes are as a whole from the mean pitch class from a dominant-tonic perspective.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

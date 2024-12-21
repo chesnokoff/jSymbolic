@@ -15,23 +15,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class StrengthOfSecondStrongestRhythmicPulseTempoStandardizedFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Strength of Second Strongest Rhythmic Pulse - Tempo Standardized";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -42,11 +27,6 @@ public class StrengthOfSecondStrongestRhythmicPulseTempoStandardizedFeature impl
     @Override()
     public String getDescription() {
         return "Magnitude of the tempo-standardized beat histogram peak with the second highest magnitude.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

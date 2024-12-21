@@ -15,23 +15,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class RelativeNoteDensityOfHighestLineFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Relative Note Density of Highest Line";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -42,11 +27,6 @@ public class RelativeNoteDensityOfHighestLineFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Number of Note Ons in the channel with the highest average pitch, divided by the average number of Note Ons in all channels that contain at least one note.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

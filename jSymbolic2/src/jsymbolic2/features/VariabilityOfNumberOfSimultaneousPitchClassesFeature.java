@@ -15,23 +15,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class VariabilityOfNumberOfSimultaneousPitchClassesFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Variability of Number of Simultaneous Pitch Classes";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -42,11 +27,6 @@ public class VariabilityOfNumberOfSimultaneousPitchClassesFeature implements Fea
     @Override()
     public String getDescription() {
         return "Standard deviation of the number of different pitch classes sounding simultaneously. Rests are excluded from this calculation.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

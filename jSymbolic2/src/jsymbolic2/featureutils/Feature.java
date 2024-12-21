@@ -19,12 +19,16 @@ public interface Feature {
     /**
      * @return Is sequential.
      */
-    boolean isSequential();
+    default boolean isSequential() {
+        return true;
+    }
 
     /**
      * @return Dimensions.
      */
-    int getDimensions();
+    default int getDimensions() {
+        return 1;
+    }
 
     /**
      * Returns unique code identifying a feature (see the HTML manual for identifying codes).
@@ -53,7 +57,9 @@ public interface Feature {
      *
      * @return The dependencies of this particular feature.
      */
-    String[] getDependencies();
+    default String[] getDependencies() {
+        return null;
+    }
 
 
     /**
@@ -67,7 +73,9 @@ public interface Feature {
      *
      * @return The dependency offsets of this particular feature.
      */
-    int[] getDependencyOffsets();
+    default int[] getDependencyOffsets() {
+        return null;
+    }
 
     /**
      * The prototype method that classes extending this class will override in order to extract their

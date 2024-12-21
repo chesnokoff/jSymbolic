@@ -27,16 +27,6 @@ public class InitialTimeSignatureFeature implements Feature {
     }
 
     @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "R-1";
     }
@@ -44,11 +34,6 @@ public class InitialTimeSignatureFeature implements Feature {
     @Override()
     public String getDescription() {
         return "A feature vector consisting of two values. The first is the numerator of the first specified time signature in the piece, and the second is the denominator of the same time signature. Set to 4/4 if no time signature is specified.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

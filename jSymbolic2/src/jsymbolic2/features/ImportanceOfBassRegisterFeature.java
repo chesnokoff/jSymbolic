@@ -14,23 +14,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class ImportanceOfBassRegisterFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Importance of Bass Register";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -41,11 +26,6 @@ public class ImportanceOfBassRegisterFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Fraction of notes between MIDI pitches 0 and 54.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

@@ -15,11 +15,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class MostCommonVerticalIntervalFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Most Common Vertical Interval";
     }
@@ -30,11 +25,6 @@ public class MostCommonVerticalIntervalFeature implements Feature {
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "C-8";
     }
@@ -42,11 +32,6 @@ public class MostCommonVerticalIntervalFeature implements Feature {
     @Override()
     public String getDescription() {
         return "The interval in semitones corresponding to the wrapped vertical interval histogram bin with the highest magnitude.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

@@ -17,11 +17,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class RelativePrevalenceOfMostCommonRhythmicValuesFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Relative Prevalence of Most Common Rhythmic Values";
     }
@@ -32,11 +27,6 @@ public class RelativePrevalenceOfMostCommonRhythmicValuesFeature implements Feat
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "R-28";
     }
@@ -44,11 +34,6 @@ public class RelativePrevalenceOfMostCommonRhythmicValuesFeature implements Feat
     @Override()
     public String getDescription() {
         return "Relative frequency of the of the second most common rhythmic value in the piece, divided by the relative frequency of the most common rhythmic value. This calculation includes both pitched and unpitched notes, is calculated after rhythmic quantization, is not influenced by tempo, and is calculated without regard to the dynamics, voice or instrument of any given note.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

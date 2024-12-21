@@ -14,23 +14,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class MelodicPerfectFifthsFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Melodic Perfect Fifths";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -41,11 +26,6 @@ public class MelodicPerfectFifthsFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Fraction of melodic intervals that are perfect fifths.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

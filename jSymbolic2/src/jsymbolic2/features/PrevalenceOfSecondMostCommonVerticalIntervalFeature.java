@@ -15,11 +15,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class PrevalenceOfSecondMostCommonVerticalIntervalFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Prevalence of Second Most Common Vertical Interval";
     }
@@ -30,11 +25,6 @@ public class PrevalenceOfSecondMostCommonVerticalIntervalFeature implements Feat
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "C-12";
     }
@@ -42,11 +32,6 @@ public class PrevalenceOfSecondMostCommonVerticalIntervalFeature implements Feat
     @Override()
     public String getDescription() {
         return "Fraction of vertical intervals on the wrapped vertical interval histogram corresponding to the second most common vertical interval.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

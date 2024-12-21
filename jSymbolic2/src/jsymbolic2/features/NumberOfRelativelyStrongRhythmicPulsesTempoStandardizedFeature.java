@@ -16,23 +16,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class NumberOfRelativelyStrongRhythmicPulsesTempoStandardizedFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Number of Relatively Strong Rhythmic Pulses - Tempo Standardized";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -43,11 +28,6 @@ public class NumberOfRelativelyStrongRhythmicPulsesTempoStandardizedFeature impl
     @Override()
     public String getDescription() {
         return "Number of tempo-standardized beat histogram peaks with magnitudes at least 30% as high as the magnitude of the tempo-standardized beat histogram peak with the highest magnitude.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

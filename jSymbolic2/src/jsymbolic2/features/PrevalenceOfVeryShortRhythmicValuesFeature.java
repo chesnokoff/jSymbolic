@@ -17,11 +17,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class PrevalenceOfVeryShortRhythmicValuesFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Prevalence of Very Short Rhythmic Values";
     }
@@ -32,11 +27,6 @@ public class PrevalenceOfVeryShortRhythmicValuesFeature implements Feature {
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "R-17";
     }
@@ -44,11 +34,6 @@ public class PrevalenceOfVeryShortRhythmicValuesFeature implements Feature {
     @Override()
     public String getDescription() {
         return "Fraction of all notes in the music that have a quantized rhythmic value less than an eighth note. This includes both pitched and unpitched notes, is calculated after rhythmic quantization, is not influenced by tempo, and is calculated without regard to the dynamics, voice or instrument of any given note.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

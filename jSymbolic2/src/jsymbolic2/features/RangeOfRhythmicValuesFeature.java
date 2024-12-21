@@ -17,11 +17,6 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class RangeOfRhythmicValuesFeature implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Range of Rhythmic Values";
     }
@@ -32,11 +27,6 @@ public class RangeOfRhythmicValuesFeature implements Feature {
     }
 
     @Override()
-    public int[] getDependencyOffsets() {
-        return null;
-    }
-
-    @Override()
     public String getCode() {
         return "R-14";
     }
@@ -44,11 +34,6 @@ public class RangeOfRhythmicValuesFeature implements Feature {
     @Override()
     public String getDescription() {
         return "A measure of the difference between the shortest rhythmic values and the longest rhythmic values in the music. Measured in number of bins in the Rhythmic Value Histogram separating the first (i.e. the one with the shortest rhythmic value) non-zero bin and the last (i.e. the one with the longest rhythmic value) non-zero bin.";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

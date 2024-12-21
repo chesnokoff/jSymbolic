@@ -15,23 +15,8 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 public class RelativePrevalenceOfMostCommonMelodicIntervals implements Feature {
 
     @Override()
-    public int getDimensions() {
-        return 1;
-    }
-
-    @Override()
     public String getName() {
         return "Relative Prevalence of Most Common Melodic Intervals";
-    }
-
-    @Override()
-    public String[] getDependencies() {
-        return null;
-    }
-
-    @Override()
-    public int[] getDependencyOffsets() {
-        return null;
     }
 
     @Override()
@@ -42,11 +27,6 @@ public class RelativePrevalenceOfMostCommonMelodicIntervals implements Feature {
     @Override()
     public String getDescription() {
         return "Relative frequency of the second most common melodic interval in the piece, divided by the relative frequency of the most common melodic interval..";
-    }
-
-    @Override()
-    public boolean isSequential() {
-        return true;
     }
 
     @Override()

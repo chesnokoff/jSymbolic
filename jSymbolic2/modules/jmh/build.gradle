@@ -1,5 +1,4 @@
-subprojects {
-    plugins {
+plugins {
     id 'java'
     id 'application'
     id 'jvm-test-suite'
@@ -10,11 +9,19 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
+    flatDir {
+        dirs("lib")
+    }
 }
 
 
 dependencies {
-    testImplementation "org.junit.jupiter:junit-jupiter:5.10.0"
+    implementation fileTree(dir: './libs')
+    testImplementation fileTree(dir: './libs')
+    testImplementation 'junit:junit:+'
+    implementation 'org.testng:testng:+'
+    testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.9.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
 }
 
 application {
@@ -25,6 +32,15 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+}
+
+sourceSets {
+//    main.java.srcDirs = ['src']
+    main.resources.srcDirs = []
+    test.java.srcDirs = ['test/jsymbolic2/api', 'test/jsymbolic2/configuration',
+                         'test/jsymbolic2/features', 'test/jsymbolic2/featureutils',
+                         'test/jsymbolic2/processing', 'test/jsymbolic2/scenario']
+    test.resources.srcDirs = []
 }
 
 jar {
@@ -58,5 +74,4 @@ jacocoTestReport {
         csv.required = false
     }
     dependsOn test // tests are required to run before generating the report
-}
 }

@@ -16,5 +16,6 @@ develocity {
 }
 
 rootProject.name = 'jSymbolic2'
-include 'refactoring'
-
+include 'modules:core'
+include 'modules:jmh'
+include 'modules:refactoring'

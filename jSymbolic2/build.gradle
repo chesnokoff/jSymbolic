@@ -16,8 +16,8 @@ repositories {
 
 
 dependencies {
-    implementation fileTree(dir: '../Third-Party-Jars', include: ['**/*.jar'], )
-    testImplementation fileTree(dir: '../Third-Party-Jars', include: ['**/*.jar'])
+    implementation fileTree(dir: './libs')
+    testImplementation fileTree(dir: './libs')
     testImplementation 'junit:junit:+'
     implementation 'org.testng:testng:+'
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.9.2'

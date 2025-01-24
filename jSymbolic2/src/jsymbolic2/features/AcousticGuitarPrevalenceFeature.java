@@ -14,21 +14,33 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class AcousticGuitarPrevalenceFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Acoustic Guitar Prevalence";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "I-12";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "Fraction of all Note Ons played by acoustic guitar instruments (General MIDI patches 25 and 26).";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;

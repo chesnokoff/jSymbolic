@@ -22,26 +22,41 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class VerticalIntervalHistogramFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public int getDimensions() {
         return 128;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Vertical Interval Histogram";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "C-1";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "A feature vector consisting of bin magnitudes of the vertical interval histogram described in the jSymbolic manual. Each of the bins is associated with a different vertical pitch interval, and is labeled with the number of semitones in that corresponding interval. More specifically, these are numbered from 0 (a unison) to 127 (a vertical interval of 127 semitones). The magnitude of each bin is found by going through a recoding MIDI tick by MIDI tick and noting all vertical intervals that are sounding at each tick, as well as the MIDI velocities of the pair of notes involved in each vertical interval. The end result is a histogram that indicates which vertical intervals are present, and how significant these vertical intervals are relative to one another, with a weighting based on both MIDI velocity and the aggregated durations with which each interval is held throughout the piece. Finally, the histogram is normalized.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double[] vertical_interval_histogram = null;

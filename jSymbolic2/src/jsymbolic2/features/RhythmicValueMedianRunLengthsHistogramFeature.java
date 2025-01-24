@@ -23,26 +23,41 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class RhythmicValueMedianRunLengthsHistogramFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public int getDimensions() {
         return 12;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Rhythmic Value Median Run Lengths Histogram";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "R-33";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "A normalized feature vector that indicates, for each rhythmic value, the normalized median number of times that notes with that rhythmic value occur consecutively (either vertically or horizontally) in the same voice (MIDI channel and track). Each bin corresponds to a different rhythmic value, and they are numbered as follows: thirty second notes (or less) [0], sixteenth notes [1], eighth notes [2], dotted eighth notes [3], quarter notes [4], dotted quarter notes [5], half notes [6], dotted half notes [7], whole notes [8], dotted whole notes [9], double whole notes [10] and dotted double whole notes (or more ) [11]. Both pitched and unpitched notes are included in this histogram. Tempo is, of course, not relevant to this histogram. Notes with durations not precisely matching one of these rhythmic note values are mapped to the closest note value (to filter out the effects of rubato or uneven human rhythmic performances, for example). This histogram is calculated without regard to dynamics.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double[] result = null;

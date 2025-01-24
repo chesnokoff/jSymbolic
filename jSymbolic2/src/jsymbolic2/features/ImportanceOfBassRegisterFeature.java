@@ -13,21 +13,33 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class ImportanceOfBassRegisterFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Importance of Bass Register";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "P-9";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "Fraction of notes between MIDI pitches 0 and 54.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;

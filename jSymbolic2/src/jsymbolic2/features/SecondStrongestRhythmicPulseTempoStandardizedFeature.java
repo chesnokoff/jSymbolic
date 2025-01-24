@@ -14,21 +14,33 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class SecondStrongestRhythmicPulseTempoStandardizedFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Second Strongest Rhythmic Pulse - Tempo Standardized";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "R-58";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "Bin index of the tempo-standardized beat histogram peak with the second highest magnitude.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;

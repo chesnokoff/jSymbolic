@@ -14,21 +14,33 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class BrassPrevalenceFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Brass Prevalence";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "I-16";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "Fraction of all Note Ons played by brass instruments, including saxophones (General MIDI patches 57 to 68).";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;

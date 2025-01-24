@@ -14,21 +14,33 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class VariabilityOfTimeBetweenAttacksFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Variability of Time Between Attacks";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "RT-9";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "Standard deviation of the times (in seconds) between Note On events (regardless of MIDI channel).";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;

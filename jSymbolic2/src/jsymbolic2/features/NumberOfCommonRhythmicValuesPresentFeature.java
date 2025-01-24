@@ -15,26 +15,41 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class NumberOfCommonRhythmicValuesPresentFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Number of Common Rhythmic Values Present";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String[] getDependencies() {
         return new String[] { "Rhythmic Value Histogram" };
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "R-16";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "Number of different quantized rhythmic values (e.g. quarter notes, dotted quarter notes, half notes, etc.) that represent at least 15% of the rhythmic values in the music. This is found by finding all non-zero entries in the Rhythmic Value Histogram.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;

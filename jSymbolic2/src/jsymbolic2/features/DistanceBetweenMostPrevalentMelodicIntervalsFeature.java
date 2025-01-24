@@ -14,21 +14,33 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class DistanceBetweenMostPrevalentMelodicIntervalsFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Distance Between Most Prevalent Melodic Intervals";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "M-5";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "Absolute value of the difference (in semitones) between the most common and second most common melodic intervals in the piece.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;

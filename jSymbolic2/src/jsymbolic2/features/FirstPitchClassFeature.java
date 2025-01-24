@@ -17,21 +17,33 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class FirstPitchClassFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "First Pitch Class";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "P-35";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "The pitch class of the first note in the piece. If there are multiple notes with simultaneous attacks at the beginning of the piece, then the one with the lowest pitch is selected. A value of 0 corresponds to C, and pitches increase chromatically by semitone in integer units (e.g. a value of 2 would mean that D is the most common pitch class). Enharmonic equivalents are treated as a single pitch class. Set to 0 if there are no pitched notes.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;

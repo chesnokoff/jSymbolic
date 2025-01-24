@@ -16,26 +16,41 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class InitialTimeSignatureFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public int getDimensions() {
         return 2;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Initial Time Signature";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "R-1";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "A feature vector consisting of two values. The first is the numerator of the first specified time signature in the piece, and the second is the denominator of the same time signature. Set to 4/4 if no time signature is specified.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double[] result = null;

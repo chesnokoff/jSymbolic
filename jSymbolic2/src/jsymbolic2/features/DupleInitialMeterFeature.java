@@ -14,26 +14,41 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class DupleInitialMeterFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Duple Initial Meter";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String[] getDependencies() {
         return new String[] { "Initial Time Signature" };
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "R-5";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "Set to 1 if the initial meter is a standard simple or compound duple meter (i.e. if the numerator of the time signature is 2 or 6) and to 0 otherwise.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value = 0.0;

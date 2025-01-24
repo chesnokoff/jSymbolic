@@ -16,26 +16,41 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class PitchedInstrumentsPresentFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public int getDimensions() {
         return 128;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Pitched Instruments Present";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "I-1";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "A feature vector indicating which pitched instruments are present. Has one entry for each of the 128 General MIDI Instrument patches (0 is Acoustic Piano, 40 is Violin, etc.). Each value is set to 1 if at least one note is played using the corresponding patch, or to 0 if that patch is never used.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double[] result = null;

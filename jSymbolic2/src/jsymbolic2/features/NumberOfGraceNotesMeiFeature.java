@@ -4,7 +4,6 @@ import ace.datatypes.FeatureDefinition;
 import jsymbolic2.featureutils.MEIFeatureExtractor;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.jmei2midi.meielements.meispecific.MeiSpecificStorage;
-
 import javax.sound.midi.Sequence;
 
 /**
@@ -18,11 +17,9 @@ import javax.sound.midi.Sequence;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class NumberOfGraceNotesMeiFeature
-        extends MEIFeatureExtractor {
+public class NumberOfGraceNotesMeiFeature extends MEIFeatureExtractor {
+
     /* CONSTRUCTOR ******************************************************************************************/
-
-
     /**
      * Basic constructor that sets the values of the fields inherited from this class' superclass.
      */
@@ -37,44 +34,22 @@ public class NumberOfGraceNotesMeiFeature
         offsets = null;
     }
 
-
     /* PUBLIC METHODS ***************************************************************************************/
-
-
     /**
-     * The prototype method that classes extending this class will override in order to extract their
-     * feature from a section of MEI data (and the associated MIDI data generated from it).
-     *
-     * @param meiSpecificStorage   Holds all accessible MEI-specific data from which to extract this feature.
-     * @param sequence             The MIDI data generated from the MEI data, and which can abe used to help
-     *                             extract this feature. Notice that this can be taken directly from the
-     *                             {@link org.ddmal.jmei2midi.MeiSequence}.
-     * @param sequence_info        Additional data already extracted from the the MIDI sequence.
-     * @param other_feature_values The values of other features that are needed to calculate this value. The
-     *                             order and offsets of these features must be the same as those returned by
-     *                             this class's getDependencies and getDependencyOffsets methods
-     *                             respectively.The first indice indicates the feature/window and the second
-     *                             indicates the value.
-     * @throws Exception Throws an informative exception if the feature cannot be calculated.
-     * @return The extracted feature value(s).
+     * {@inheritDoc}
      */
     @Override
-    public double[] extractMEIFeature(MeiSpecificStorage meiSpecificStorage,
-                                      Sequence sequence,
-                                      MIDIIntermediateRepresentations sequence_info,
-                                      double[][] other_feature_values)
-            throws Exception {
+    public double[] extractMEIFeature(MeiSpecificStorage meiSpecificStorage, Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;
         if (null != sequence_info) {
             double total_number_pitched_note_ons = sequence_info.total_number_pitched_note_ons;
             double number_of_grace_notes = meiSpecificStorage.getGraceNoteList().size();
-
             if (0.0 == total_number_pitched_note_ons || 0.0 == number_of_grace_notes)
                 value = 0.0;
             else
                 value = number_of_grace_notes / total_number_pitched_note_ons;
-        } else value = -1.0;
-
+        } else
+            value = -1.0;
         double[] result = new double[1];
         result[0] = value;
         return result;

@@ -16,26 +16,41 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class NotePrevalenceOfPitchedInstrumentsFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public int getDimensions() {
         return 128;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Note Prevalence of Pitched Instruments";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "I-3";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "A feature vector indicating the fraction of (pitched) notes played with each of the 128 General MIDI Instrument patches (0 is Acoustic Piano, 40 is Violin, etc.). Has one entry for each of these instruments, and the value of each is set to the number of Note Ons played with the corresponding MIDI patch, divided by the total number of Note Ons in the piece.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double[] result = null;

@@ -16,21 +16,33 @@ import java.util.LinkedList;
  */
 public class MicrotonePrevalenceFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Microtone Prevalence";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "P-41";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "Number of pitched notes that are each associated with exactly one MIDI Pitch Bend message, divided by the total number of pitched Note Ons in the piece. Set to 0 if there are no pitched Note Ons in the piece.";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;
@@ -41,8 +53,8 @@ public class MicrotonePrevalenceFeature implements Feature {
             // an Integer) associated with the note, in the order that they occurred.
             LinkedList pitch_bends_list = sequence_info.pitch_bends_list;
             if (// if there are no pitched notes
-            sequence_info.total_number_pitched_note_ons == 0 || // if there are no pitchbend messages
-            pitch_bends_list.isEmpty())
+            // if there are no pitchbend messages
+            sequence_info.total_number_pitched_note_ons == 0 || pitch_bends_list.isEmpty())
                 value = 0.0;
             else {
                 double number_single_pitchbend_notes = 0;

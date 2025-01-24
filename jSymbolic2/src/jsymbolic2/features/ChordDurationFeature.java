@@ -19,21 +19,33 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  */
 public class ChordDurationFeature implements Feature {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getName() {
         return "Chord Duration";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getCode() {
         return "C-27";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public String getDescription() {
         return "Average duration a chord in units of time corresponding to the duration of an idealized quarter note. A \"chord\" here is considered to stay the same as long as no new pitch classes are added, and no pitch classes are taken away. This \"chord\" may consist of any number of pitch classes, even only one. A \"chord\" is not considered to end if it is split by one or more rests (although the rests themselves are not counted in the duration of the \"chord\").";
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override()
     public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
         double value;

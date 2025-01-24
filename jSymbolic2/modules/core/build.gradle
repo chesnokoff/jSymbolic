@@ -11,4 +11,5 @@ repositories {
 dependencies {
     implementation fileTree(dir: './libs')
     testImplementation fileTree(dir: './libs')
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.0"
 }

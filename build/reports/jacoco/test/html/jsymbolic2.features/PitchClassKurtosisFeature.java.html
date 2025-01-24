@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PitchClassKurtosisFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">PitchClassKurtosisFeature.java</span></div><h1>PitchClassKurtosisFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import jsymbolic2.featureutils.Feature;
+import javax.sound.midi.*;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the kurtosis of the pitch classes (where 0 corresponds to C, 1 to C#/Db,
+ * etc.) of all pitched notes in the piece. Provides a measure of how peaked or flat the pitch class
+ * distribution is. The higher the kurtosis, the more the pitch classes are clustered near the mean and the
+ * fewer outliers there are.
+ *
+ * @author Cory McKay
+ */
+<span class="fc" id="L17">public class PitchClassKurtosisFeature implements Feature {</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getName() {
+<span class="fc" id="L24">        return &quot;Pitch Class Kurtosis&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getCode() {
+<span class="fc" id="L32">        return &quot;P-31&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getDescription() {
+<span class="fc" id="L40">        return &quot;Kurtosis of the pitch classes (where 0 corresponds to C, 1 to C#/Db, etc.) of all pitched notes in the piece. Provides a measure of how peaked or flat the pitch class distribution is. The higher the kurtosis, the more the pitch classes are clustered near the mean and the fewer outliers there are.&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
+        double value;
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (sequence_info != null)</span>
+<span class="fc" id="L50">            value = mckay.utilities.staticlibraries.MathAndStatsMethods.getSampleExcessKurtosis(sequence_info.pitch_classes_of_all_note_ons);</span>
+        else
+<span class="nc" id="L52">            value = -1.0;</span>
+<span class="fc" id="L53">        double[] result = new double[1];</span>
+<span class="fc" id="L54">        result[0] = value;</span>
+<span class="fc" id="L55">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

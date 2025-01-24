@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE feature_key_file [
+   <!ELEMENT feature_key_file (comments, feature+)>
+   <!ELEMENT comments (#PCDATA)>
+   <!ELEMENT feature (name, description?, is_sequential, parallel_dimensions)>
+   <!ELEMENT name (#PCDATA)>
+   <!ELEMENT description (#PCDATA)>
+   <!ELEMENT is_sequential (#PCDATA)>
+   <!ELEMENT parallel_dimensions (#PCDATA)>
+]>
+
+<feature_key_file>
+
+   <comments></comments>
+
+   <feature>
+      <name>Beat Histogram</name>
+      <description>A feature vector consisting of the bin magnitudes of the beat histogram described in the jSymbolic manual. The first 40 bins are not included in this feature vector, however. Each bin corresponds to a different beats per minute periodicity, with tempo increasing with the bin index. The magnitude of each bin is proportional to the cumulative loudness (MIDI velocity) of the notes that occur at that bin's rhythmic periodicity. The histogram is normalized.</description>
+      <is_sequential>true</is_sequential>
+      <parallel_dimensions>161</parallel_dimensions>
+   </feature>
+
+   <feature>
+      <name>Acoustic Guitar Prevalence</name>
+      <description>Fraction of all Note Ons played by acoustic guitar instruments (General MIDI patches 25 and 26).</description>
+      <is_sequential>true</is_sequential>
+      <parallel_dimensions>1</parallel_dimensions>
+   </feature>
+
+</feature_key_file>

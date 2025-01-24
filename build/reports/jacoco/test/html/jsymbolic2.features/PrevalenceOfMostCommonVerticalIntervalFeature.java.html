@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrevalenceOfMostCommonVerticalIntervalFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">PrevalenceOfMostCommonVerticalIntervalFeature.java</span></div><h1>PrevalenceOfMostCommonVerticalIntervalFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import jsymbolic2.featureutils.Feature;
+import javax.sound.midi.Sequence;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the fraction of vertical intervals on the wrapped vertical interval
+ * histogram corresponding to the most common vertical interval.
+ *
+ * @author Tristano Tenaglia and Cory McKay
+ */
+<span class="fc" id="L15">public class PrevalenceOfMostCommonVerticalIntervalFeature implements Feature {</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getName() {
+<span class="fc" id="L22">        return &quot;Prevalence of Most Common Vertical Interval&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String[] getDependencies() {
+<span class="fc" id="L30">        return new String[] { &quot;Wrapped Vertical Interval Histogram&quot;, &quot;Most Common Vertical Interval&quot; };</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getCode() {
+<span class="fc" id="L38">        return &quot;C-11&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getDescription() {
+<span class="fc" id="L46">        return &quot;Fraction of vertical intervals on the wrapped vertical interval histogram corresponding to the most common vertical interval.&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
+        double value;
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (sequence_info != null) {</span>
+<span class="fc" id="L56">            double[] wrapped_vertical_interval_histogram = other_feature_values[0];</span>
+<span class="fc" id="L57">            int most_common_vertical_interval = (int) Math.round(other_feature_values[1][0]);</span>
+<span class="fc" id="L58">            value = wrapped_vertical_interval_histogram[most_common_vertical_interval];</span>
+<span class="fc" id="L59">        } else</span>
+<span class="nc" id="L60">            value = -1.0;</span>
+<span class="fc" id="L61">        double[] result = new double[1];</span>
+<span class="fc" id="L62">        result[0] = value;</span>
+<span class="fc" id="L63">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

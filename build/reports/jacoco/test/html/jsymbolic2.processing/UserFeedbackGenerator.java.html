@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserFeedbackGenerator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.processing</a> &gt; <span class="el_source">UserFeedbackGenerator.java</span></div><h1>UserFeedbackGenerator.java</h1><pre class="source lang-java linenums">package jsymbolic2.processing;
+
+import ace.datatypes.DataBoard;
+import jsymbolic2.commandline.CommandLineUtilities;
+
+import java.io.PrintStream;
+import java.util.List;
+
+/**
+ * A holder class for static methods for printing various kinds of formatted messages during processing to
+ * specified PrintStreams, primarily related to jSymbolic status updates and to errors.
+ *
+ * @author Cory McKay
+ */
+<span class="fc" id="L15">public enum UserFeedbackGenerator {</span>
+    ;
+
+    /**
+     * Generic method for printing the given message directly to stream, with no added new line at the end.
+     *
+     * @param stream  The stream to print the message to.
+     * @param message The message to print.
+     */
+    public static void simplePrint(PrintStream stream, String message) {
+<span class="nc" id="L25">        stream.print(message);</span>
+<span class="nc" id="L26">    }</span>
+
+
+    /**
+     * Generic method for printing the given message directly to stream, with a new line added return at the
+     * end.
+     *
+     * @param stream  The stream to print the message to.
+     * @param message The message to print.
+     */
+    public static void simplePrintln(PrintStream stream, String message) {
+<span class="nc" id="L37">        stream.println(message);</span>
+<span class="nc" id="L38">    }</span>
+
+
+    /**
+     * Print a formatted message to stream providing a warning of some kind.
+     *
+     * @param stream  The stream to print the message to.
+     * @param message The message to print.
+     */
+    public static void printWarningMessage(PrintStream stream, String message) {
+<span class="nc" id="L48">        stream.println(&quot;\nWARNING: &quot; + message + &quot;\n&quot;);</span>
+<span class="nc" id="L49">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating an error of some kind.
+     *
+     * @param stream  The stream to print the message to.
+     * @param message The message to print.
+     */
+    public static void printErrorMessage(PrintStream stream, String message) {
+<span class="nc" id="L59">        stream.println(&quot;\nERROR: &quot; + message + &quot;\n&quot;);</span>
+<span class="nc" id="L60">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating the message contained in the given Exception.
+     *
+     * @param stream    The stream to print the message to.
+     * @param exception An exception whose message is to be printed to stream.
+     */
+    public static void printExceptionErrorMessage(PrintStream stream, Exception exception) {
+<span class="fc" id="L70">        stream.println(&quot;\nERROR: &quot; + exception.getMessage() + &quot;\n&quot;);</span>
+        // exception.printStackTrace();
+<span class="fc" id="L72">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating that erroneous command line parameters were entered, and
+     * providing correct usage instructions. Terminate all processing once this is done.
+     *
+     * @param stream The stream to print the message to.
+     * @param args   Arguments with which jSymbolic was run at the command line.
+     */
+    public static void indicateIncorrectCommandLineArgumentsAndEndExecution(PrintStream stream,
+                                                                            String[] args) {
+        // Output reason for termination
+<span class="nc" id="L85">        stream.print(&quot;\nEXECUTION TERMINATED DUE TO INCORRECT COMMAND LINE ARGUMENTS: &quot;);</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        for (String arg : args)</span>
+<span class="nc" id="L87">            stream.print(arg + &quot; &quot;);</span>
+<span class="nc" id="L88">        stream.print(&quot;\n&quot;);</span>
+
+        // Output correct usage
+<span class="nc" id="L91">        stream.println(CommandLineUtilities.getCommandLineCorrectUsage());</span>
+
+        // End execution
+<span class="nc" id="L94">        System.exit(-1);</span>
+<span class="nc" id="L95">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating that a configurations settings file is being loaded, and
+     * specify what the file's path is.
+     *
+     * @param stream           The stream to print the message to.
+     * @param config_file_path The path of the file being loaded.
+     */
+    public static void printParsingConfigFileMessage(PrintStream stream, String config_file_path) {
+<span class="fc" id="L106">        stream.println(&quot;&gt;&gt;&gt; Loading configuration settings from: &quot; + config_file_path + &quot;.\n&quot;);</span>
+<span class="fc" id="L107">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating that feature extraction is starting, and noting how
+     * many files will need to be processed.
+     *
+     * @param stream The stream to print the message to.
+     * @param total  The number of input files that will need to be processed.
+     */
+    public static void printFeatureExtractionStartingMessage(PrintStream stream, int total) {
+<span class="fc" id="L118">        stream.println(&quot;&gt;&gt;&gt; Extracting features from &quot; + total + &quot; input files, one file at at time:\n&quot;);</span>
+<span class="fc" id="L119">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating that an input file is currently being pre-tested for
+     * validity.
+     *
+     * @param stream     The stream to print the message to.
+     * @param identifier The identifier of the input file being processed.
+     * @param current    The count of this file amongst the total number of files being processed.
+     * @param total      The total number of input files that are being processed.
+     */
+    public static void printFeatureExtractionFileTestProgressMessage(PrintStream stream,
+                                                                     String identifier,
+                                                                     int current,
+                                                                     int total) {
+<span class="nc" id="L135">        stream.println(&quot;\t&gt;&gt;&gt; &quot; + current + &quot;/&quot; + total + &quot; Testing: &quot; + identifier + &quot;  . . .&quot;);</span>
+<span class="nc" id="L136">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating that an input file is currently having features
+     * extracted from it.
+     *
+     * @param stream     The stream to print the message to.
+     * @param identifier The identifier of the input file being processed.
+     * @param current    The count of this file amongst the total number of files being processed.
+     * @param total      The total number of input files that are being processed.
+     */
+    public static void printFeatureExtractionProgressMessage(PrintStream stream,
+                                                             String identifier,
+                                                             int current,
+                                                             int total) {
+<span class="fc" id="L152">        stream.println(&quot;\t&gt;&gt;&gt; &quot; + current + &quot;/&quot; + total + &quot; Extracting features: &quot; + identifier + &quot;  . . .&quot;);</span>
+<span class="fc" id="L153">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating that an input file successfully had features extracted
+     * from it.
+     *
+     * @param stream     The stream to print the message to.
+     * @param identifier The identifier of the input file being processed.
+     * @param current    The count of this file amongst the total number of files being processed.
+     * @param total      The total number of input files that are being processed.
+     */
+    public static void printFeatureExtractionDoneAFileProgressMessage(PrintStream stream,
+                                                                      String identifier,
+                                                                      int current,
+                                                                      int total) {
+<span class="fc" id="L169">        stream.println(&quot;\t&gt;&gt;&gt; &quot; + current + &quot;/&quot; + total + &quot; Successfully extracted: &quot; + identifier + &quot;.&quot;);</span>
+<span class="fc" id="L170">    }</span>
+
+
+    /**
+     * Print a Print a formatted message to stream indicating that feature extraction is complete. If
+     * saved_features_file_path is not null or empty, then also print how many files were successfully
+     * extracted out of the number attempted.
+     *
+     * @param stream                   The stream to write output to.
+     * @param saved_features_file_path The path of the ACE XML Feature Values file holding the extracted
+     *                                 features.
+     * @param total_attempted_files    The total number of files that were processed, successfully or not,
+     *                                 during feature extraction.
+     */
+    public static void printFeatureExtractionCompleteMessage(PrintStream stream,
+                                                             String saved_features_file_path,
+                                                             int total_attempted_files) {
+<span class="fc" id="L187">        stream.println(&quot;&gt;&gt;&gt; Feature extraction complete.\n&quot;);</span>
+<span class="pc bpc" id="L188" title="2 of 4 branches missed.">        if (null != saved_features_file_path &amp;&amp; !saved_features_file_path.isEmpty()) {</span>
+            try {
+<span class="fc" id="L190">                String[] input_files = {saved_features_file_path};</span>
+<span class="fc" id="L191">                DataBoard instance_data = new DataBoard(null, null, input_files, null);</span>
+<span class="fc" id="L192">                int number_succesfully_extracted_files = instance_data.getNumOverall();</span>
+<span class="fc" id="L193">                stream.println(&quot;\t&gt;&gt;&gt; Features succesfully extracted and saved from &quot; + number_succesfully_extracted_files + &quot; of &quot; + total_attempted_files + &quot; attempted files.\n&quot;);</span>
+<span class="fc" id="L194">            } catch (Exception e) {</span>
+<span class="fc" id="L195">                stream.println(&quot;\t&gt;&gt;&gt; Features succesfully extracted and saved from 0 of &quot; + total_attempted_files + &quot; attempted files.&quot;);</span>
+<span class="fc" id="L196">                stream.println(&quot;\t&gt;&gt;&gt; The saved ACE XML Feature Values file is empty as a result.\n&quot;);</span>
+<span class="fc" id="L197">            }</span>
+        }
+<span class="fc" id="L199">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating that an ACE XML feature definitions file is being saved.
+     *
+     * @param stream    The stream to print the message to.
+     * @param save_path The path of the file being saved.
+     */
+    public static void printGeneratingAceXmlFeatureDefinitionsFile(PrintStream stream, String save_path) {
+<span class="fc" id="L209">        stream.println(&quot;&gt;&gt;&gt; Saving feature metadata as an ACE XML Feature Definitions file: &quot; + save_path + &quot;.\n&quot;);</span>
+<span class="fc" id="L210">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating that an ACE XML feature values file is being saved.
+     *
+     * @param stream    The stream to print the message to.
+     * @param save_path The path of the file being saved.
+     */
+    public static void printGeneratingAceXmlFeatureValuesFile(PrintStream stream, String save_path) {
+<span class="fc" id="L220">        stream.println(&quot;\n&gt;&gt;&gt; Saving extracted features as an ACE XML Feature Values file: &quot; + save_path + &quot;.\n&quot;);</span>
+<span class="fc" id="L221">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating that Weka ARFF file is being saved.
+     *
+     * @param stream    The stream to print the message to.
+     * @param save_path The path of the file being saved.
+     */
+    public static void printGeneratingArffFile(PrintStream stream, String save_path) {
+<span class="fc" id="L231">        stream.println(&quot;&gt;&gt;&gt; Saving extracted features as a Weka ARFF file: &quot; + save_path + &quot;.\n&quot;);</span>
+<span class="fc" id="L232">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating that a CSV file is being saved.
+     *
+     * @param stream    The stream to print the message to.
+     * @param save_path The path of the file being saved.
+     */
+
+    public static void printGeneratingCsvFile(PrintStream stream, String save_path) {
+<span class="fc" id="L243">        stream.println(&quot;&gt;&gt;&gt; Saving extracted features as a CSV file: &quot; + save_path + &quot;.\n&quot;);</span>
+<span class="fc" id="L244">    }</span>
+
+
+    /**
+     * Print a formatted message to stream indicating that all processing is complete.
+     *
+     * @param stream The stream to print the message to.
+     */
+    public static void printExecutionFinished(PrintStream stream) {
+<span class="fc" id="L253">        stream.println(&quot;&gt;&gt;&gt; ALL PROCESSING COMPLETE. EXECUTION ENDED.\n&quot;);</span>
+<span class="fc" id="L254">    }</span>
+
+
+    /**
+     * Print a formatted message to stream providing a summary of all errors that occurred during processing.
+     * This includes both a summary header indicating the total number of messages and numbered error-by-error
+     * listing.
+     *
+     * @param stream      The stream to print the message to.
+     * @param error_log   The list of error messages to summarize.
+     * @param header_only Only print the summary header if this is true. Also print each message
+     *                    individually if this is false.
+     */
+    public static void printErrorSummary(PrintStream stream, List&lt;String&gt; error_log, boolean header_only) {
+<span class="pc bpc" id="L268" title="2 of 4 branches missed.">        if (null != error_log &amp;&amp; !error_log.isEmpty()) {</span>
+<span class="nc bnc" id="L269" title="All 2 branches missed.">            if (header_only)</span>
+<span class="nc" id="L270">                stream.println(error_log.size() + &quot; ERRORS ENCOUNTERED IN TOTAL.\n&quot;);</span>
+            else {
+<span class="nc" id="L272">                stream.println(&quot;SUMMARY OF THE &quot; + error_log.size() + &quot; ERRORS ENCOUNTERED:\n&quot;);</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">                for (int i = 0; i &lt; error_log.size(); i++)</span>
+<span class="nc" id="L274">                    stream.println(&quot;&gt;&gt; &quot; + (i + 1) + &quot;/&quot; + error_log.size() + &quot;: &quot; + error_log.get(i));</span>
+            }
+<span class="nc" id="L276">            stream.println();</span>
+        }
+<span class="fc" id="L278">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

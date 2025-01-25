@@ -1,15 +1,14 @@
 plugins {
-    id 'java'
+    id 'application'
+    id 'jvm-test-suite'
+    id "org.sonarqube" version "4.4.1.3373"
+    id 'jacoco'
 }
-
-
-repositories {
-    mavenCentral()
-}
-
 
 dependencies {
     implementation fileTree(dir: './libs')
     testImplementation fileTree(dir: './libs')
-    testImplementation "org.junit.jupiter:junit-jupiter:5.10.0"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.3'
+//    testImplementation "org.junit.jupiter:junit-jupiter:5.10.0"
 }

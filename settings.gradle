@@ -15,7 +15,6 @@ develocity {
     }
 }
 
-rootProject.name = 'jSymbolic2'
 include 'modules:core', 'modules:jmh', 'modules:refactoring'
 
 project(':modules:core').name = 'jsymbolic-core'

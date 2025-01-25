@@ -1,19 +1,11 @@
-plugins {
-    id 'application'
-    id 'jvm-test-suite'
-    id "org.sonarqube" version "4.4.1.3373"
-    id 'jacoco'
+allprojects {
+    repositories {
+        mavenCentral()
+    }
 }
 
 subprojects {
     apply plugin: 'java'
-    version '1.0-SNAPSHOT'
-
-    repositories {
-        mavenCentral()
-    }
-
-
 
     java {
         toolchain {
@@ -21,4 +13,7 @@ subprojects {
         }
     }
 
+    test {
+        useJUnitPlatform()
+    }
 }

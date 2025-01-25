@@ -32,7 +32,7 @@ public class FileValidatorTest {
             SymbolicMusicFileUtilities.getMidiSequenceFromMidiOrMeiFile(invalid, errorLog);
         });
         String errorFile = errorLog.get(0);
-        assertEquals("The specified file, mei-test/Invalid_Altenburg.mei, is not a valid MEI file.",
+        assertEquals("The specified file, mei-test/Invalid_Altenburg.mei, is not a valid MIDI or MEI file.",
                         errorFile);
     }
     
@@ -52,7 +52,7 @@ public class FileValidatorTest {
         });
 
         String errorFile = errorLog.get(0);
-        assertEquals("The specified path, dne.midi, does not refer to a valid file.",
+        assertEquals("The specified file, dne.midi, is not a valid MIDI or MEI file.",
                         errorFile);
     }
 

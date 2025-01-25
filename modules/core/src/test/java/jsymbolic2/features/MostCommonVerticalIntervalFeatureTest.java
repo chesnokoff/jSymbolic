@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 /**
  * Created by dinamix on 7/13/16.
  */
-public class PrevalenceOfMostCommonVerticalIntervalFeatureTest {
+public class MostCommonVerticalIntervalFeatureTest {
     @BeforeEach
     public void setUp() throws Exception {
 
@@ -28,8 +28,7 @@ public class PrevalenceOfMostCommonVerticalIntervalFeatureTest {
     }
 
     @Test
-    public void extractFeature() throws Exception
-    {
+    public void extractFeature() throws Exception {
         Sequence test_tracks = new Sequence(Sequence.PPQ, 256);
         Track t1_tracks = test_tracks.createTrack();
         Track t2_tracks = test_tracks.createTrack();
@@ -48,19 +47,17 @@ public class PrevalenceOfMostCommonVerticalIntervalFeatureTest {
         t1_tracks.add(e_tracks6);
 
         MIDIIntermediateRepresentations inter = new MIDIIntermediateRepresentations(test_tracks);
+
         double[] unwrapped_vertical_intervals = new VerticalIntervalHistogramFeature().extractFeature(test_tracks, inter, null);
         double[][] vertical_interval_other_features = new double[1][];
         vertical_interval_other_features[0] = unwrapped_vertical_intervals;
-        Feature actual_common = new PrevalenceOfMostCommonVerticalIntervalFeature();
+        Feature actual_common = new MostCommonVerticalIntervalFeature();
         double[] vertical_intervals = new WrappedVerticalIntervalHistogramFeature().extractFeature(test_tracks, inter, vertical_interval_other_features);
-        double[][] other_features = new double[2][];
+        double[][] other_features = new double[1][];
         other_features[0] = vertical_intervals;
-        Feature common_interval_feature = new MostCommonVerticalIntervalFeature();
-        double[] most_common_vertical_interval = common_interval_feature.extractFeature(test_tracks, inter, other_features);
-        other_features[1] = most_common_vertical_interval;
-        double[] actual_prevalence = actual_common.extractFeature(test_tracks, inter, other_features);
-        double[] expected_prevalence = {0.6};
-        assertArrayEquals(expected_prevalence, actual_prevalence, 0.001);
+        double[] actual_chord_type = actual_common.extractFeature(test_tracks, inter, other_features);
+        double[] expected_chord_type = {7};
+        assertArrayEquals(expected_chord_type, actual_chord_type, 0.001);
     }
 
 }

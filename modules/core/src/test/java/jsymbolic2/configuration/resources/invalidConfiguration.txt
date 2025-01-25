@@ -1,10 +1,10 @@
 <features_to_extrac>
-AcousticGuitarFractionFeature
-DurationFeature
-BeatHistogramFeatue
+Acoustic Guitar Fractio
+Duration in Seconds
+Beat Histogram
 <input_files>
 ./invalid.midi
-./test/jsymbolic/features/resources/Saint-Saens_LeCarnevalDesAnimmaux.mei
+src/test/java/jsymbolic2/features/resources/Saint-Saens_LeCarnevalDesAnimmaux.mei
 <jSymbolic_options>
 window_size0
 window_overlap=0.1

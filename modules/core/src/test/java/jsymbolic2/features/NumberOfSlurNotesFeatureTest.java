@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 /**
  * Created by dinamix on 7/18/16.
  */
-public class NumberOfGraceNotesFeatureTest {
+public class NumberOfSlurNotesFeatureTest {
     File saint_saens;
     MeiSequence sequence;
     MeiSpecificStorage specificStorage;
@@ -33,11 +33,11 @@ public class NumberOfGraceNotesFeatureTest {
 
     @Test
     public void extractMEIFeature() throws Exception {
-        MEIFeatureExtractor graceNotesFeature = new NumberOfGraceNotesMeiFeature();
+        MEIFeatureExtractor slurNotesFeature = new NumberOfSlursMeiFeature();
         MIDIIntermediateRepresentations minter = new MIDIIntermediateRepresentations(sequence.getSequence());
-        double[] actualGraceNotes = graceNotesFeature.extractMEIFeature(specificStorage, sequence.getSequence(), minter, null);
-        double[] expectedGraceNotes = new double[]{0};
-        assertArrayEquals(expectedGraceNotes, actualGraceNotes, 0.001);
+        double[] actualSlurNotes = slurNotesFeature.extractMEIFeature(specificStorage, sequence.getSequence(), minter, null);
+        double[] expectedSlurNotes = new double[]{0.1154};
+        assertArrayEquals(expectedSlurNotes, actualSlurNotes, 0.001);
     }
 
 }

@@ -12,9 +12,9 @@ import javax.sound.midi.Track;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
- * Created by dinamix on 7/18/16.
+ * Created by dinamix on 8/1/16.
  */
-public class NonStandardChordsFeatureTest {
+public class ParallelMotionFeatureTest {
     @Test
     public void extractFeature() throws Exception {
         Sequence test_tracks = new Sequence(Sequence.PPQ, 256);
@@ -22,15 +22,17 @@ public class NonStandardChordsFeatureTest {
         Track t2_tracks = test_tracks.createTrack();
         //Velocities here are always 64
         MidiEvent e_tracks3 = MidiBuildEvent.createNoteOnEvent(0, 0, 0);
-        MidiEvent e_tracks4 = MidiBuildEvent.createNoteOffEvent(0, 2, 0);
+        MidiEvent e_tracks4 = MidiBuildEvent.createNoteOffEvent(0, 11, 0);
         MidiEvent e_tracks1 = MidiBuildEvent.createNoteOnEvent(4, 0, 0);
-        MidiEvent e_tracks2 = MidiBuildEvent.createNoteOffEvent(4, 2, 0);
-        MidiEvent e_tracks5 = MidiBuildEvent.createNoteOnEvent(7, 0, 0);
-        MidiEvent e_tracks6 = MidiBuildEvent.createNoteOffEvent(7, 2, 0);
-        MidiEvent e_tracks7 = MidiBuildEvent.createNoteOnEvent(1, 1, 0);
-        MidiEvent e_tracks8 = MidiBuildEvent.createNoteOffEvent(1, 2, 0);
-        MidiEvent e_tracks9 = MidiBuildEvent.createNoteOnEvent(2, 1, 0);
-        MidiEvent e_tracks10 = MidiBuildEvent.createNoteOffEvent(2, 2, 0);
+        MidiEvent e_tracks2 = MidiBuildEvent.createNoteOffEvent(4, 11, 0);
+        MidiEvent e_tracks5 = MidiBuildEvent.createNoteOnEvent(2, 12, 1);
+        MidiEvent e_tracks6 = MidiBuildEvent.createNoteOffEvent(2, 24, 1);
+        MidiEvent e_tracks7 = MidiBuildEvent.createNoteOnEvent(6, 12, 1);
+        MidiEvent e_tracks8 = MidiBuildEvent.createNoteOffEvent(6, 24, 1);
+        MidiEvent e_tracks9 = MidiBuildEvent.createNoteOnEvent(7, 25, 0);
+        MidiEvent e_tracks10 = MidiBuildEvent.createNoteOffEvent(7, 30, 0);
+        MidiEvent e_tracks13 = MidiBuildEvent.createNoteOnEvent(1, 25, 1);
+        MidiEvent e_tracks14 = MidiBuildEvent.createNoteOffEvent(1, 30, 1);
         t1_tracks.add(e_tracks3);
         t2_tracks.add(e_tracks2);
         t1_tracks.add(e_tracks4);
@@ -41,15 +43,14 @@ public class NonStandardChordsFeatureTest {
         t2_tracks.add(e_tracks8);
         t1_tracks.add(e_tracks9);
         t1_tracks.add(e_tracks10);
+        t2_tracks.add(e_tracks13);
+        t2_tracks.add(e_tracks14);
 
         MIDIIntermediateRepresentations inter = new MIDIIntermediateRepresentations(test_tracks);
-        double[] vertical_intervals = new ChordTypeHistogramFeature().extractFeature(test_tracks, inter, null);
-        double[][] other_features = new double[1][];
-        other_features[0] = vertical_intervals;
-        Feature actual_common = new NonStandardChordsFeature();
-        double[] actual_chord_type = actual_common.extractFeature(test_tracks, inter, other_features);
-        double[] expected_chord_type = {0.5};
-        assertArrayEquals(expected_chord_type, actual_chord_type, 0.01);
+        Feature actual_common = new ParallelMotionFeature();
+        double[] actual_value = actual_common.extractFeature(test_tracks, inter, null);
+        double[] expected_value = {0.5};
+        assertArrayEquals(expected_value, actual_value, 0.0001);
     }
 
 }

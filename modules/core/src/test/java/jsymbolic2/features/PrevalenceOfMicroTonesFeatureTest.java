@@ -1,6 +1,5 @@
 package jsymbolic2.features;
 
-import jsymbolic2.features.MicrotonePrevalenceFeature;
 import jsymbolic2.featureutils.Feature;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 <features_to_extract>
-AcousticGuitarFractionFeature
-DurationFeature
-BeatHistogramFeature
+Acoustic Guitar Prevalence
+Duration in Seconds
+Beat Histogram
 <jSymbolic_options>
 window_size=1.5
 window_overlap=0.1

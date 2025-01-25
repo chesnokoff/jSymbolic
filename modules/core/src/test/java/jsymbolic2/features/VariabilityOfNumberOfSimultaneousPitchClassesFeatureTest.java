@@ -1,6 +1,5 @@
 package jsymbolic2.features;
 
-import jsymbolic2.features.VariabilityOfNumberOfSimultaneousPitchClassesFeature;
 import jsymbolic2.featureutils.Feature;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.midiUtilities.MidiBuildEvent;

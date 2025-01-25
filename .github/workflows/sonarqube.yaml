@@ -17,6 +17,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - uses: actions/checkout@v4
+      - name: Log system information
+        run: |
+          java -version
+          free -h
+          df -h
+
       # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
       # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
       - name: Setup Gradle
@@ -57,5 +64,3 @@ jobs:
       # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
-        with:
-          build-root-directory: ./jSymbolic2

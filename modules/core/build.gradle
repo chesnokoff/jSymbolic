@@ -29,11 +29,6 @@ tasks.jacocoTestReport {
 
 sonarqube {
     properties {
-        property "sonar.projectKey", "TEST"
-        property "sonar.cpd.commentContent", "false"
-        property "sonar.projectName", "TEST"
-        property "sonar.host.url", ${{ secrets.SONAR_HOST_URL }}
-        property "sonar.token", "${{ secrets.SONAR_TOKEN }}"
         property "sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/jacocoTestReport.xml"
     }
 }

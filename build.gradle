@@ -4,6 +4,8 @@ allprojects {
     }
 }
 
+version = '2.3'
+
 subprojects {
     apply plugin: 'java'
 

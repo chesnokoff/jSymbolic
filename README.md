@@ -1,14 +1,25 @@
 # jSymbolic 2.2
 by Cory McKay
-Copyright (C) 2018 (GNU GPL)
 
+This is a fork of the [jSymbolic 2.2 ](https://sourceforge.net/projects/jmir/files/jSymbolic/jSymbolic%202.2/) version.
+
+jSymbolic is a powerful tool that delivers promising results, as seen in the following papers:
+
+* [OPTIMIZING FEATURE EXTRACTION FOR SYMBOLIC MUSIC](https://arxiv.org/pdf/2307.05107)
+* [EmoGen: Eliminating Subjective Bias in Emotional Music Generation](https://arxiv.org/pdf/2307.01229).
+
+Our goal is to improve this tool by:
+* Implementing a new build system.
+* Updating the Java version.
+* Refactoring the code for better readability.
+* Optimizing computations for improved performance.
 
 ### OVERVIEW
 
 jSymbolic is a software application intended for conducting research in the 
 fields of music information retrieval (MIR), music theory and musicology.
 Its primary purpose is to extract statistical information from musical data 
-stored symbolically in file formats such as MIDI or MEI. This statistical 
+stored symbolically in file formats such as MIDI. This statistical 
 information is formulated as feature values, which may be fed directly into
 automatic classification systems, may be used to query large musical
 datasets, or may be used by musicologists and music theorists for conducting 
@@ -106,76 +117,23 @@ Java 8 or newer installed on their systems in order to run jSymbolic
 properly.
 
 
-### INSTALLING THE JAVA RUNTIME ENVIRONMENT
+### REQUIREMENTS
 
-If your system already has the JRE installed, as will most typically be the
-case, you may skip this section. If not, you will need to install the JRE in
-order to run this project. The JRE can be downloaded for free from the Java web
-site. The JDK typically includes the JRE, or the JRE can simply be installed
-alone. Warning: Some versions of the Macintosh operating system have reportedly
-not supported Java 9, so users may wish to install Java 8 if they are using a
-Macintosh just to be safe.
+* Java 17
+* Gradle 8
 
-When the JRE download is complete, follow the installation instructions that
-come with it in order to install it
-
-
-### INSTALLING JSYMBOLIC
-
-The release version of jSymbolic may be downloaded from
-https://sourceforge.net/projects/jmir/files/jSymbolic/. Alternatively, the
-most recent development code for jSymbolic can be found on its GitHub page
-(https://github.com/DDMAL/jSymbolic2). However, it is strongly suggested
-that users use the stable release version posted on the SourceForge page
-(https://sourceforge.net/projects/jmir/files/jSymbolic/) instead of the 
-development GitHub version, as the latter may not be fully tested yet. The
-information below refers to the content on the release SourceForge page,
-not the development GitHub page.
-
-There are two release versions of jSymbolic posted on its SourceForge release
-page, namely the developer version and the user version. The user version
-contains everything needed to run the project, but does not include any source
-code. The developer version does include source code, presented in the form of 
-a NetBeans project.
-
-The user version unzips into a single directory. Installation simply involves 
-copying this directory into any desired location.
-
-The following directories are contained in the developer zip file:
-
-- jSymbolic2: The jSymbolic2 project, presented in the form of a NetBeans project.
-Contains the following directories and files:
-	- configfiles: Contains pre-generated jSymbolic configurations files
-	that users may wish to use for various purposes.
-	- dist: Contains a pre-compiled jSymbolic2.jar file (and associated
-	libraries) for direct inclusion in other projects.
-	- javadoc: Javadoc documentation for the project source code.
-	- jSymbolic-Rodan: Files for using jSymbolic2 in a Rodan wrapper.
-	- manual: The software's HTML manual.
-	- nbproject: NetBeans project files. This is only relevant to those
-	wishing to use the software in a NetBeans IDE context; it is certainly
-	possible to use the software in other development environments as well.
-	- src: The project's source code.
-	- test: The project's unit testing code.
-	- tutorial: The software's HTML tutorial.
-	- build.xml: NetBeans build instructions. Only relevant if using the
-	NetBeans IDE.
-	- GNU_GPL.txt: Licensing information for the software.
-	- jSymbolicDefaultConfigs.txt: Default configuration settings for the
-	software.
-	- manifest.mf: The manifest used when building the project Jar file.
-	- README.md: Basic overall documentation of the project.
-- Third-Party-Jars: Contains the distributable third-party software used by 
-the project. Also includes the jar files for other jMIR projects that this
-project has as dependencies, if any. These need to be included in the project's
-build (in the NetBeans context, this means adding the jar files found here as 
-libraries).
-
+### PROJECT STRUCUTRE
+- modules: Modules with code such as core or jmh tests.
+	- core: Main code of jSymbolic with third-party-dependencies.
+- dataset: Dataset for experiments with feature extraction.
+- javadoc: Javadoc documentation for the project source code.
+- manual: The software's HTML manual.
+- tutorial: The software's HTML tutorial.
 
 ### RUNNING JSYMBOLIC 
 
 The simplest way of using jSymbolic is to simply run the jSymbolic GUI by double
-clicking the jSymbolic.jar file's icon using a graphical operating system, such as 
+clicking the jar file's icon using a graphical operating system, such as 
 Windows or OS X. This is, of course, a perfectly fine way of using the software.
 
 However, a greater range of options are made available by running jSymbolic through
@@ -248,15 +206,11 @@ default settings.
 - All file or directory paths specified in command line arguments must either be 
 absolute or relative to the directory containing the jSymbolic.jar file.
 - All recursive directory searches for symbolic files will only return files that have
-valid .mid, .midi or .mei extensions (with any mix of upper-case or lower-case letters).
+valid .mid, .midi or extensions (with any mix of upper-case or lower-case letters).
 - Errors that occur during batch processing of multiple files will be logged to the 
 terminal. Processing of other files will not be interrupted..
-- jSymbolic can currently process the following kinds of symbolic music files: MIDI files
-and MEI files. Any files that cannot be parsed by jSymbolic will cause an error message
+- jSymbolic can currently process the following kinds of symbolic music files: MIDI files. Any files that cannot be parsed by jSymbolic will cause an error message
 to be generated.
-- If an MEI-specific feature (e.g. Number of Grace Notes) is set to be extracted, then
-it will only be extracted from MEI files. It will be ignored by other files, such as MIDI 
-files.
 
 
 ### USING THE JSYMBOLIC GUI

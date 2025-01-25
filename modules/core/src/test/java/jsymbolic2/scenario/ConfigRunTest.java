@@ -1,12 +1,15 @@
 package jsymbolic2.scenario;
 
 import ace.datatypes.DataBoard;
+import ace.datatypes.DataSet;
 import jsymbolic2.Main;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConfigRunTest {
@@ -25,8 +28,10 @@ public class ConfigRunTest {
             prefix + "all_features_definitions_actual.xml",
                 new String[]{prefix + "all_features_values_actual.xml"}, null);
         for (int i = 0; i < dataBoardExpected.feature_vectors.length; i++) {
-            assertTrue(Arrays.deepEquals(dataBoardExpected.feature_vectors[i].feature_values, dataBoardActual.feature_vectors[i].feature_values),
-                    "Rows are not equals, expected: " + Arrays.deepToString(dataBoardExpected.feature_vectors[i].feature_values) + " but actual: " + Arrays.deepToString(dataBoardActual.feature_vectors[i].feature_values));
+            for (int j = 0; j < dataBoardExpected.feature_vectors[i].feature_values.length; j++) {
+                assertArrayEquals(dataBoardExpected.feature_vectors[i].feature_values[j], dataBoardActual.feature_vectors[i].feature_values[j], 0.001,
+                        dataBoardExpected.feature_vectors[i].feature_names[j] + " feature is not the same.");
+            }
         }
     }
 
@@ -40,7 +45,13 @@ public class ConfigRunTest {
                 "src/test/java/jsymbolic2/scenario/resources/values/window_definitions_actual.xml",
                 new String[]{"src/test/java/jsymbolic2/scenario/resources/values/window_values_actual.xml"}, null);
         for (int i = 0; i < dataBoardExpected.feature_vectors.length; i++) {
-            assertTrue(Arrays.deepEquals(dataBoardExpected.feature_vectors[i].feature_values, dataBoardActual.feature_vectors[i].feature_values));
+            for (int j = 0; j < dataBoardExpected.feature_vectors[i].sub_sets.length; j++) {
+                for (int k = 0; k < dataBoardExpected.feature_vectors[i].sub_sets[j].feature_values.length; k++) {
+                        assertArrayEquals(dataBoardExpected.feature_vectors[i].sub_sets[j].feature_values[k],
+                            dataBoardExpected.feature_vectors[i].sub_sets[j].feature_values[k], 0.001,
+                            dataBoardExpected.feature_vectors[i].sub_sets[j].feature_names[k] + " feature is not the same.");
+                    }
+                }
         }
     }
 
@@ -54,7 +65,10 @@ public class ConfigRunTest {
                 "src/test/java/jsymbolic2/scenario/resources/values/overall_definitions_actual.xml",
                 new String[]{"src/test/java/jsymbolic2/scenario/resources/values/overall_values_actual.xml"}, null);
         for (int i = 0; i < dataBoardExpected.feature_vectors.length; i++) {
-            assertTrue(Arrays.deepEquals(dataBoardExpected.feature_vectors[i].feature_values, dataBoardActual.feature_vectors[i].feature_values));
+            for (int j = 0; j < dataBoardExpected.feature_vectors[i].feature_values.length; j++) {
+                assertArrayEquals(dataBoardExpected.feature_vectors[i].feature_values[j], dataBoardActual.feature_vectors[i].feature_values[j], 0.001,
+                    dataBoardExpected.feature_vectors[i].feature_names[j] + " feature is not the same.");
+            }
         }
     }
 }

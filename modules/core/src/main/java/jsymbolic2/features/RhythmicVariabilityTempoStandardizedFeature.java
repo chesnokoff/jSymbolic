@@ -1,0 +1,59 @@
+package jsymbolic2.features;
+
+import jsymbolic2.featureutils.Feature;
+import javax.sound.midi.*;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the standard deviation of the tempo-standardized beat histogram bin
+ * magnitudes.
+ *
+ * @author Cory McKay
+ */
+public class RhythmicVariabilityTempoStandardizedFeature implements Feature {
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getName() {
+        return "Rhythmic Variability - Tempo Standardized";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getCode() {
+        return "R-64";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getDescription() {
+        return "Standard deviation of the tempo-standardized beat histogram bin magnitudes";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
+        double value;
+        if (sequence_info != null) {
+            // Make the reduced histogram (excluding the first 40 empty bins)
+            double[] reduced_histogram = new double[sequence_info.beat_histogram_120_bpm_standardized.length - 40];
+            System.arraycopy(sequence_info.beat_histogram_120_bpm_standardized, 40, reduced_histogram, 0, reduced_histogram.length);
+            // Calculate the value
+            value = mckay.utilities.staticlibraries.MathAndStatsMethods.getStandardDeviation(reduced_histogram);
+        } else
+            value = -1.0;
+        double[] result = new double[1];
+        result[0] = value;
+        return result;
+    }
+}

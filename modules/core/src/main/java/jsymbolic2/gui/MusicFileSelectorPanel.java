@@ -34,6 +34,7 @@ import java.util.List;
  *
  * @author Cory McKay and Tristano Tenaglia
  */
+@SuppressWarnings("jol")
 public class MusicFileSelectorPanel
         extends JPanel
         implements ActionListener {
@@ -523,12 +524,14 @@ public class MusicFileSelectorPanel
         // Combine the new symbolic music files with those already on the table
         SymbolicMusicFile[] music_files_already_on_table = getSymbolicMusicFilesToExtractFeaturesFrom();
         int number_music_files_already_on_table = 0;
-        if (null != music_files_already_on_table)
+        if (music_files_already_on_table != null)
             number_music_files_already_on_table = music_files_already_on_table.length;
         int number_music_files_to_add = music_files_to_add.length;
         SymbolicMusicFile[] new_and_old_music_files = new SymbolicMusicFile[number_music_files_already_on_table + number_music_files_to_add];
-        System.arraycopy(music_files_already_on_table, 0, new_and_old_music_files, 0, number_music_files_already_on_table);
-        System.arraycopy(music_files_to_add, 0, new_and_old_music_files, number_music_files_already_on_table, number_music_files_to_add);
+        for (int i = 0; i < number_music_files_already_on_table; i++)
+            new_and_old_music_files[i] = music_files_already_on_table[i];
+        for (int i = 0; i < number_music_files_to_add; i++)
+            new_and_old_music_files[i + number_music_files_already_on_table] = music_files_to_add[i];
 
         // Remove duplicate symbolic music files with the same file path
         for (int i = 0; i < new_and_old_music_files.length - 1; i++) {

@@ -26,7 +26,7 @@ import org.openjdk.jmh.annotations.State;
 @State(Scope.Benchmark)
 public class ExtractAndSaveBenchmark {
 
-  @Param("src/jmh/resources/configs/all-features-config.txt")
+  @Param("src/jmh/resources/configs/0_10000/all-features-config.txt")
   public String configFilePath;
 
   private ConfigurationFileData configFileData;

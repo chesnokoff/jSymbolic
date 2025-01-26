@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class PitchSkewnessFeature implements Feature {
+public class PitchSkewnessFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -21,7 +21,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay and Tristano Tenaglia
  */
-public class SimilarMotionFeature implements Feature {
+public class SimilarMotionFeature extends Feature {
 
     /**
      * {@inheritDoc}

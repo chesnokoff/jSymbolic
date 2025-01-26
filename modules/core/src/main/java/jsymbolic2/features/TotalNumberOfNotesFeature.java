@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class TotalNumberOfNotesFeature implements Feature {
+public class TotalNumberOfNotesFeature extends Feature {
 
     /**
      * {@inheritDoc}

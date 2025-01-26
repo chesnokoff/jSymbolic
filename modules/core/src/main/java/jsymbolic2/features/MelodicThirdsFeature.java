@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MelodicThirdsFeature implements Feature {
+public class MelodicThirdsFeature extends Feature {
 
     /**
      * {@inheritDoc}

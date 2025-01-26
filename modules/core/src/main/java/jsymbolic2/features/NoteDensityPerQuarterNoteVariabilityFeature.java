@@ -18,7 +18,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class NoteDensityPerQuarterNoteVariabilityFeature implements Feature {
+public class NoteDensityPerQuarterNoteVariabilityFeature extends Feature {
 
     /**
      * {@inheritDoc}

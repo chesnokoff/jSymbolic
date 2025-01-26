@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VoiceEqualityNoteDurationFeature implements Feature {
+public class VoiceEqualityNoteDurationFeature extends Feature {
 
     /**
      * {@inheritDoc}

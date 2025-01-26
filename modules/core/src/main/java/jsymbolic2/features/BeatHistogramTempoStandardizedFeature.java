@@ -20,7 +20,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class BeatHistogramTempoStandardizedFeature implements Feature {
+public class BeatHistogramTempoStandardizedFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RhythmicLoosenessTempoStandardizedFeature implements Feature {
+public class RhythmicLoosenessTempoStandardizedFeature extends Feature {
 
     /**
      * {@inheritDoc}

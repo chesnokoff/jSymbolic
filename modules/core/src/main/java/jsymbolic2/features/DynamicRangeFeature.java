@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class DynamicRangeFeature implements Feature {
+public class DynamicRangeFeature extends Feature {
 
     /**
      * {@inheritDoc}

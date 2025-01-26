@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class NumberOfCommonMelodicIntervalsFeature implements Feature {
+public class NumberOfCommonMelodicIntervalsFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -12,7 +12,7 @@ import javax.sound.midi.Sequence;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class SecondMostCommonVerticalIntervalFeature implements Feature {
+public class SecondMostCommonVerticalIntervalFeature extends Feature {
 
     /**
      * {@inheritDoc}

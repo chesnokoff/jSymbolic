@@ -18,7 +18,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class MelodicEmbellishmentsFeature implements Feature {
+public class MelodicEmbellishmentsFeature extends Feature {
 
     /**
      * {@inheritDoc}

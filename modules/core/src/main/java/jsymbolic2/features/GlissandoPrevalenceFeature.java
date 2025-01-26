@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class GlissandoPrevalenceFeature implements Feature {
+public class GlissandoPrevalenceFeature extends Feature {
 
     /**
      * {@inheritDoc}

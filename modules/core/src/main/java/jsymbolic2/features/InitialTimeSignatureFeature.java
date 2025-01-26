@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class InitialTimeSignatureFeature implements Feature {
+public class InitialTimeSignatureFeature extends Feature {
 
     /**
      * {@inheritDoc}

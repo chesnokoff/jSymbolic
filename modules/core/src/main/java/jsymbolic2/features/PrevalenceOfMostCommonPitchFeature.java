@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class PrevalenceOfMostCommonPitchFeature implements Feature {
+public class PrevalenceOfMostCommonPitchFeature extends Feature {
 
     /**
      * {@inheritDoc}

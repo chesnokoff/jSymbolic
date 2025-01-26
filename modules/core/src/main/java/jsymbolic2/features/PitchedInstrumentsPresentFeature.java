@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class PitchedInstrumentsPresentFeature implements Feature {
+public class PitchedInstrumentsPresentFeature extends Feature {
 
     /**
      * {@inheritDoc}

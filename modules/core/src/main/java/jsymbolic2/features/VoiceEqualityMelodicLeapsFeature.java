@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VoiceEqualityMelodicLeapsFeature implements Feature {
+public class VoiceEqualityMelodicLeapsFeature extends Feature {
 
     /**
      * {@inheritDoc}

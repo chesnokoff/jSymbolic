@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class AverageVariabilityOfTimeBetweenAttacksForEachVoiceFeature implements Feature {
+public class AverageVariabilityOfTimeBetweenAttacksForEachVoiceFeature extends Feature {
 
     /**
      * {@inheritDoc}

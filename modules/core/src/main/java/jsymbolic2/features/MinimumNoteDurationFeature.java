@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MinimumNoteDurationFeature implements Feature {
+public class MinimumNoteDurationFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class DistanceBetweenMostPrevalentMelodicIntervalsFeature implements Feature {
+public class DistanceBetweenMostPrevalentMelodicIntervalsFeature extends Feature {
 
     /**
      * {@inheritDoc}

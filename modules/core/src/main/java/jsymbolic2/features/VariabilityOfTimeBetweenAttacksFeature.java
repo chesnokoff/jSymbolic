@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VariabilityOfTimeBetweenAttacksFeature implements Feature {
+public class VariabilityOfTimeBetweenAttacksFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class NoteDensityPerQuarterNoteFeature implements Feature {
+public class NoteDensityPerQuarterNoteFeature extends Feature {
 
     /**
      * {@inheritDoc}

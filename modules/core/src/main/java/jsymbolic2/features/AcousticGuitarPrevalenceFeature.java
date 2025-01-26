@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class AcousticGuitarPrevalenceFeature implements Feature {
+public class AcousticGuitarPrevalenceFeature extends Feature {
 
     /**
      * {@inheritDoc}

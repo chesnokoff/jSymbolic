@@ -23,7 +23,7 @@ import javax.sound.midi.Sequence;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class ChordTypeHistogramFeature implements Feature {
+public class ChordTypeHistogramFeature extends Feature {
 
     final private int number_of_chord_types = ChordTypeEnum.values().length;
 

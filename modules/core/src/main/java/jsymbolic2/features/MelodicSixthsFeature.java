@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MelodicSixthsFeature implements Feature {
+public class MelodicSixthsFeature extends Feature {
 
     /**
      * {@inheritDoc}

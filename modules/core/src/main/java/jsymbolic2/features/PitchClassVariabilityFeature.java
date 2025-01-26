@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class PitchClassVariabilityFeature implements Feature {
+public class PitchClassVariabilityFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -13,7 +13,7 @@ import javax.sound.midi.Sequence;
  *
  * @author Cory McKay
  */
-public class VerticalSixthsFeature implements Feature {
+public class VerticalSixthsFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VibratoPrevalenceFeature implements Feature {
+public class VibratoPrevalenceFeature extends Feature {
 
     /**
      * {@inheritDoc}

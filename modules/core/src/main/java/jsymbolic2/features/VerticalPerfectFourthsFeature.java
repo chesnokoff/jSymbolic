@@ -13,7 +13,7 @@ import javax.sound.midi.Sequence;
  *
  * @author Cory McKay
  */
-public class VerticalPerfectFourthsFeature implements Feature {
+public class VerticalPerfectFourthsFeature extends Feature {
 
     /**
      * {@inheritDoc}

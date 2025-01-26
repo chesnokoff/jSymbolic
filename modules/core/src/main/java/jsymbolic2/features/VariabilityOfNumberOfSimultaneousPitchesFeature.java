@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VariabilityOfNumberOfSimultaneousPitchesFeature implements Feature {
+public class VariabilityOfNumberOfSimultaneousPitchesFeature extends Feature {
 
     /**
      * {@inheritDoc}

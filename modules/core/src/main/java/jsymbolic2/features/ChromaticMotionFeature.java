@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class ChromaticMotionFeature implements Feature {
+public class ChromaticMotionFeature extends Feature {
 
     /**
      * {@inheritDoc}

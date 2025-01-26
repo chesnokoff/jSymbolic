@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MedianCompleteRestDurationFeature implements Feature {
+public class MedianCompleteRestDurationFeature extends Feature {
 
     /**
      * {@inheritDoc}

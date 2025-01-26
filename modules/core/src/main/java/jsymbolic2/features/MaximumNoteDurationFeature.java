@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MaximumNoteDurationFeature implements Feature {
+public class MaximumNoteDurationFeature extends Feature {
 
     /**
      * {@inheritDoc}

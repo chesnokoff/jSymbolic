@@ -16,7 +16,7 @@ import org.apache.commons.lang3.ArrayUtils;
  *
  * @author Cory McKay
  */
-public class LongestRhythmicValueFeature implements Feature {
+public class LongestRhythmicValueFeature extends Feature {
 
     /**
      * {@inheritDoc}

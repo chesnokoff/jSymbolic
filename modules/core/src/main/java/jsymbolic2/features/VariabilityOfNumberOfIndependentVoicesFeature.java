@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VariabilityOfNumberOfIndependentVoicesFeature implements Feature {
+public class VariabilityOfNumberOfIndependentVoicesFeature extends Feature {
 
     /**
      * {@inheritDoc}

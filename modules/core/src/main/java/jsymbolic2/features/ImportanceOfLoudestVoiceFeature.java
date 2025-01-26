@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class ImportanceOfLoudestVoiceFeature implements Feature {
+public class ImportanceOfLoudestVoiceFeature extends Feature {
 
     /**
      * {@inheritDoc}

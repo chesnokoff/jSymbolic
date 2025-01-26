@@ -13,7 +13,7 @@ import javax.sound.midi.Sequence;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class VerticalThirdsFeature implements Feature {
+public class VerticalThirdsFeature extends Feature {
 
     /**
      * {@inheritDoc}

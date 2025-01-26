@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class AverageNoteDurationFeature implements Feature {
+public class AverageNoteDurationFeature extends Feature {
 
     /**
      * {@inheritDoc}

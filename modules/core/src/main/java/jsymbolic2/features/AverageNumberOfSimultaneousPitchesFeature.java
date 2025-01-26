@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class AverageNumberOfSimultaneousPitchesFeature implements Feature {
+public class AverageNumberOfSimultaneousPitchesFeature extends Feature {
 
     /**
      * {@inheritDoc}

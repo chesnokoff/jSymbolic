@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RhythmicVariabilityFeature implements Feature {
+public class RhythmicVariabilityFeature extends Feature {
 
     /**
      * {@inheritDoc}

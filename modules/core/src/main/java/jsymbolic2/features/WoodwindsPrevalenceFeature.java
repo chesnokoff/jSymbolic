@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class WoodwindsPrevalenceFeature implements Feature {
+public class WoodwindsPrevalenceFeature extends Feature {
 
     /**
      * {@inheritDoc}

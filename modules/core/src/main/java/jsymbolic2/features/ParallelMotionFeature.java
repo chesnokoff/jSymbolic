@@ -21,7 +21,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class ParallelMotionFeature implements Feature {
+public class ParallelMotionFeature extends Feature {
 
     /**
      * {@inheritDoc}

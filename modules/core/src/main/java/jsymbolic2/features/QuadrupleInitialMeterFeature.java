@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class QuadrupleInitialMeterFeature implements Feature {
+public class QuadrupleInitialMeterFeature extends Feature {
 
     /**
      * {@inheritDoc}

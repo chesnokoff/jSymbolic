@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class VariabilityAcrossVoicesOfCombinedRestsFeature implements Feature {
+public class VariabilityAcrossVoicesOfCombinedRestsFeature extends Feature {
 
     /**
      * {@inheritDoc}

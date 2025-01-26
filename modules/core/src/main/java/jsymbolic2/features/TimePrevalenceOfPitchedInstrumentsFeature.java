@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class TimePrevalenceOfPitchedInstrumentsFeature implements Feature {
+public class TimePrevalenceOfPitchedInstrumentsFeature extends Feature {
 
     /**
      * {@inheritDoc}

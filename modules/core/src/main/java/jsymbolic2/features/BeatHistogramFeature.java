@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class BeatHistogramFeature implements Feature {
+public class BeatHistogramFeature extends Feature {
 
     /**
      * {@inheritDoc}

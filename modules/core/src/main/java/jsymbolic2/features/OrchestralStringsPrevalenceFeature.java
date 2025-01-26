@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class OrchestralStringsPrevalenceFeature implements Feature {
+public class OrchestralStringsPrevalenceFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  * @author Cory McKay
  */
 @SuppressWarnings("ALL")
-public class AverageNoteToNoteChangeInDynamics implements Feature {
+public class AverageNoteToNoteChangeInDynamics extends Feature {
 
     /**
      * {@inheritDoc}

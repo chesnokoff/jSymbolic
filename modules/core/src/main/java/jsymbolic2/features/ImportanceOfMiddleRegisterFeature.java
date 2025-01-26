@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class ImportanceOfMiddleRegisterFeature implements Feature {
+public class ImportanceOfMiddleRegisterFeature extends Feature {
 
     /**
      * {@inheritDoc}

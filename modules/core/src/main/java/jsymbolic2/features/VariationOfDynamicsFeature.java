@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VariationOfDynamicsFeature implements Feature {
+public class VariationOfDynamicsFeature extends Feature {
 
     /**
      * {@inheritDoc}

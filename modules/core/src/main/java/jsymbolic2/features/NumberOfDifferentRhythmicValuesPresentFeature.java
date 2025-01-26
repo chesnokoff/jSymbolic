@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class NumberOfDifferentRhythmicValuesPresentFeature implements Feature {
+public class NumberOfDifferentRhythmicValuesPresentFeature extends Feature {
 
     /**
      * {@inheritDoc}

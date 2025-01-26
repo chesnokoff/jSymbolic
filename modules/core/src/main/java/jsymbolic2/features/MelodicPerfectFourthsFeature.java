@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MelodicPerfectFourthsFeature implements Feature {
+public class MelodicPerfectFourthsFeature extends Feature {
 
     /**
      * {@inheritDoc}

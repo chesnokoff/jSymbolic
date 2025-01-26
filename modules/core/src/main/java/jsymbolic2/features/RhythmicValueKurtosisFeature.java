@@ -16,7 +16,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RhythmicValueKurtosisFeature implements Feature {
+public class RhythmicValueKurtosisFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MaximumNumberOfIndependentVoicesFeature implements Feature {
+public class MaximumNumberOfIndependentVoicesFeature extends Feature {
 
     /**
      * {@inheritDoc}

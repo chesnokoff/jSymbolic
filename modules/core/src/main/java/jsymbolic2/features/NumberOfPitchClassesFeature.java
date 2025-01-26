@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class NumberOfPitchClassesFeature implements Feature {
+public class NumberOfPitchClassesFeature extends Feature {
 
     /**
      * {@inheritDoc}

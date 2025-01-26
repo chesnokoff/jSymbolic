@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RhythmicValueSkewnessFeature implements Feature {
+public class RhythmicValueSkewnessFeature extends Feature {
 
     /**
      * {@inheritDoc}

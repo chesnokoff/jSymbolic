@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class CompoundMeterFeature implements Feature {
+public class CompoundMeterFeature extends Feature {
 
     /**
      * {@inheritDoc}

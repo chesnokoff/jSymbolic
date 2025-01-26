@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RhythmicVariabilityTempoStandardizedFeature implements Feature {
+public class RhythmicVariabilityTempoStandardizedFeature extends Feature {
 
     /**
      * {@inheritDoc}

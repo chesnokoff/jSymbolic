@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MeanRhythmicValueRunLengthFeature implements Feature {
+public class MeanRhythmicValueRunLengthFeature extends Feature {
 
     /**
      * {@inheritDoc}

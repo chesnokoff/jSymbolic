@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class SeventhChordsFeature implements Feature {
+public class SeventhChordsFeature extends Feature {
 
     /**
      * {@inheritDoc}

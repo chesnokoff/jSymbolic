@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class AverageRangeOfGlissandosFeature implements Feature {
+public class AverageRangeOfGlissandosFeature extends Feature {
 
     /**
      * {@inheritDoc}

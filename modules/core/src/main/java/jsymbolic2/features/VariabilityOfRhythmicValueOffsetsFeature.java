@@ -18,7 +18,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VariabilityOfRhythmicValueOffsetsFeature implements Feature {
+public class VariabilityOfRhythmicValueOffsetsFeature extends Feature {
 
     /**
      * {@inheritDoc}

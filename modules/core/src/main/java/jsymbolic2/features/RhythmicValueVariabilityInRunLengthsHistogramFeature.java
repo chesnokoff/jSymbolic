@@ -22,7 +22,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RhythmicValueVariabilityInRunLengthsHistogramFeature implements Feature {
+public class RhythmicValueVariabilityInRunLengthsHistogramFeature extends Feature {
 
     /**
      * {@inheritDoc}

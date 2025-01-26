@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class AverageLengthOfMelodicArcsFeature implements Feature {
+public class AverageLengthOfMelodicArcsFeature extends Feature {
 
     /**
      * {@inheritDoc}

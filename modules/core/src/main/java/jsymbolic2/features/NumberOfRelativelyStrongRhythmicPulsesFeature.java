@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class NumberOfRelativelyStrongRhythmicPulsesFeature implements Feature {
+public class NumberOfRelativelyStrongRhythmicPulsesFeature extends Feature {
 
     /**
      * {@inheritDoc}

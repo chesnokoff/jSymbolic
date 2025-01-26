@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class StrongTonalCentresFeature implements Feature {
+public class StrongTonalCentresFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class PartialChordsFeature implements Feature {
+public class PartialChordsFeature extends Feature {
 
     /**
      * {@inheritDoc}

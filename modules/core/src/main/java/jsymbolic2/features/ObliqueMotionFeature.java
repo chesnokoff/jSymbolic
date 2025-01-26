@@ -21,7 +21,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class ObliqueMotionFeature implements Feature {
+public class ObliqueMotionFeature extends Feature {
 
     /**
      * {@inheritDoc}

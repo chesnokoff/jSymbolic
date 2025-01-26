@@ -20,7 +20,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay and Tristano Tenaglia
  */
-public class MelodicPitchVarietyFeature implements Feature {
+public class MelodicPitchVarietyFeature extends Feature {
 
     /**
      * {@inheritDoc}

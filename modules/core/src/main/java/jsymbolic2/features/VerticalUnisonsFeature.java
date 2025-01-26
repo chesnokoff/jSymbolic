@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class VerticalUnisonsFeature implements Feature {
+public class VerticalUnisonsFeature extends Feature {
 
     /**
      * {@inheritDoc}

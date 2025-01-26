@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VerticalSeventhsFeature implements Feature {
+public class VerticalSeventhsFeature extends Feature {
 
     /**
      * {@inheritDoc}

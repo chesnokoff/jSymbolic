@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MajorOrMinorFeature implements Feature {
+public class MajorOrMinorFeature extends Feature {
 
     /**
      * {@inheritDoc}

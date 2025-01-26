@@ -21,7 +21,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class ContraryMotionFeature implements Feature {
+public class ContraryMotionFeature extends Feature {
 
     /**
      * {@inheritDoc}

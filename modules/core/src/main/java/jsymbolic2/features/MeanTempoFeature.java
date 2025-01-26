@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MeanTempoFeature implements Feature {
+public class MeanTempoFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RepeatedNotesFeature implements Feature {
+public class RepeatedNotesFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class StrengthRatioOfTwoStrongestRhythmicPulsesTempoStandardizedFeature implements Feature {
+public class StrengthRatioOfTwoStrongestRhythmicPulsesTempoStandardizedFeature extends Feature {
 
     /**
      * {@inheritDoc}

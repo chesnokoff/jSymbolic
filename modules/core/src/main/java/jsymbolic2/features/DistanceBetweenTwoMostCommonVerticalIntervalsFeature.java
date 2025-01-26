@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class DistanceBetweenTwoMostCommonVerticalIntervalsFeature implements Feature {
+public class DistanceBetweenTwoMostCommonVerticalIntervalsFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -14,7 +14,7 @@ import java.util.LinkedList;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class MicrotonePrevalenceFeature implements Feature {
+public class MicrotonePrevalenceFeature extends Feature {
 
     /**
      * {@inheritDoc}

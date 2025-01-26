@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class PrevalenceOfDottedNotesFeature implements Feature {
+public class PrevalenceOfDottedNotesFeature extends Feature {
 
     /**
      * {@inheritDoc}

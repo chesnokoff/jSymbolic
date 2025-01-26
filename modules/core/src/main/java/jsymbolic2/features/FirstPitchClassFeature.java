@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class FirstPitchClassFeature implements Feature {
+public class FirstPitchClassFeature extends Feature {
 
     /**
      * {@inheritDoc}

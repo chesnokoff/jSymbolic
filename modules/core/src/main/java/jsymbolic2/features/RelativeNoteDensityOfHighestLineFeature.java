@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RelativeNoteDensityOfHighestLineFeature implements Feature {
+public class RelativeNoteDensityOfHighestLineFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -21,7 +21,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class WrappedVerticalIntervalHistogramFeature implements Feature {
+public class WrappedVerticalIntervalHistogramFeature extends Feature {
 
     /**
      * {@inheritDoc}

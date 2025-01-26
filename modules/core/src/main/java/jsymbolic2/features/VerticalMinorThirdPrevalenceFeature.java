@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay and Tristano Tenaglia
  */
-public class VerticalMinorThirdPrevalenceFeature implements Feature {
+public class VerticalMinorThirdPrevalenceFeature extends Feature {
 
     /**
      * {@inheritDoc}

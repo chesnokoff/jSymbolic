@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class UnpitchedPercussionInstrumentPrevalenceFeature implements Feature {
+public class UnpitchedPercussionInstrumentPrevalenceFeature extends Feature {
 
     /**
      * {@inheritDoc}

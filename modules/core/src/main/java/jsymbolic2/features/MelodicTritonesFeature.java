@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MelodicTritonesFeature implements Feature {
+public class MelodicTritonesFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class StrengthOfStrongestRhythmicPulseFeature implements Feature {
+public class StrengthOfStrongestRhythmicPulseFeature extends Feature {
 
     /**
      * {@inheritDoc}

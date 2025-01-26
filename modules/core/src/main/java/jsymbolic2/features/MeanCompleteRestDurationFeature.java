@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MeanCompleteRestDurationFeature implements Feature {
+public class MeanCompleteRestDurationFeature extends Feature {
 
     /**
      * {@inheritDoc}

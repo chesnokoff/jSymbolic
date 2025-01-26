@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class AmountOfStaccatoFeature implements Feature {
+public class AmountOfStaccatoFeature extends Feature {
 
     /**
      * {@inheritDoc}

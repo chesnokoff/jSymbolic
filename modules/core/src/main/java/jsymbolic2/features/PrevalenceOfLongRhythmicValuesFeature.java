@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class PrevalenceOfLongRhythmicValuesFeature implements Feature {
+public class PrevalenceOfLongRhythmicValuesFeature extends Feature {
 
     /**
      * {@inheritDoc}

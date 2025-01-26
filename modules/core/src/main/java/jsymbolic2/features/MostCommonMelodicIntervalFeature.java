@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MostCommonMelodicIntervalFeature implements Feature {
+public class MostCommonMelodicIntervalFeature extends Feature {
 
     /**
      * {@inheritDoc}

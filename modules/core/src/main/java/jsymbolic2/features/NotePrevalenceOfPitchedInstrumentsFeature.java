@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class NotePrevalenceOfPitchedInstrumentsFeature implements Feature {
+public class NotePrevalenceOfPitchedInstrumentsFeature extends Feature {
 
     /**
      * {@inheritDoc}

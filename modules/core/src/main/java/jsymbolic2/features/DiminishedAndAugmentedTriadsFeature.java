@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class DiminishedAndAugmentedTriadsFeature implements Feature {
+public class DiminishedAndAugmentedTriadsFeature extends Feature {
 
     /**
      * {@inheritDoc}

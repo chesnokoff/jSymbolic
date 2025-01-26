@@ -16,7 +16,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VariabilityOfPartialRestDurationsFeature implements Feature {
+public class VariabilityOfPartialRestDurationsFeature extends Feature {
 
     /**
      * {@inheritDoc}

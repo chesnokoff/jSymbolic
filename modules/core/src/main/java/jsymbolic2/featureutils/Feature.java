@@ -5,28 +5,28 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
 
 import javax.sound.midi.Sequence;
 
-public interface Feature {
+public abstract class Feature {
     /**
      * @return Name.
      */
-    String getName();
+    public abstract String getName();
 
     /**
      * @return Description.
      */
-    String getDescription();
+    public abstract String getDescription();
 
     /**
      * @return Is sequential.
      */
-    default boolean isSequential() {
+    public boolean isSequential() {
         return true;
     }
 
     /**
      * @return Dimensions.
      */
-    default int getDimensions() {
+    public int getDimensions() {
         return 1;
     }
 
@@ -35,7 +35,7 @@ public interface Feature {
      *
      * @return The unique code identifying this particular feature.
      */
-    String getCode();
+    public abstract String getCode();
 
     /**
      * Returns meta-data about a feature that extends this class. Includes the feature's unique getName; a
@@ -46,7 +46,7 @@ public interface Feature {
      *
      * @return The definition of this particular feature.
      */
-    default FeatureDefinition getFeatureDefinition() {
+    public FeatureDefinition getFeatureDefinition() {
         return new FeatureDefinition(getName(), getDescription(), isSequential(), getDimensions());
     }
 
@@ -57,7 +57,7 @@ public interface Feature {
      *
      * @return The dependencies of this particular feature.
      */
-    default String[] getDependencies() {
+    public String[] getDependencies() {
         return null;
     }
 
@@ -73,7 +73,7 @@ public interface Feature {
      *
      * @return The dependency offsets of this particular feature.
      */
-    default int[] getDependencyOffsets() {
+    public int[] getDependencyOffsets() {
         return null;
     }
 
@@ -91,5 +91,10 @@ public interface Feature {
      * @return The extracted feature value(s).
      * @throws Exception Throws an informative exception if the feature cannot be calculated.
      */
-    double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception;
+    public abstract double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception;
+
+    @Override
+    public String toString() {
+        return getFeatureDefinition().getFeatureDescription();
+    }
 }

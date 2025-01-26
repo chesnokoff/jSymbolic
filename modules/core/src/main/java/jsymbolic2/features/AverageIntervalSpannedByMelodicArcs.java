@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class AverageIntervalSpannedByMelodicArcs implements Feature {
+public class AverageIntervalSpannedByMelodicArcs extends Feature {
 
     /**
      * {@inheritDoc}

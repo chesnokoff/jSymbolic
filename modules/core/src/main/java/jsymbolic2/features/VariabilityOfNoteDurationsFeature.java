@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VariabilityOfNoteDurationsFeature implements Feature {
+public class VariabilityOfNoteDurationsFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class CompleteRestsFractionFeature implements Feature {
+public class CompleteRestsFractionFeature extends Feature {
 
     /**
      * {@inheritDoc}

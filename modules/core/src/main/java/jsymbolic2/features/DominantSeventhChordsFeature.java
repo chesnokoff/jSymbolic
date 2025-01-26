@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class DominantSeventhChordsFeature implements Feature {
+public class DominantSeventhChordsFeature extends Feature {
 
     /**
      * {@inheritDoc}

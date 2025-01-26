@@ -17,7 +17,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay and Tristano Tenaglia
  */
-public class ChordDurationFeature implements Feature {
+public class ChordDurationFeature extends Feature {
 
     /**
      * {@inheritDoc}

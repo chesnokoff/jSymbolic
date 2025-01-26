@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class NoteDensityFeature implements Feature {
+public class NoteDensityFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class PitchClassSkewnessAfterFoldingFeature implements Feature {
+public class PitchClassSkewnessAfterFoldingFeature extends Feature {
 
     /**
      * {@inheritDoc}

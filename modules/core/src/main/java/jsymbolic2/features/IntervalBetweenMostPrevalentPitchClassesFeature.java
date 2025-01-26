@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class IntervalBetweenMostPrevalentPitchClassesFeature implements Feature {
+public class IntervalBetweenMostPrevalentPitchClassesFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -24,7 +24,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MelodicIntervalHistogramFeature implements Feature {
+public class MelodicIntervalHistogramFeature extends Feature {
 
     /**
      * {@inheritDoc}

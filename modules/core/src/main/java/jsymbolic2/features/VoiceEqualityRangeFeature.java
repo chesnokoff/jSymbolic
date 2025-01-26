@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VoiceEqualityRangeFeature implements Feature {
+public class VoiceEqualityRangeFeature extends Feature {
 
     /**
      * {@inheritDoc}

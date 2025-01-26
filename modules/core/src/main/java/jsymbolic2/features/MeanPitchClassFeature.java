@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MeanPitchClassFeature implements Feature {
+public class MeanPitchClassFeature extends Feature {
 
     /**
      * {@inheritDoc}

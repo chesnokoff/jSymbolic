@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RelativeRangeOfHighestLineFeature implements Feature {
+public class RelativeRangeOfHighestLineFeature extends Feature {
 
     /**
      * {@inheritDoc}

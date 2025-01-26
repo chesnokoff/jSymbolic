@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class VariabilityOfNotePrevalenceOfPitchedInstrumentsFeature implements Feature {
+public class VariabilityOfNotePrevalenceOfPitchedInstrumentsFeature extends Feature {
 
     /**
      * {@inheritDoc}

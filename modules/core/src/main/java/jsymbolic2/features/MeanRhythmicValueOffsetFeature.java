@@ -18,7 +18,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MeanRhythmicValueOffsetFeature implements Feature {
+public class MeanRhythmicValueOffsetFeature extends Feature {
 
     /**
      * {@inheritDoc}

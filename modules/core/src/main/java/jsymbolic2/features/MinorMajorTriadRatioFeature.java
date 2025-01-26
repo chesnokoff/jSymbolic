@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class MinorMajorTriadRatioFeature implements Feature {
+public class MinorMajorTriadRatioFeature extends Feature {
 
     /**
      * {@inheritDoc}

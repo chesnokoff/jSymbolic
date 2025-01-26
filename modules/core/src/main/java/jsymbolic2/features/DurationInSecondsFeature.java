@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class DurationInSecondsFeature implements Feature {
+public class DurationInSecondsFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class NumberOfStrongRhythmicPulsesFeature implements Feature {
+public class NumberOfStrongRhythmicPulsesFeature extends Feature {
 
     /**
      * {@inheritDoc}

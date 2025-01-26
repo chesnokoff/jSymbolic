@@ -16,7 +16,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class BasicPitchHistogramFeature implements Feature {
+public class BasicPitchHistogramFeature extends Feature {
 
     /**
      * {@inheritDoc}

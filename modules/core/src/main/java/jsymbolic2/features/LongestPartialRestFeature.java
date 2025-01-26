@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class LongestPartialRestFeature implements Feature {
+public class LongestPartialRestFeature extends Feature {
 
     /**
      * {@inheritDoc}

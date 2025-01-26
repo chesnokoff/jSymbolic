@@ -13,7 +13,7 @@ import javax.sound.midi.Sequence;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class PerfectVerticalIntervalsFeature implements Feature {
+public class PerfectVerticalIntervalsFeature extends Feature {
 
     /**
      * {@inheritDoc}

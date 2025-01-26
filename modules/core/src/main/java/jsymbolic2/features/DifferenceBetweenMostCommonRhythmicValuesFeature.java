@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class DifferenceBetweenMostCommonRhythmicValuesFeature implements Feature {
+public class DifferenceBetweenMostCommonRhythmicValuesFeature extends Feature {
 
     /**
      * {@inheritDoc}

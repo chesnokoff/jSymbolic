@@ -16,7 +16,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class FoldedFifthsPitchClassHistogramFeature implements Feature {
+public class FoldedFifthsPitchClassHistogramFeature extends Feature {
 
     /**
      * {@inheritDoc}

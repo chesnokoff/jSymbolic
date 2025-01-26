@@ -21,7 +21,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class ParallelOctavesFeature implements Feature {
+public class ParallelOctavesFeature extends Feature {
 
     /**
      * {@inheritDoc}

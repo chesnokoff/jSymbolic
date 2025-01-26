@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RelativePrevalenceOfTopPitchClassesFeature implements Feature {
+public class RelativePrevalenceOfTopPitchClassesFeature extends Feature {
 
     /**
      * {@inheritDoc}

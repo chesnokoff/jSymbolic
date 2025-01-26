@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class NumberOfModerateRhythmicPulsesTempoStandardizedFeature implements Feature {
+public class NumberOfModerateRhythmicPulsesTempoStandardizedFeature extends Feature {
 
     /**
      * {@inheritDoc}

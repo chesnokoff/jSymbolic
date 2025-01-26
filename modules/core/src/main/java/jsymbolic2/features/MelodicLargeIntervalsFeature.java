@@ -11,7 +11,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MelodicLargeIntervalsFeature implements Feature {
+public class MelodicLargeIntervalsFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class HarmonicityOfTwoStrongestRhythmicPulsesFeature implements Feature {
+public class HarmonicityOfTwoStrongestRhythmicPulsesFeature extends Feature {
 
     /**
      * {@inheritDoc}

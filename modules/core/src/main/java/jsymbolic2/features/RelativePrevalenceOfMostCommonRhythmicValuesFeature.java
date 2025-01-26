@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RelativePrevalenceOfMostCommonRhythmicValuesFeature implements Feature {
+public class RelativePrevalenceOfMostCommonRhythmicValuesFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RangeOfRhythmicValuesFeature implements Feature {
+public class RangeOfRhythmicValuesFeature extends Feature {
 
     /**
      * {@inheritDoc}

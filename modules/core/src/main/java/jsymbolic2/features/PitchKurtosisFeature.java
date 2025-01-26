@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class PitchKurtosisFeature implements Feature {
+public class PitchKurtosisFeature extends Feature {
 
     /**
      * {@inheritDoc}

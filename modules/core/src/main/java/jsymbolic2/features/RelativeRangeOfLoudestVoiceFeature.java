@@ -14,7 +14,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class RelativeRangeOfLoudestVoiceFeature implements Feature {
+public class RelativeRangeOfLoudestVoiceFeature extends Feature {
 
     /**
      * {@inheritDoc}

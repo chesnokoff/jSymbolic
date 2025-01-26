@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class PolyrhythmsTempoStandardizedFeature implements Feature {
+public class PolyrhythmsTempoStandardizedFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class MostCommonRhythmicValueFeature implements Feature {
+public class MostCommonRhythmicValueFeature extends Feature {
 
     /**
      * {@inheritDoc}

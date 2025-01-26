@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class AverageNumberOfIndependentVoicesFeature implements Feature {
+public class AverageNumberOfIndependentVoicesFeature extends Feature {
 
     /**
      * {@inheritDoc}

@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class InitialTempoFeature implements Feature {
+public class InitialTempoFeature extends Feature {
 
     /**
      * {@inheritDoc}

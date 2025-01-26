@@ -15,7 +15,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia Cory McKay
  */
-public class VerticalDissonanceRatioFeature implements Feature {
+public class VerticalDissonanceRatioFeature extends Feature {
 
     /**
      * {@inheritDoc}

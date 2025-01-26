@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class TripleInitialMeterFeature implements Feature {
+public class TripleInitialMeterFeature extends Feature {
 
     /**
      * {@inheritDoc}

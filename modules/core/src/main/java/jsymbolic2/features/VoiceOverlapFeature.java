@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class VoiceOverlapFeature implements Feature {
+public class VoiceOverlapFeature extends Feature {
 
     /**
      * {@inheritDoc}

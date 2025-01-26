@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class ElectricInstrumentPrevalenceFeature implements Feature {
+public class ElectricInstrumentPrevalenceFeature extends Feature {
 
     /**
      * {@inheritDoc}

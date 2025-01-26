@@ -12,7 +12,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class PrevalenceOfMostCommonVerticalIntervalFeature implements Feature {
+public class PrevalenceOfMostCommonVerticalIntervalFeature extends Feature {
 
     /**
      * {@inheritDoc}

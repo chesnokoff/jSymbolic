@@ -13,7 +13,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Cory McKay
  */
-public class DirectionOfMelodicMotionFeature implements Feature {
+public class DirectionOfMelodicMotionFeature extends Feature {
 
     /**
      * {@inheritDoc}

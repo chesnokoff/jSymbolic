@@ -20,7 +20,7 @@ import jsymbolic2.processing.MIDIIntermediateRepresentations;
  *
  * @author Tristano Tenaglia and Cory McKay
  */
-public class VerticalIntervalHistogramFeature implements Feature {
+public class VerticalIntervalHistogramFeature extends Feature {
 
     /**
      * {@inheritDoc}

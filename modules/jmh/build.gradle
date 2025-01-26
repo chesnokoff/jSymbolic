@@ -1,0 +1,14 @@
+plugins {
+    id 'jvm-test-suite'
+    id 'me.champeau.jmh' version "0.7.2"
+}
+
+dependencies {
+    jmh project(":modules:jsymbolic-core")
+}
+
+//jmh {
+//    includes = ['jmh.*']
+//}
+
+version = "2.3"

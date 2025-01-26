@@ -593,9 +593,6 @@ public final class FeatureExtractorAccess
 			true, // VariationOfDynamicsInEachVoiceFeature
 			true, // AverageNoteToNoteChangeInDynamicsFeature
 
-			// MEI-specific features
-			false, // NumberOfGraceNotesFeature
-			false // NumberOfSlurNotesFeature
 		};
 
 		names_of_all_implemented_features = new ArrayList<>();

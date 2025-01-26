@@ -1,0 +1,755 @@
+<jSymbolic_options>
+window_size=0.0
+window_overlap=0.0
+save_features_for_each_window=false
+save_overall_recording_features=true
+convert_to_arff=false
+convert_to_csv=false
+<input_files>
+src/jmh/resources/dataset/...in_concerto.mid
+src/jmh/resources/dataset/2_Become_1.4.mid
+src/jmh/resources/dataset/2_Become_1.mid
+src/jmh/resources/dataset/4_Ever_2_Gether.mid
+src/jmh/resources/dataset/29_Settembre.mid
+src/jmh/resources/dataset/44_Duos,_No._14_Cushion_Dance.mid
+src/jmh/resources/dataset/A_Groovy_Kind_of_Love.mid
+src/jmh/resources/dataset/A_Salty_Dog.1.mid
+src/jmh/resources/dataset/A_Taste_Of_Honey.1.mid
+src/jmh/resources/dataset/A_Taste_Of_Honey.mid
+src/jmh/resources/dataset/A_Warm_Place.3.mid
+src/jmh/resources/dataset/A_Warm_Place.mid
+src/jmh/resources/dataset/Against_All_Odds.1.mid
+src/jmh/resources/dataset/Against_the_Wind.1.mid
+src/jmh/resources/dataset/Against_the_Wind.mid
+src/jmh/resources/dataset/Aint_No_Sunshine.mid
+src/jmh/resources/dataset/Air.mid
+src/jmh/resources/dataset/Alba_chiara.1.mid
+src/jmh/resources/dataset/Alba_chiara.5.mid
+src/jmh/resources/dataset/Alba_chiara.6.mid
+src/jmh/resources/dataset/All_Ive_Got_to_Do.mid
+src/jmh/resources/dataset/All_Mixed_Up.1.mid
+src/jmh/resources/dataset/All_Mixed_Up.mid
+src/jmh/resources/dataset/All_the_Man_That_I_Need.2.mid
+src/jmh/resources/dataset/All_the_Man_That_I_Need.mid
+src/jmh/resources/dataset/Almost_Doesnt_Count.mid
+src/jmh/resources/dataset/Almost_Like_Love.1.mid
+src/jmh/resources/dataset/Almost_Paradise.mid
+src/jmh/resources/dataset/Amarti_e_limmenso_per_me.1.mid
+src/jmh/resources/dataset/America.mid
+src/jmh/resources/dataset/American_Beauty_Rag_Lamb_.1.mid
+src/jmh/resources/dataset/American_Beauty_Rag_Lamb_.2.mid
+src/jmh/resources/dataset/Anche_per_te.mid
+src/jmh/resources/dataset/And_Your_Bird_Can_Sing.1.mid
+src/jmh/resources/dataset/And_Your_Bird_Can_Sing.mid
+src/jmh/resources/dataset/Andare..._in_ogni_senso_feat._Piero_Cassano_.mid
+src/jmh/resources/dataset/Angeli_negri_Angelitos_negros_.mid
+src/jmh/resources/dataset/Angry_Chair.mid
+src/jmh/resources/dataset/Annies_Song.1.mid
+src/jmh/resources/dataset/Anytime.mid
+src/jmh/resources/dataset/Apollo_13.mid
+src/jmh/resources/dataset/Are_You_Lonesome_Tonight.1.mid
+src/jmh/resources/dataset/Are_You_Still_Mad.mid
+src/jmh/resources/dataset/Autumn_Leaves.mid
+src/jmh/resources/dataset/Ave_Maria.mid
+src/jmh/resources/dataset/Baba.mid
+src/jmh/resources/dataset/Babys_In_Black.mid
+src/jmh/resources/dataset/Back_at_One.mid
+src/jmh/resources/dataset/Back_Off_Boogaloo.mid
+src/jmh/resources/dataset/Bad.1.mid
+src/jmh/resources/dataset/Bad.mid
+src/jmh/resources/dataset/Badge.mid
+src/jmh/resources/dataset/Beauty_Is_Only_Skin_Deep.mid
+src/jmh/resources/dataset/Between_Sun_Moon.mid
+src/jmh/resources/dataset/Bewitched.2.mid
+src/jmh/resources/dataset/Billy_Jean.1.mid
+src/jmh/resources/dataset/Blackbird.2.mid
+src/jmh/resources/dataset/Blackbird.3.mid
+src/jmh/resources/dataset/Blue_Christmas.mid
+src/jmh/resources/dataset/Blue_Eyes.mid
+src/jmh/resources/dataset/Bluebird.mid
+src/jmh/resources/dataset/Book_Of_Days.mid
+src/jmh/resources/dataset/Border_Song.mid
+src/jmh/resources/dataset/Boys.mid
+src/jmh/resources/dataset/Brain_Damage.3.mid
+src/jmh/resources/dataset/Brain_Stew.2.mid
+src/jmh/resources/dataset/Brain_Stew.mid
+src/jmh/resources/dataset/Broadway_Rag.mid
+src/jmh/resources/dataset/Burn_It_Down.mid
+src/jmh/resources/dataset/Ca_va_pas_changer_le_monde.mid
+src/jmh/resources/dataset/Cacao_meravigliao.1.mid
+src/jmh/resources/dataset/Can_You_Feel_the_Love_Tonight.mid
+src/jmh/resources/dataset/Candle_in_the_Wind.4.mid
+src/jmh/resources/dataset/Candle_in_the_Wind.5.mid
+src/jmh/resources/dataset/Candle_in_the_Wind.mid
+src/jmh/resources/dataset/Cant_Stay_Away_From_You.mid
+src/jmh/resources/dataset/Caroline_No.mid
+src/jmh/resources/dataset/Carraroe_Jig.mid
+src/jmh/resources/dataset/Carry_That_Weight.mid
+src/jmh/resources/dataset/Catswalk.mid
+src/jmh/resources/dataset/Champs_Elysees.mid
+src/jmh/resources/dataset/Chariots_of_Fire.1.mid
+src/jmh/resources/dataset/Chicago.mid
+src/jmh/resources/dataset/China_Roses.1.mid
+src/jmh/resources/dataset/Chissa_se_lo_sai.mid
+src/jmh/resources/dataset/Christmas_Time.mid
+src/jmh/resources/dataset/Close_My_Eyes.mid
+src/jmh/resources/dataset/Closer_to_the_Heart.1.mid
+src/jmh/resources/dataset/Closer_to_the_Heart.mid
+src/jmh/resources/dataset/Come_and_Get_It.mid
+src/jmh/resources/dataset/Come_as_You_Are.1.mid
+src/jmh/resources/dataset/Come_Rain_or_Come_Shine.mid
+src/jmh/resources/dataset/Come_Together.3.mid
+src/jmh/resources/dataset/Come_Together.4.mid
+src/jmh/resources/dataset/Come_Together.mid
+src/jmh/resources/dataset/Coming_Clean.mid
+src/jmh/resources/dataset/Comunque_bella.mid
+src/jmh/resources/dataset/Cry_Baby_Cry.2.mid
+src/jmh/resources/dataset/Cuore_di_vetro.mid
+src/jmh/resources/dataset/Daddys_Home.mid
+src/jmh/resources/dataset/Dammit.mid
+src/jmh/resources/dataset/Dear_Jessie.1.mid
+src/jmh/resources/dataset/Dear_Santa_Oh_Darlin_.mid
+src/jmh/resources/dataset/December_63_Oh_What_a_Night_.mid
+src/jmh/resources/dataset/Desperado.2.mid
+src/jmh/resources/dataset/Die_Another_Day.mid
+src/jmh/resources/dataset/Do_Da_Da.mid
+src/jmh/resources/dataset/Do_You_Believe_in_Magic.mid
+src/jmh/resources/dataset/Do_You_Want_to_Know_a_Secret.1.mid
+src/jmh/resources/dataset/Do_You_Want_to_Know_a_Secret.2.mid
+src/jmh/resources/dataset/Dolce_Barbara.mid
+src/jmh/resources/dataset/Don_t_Cry.mid
+src/jmh/resources/dataset/Donne.1.mid
+src/jmh/resources/dataset/Dont_Bother_Me.mid
+src/jmh/resources/dataset/Dont_Bring_Me_Down.mid
+src/jmh/resources/dataset/Dont_Let_Me_Be_Misunderstood.3.mid
+src/jmh/resources/dataset/Dont_Let_Me_Be_Misunderstood.mid
+src/jmh/resources/dataset/Dont_Let_Me_Down.3.mid
+src/jmh/resources/dataset/Dont_Let_Me_Down.4.mid
+src/jmh/resources/dataset/Dont_Let_Me_Down.mid
+src/jmh/resources/dataset/Dont_Pay_the_Ferryman.mid
+src/jmh/resources/dataset/Dont_Speak.2.mid
+src/jmh/resources/dataset/Down.mid
+src/jmh/resources/dataset/Drive.4.mid
+src/jmh/resources/dataset/Dust_In_The_Wind.5.mid
+src/jmh/resources/dataset/Dust_In_The_Wind.mid
+src/jmh/resources/dataset/Eastenders.mid
+src/jmh/resources/dataset/Easy.2.mid
+src/jmh/resources/dataset/Ebony_and_Ivory.1.mid
+src/jmh/resources/dataset/Efficiency_Rag.mid
+src/jmh/resources/dataset/El_Condor_Pasa.mid
+src/jmh/resources/dataset/Eleanor_Rigby.10.mid
+src/jmh/resources/dataset/Eleventh_Hour.mid
+src/jmh/resources/dataset/Ellington_Medley_Cotton_Tail_I_Didnt_Know_About_You_Dont_Get_Around_Much_Anymore_Im_Beginning_to_See_the_Light.mid
+src/jmh/resources/dataset/Emotions.mid
+src/jmh/resources/dataset/Eternal_Flame.1.mid
+src/jmh/resources/dataset/Eternal_Flame.2.mid
+src/jmh/resources/dataset/Eternal_Flame.3.mid
+src/jmh/resources/dataset/Eternal_Flame.5.mid
+src/jmh/resources/dataset/Eternal_Flame.6.mid
+src/jmh/resources/dataset/Eternal_Flame.8.mid
+src/jmh/resources/dataset/Eternal_Flame.mid
+src/jmh/resources/dataset/Even_Now.1.mid
+src/jmh/resources/dataset/Evening_Eall.mid
+src/jmh/resources/dataset/Evergreen_Rag.mid
+src/jmh/resources/dataset/Every_Thing_I_Do_It_for_You_Robin_Hood_.mid
+src/jmh/resources/dataset/Everything_I_Own.1.mid
+src/jmh/resources/dataset/Everything_I_Own.mid
+src/jmh/resources/dataset/Exiles.mid
+src/jmh/resources/dataset/Faith.1.mid
+src/jmh/resources/dataset/Faithfully.3.mid
+src/jmh/resources/dataset/Faithfully.mid
+src/jmh/resources/dataset/Farandole_from.mid
+src/jmh/resources/dataset/Feel.mid
+src/jmh/resources/dataset/Fight_Fire_With_Fire.mid
+src/jmh/resources/dataset/Fopp.mid
+src/jmh/resources/dataset/For_No_One.3.mid
+src/jmh/resources/dataset/For_Once_in_My_Life.2.mid
+src/jmh/resources/dataset/Fortress_Around_Your_Heart.1.mid
+src/jmh/resources/dataset/Franzosische_Suite_Nr._5,_BWV_816,_Gigue.mid
+src/jmh/resources/dataset/Friends_Will_Be_Friends.5.mid
+src/jmh/resources/dataset/Friends_Will_Be_Friends.mid
+src/jmh/resources/dataset/Gangstas_Paradise.6.mid
+src/jmh/resources/dataset/Gangstas_Paradise.7.mid
+src/jmh/resources/dataset/Gavotte.mid
+src/jmh/resources/dataset/Geek_Stink_Breath.1.mid
+src/jmh/resources/dataset/Geek_Stink_Breath.mid
+src/jmh/resources/dataset/Girl.mid
+src/jmh/resources/dataset/Golden_Slumbers.2.mid
+src/jmh/resources/dataset/Gone_version_1_.mid
+src/jmh/resources/dataset/Good_Day_Sunshine.mid
+src/jmh/resources/dataset/Good_Night.mid
+src/jmh/resources/dataset/Good_Times_Bad_Times.3.mid
+src/jmh/resources/dataset/Good_Vibrations.5.mid
+src/jmh/resources/dataset/Goodbye.mid
+src/jmh/resources/dataset/Goodnight.mid
+src/jmh/resources/dataset/Great_Scott_Rag.1.mid
+src/jmh/resources/dataset/Great_Scott_Rag.mid
+src/jmh/resources/dataset/Guitar_Man.1.mid
+src/jmh/resources/dataset/Happiness_Is_a_Warm_Gun.mid
+src/jmh/resources/dataset/Have_You_Ever_Seen_the_Rain.3.mid
+src/jmh/resources/dataset/Head_Over_Heels.mid
+src/jmh/resources/dataset/Heart_of_the_Moment.1.mid
+src/jmh/resources/dataset/Heart_of_the_Moment.mid
+src/jmh/resources/dataset/Heartbreak_Hotel.mid
+src/jmh/resources/dataset/Heaven.3.mid
+src/jmh/resources/dataset/Heaven.6.mid
+src/jmh/resources/dataset/Heaven_Help.mid
+src/jmh/resources/dataset/Heaven_Help_Us_All.mid
+src/jmh/resources/dataset/Hello.2.mid
+src/jmh/resources/dataset/Hello.mid
+src/jmh/resources/dataset/Hello_Again.1.mid
+src/jmh/resources/dataset/Here,_There_And_Everywhere.mid
+src/jmh/resources/dataset/Hero.1.mid
+src/jmh/resources/dataset/Hero.2.mid
+src/jmh/resources/dataset/Hero.3.mid
+src/jmh/resources/dataset/Hes_a_Rebel.mid
+src/jmh/resources/dataset/High_and_Dry.2.mid
+src/jmh/resources/dataset/Home.1.mid
+src/jmh/resources/dataset/Home.mid
+src/jmh/resources/dataset/Honesty.2.mid
+src/jmh/resources/dataset/Horizons.1.mid
+src/jmh/resources/dataset/Horizons.mid
+src/jmh/resources/dataset/How_Am_I_Supposed_to_Live_Without_You.mid
+src/jmh/resources/dataset/How_Can_I_Be_Sure.1.mid
+src/jmh/resources/dataset/Hurricane.mid
+src/jmh/resources/dataset/Hurting_Each_Other.2.mid
+src/jmh/resources/dataset/Hurting_Each_Other.mid
+src/jmh/resources/dataset/I_Believe_in_Music.mid
+src/jmh/resources/dataset/I_Cant_Get_Next_to_You.1.mid
+src/jmh/resources/dataset/I_Cant_Get_Next_to_You.mid
+src/jmh/resources/dataset/I_Could_Never_Take_the_Place_of_Your_Man.mid
+src/jmh/resources/dataset/I_Dont_Know_Why_But_I_Do.1.mid
+src/jmh/resources/dataset/I_Dont_Know_Why_But_I_Do.mid
+src/jmh/resources/dataset/I_Got_a_Woman.mid
+src/jmh/resources/dataset/I_Just_Wanna_Stop.mid
+src/jmh/resources/dataset/I_Know_My_Love.mid
+src/jmh/resources/dataset/I_Me_Mine.mid
+src/jmh/resources/dataset/I_Need_You.mid
+src/jmh/resources/dataset/I_Need_You_Tonight.mid
+src/jmh/resources/dataset/I_Started_a_Joke.3.mid
+src/jmh/resources/dataset/I_Started_a_Joke.mid
+src/jmh/resources/dataset/I_Want_You_Back.mid
+src/jmh/resources/dataset/I_Wish_It_Would_Rain.mid
+src/jmh/resources/dataset/I_Wont_Back_Down.mid
+src/jmh/resources/dataset/Ice_Machine.mid
+src/jmh/resources/dataset/If.1.mid
+src/jmh/resources/dataset/If_I_Only_Had_the_Words_To_Tell_You_.mid
+src/jmh/resources/dataset/Il_cielo_in_una_stanza.mid
+src/jmh/resources/dataset/Ill_Follow_The_Sun.2.mid
+src/jmh/resources/dataset/Ill_Follow_The_Sun.mid
+src/jmh/resources/dataset/Ill_Get_You.1.mid
+src/jmh/resources/dataset/Ill_Get_You.mid
+src/jmh/resources/dataset/Ill_Try.mid
+src/jmh/resources/dataset/Im_Gonna_Sit_Right_Down_and_Cry_Over_You_.mid
+src/jmh/resources/dataset/Im_Happy_Just_To_Dance_With_You.mid
+src/jmh/resources/dataset/Im_Sorry.1.mid
+src/jmh/resources/dataset/Im_Sorry.mid
+src/jmh/resources/dataset/Imagine.3.mid
+src/jmh/resources/dataset/Immigrant_Song.mid
+src/jmh/resources/dataset/In_My_Life.2.mid
+src/jmh/resources/dataset/In_the_End.mid
+src/jmh/resources/dataset/In_the_Ghetto.3.mid
+src/jmh/resources/dataset/In_the_Ghetto.mid
+src/jmh/resources/dataset/In_Your_Eyes.1.mid
+src/jmh/resources/dataset/In_Your_Eyes.mid
+src/jmh/resources/dataset/Inevitabile_follia.mid
+src/jmh/resources/dataset/Intermission.mid
+src/jmh/resources/dataset/Is_There_Anybody_Out_There.mid
+src/jmh/resources/dataset/It_Dont_Matter_to_Me.1.mid
+src/jmh/resources/dataset/It_Was_a_Very_Good_Year.mid
+src/jmh/resources/dataset/It_Wont_Be_Long.mid
+src/jmh/resources/dataset/Its_OK.mid
+src/jmh/resources/dataset/Its_Only_Love.1.mid
+src/jmh/resources/dataset/Its_Only_Love.mid
+src/jmh/resources/dataset/J_Breas.mid
+src/jmh/resources/dataset/Jane.mid
+src/jmh/resources/dataset/Jeremy_Bender.1.mid
+src/jmh/resources/dataset/Josie.1.mid
+src/jmh/resources/dataset/Ka-Ching.mid
+src/jmh/resources/dataset/Kansas_City.mid
+src/jmh/resources/dataset/Kansas_City_Rag.mid
+src/jmh/resources/dataset/Kontiki.2.mid
+src/jmh/resources/dataset/Kontiki.mid
+src/jmh/resources/dataset/Kung_Fu_Fighting.mid
+src/jmh/resources/dataset/Lady_Jane.2.mid
+src/jmh/resources/dataset/Lady_Jane.mid
+src/jmh/resources/dataset/Lady_Madonna.2.mid
+src/jmh/resources/dataset/Lady_Madonna.6.mid
+src/jmh/resources/dataset/Landslide.1.mid
+src/jmh/resources/dataset/Landslide.2.mid
+src/jmh/resources/dataset/Landslide.3.mid
+src/jmh/resources/dataset/Landslide.mid
+src/jmh/resources/dataset/Latin_Dance.mid
+src/jmh/resources/dataset/Laughing.mid
+src/jmh/resources/dataset/Lawyers,_Guns_and_Money.mid
+src/jmh/resources/dataset/Le_Roi_boiteux.mid
+src/jmh/resources/dataset/Leningrad.2.mid
+src/jmh/resources/dataset/Leningrad.mid
+src/jmh/resources/dataset/Let_It_Be.1.mid
+src/jmh/resources/dataset/Lets_Go.2.mid
+src/jmh/resources/dataset/Lets_Talk_About_Love.1.mid
+src/jmh/resources/dataset/Lets_Talk_About_Love.mid
+src/jmh/resources/dataset/Leviathan.mid
+src/jmh/resources/dataset/Lie_in_Our_Graves.mid
+src/jmh/resources/dataset/Life_Goes_On_M_A_S_H_mix_.mid
+src/jmh/resources/dataset/Light_My_Fire.2.mid
+src/jmh/resources/dataset/Like_A_Virgin.5.mid
+src/jmh/resources/dataset/Lithium.7.mid
+src/jmh/resources/dataset/Looking_In.mid
+src/jmh/resources/dataset/Lora_dellamore.1.mid
+src/jmh/resources/dataset/Love_Is_Blue.mid
+src/jmh/resources/dataset/Love_Is_Like_a_Heat_Wave.mid
+src/jmh/resources/dataset/Love_of_My_Life.1.mid
+src/jmh/resources/dataset/Love_of_My_Life.3.mid
+src/jmh/resources/dataset/Love_Walks_In.1.mid
+src/jmh/resources/dataset/Love_Walks_In.mid
+src/jmh/resources/dataset/Love_Will_Find_a_Way.mid
+src/jmh/resources/dataset/Lovely_Lady.mid
+src/jmh/resources/dataset/Lucy_in_the_Sky_With_Diamonds.3.mid
+src/jmh/resources/dataset/Lullabye_Goodnight,_My_Angel_.mid
+src/jmh/resources/dataset/Man_Overboard.1.mid
+src/jmh/resources/dataset/Marble_Halls.mid
+src/jmh/resources/dataset/Mariah_Carey-Hero.mid
+src/jmh/resources/dataset/Marigold.mid
+src/jmh/resources/dataset/Martha_My_Dear.2.mid
+src/jmh/resources/dataset/Mas_Que_Nada_original_Sergio_Mendes_Brasil_66_version_.mid
+src/jmh/resources/dataset/Massachusetts.1.mid
+src/jmh/resources/dataset/Massachusetts.mid
+src/jmh/resources/dataset/Maxwells_Silver_Hammer.2.mid
+src/jmh/resources/dataset/Mellon_Collie_and_the_Infinite_Sadness.mid
+src/jmh/resources/dataset/Memphis,_Tennessee.1.mid
+src/jmh/resources/dataset/Mi_fai_stare_bene.mid
+src/jmh/resources/dataset/Mi_sono_innamorato_di_te.mid
+src/jmh/resources/dataset/Misery.2.mid
+src/jmh/resources/dataset/Mony_Mony.mid
+src/jmh/resources/dataset/Mood_for_a_Day.mid
+src/jmh/resources/dataset/Moonchild.mid
+src/jmh/resources/dataset/Mother_Natures_Son.mid
+src/jmh/resources/dataset/Move_This.2.mid
+src/jmh/resources/dataset/Mr_Tamborine_Man.mid
+src/jmh/resources/dataset/Muskrat_Love.mid
+src/jmh/resources/dataset/My_All.1.mid
+src/jmh/resources/dataset/My_All.mid
+src/jmh/resources/dataset/My_Funny_Valentine.mid
+src/jmh/resources/dataset/My_Girl.2.mid
+src/jmh/resources/dataset/My_Girl.3.mid
+src/jmh/resources/dataset/My_Love.mid
+src/jmh/resources/dataset/My_Special_Angel.mid
+src/jmh/resources/dataset/Ne_Partez_Pas_Sans_Moi.mid
+src/jmh/resources/dataset/Never_Can_Say_Goodbye.mid
+src/jmh/resources/dataset/Never_Going_Back_Again.mid
+src/jmh/resources/dataset/Never_Gonna_Let_You_Go.mid
+src/jmh/resources/dataset/Never_More.mid
+src/jmh/resources/dataset/Never_My_Love.1.mid
+src/jmh/resources/dataset/Never_Weather-Beaten_Saile_More_Willing_Bent_to_Shore.mid
+src/jmh/resources/dataset/New_Era_Rag.mid
+src/jmh/resources/dataset/New_York_Mining_Disaster_1941.1.mid
+src/jmh/resources/dataset/Nice_Slow.1.mid
+src/jmh/resources/dataset/Nice_Slow.mid
+src/jmh/resources/dataset/Ninna_nanna.mid
+src/jmh/resources/dataset/No_Memory.mid
+src/jmh/resources/dataset/No_One_Else_Comes_Close.1.mid
+src/jmh/resources/dataset/No_One_Else_Comes_Close.mid
+src/jmh/resources/dataset/No_Sugar_Tonight.1.mid
+src/jmh/resources/dataset/Norwegian_Wood.4.mid
+src/jmh/resources/dataset/Nun_me_scuccia.mid
+src/jmh/resources/dataset/Ode_to_Joy_from_the_9th_Symphony.mid
+src/jmh/resources/dataset/Oh_Darling.2.mid
+src/jmh/resources/dataset/Oh_Darling.5.mid
+src/jmh/resources/dataset/Ohio.mid
+src/jmh/resources/dataset/Ojos_Criollos,_danse_cubaine,_Op._37.mid
+src/jmh/resources/dataset/One_Day_Ill_Fly_Away.3.mid
+src/jmh/resources/dataset/One_More_Chance.mid
+src/jmh/resources/dataset/One_Step_Closer.mid
+src/jmh/resources/dataset/One_Year_of_Love.1.mid
+src/jmh/resources/dataset/One_Year_of_Love.mid
+src/jmh/resources/dataset/Only_Love.mid
+src/jmh/resources/dataset/Only_The_Lonely.1.mid
+src/jmh/resources/dataset/Only_You.mid
+src/jmh/resources/dataset/Oriel_Window.1.mid
+src/jmh/resources/dataset/Out_of_Touch.1.mid
+src/jmh/resources/dataset/P._S._I_Love_You.mid
+src/jmh/resources/dataset/Panis_Angelicus.mid
+src/jmh/resources/dataset/Paramount_Rag.mid
+src/jmh/resources/dataset/Paranoid.5.mid
+src/jmh/resources/dataset/Pensiero.2.mid
+src/jmh/resources/dataset/Pensiero.4.mid
+src/jmh/resources/dataset/Pensiero.mid
+src/jmh/resources/dataset/People_Are_Strange.2.mid
+src/jmh/resources/dataset/People_Are_Strange.mid
+src/jmh/resources/dataset/People_of_the_Sun.mid
+src/jmh/resources/dataset/Perdere_lamore.mid
+src/jmh/resources/dataset/Phantom_of_the_Opera.mid
+src/jmh/resources/dataset/Piazza_grande.mid
+src/jmh/resources/dataset/Play_the_Game.mid
+src/jmh/resources/dataset/Pour_un_Flirt.mid
+src/jmh/resources/dataset/Proud_Mary.8.mid
+src/jmh/resources/dataset/Pulling_Teeth.1.mid
+src/jmh/resources/dataset/Pulling_Teeth.3.mid
+src/jmh/resources/dataset/Pulling_Teeth.4.mid
+src/jmh/resources/dataset/Pure_Shoes.3.mid
+src/jmh/resources/dataset/Purple_Haze.4.mid
+src/jmh/resources/dataset/Purple_Haze.mid
+src/jmh/resources/dataset/Purple_People_Eater.mid
+src/jmh/resources/dataset/Put_a_Little_Love_in_Your_Heart.mid
+src/jmh/resources/dataset/Que_cest_triste_Venise.mid
+src/jmh/resources/dataset/Rape_Me.2.mid
+src/jmh/resources/dataset/Rape_Me.3.mid
+src/jmh/resources/dataset/Rape_Me.4.mid
+src/jmh/resources/dataset/Rape_Me.5.mid
+src/jmh/resources/dataset/Red_Barchetta.1.mid
+src/jmh/resources/dataset/Red_Barchetta.2.mid
+src/jmh/resources/dataset/Red_Barchetta.mid
+src/jmh/resources/dataset/Red_Sails_in_the_Sunset.mid
+src/jmh/resources/dataset/Reflection.1.mid
+src/jmh/resources/dataset/Reflection.mid
+src/jmh/resources/dataset/Reminiscing.mid
+src/jmh/resources/dataset/Ribbon_in_the_Sky.mid
+src/jmh/resources/dataset/Right_by_Your_Side.mid
+src/jmh/resources/dataset/Right_Through_You.mid
+src/jmh/resources/dataset/Rikki_Dont_Lose_That_Number.mid
+src/jmh/resources/dataset/Risveglio.mid
+src/jmh/resources/dataset/Rock_and_Roll.1.mid
+src/jmh/resources/dataset/Rock_Me_Amadeus.1.mid
+src/jmh/resources/dataset/Rocket_Man.1.mid
+src/jmh/resources/dataset/Rockin_Pneumonia_Boogie_Woogie_Flu.mid
+src/jmh/resources/dataset/Run_for_Your_Life.mid
+src/jmh/resources/dataset/Sail_On.1.mid
+src/jmh/resources/dataset/Sail_On.mid
+src/jmh/resources/dataset/Sail_On_Sailor.mid
+src/jmh/resources/dataset/Sailing.mid
+src/jmh/resources/dataset/Saturday_Night_and_Sunday_Morning.1.mid
+src/jmh/resources/dataset/Say_You,_Say_Me.2.mid
+src/jmh/resources/dataset/Say_You,_Say_Me.4.mid
+src/jmh/resources/dataset/Say_You,_Say_Me.mid
+src/jmh/resources/dataset/Scarborough_Fair.1.mid
+src/jmh/resources/dataset/School_Day.mid
+src/jmh/resources/dataset/Senza_di_Me.mid
+src/jmh/resources/dataset/Serenade_D-Dur_KV_250_248b_Haffner-Serenade-2._Andante.mid
+src/jmh/resources/dataset/Sexy_Eyes.2.mid
+src/jmh/resources/dataset/Sexy_Eyes.mid
+src/jmh/resources/dataset/Sgt._Peppers_Lonely_Hearts_Club_Band_reprise_.mid
+src/jmh/resources/dataset/She_Called_Me_Baby.mid
+src/jmh/resources/dataset/She_Said_She_Said.1.mid
+src/jmh/resources/dataset/She_Said_She_Said.mid
+src/jmh/resources/dataset/Sheila.mid
+src/jmh/resources/dataset/Shes_Got_a_Way.mid
+src/jmh/resources/dataset/Shes_Out_Of_My_Life.3.mid
+src/jmh/resources/dataset/Shes_Out_Of_My_Life.mid
+src/jmh/resources/dataset/Shining_Star.1.mid
+src/jmh/resources/dataset/Shining_Star.3.mid
+src/jmh/resources/dataset/Shining_Star.mid
+src/jmh/resources/dataset/Shoot_High_Aim_Low.mid
+src/jmh/resources/dataset/Show_Me_Love.mid
+src/jmh/resources/dataset/Si_Forever.mid
+src/jmh/resources/dataset/Signed_Sealed_Delivered_Im_Yours.1.mid
+src/jmh/resources/dataset/So_Far_Away.2.mid
+src/jmh/resources/dataset/So_Pro_Meu_Prazer.mid
+src/jmh/resources/dataset/So_What.mid
+src/jmh/resources/dataset/Something.3.mid
+src/jmh/resources/dataset/Something_in_the_Way.mid
+src/jmh/resources/dataset/Something_Stupid.mid
+src/jmh/resources/dataset/Somewhere_Other_Than_the_Night.mid
+src/jmh/resources/dataset/Spiderman,_laraignee.mid
+src/jmh/resources/dataset/Standing_in_the_Shadow_of_Love.1.mid
+src/jmh/resources/dataset/Stardust.mid
+src/jmh/resources/dataset/Steal_Away_The_Night_.mid
+src/jmh/resources/dataset/Step_Inside_Love_Los_Paranoias.mid
+src/jmh/resources/dataset/Still.1.mid
+src/jmh/resources/dataset/Still.mid
+src/jmh/resources/dataset/Still_D.R.E.mid
+src/jmh/resources/dataset/Strano_il_mio_destino.1.mid
+src/jmh/resources/dataset/Stuck_on_You.mid
+src/jmh/resources/dataset/Suddenly.1.mid
+src/jmh/resources/dataset/Sun_King.1.mid
+src/jmh/resources/dataset/Sun_King.mid
+src/jmh/resources/dataset/Sweet_City_Woman.mid
+src/jmh/resources/dataset/Sweet_Surrender.mid
+src/jmh/resources/dataset/Sweetest_Thing.1.mid
+src/jmh/resources/dataset/Sweetest_Thing.mid
+src/jmh/resources/dataset/Symphonie_nr._9_E-moll_op._95_II._Largo.1.mid
+src/jmh/resources/dataset/Symphony_no._3_in_E-flat_major,_Eroica_I._extract_.mid
+src/jmh/resources/dataset/Take_the_Money_and_Run.2.mid
+src/jmh/resources/dataset/Taking_It_All_Too_Hard.1.mid
+src/jmh/resources/dataset/Tea-House_Moon.mid
+src/jmh/resources/dataset/Thank_U.1.mid
+src/jmh/resources/dataset/Thank_U.mid
+src/jmh/resources/dataset/Thatll_Be_The_Day.1.mid
+src/jmh/resources/dataset/Thatll_Be_The_Day.mid
+src/jmh/resources/dataset/Thats_My_Kick.mid
+src/jmh/resources/dataset/Thats_What_Friends_Are_For.mid
+src/jmh/resources/dataset/The_Battle_of_New_Orleans.mid
+src/jmh/resources/dataset/The_Body_Electric.mid
+src/jmh/resources/dataset/The_Colour_Of_My_Love.2.mid
+src/jmh/resources/dataset/The_End.mid
+src/jmh/resources/dataset/The_Girl_I_Love.mid
+src/jmh/resources/dataset/The_Grand_Parade_of_Lifeless_Packaging.mid
+src/jmh/resources/dataset/The_Long_and_Winding_Road.2.mid
+src/jmh/resources/dataset/The_Mexican_Connection.mid
+src/jmh/resources/dataset/The_Rose.1.mid
+src/jmh/resources/dataset/The_Rose.2.mid
+src/jmh/resources/dataset/The_Sun_in_the_Stream.mid
+src/jmh/resources/dataset/The_Waltons.mid
+src/jmh/resources/dataset/The_Way_It_Is.6.mid
+src/jmh/resources/dataset/The_Way_We_Were.1.mid
+src/jmh/resources/dataset/The_Way_We_Were.mid
+src/jmh/resources/dataset/Them_Bones.mid
+src/jmh/resources/dataset/Theme_From_Mahogany_Do_You_Know_Where_Youre_Going_To_.mid
+src/jmh/resources/dataset/Therell_Be_Sad_Songs_To_Make_You_Cry_.mid
+src/jmh/resources/dataset/Three_Times_A_Lady.1.mid
+src/jmh/resources/dataset/Three_Times_A_Lady.mid
+src/jmh/resources/dataset/Ti_amo.mid
+src/jmh/resources/dataset/To_Love_Somebody.3.mid
+src/jmh/resources/dataset/To_Love_Somebody.mid
+src/jmh/resources/dataset/To_You_I_Belong.mid
+src/jmh/resources/dataset/Too_Much.mid
+src/jmh/resources/dataset/Tora_Tora_Tora.mid
+src/jmh/resources/dataset/Truly.1.mid
+<output_files>
+feature_values_save_path=./all-features-values.xml
+feature_definitions_save_path=./all-features-definitions.xml
+<features_to_extract>
+Number of Pitches
+Number of Pitch Classes
+Number of Common Pitches
+Number of Common Pitch Classes
+Range
+Importance of Bass Register
+Importance of Middle Register
+Importance of High Register
+Dominant Spread
+Strong Tonal Centres
+Mean Pitch
+Mean Pitch Class
+Most Common Pitch
+Most Common Pitch Class
+Prevalence of Most Common Pitch
+Prevalence of Most Common Pitch Class
+Relative Prevalence of Top Pitches
+Relative Prevalence of Top Pitch Classes
+Interval Between Most Prevalent Pitches
+Interval Between Most Prevalent Pitch Classes
+Pitch Variability
+Pitch Class Variability
+Pitch Class Variability After Folding
+Pitch Skewness
+Pitch Class Skewness
+Pitch Class Skewness After Folding
+Pitch Kurtosis
+Pitch Class Kurtosis
+Pitch Class Kurtosis After Folding
+Major or Minor
+First Pitch
+First Pitch Class
+Last Pitch
+Last Pitch Class
+Glissando Prevalence
+Average Range of Glissandos
+Vibrato Prevalence
+Microtone Prevalence
+Most Common Melodic Interval
+Mean Melodic Interval
+Number of Common Melodic Intervals
+Distance Between Most Prevalent Melodic Intervals
+Prevalence of Most Common Melodic Interval
+Relative Prevalence of Most Common Melodic Intervals
+Amount of Arpeggiation
+Repeated Notes
+Chromatic Motion
+Stepwise Motion
+Melodic Thirds
+Melodic Perfect Fourths
+Melodic Tritones
+Melodic Perfect Fifths
+Melodic Sixths
+Melodic Sevenths
+Melodic Octaves
+Melodic Large Intervals
+Minor Major Melodic Third Ratio
+Melodic Embellishments
+Direction of Melodic Motion
+Average Length of Melodic Arcs
+Average Interval Spanned by Melodic Arcs
+Melodic Pitch Variety
+Average Number of Simultaneous Pitch Classes
+Variability of Number of Simultaneous Pitch Classes
+Average Number of Simultaneous Pitches
+Variability of Number of Simultaneous Pitches
+Most Common Vertical Interval
+Second Most Common Vertical Interval
+Distance Between Two Most Common Vertical Intervals
+Prevalence of Most Common Vertical Interval
+Prevalence of Second Most Common Vertical Interval
+Prevalence Ratio of Two Most Common Vertical Intervals
+Vertical Unisons
+Vertical Minor Seconds
+Vertical Thirds
+Vertical Tritones
+Vertical Perfect Fourths
+Vertical Perfect Fifths
+Vertical Sixths
+Vertical Sevenths
+Vertical Octaves
+Perfect Vertical Intervals
+Vertical Dissonance Ratio
+Vertical Minor Third Prevalence
+Vertical Major Third Prevalence
+Chord Duration
+Partial Chords
+Standard Triads
+Diminished and Augmented Triads
+Dominant Seventh Chords
+Seventh Chords
+Non-Standard Chords
+Complex Chords
+Minor Major Triad Ratio
+Initial Time Signature
+Simple Initial Meter
+Compound Initial Meter
+Complex Initial Meter
+Duple Initial Meter
+Triple Initial Meter
+Quadruple Initial Meter
+Metrical Diversity
+Total Number of Notes
+Note Density per Quarter Note
+Note Density per Quarter Note per Voice
+Note Density per Quarter Note Variability
+Range of Rhythmic Values
+Number of Different Rhythmic Values Present
+Number of Common Rhythmic Values Present
+Prevalence of Very Short Rhythmic Values
+Prevalence of Short Rhythmic Values
+Prevalence of Medium Rhythmic Values
+Prevalence of Long Rhythmic Values
+Prevalence of Very Long Rhythmic Values
+Prevalence of Dotted Notes
+Shortest Rhythmic Value
+Longest Rhythmic Value
+Mean Rhythmic Value
+Most Common Rhythmic Value
+Prevalence of Most Common Rhythmic Value
+Relative Prevalence of Most Common Rhythmic Values
+Difference Between Most Common Rhythmic Values
+Rhythmic Value Variability
+Rhythmic Value Skewness
+Rhythmic Value Kurtosis
+Mean Rhythmic Value Run Length
+Median Rhythmic Value Run Length
+Variability in Rhythmic Value Run Lengths
+Mean Rhythmic Value Offset
+Median Rhythmic Value Offset
+Variability of Rhythmic Value Offsets
+Complete Rests Fraction
+Partial Rests Fraction
+Average Rest Fraction Across Voices
+Longest Complete Rest
+Longest Partial Rest
+Mean Complete Rest Duration
+Mean Partial Rest Duration
+Median Complete Rest Duration
+Median Partial Rest Duration
+Variability of Complete Rest Durations
+Variability of Partial Rest Durations
+Variability Across Voices of Combined Rests
+Number of Strong Rhythmic Pulses - Tempo Standardized
+Number of Moderate Rhythmic Pulses - Tempo Standardized
+Number of Relatively Strong Rhythmic Pulses - Tempo Standardized
+Strongest Rhythmic Pulse - Tempo Standardized
+Second Strongest Rhythmic Pulse - Tempo Standardized
+Harmonicity of Two Strongest Rhythmic Pulses - Tempo Standardized
+Strength of Strongest Rhythmic Pulse - Tempo Standardized
+Strength of Second Strongest Rhythmic Pulse - Tempo Standardized
+Strength Ratio of Two Strongest Rhythmic Pulses - Tempo Standardized
+Combined Strength of Two Strongest Rhythmic Pulses - Tempo Standardized
+Rhythmic Variability - Tempo Standardized
+Rhythmic Looseness - Tempo Standardized
+Polyrhythms - Tempo Standardized
+Initial Tempo
+Mean Tempo
+Tempo Variability
+Duration in Seconds
+Note Density
+Note Density Variability
+Average Time Between Attacks
+Average Time Between Attacks for Each Voice
+Variability of Time Between Attacks
+Average Variability of Time Between Attacks for Each Voice
+Minimum Note Duration
+Maximum Note Duration
+Average Note Duration
+Variability of Note Durations
+Amount of Staccato
+Number of Strong Rhythmic Pulses
+Number of Moderate Rhythmic Pulses
+Number of Relatively Strong Rhythmic Pulses
+Strongest Rhythmic Pulse
+Second Strongest Rhythmic Pulse
+Harmonicity of Two Strongest Rhythmic Pulses
+Strength of Strongest Rhythmic Pulse
+Strength of Second Strongest Rhythmic Pulse
+Strength Ratio of Two Strongest Rhythmic Pulses
+Combined Strength of Two Strongest Rhythmic Pulses
+Rhythmic Variability
+Rhythmic Looseness
+Polyrhythms
+Pitched Instruments Present
+Unpitched Instruments Present
+Note Prevalence of Pitched Instruments
+Note Prevalence of Unpitched Instruments
+Time Prevalence of Pitched Instruments
+Variability of Note Prevalence of Pitched Instruments
+Variability of Note Prevalence of Unpitched Instruments
+Number of Pitched Instruments
+Number of Unpitched Instruments
+Unpitched Percussion Instrument Prevalence
+String Keyboard Prevalence
+Acoustic Guitar Prevalence
+Electric Guitar Prevalence
+Violin Prevalence
+Saxophone Prevalence
+Brass Prevalence
+Woodwinds Prevalence
+Orchestral Strings Prevalence
+String Ensemble Prevalence
+Electric Instrument Prevalence
+Maximum Number of Independent Voices
+Average Number of Independent Voices
+Variability of Number of Independent Voices
+Voice Equality - Number of Notes
+Voice Equality - Note Duration
+Voice Equality - Dynamics
+Voice Equality - Melodic Leaps
+Voice Equality - Range
+Importance of Loudest Voice
+Relative Range of Loudest Voice
+Relative Range Isolation of Loudest Voice
+Relative Range of Highest Line
+Relative Note Density of Highest Line
+Relative Note Durations of Lowest Line
+Relative Size of Melodic Intervals in Lowest Line
+Voice Overlap
+Voice Separation
+Variability of Voice Separation
+Parallel Motion
+Similar Motion
+Contrary Motion
+Oblique Motion
+Parallel Fifths
+Parallel Octaves
+Dynamic Range
+Variation of Dynamics
+Variation of Dynamics In Each Voice
+Average Note to Note Change in Dynamics
+Basic Pitch Histogram
+Pitch Class Histogram
+Folded Fifths Pitch Class Histogram
+Melodic Interval Histogram
+Vertical Interval Histogram
+Wrapped Vertical Interval Histogram
+Chord Type Histogram
+Rhythmic Value Histogram
+Rhythmic Value Median Run Lengths Histogram
+Rhythmic Value Variability in Run Lengths Histogram
+Beat Histogram Tempo Standardized
+Beat Histogram

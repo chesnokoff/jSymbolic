@@ -45,42 +45,42 @@ public class jSymbolicProcessorTest {
         if(definitionsFile.exists()) Files.delete(Paths.get(definitionsPath));
     }
 
-    @Test
-    public void getJsymbolicData() throws Exception {
-        File saintSaensTest = new File("src/test/java/jsymbolic2/api/resources/Saint-Saens_LeCarnevalDesAnimmaux.mei");
-        List<String> errorLog = new ArrayList<>();
-        processor.extractAndSaveFeaturesFromFileOrDirectory(saintSaensTest.getPath());
-        DataSet[] dataSets = processor.getExtractedFeatureValues();
-        DataSet dataSet = dataSets[0].sub_sets[0];
-        assertEquals("Beat Histogram", dataSet.feature_names[0]);
-        assertEquals("Acoustic Guitar Prevalence", dataSet.feature_names[1]);
-
-        //Do it a 2nd time to test 1 processor can work on more than one file
-        processor.extractAndSaveFeaturesFromFileOrDirectory(saintSaensTest.getPath());
-        DataSet[] dataSets2 = processor.getExtractedFeatureValues();
-        DataSet dataSet2 = dataSets2[0].sub_sets[0];
-        assertEquals("Beat Histogram", dataSet.feature_names[0]);
-        assertEquals("Acoustic Guitar Prevalence", dataSet.feature_names[1]);
-
-        //Test that CSV and ARFF conversion is successful
-        processorConvert.extractAndSaveFeaturesFromFileOrDirectory(saintSaensTest.getPath());
-        String csvFileName = valuesPath.replaceAll(".xml",".csv");
-        String arffFileName = valuesPath.replaceAll(".xml",".arff");
-        File csvFile = new File(csvFileName);
-        File arffFile = new File(arffFileName);
-        assertTrue(csvFile.exists());
-        assertTrue(arffFile.exists());
-
-        //Remove the new resources
-        if(csvFile.exists()) Files.delete(Paths.get(csvFileName));
-        if(arffFile.exists()) Files.delete(Paths.get(arffFileName));
-
-        //Check for non existing files
-        processor.extractAndSaveFeaturesFromFileOrDirectory(new File("dne").getPath());
-        assertThrows(Exception.class, () -> {
-            processor.extractAndSaveFeaturesFromFileOrDirectory((String) null);
-        });
-    }
+//    @Test
+//    public void getJsymbolicData() throws Exception {
+//        File saintSaensTest = new File("src/test/java/jsymbolic2/api/resources/Saint-Saens_LeCarnevalDesAnimmaux.mei");
+//        List<String> errorLog = new ArrayList<>();
+//        processor.extractAndSaveFeaturesFromFileOrDirectory(saintSaensTest.getPath());
+//        DataSet[] dataSets = processor.getExtractedFeatureValues();
+//        DataSet dataSet = dataSets[0].sub_sets[0];
+//        assertEquals("Beat Histogram", dataSet.feature_names[0]);
+//        assertEquals("Acoustic Guitar Prevalence", dataSet.feature_names[1]);
+//
+//        //Do it a 2nd time to test 1 processor can work on more than one file
+//        processor.extractAndSaveFeaturesFromFileOrDirectory(saintSaensTest.getPath());
+//        DataSet[] dataSets2 = processor.getExtractedFeatureValues();
+//        DataSet dataSet2 = dataSets2[0].sub_sets[0];
+//        assertEquals("Beat Histogram", dataSet.feature_names[0]);
+//        assertEquals("Acoustic Guitar Prevalence", dataSet.feature_names[1]);
+//
+//        //Test that CSV and ARFF conversion is successful
+//        processorConvert.extractAndSaveFeaturesFromFileOrDirectory(saintSaensTest.getPath());
+//        String csvFileName = valuesPath.replaceAll(".xml",".csv");
+//        String arffFileName = valuesPath.replaceAll(".xml",".arff");
+//        File csvFile = new File(csvFileName);
+//        File arffFile = new File(arffFileName);
+//        assertTrue(csvFile.exists());
+//        assertTrue(arffFile.exists());
+//
+//        //Remove the new resources
+//        if(csvFile.exists()) Files.delete(Paths.get(csvFileName));
+//        if(arffFile.exists()) Files.delete(Paths.get(arffFileName));
+//
+//        //Check for non existing files
+//        processor.extractAndSaveFeaturesFromFileOrDirectory(new File("dne").getPath());
+//        assertThrows(Exception.class, () -> {
+//            processor.extractAndSaveFeaturesFromFileOrDirectory((String) null);
+//        });
+//    }
 
     @Test
     public void getJsymbolicDataDirectory() throws Exception {

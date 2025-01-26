@@ -4,6 +4,7 @@ import ace.datatypes.DataBoard;
 import jsymbolic2.configuration.ConfigurationFileData;
 import jsymbolic2.featureutils.FeatureExtractorAccess;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.ddmal.jmei2midi.MeiSequence;
 import org.ddmal.jmei2midi.meielements.meispecific.MeiSpecificStorage;
 
@@ -19,8 +20,7 @@ import java.util.List;
  *
  * @author Cory McKay and Tristano Tenaglia
  */
-public enum FeatureExtractionJobProcessor {
-    ;
+public class FeatureExtractionJobProcessor {
     /* PUBLIC STATIC METHODS ********************************************************************************/
 
     /**
@@ -66,11 +66,11 @@ public enum FeatureExtractionJobProcessor {
                     FeatureExtractorAccess.getAllImplementedFeatureExtractors(),
                     features_to_extract,
                     saveInfo.save_overall_recording_features());
-            FilesPreprocessor filesPreprocessor = new FilesPreprocessor(paths_of_files_or_folders_to_parse,
-                    printStreams.error_print_stream(), error_log);
-            FilesReader filesReader = new FilesReader(List.of(new SequencePreprocessor()));
-            List<ImmutablePair<String, Sequence>> midiPairs = filesReader.extractMidi(filesPreprocessor.getMidiFilesList());
-            List<ImmutablePair<String, MeiSequence>> meiPairs = filesReader.extractMei(filesPreprocessor.getMeiFilesList());
+
+            SequenceExtractor sequenceExtractor = new SequenceExtractor(paths_of_files_or_folders_to_parse);
+
+            List<Pair<String, Sequence>> midiPairs = sequenceExtractor.getMIDISequences();
+            List<Pair<String, MeiSequence>> meiPairs = sequenceExtractor.getMEISequences();
             // Extract features and save the feature values in DataBoard
             DataBoard dataBoard = FeatureExtractionJobProcessor.extractFeatures(midiPairs, meiPairs,
                     processor,
@@ -206,8 +206,8 @@ public enum FeatureExtractionJobProcessor {
      *                                 displayed and a direct printing	of the associated error message to
      *                                 standard error.
      */
-    private static DataBoard extractFeatures(List<ImmutablePair<String, Sequence>> midiSequences,
-                                             List<ImmutablePair<String, MeiSequence>> meiSequences,
+    private static DataBoard extractFeatures(List<Pair<String, Sequence>> midiSequences,
+                                             List<Pair<String, MeiSequence>> meiSequences,
                                              MIDIFeatureProcessor processor,
                                              String feature_values_save_path,
                                              PrintStreams printStreams, List<String> error_log,

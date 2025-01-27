@@ -1,6 +1,7 @@
 package jsymbolic2.featureutils;
 
 import ace.datatypes.FeatureDefinition;
+import java.util.Objects;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 
 import javax.sound.midi.Sequence;
@@ -136,5 +137,23 @@ public abstract class MIDIFeatureExtractor {
 
     public String getCode() {
         return code;
+    }
+
+    @Override
+    public String toString() {
+        return getFeatureDefinition().getFeatureDescription();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof MIDIFeatureExtractor midiFeatureExtractor) {
+            return Objects.equals(getCode(), midiFeatureExtractor.getCode());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getCode());
     }
 }

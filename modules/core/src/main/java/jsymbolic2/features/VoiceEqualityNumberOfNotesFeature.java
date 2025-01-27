@@ -23,13 +23,9 @@ public class VoiceEqualityNumberOfNotesFeature
 	public VoiceEqualityNumberOfNotesFeature()
 	{
 		code = "T-4";
-		String name = "Voice Equality - Number of Notes";
-		String description = "Standard deviation of the total number of Note Ons in each channel that contains at least one note.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Voice Equality - Number of Notes";
+		description = "Standard deviation of the total number of Note Ons in each channel that contains at least one note.";
+
 	}
 	
 

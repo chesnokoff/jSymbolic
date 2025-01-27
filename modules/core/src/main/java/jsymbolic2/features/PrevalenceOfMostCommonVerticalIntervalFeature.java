@@ -23,11 +23,8 @@ public class PrevalenceOfMostCommonVerticalIntervalFeature
 	public PrevalenceOfMostCommonVerticalIntervalFeature()
 	{
 		code = "C-11";
-		String name = "Prevalence of Most Common Vertical Interval";
-		String description = "Fraction of vertical intervals on the wrapped vertical interval histogram corresponding to the most common vertical interval.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		name = "Prevalence of Most Common Vertical Interval";
+		description = "Fraction of vertical intervals on the wrapped vertical interval histogram corresponding to the most common vertical interval.";
 		dependencies = new String[] { "Wrapped Vertical Interval Histogram", "Most Common Vertical Interval" };
 		offsets = null;
 	}

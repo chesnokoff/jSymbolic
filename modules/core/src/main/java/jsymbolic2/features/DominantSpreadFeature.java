@@ -23,13 +23,9 @@ public class DominantSpreadFeature
 	public DominantSpreadFeature()
 	{
 		code = "P-12";
-		String name = "Dominant Spread";
-		String description = "Largest number of consecutive pitch classes separated by perfect 5ths that each individually account for at least 9% of the total notes in the piece.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Dominant Spread";
+		description = "Largest number of consecutive pitch classes separated by perfect 5ths that each individually account for at least 9% of the total notes in the piece.";
+
 	}
 	
 

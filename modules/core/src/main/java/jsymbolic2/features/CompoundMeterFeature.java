@@ -23,11 +23,8 @@ public class CompoundMeterFeature
 	public CompoundMeterFeature()
 	{
 		code = "R-3";
-		String name = "Compound Initial Meter";
-		String description = "Set to 1 if the initial meter is a standard compound meter (i.e. if the numerator of the time signature is 6, 9, 12, 15, 18 or 24) and to 0 otherwise.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		name = "Compound Initial Meter";
+		description = "Set to 1 if the initial meter is a standard compound meter (i.e. if the numerator of the time signature is 6, 9, 12, 15, 18 or 24) and to 0 otherwise.";
 		dependencies = new String[] { "Initial Time Signature" };
 		offsets = null;
 	}

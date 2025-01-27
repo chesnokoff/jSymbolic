@@ -23,13 +23,9 @@ public class NumberOfStrongRhythmicPulsesTempoStandardizedFeature
 	public NumberOfStrongRhythmicPulsesTempoStandardizedFeature()
 	{
 		code = "R-54";
-		String name = "Number of Strong Rhythmic Pulses - Tempo Standardized";
-		String description = "Number of tempo-standardized beat histogram peaks with normalized magnitudes over 0.1.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Number of Strong Rhythmic Pulses - Tempo Standardized";
+		description = "Number of tempo-standardized beat histogram peaks with normalized magnitudes over 0.1.";
+
 	}
 	
 

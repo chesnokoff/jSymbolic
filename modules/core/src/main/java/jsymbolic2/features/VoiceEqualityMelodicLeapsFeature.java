@@ -23,13 +23,9 @@ public class VoiceEqualityMelodicLeapsFeature
 	public VoiceEqualityMelodicLeapsFeature()
 	{
 		code = "T-7";
-		String name = "Voice Equality - Melodic Leaps";
-		String description = "Standard deviation of the average melodic leap distance of each channel that contains at least one note.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Voice Equality - Melodic Leaps";
+		description = "Standard deviation of the average melodic leap distance of each channel that contains at least one note.";
+
 	}
 	
 

@@ -23,11 +23,8 @@ public class SimpleInitialMeterFeature
 	public SimpleInitialMeterFeature()
 	{
 		code = "R-2";
-		String name = "Simple Initial Meter";
-		String description = "Set to 1 if the initial meter is a standard simple meter (i.e. if the numerator of the time signature is 2, 3 or 4) and to 0 otherwise.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		name = "Simple Initial Meter";
+		description = "Set to 1 if the initial meter is a standard simple meter (i.e. if the numerator of the time signature is 2, 3 or 4) and to 0 otherwise.";
 		dependencies = new String[] { "Initial Time Signature" };
 		offsets = null;
 	}

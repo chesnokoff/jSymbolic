@@ -23,13 +23,9 @@ public class SaxophonePrevalenceFeature
 	public SaxophonePrevalenceFeature()
 	{
 		code = "I-15";
-		String name = "Saxophone Prevalence";
-		String description = "Fraction of all Note Ons played by saxophone instruments (General MIDI patches 65 to 68).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Saxophone Prevalence";
+		description = "Fraction of all Note Ons played by saxophone instruments (General MIDI patches 65 to 68).";
+
 	}
 	
 

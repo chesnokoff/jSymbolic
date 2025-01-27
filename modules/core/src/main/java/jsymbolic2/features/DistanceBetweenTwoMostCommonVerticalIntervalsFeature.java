@@ -23,11 +23,8 @@ public class DistanceBetweenTwoMostCommonVerticalIntervalsFeature
 	public DistanceBetweenTwoMostCommonVerticalIntervalsFeature()
 	{
 		code = "C-10";
-		String name = "Distance Between Two Most Common Vertical Intervals";
-		String description = "The interval in semitones between the wrapped vertical interval histogram bins with the two most common vertical intervals.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		name = "Distance Between Two Most Common Vertical Intervals";
+		description = "The interval in semitones between the wrapped vertical interval histogram bins with the two most common vertical intervals.";
 		dependencies = new String[] {"Most Common Vertical Interval", "Second Most Common Vertical Interval"};
 		offsets = null;
 	}

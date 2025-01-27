@@ -25,13 +25,9 @@ public class RelativeRangeIsolationOfLoudestVoiceFeature
 	public RelativeRangeIsolationOfLoudestVoiceFeature()
 	{
 		code = "T-11";
-		String name = "Relative Range Isolation of Loudest Voice";
-		String description = "Number of pitched notes in the MIDI channel with the highest average loudness that fall outside the range of any other pitched channel, divided by the total number of notes in the channel with the highest average loudness. Set to 0 if there are only 0 or 1 channels containing pitched notes.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Relative Range Isolation of Loudest Voice";
+		description = "Number of pitched notes in the MIDI channel with the highest average loudness that fall outside the range of any other pitched channel, divided by the total number of notes in the channel with the highest average loudness. Set to 0 if there are only 0 or 1 channels containing pitched notes.";
+
 	}
 	
 

@@ -22,13 +22,9 @@ public class RelativeSizeOfMelodicIntervalsInLowestLineFeature
 	public RelativeSizeOfMelodicIntervalsInLowestLineFeature()
 	{
 		code = "T-15";
-		String name = "Relative Size of Melodic Intervals in Lowest Line";
-		String description = "Average melodic interval in semitones in the channel with the lowest average pitch, divided by the average melodic interval in all channels that contain at least two notes.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Relative Size of Melodic Intervals in Lowest Line";
+		description = "Average melodic interval in semitones in the channel with the lowest average pitch, divided by the average melodic interval in all channels that contain at least two notes.";
+
 	}
 	
 

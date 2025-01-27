@@ -24,13 +24,9 @@ public class DirectionOfMelodicMotionFeature
 	public DirectionOfMelodicMotionFeature()
 	{
 		code = "M-22";
-		String name = "Direction of Melodic Motion";
-		String description = "Fraction of melodic intervals that are rising in pitch. Set to zero if no rising or falling melodic intervals are found.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Direction of Melodic Motion";
+		description = "Fraction of melodic intervals that are rising in pitch. Set to zero if no rising or falling melodic intervals are found.";
+
 	}
 	
 

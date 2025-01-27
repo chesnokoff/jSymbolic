@@ -23,13 +23,9 @@ public class BrassPrevalenceFeature
 	public BrassPrevalenceFeature()
 	{
 		code = "I-16";
-		String name = "Brass Prevalence";
-		String description = "Fraction of all Note Ons played by brass instruments, including saxophones (General MIDI patches 57 to 68).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Brass Prevalence";
+		description = "Fraction of all Note Ons played by brass instruments, including saxophones (General MIDI patches 57 to 68).";
+
 	}
 	
 

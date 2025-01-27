@@ -24,13 +24,9 @@ public class CompleteRestsFractionFeature
 	public CompleteRestsFractionFeature()
 	{
 		code = "R-41";
-		String name = "Complete Rests Fraction";
-		String description = "Fraction of the music during which no pitched notes are sounding on any MIDI channel. Non-pitched (MIDI channel 10) notes are not considered in this calculation.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Complete Rests Fraction";
+		description = "Fraction of the music during which no pitched notes are sounding on any MIDI channel. Non-pitched (MIDI channel 10) notes are not considered in this calculation.";
+
 	}
 	
 

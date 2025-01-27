@@ -23,13 +23,9 @@ public class OrchestralStringsPrevalenceFeature
 	public OrchestralStringsPrevalenceFeature()
 	{
 		code = "I-18";
-		String name = "Orchestral Strings Prevalence";
-		String description = "Fraction of all Note Ons played by orchestral string instruments (General MIDI patches 41 to 47).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Orchestral Strings Prevalence";
+		description = "Fraction of all Note Ons played by orchestral string instruments (General MIDI patches 41 to 47).";
+
 	}
 	
 

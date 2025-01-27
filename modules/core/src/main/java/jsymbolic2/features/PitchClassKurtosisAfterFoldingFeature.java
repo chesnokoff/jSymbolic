@@ -24,13 +24,9 @@ public class PitchClassKurtosisAfterFoldingFeature
 	public PitchClassKurtosisAfterFoldingFeature()
 	{
 		code = "P-32";
-		String name = "Pitch Class Kurtosis After Folding";
-		String description = "Kurtosis of the pitch classes after being folded by perfect fifths as described for the folded fifths pitch class histogram. Provides a measure of how peaked or flat the pitch classes are from a dominant-tonic perspective.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Pitch Class Kurtosis After Folding";
+		description = "Kurtosis of the pitch classes after being folded by perfect fifths as described for the folded fifths pitch class histogram. Provides a measure of how peaked or flat the pitch classes are from a dominant-tonic perspective.";
+
 	}
 	
 

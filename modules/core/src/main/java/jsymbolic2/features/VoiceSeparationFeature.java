@@ -23,13 +23,9 @@ public class VoiceSeparationFeature
 	public VoiceSeparationFeature()
 	{
 		code = "T-17";
-		String name = "Voice Separation";
-		String description = "Average separation in semitones between the average pitches of consecutive channels (after sorting based on average pitch) that contain at least one note. ";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Voice Separation";
+		description = "Average separation in semitones between the average pitches of consecutive channels (after sorting based on average pitch) that contain at least one note. ";
+
 	}
 	
 

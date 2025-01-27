@@ -25,13 +25,9 @@ public class RelativeRangeOfHighestLineFeature
 	public RelativeRangeOfHighestLineFeature()
 	{
 		code = "T-12";
-		String name = "Relative Range of Highest Line";
-		String description = "Pitch difference in semitones between the highest note and the lowest note played in the channel with the highest average pitch, divided by the difference between the highest note and the lowest note in the piece overall. Set to 0 if there if there are fewer than 2 pitches in the music.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Relative Range of Highest Line";
+		description = "Pitch difference in semitones between the highest note and the lowest note played in the channel with the highest average pitch, divided by the difference between the highest note and the lowest note in the piece overall. Set to 0 if there if there are fewer than 2 pitches in the music.";
+
 	}
 	
 

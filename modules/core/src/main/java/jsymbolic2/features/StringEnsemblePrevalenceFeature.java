@@ -23,13 +23,9 @@ public class StringEnsemblePrevalenceFeature
 	public StringEnsemblePrevalenceFeature()
 	{
 		code = "I-19";
-		String name = "String Ensemble Prevalence";
-		String description = "Fraction of all Note Ons played by orchestral string ensemble instruments (General MIDI patches 49 to 52).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "String Ensemble Prevalence";
+		description = "Fraction of all Note Ons played by orchestral string ensemble instruments (General MIDI patches 49 to 52).";
+
 	}
 	
 

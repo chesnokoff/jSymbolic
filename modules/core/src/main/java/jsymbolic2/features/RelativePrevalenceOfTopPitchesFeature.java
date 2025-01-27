@@ -23,13 +23,9 @@ public class RelativePrevalenceOfTopPitchesFeature
 	public RelativePrevalenceOfTopPitchesFeature()
 	{
 		code = "P-20";
-		String name = "Relative Prevalence of Top Pitches";
-		String description = "Relative frequency of the second most common pitch in the piece, divided by the relative frequency of the most common pitch.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Relative Prevalence of Top Pitches";
+		description = "Relative frequency of the second most common pitch in the piece, divided by the relative frequency of the most common pitch.";
+
 	}
 	
 

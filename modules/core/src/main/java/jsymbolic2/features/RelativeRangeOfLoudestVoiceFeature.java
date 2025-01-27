@@ -25,13 +25,9 @@ public class RelativeRangeOfLoudestVoiceFeature
 	public RelativeRangeOfLoudestVoiceFeature()
 	{
 		code = "T-10";
-		String name = "Relative Range of Loudest Voice";
-		String description = "Difference between the highest note and the lowest note played in the channel with the highest average loudness (MIDI velocity), divided by the difference between the highest note and the lowest note in the piece as a whole. Set to 0 if there if there are fewer than 2 pitches in the music.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Relative Range of Loudest Voice";
+		description = "Difference between the highest note and the lowest note played in the channel with the highest average loudness (MIDI velocity), divided by the difference between the highest note and the lowest note in the piece as a whole. Set to 0 if there if there are fewer than 2 pitches in the music.";
+
 	}
 	
 

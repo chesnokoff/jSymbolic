@@ -23,13 +23,9 @@ public class VariabilityOfTimeBetweenAttacksFeature
 	public VariabilityOfTimeBetweenAttacksFeature()
 	{
 		code = "RT-9";
-		String name = "Variability of Time Between Attacks";
-		String description = "Standard deviation of the times (in seconds) between Note On events (regardless of MIDI channel).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Variability of Time Between Attacks";
+		description = "Standard deviation of the times (in seconds) between Note On events (regardless of MIDI channel).";
+
 	}
 	
 

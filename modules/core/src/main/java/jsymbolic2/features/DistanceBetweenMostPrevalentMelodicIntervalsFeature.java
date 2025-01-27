@@ -23,13 +23,9 @@ public class DistanceBetweenMostPrevalentMelodicIntervalsFeature
 	public DistanceBetweenMostPrevalentMelodicIntervalsFeature()
 	{
 		code = "M-5";
-		String name = "Distance Between Most Prevalent Melodic Intervals";
-		String description = "Absolute value of the difference (in semitones) between the most common and second most common melodic intervals in the piece.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Distance Between Most Prevalent Melodic Intervals";
+		description = "Absolute value of the difference (in semitones) between the most common and second most common melodic intervals in the piece.";
+
 	}
 	
 

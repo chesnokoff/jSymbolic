@@ -1,5 +1,6 @@
 package jsymbolic2.features;
 
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import mckay.utilities.sound.midi.MIDIMethods;
 import org.ddmal.jmei2midi.MeiSequence;

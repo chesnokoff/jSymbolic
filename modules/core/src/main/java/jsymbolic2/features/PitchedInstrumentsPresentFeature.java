@@ -25,13 +25,10 @@ public class PitchedInstrumentsPresentFeature
 	public PitchedInstrumentsPresentFeature()
 	{
 		code = "I-1";
-		String name = "Pitched Instruments Present";
-		String description = "A feature vector indicating which pitched instruments are present. Has one entry for each of the 128 General MIDI Instrument patches (0 is Acoustic Piano, 40 is Violin, etc.). Each value is set to 1 if at least one note is played using the corresponding patch, or to 0 if that patch is never used.";
-		boolean is_sequential = true;
-		int dimensions = 128;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Pitched Instruments Present";
+		description = "A feature vector indicating which pitched instruments are present. Has one entry for each of the 128 General MIDI Instrument patches (0 is Acoustic Piano, 40 is Violin, etc.). Each value is set to 1 if at least one note is played using the corresponding patch, or to 0 if that patch is never used.";
+		dimensions = 128;
+
 	}
 	
 

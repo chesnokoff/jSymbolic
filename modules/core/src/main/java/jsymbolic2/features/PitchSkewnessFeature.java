@@ -24,13 +24,9 @@ public class PitchSkewnessFeature
 	public PitchSkewnessFeature()
 	{
 		code = "P-27";
-		String name = "Pitch Skewness";
-		String description = "Skewness of the MIDI pitches of all pitched notes in the piece. Provides a measure of how asymmetrical the pitch distribution is to either the left or the right of the mean pitch. A value of zero indicates no skew.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Pitch Skewness";
+		description = "Skewness of the MIDI pitches of all pitched notes in the piece. Provides a measure of how asymmetrical the pitch distribution is to either the left or the right of the mean pitch. A value of zero indicates no skew.";
+
 	}
 	
 

@@ -23,13 +23,8 @@ public class AmountOfStaccatoFeature
 	public AmountOfStaccatoFeature()
 	{
 		code = "RT-15";
-		String name = "Amount of Staccato";
-		String description = "Number of notes with a duration less than 0.1 seconds, divided by the total number of notes in the piece.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Amount of Staccato";
+		description = "Number of notes with a duration less than 0.1 seconds, divided by the total number of notes in the piece.";
 	}
 	
 

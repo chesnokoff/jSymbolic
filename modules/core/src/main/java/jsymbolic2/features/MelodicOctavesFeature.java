@@ -22,13 +22,9 @@ public class MelodicOctavesFeature
 	public MelodicOctavesFeature()
 	{
 		code = "M-18";
-		String name = "Melodic Octaves";
-		String description = "Fraction of melodic intervals that are octaves.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Melodic Octaves";
+		description = "Fraction of melodic intervals that are octaves.";
+
 	}
 	
 

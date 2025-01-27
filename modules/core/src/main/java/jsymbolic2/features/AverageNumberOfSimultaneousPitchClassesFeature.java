@@ -23,13 +23,9 @@ public class AverageNumberOfSimultaneousPitchClassesFeature
 	public AverageNumberOfSimultaneousPitchClassesFeature()
 	{
 		code = "C-4";
-		String name = "Average Number of Simultaneous Pitch Classes";
-		String description = "Average number of different pitch classes sounding simultaneously. Rests are excluded from this calculation.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Average Number of Simultaneous Pitch Classes";
+		description = "Average number of different pitch classes sounding simultaneously. Rests are excluded from this calculation.";
+
 	}
 	
 

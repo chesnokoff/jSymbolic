@@ -24,11 +24,8 @@ public class DifferenceBetweenMostCommonRhythmicValuesFeature
 	public DifferenceBetweenMostCommonRhythmicValuesFeature()
 	{
 		code = "R-29";
-		String name = "Difference Between Most Common Rhythmic Values";
-		String description = "A measure of the difference between the two most common rhythmic values in the music. Measured in number of bins in the Rhythmic Value Histogram separating the two most common rhythmic values.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		name = "Difference Between Most Common Rhythmic Values";
+		description = "A measure of the difference between the two most common rhythmic values in the music. Measured in number of bins in the Rhythmic Value Histogram separating the two most common rhythmic values.";
 		dependencies = new String[] { "Rhythmic Value Histogram" };
 		offsets = null;
 	}

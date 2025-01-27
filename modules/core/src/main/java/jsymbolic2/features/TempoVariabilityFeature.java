@@ -22,13 +22,9 @@ public class TempoVariabilityFeature
 	public TempoVariabilityFeature()
 	{
 		code = "RT-3";
-		String name = "Tempo Variability";
-		String description = "Standard deviation of the tempo in beats per minute.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Tempo Variability";
+		description = "Standard deviation of the tempo in beats per minute.";
+
 	}
 
 

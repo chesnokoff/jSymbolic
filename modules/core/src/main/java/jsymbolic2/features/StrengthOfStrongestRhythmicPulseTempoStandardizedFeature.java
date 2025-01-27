@@ -23,13 +23,9 @@ public class StrengthOfStrongestRhythmicPulseTempoStandardizedFeature
 	public StrengthOfStrongestRhythmicPulseTempoStandardizedFeature()
 	{
 		code = "R-60";
-		String name = "Strength of Strongest Rhythmic Pulse - Tempo Standardized";
-		String description = "Magnitude of the tempo-standardized beat histogram bin with the highest magnitude.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Strength of Strongest Rhythmic Pulse - Tempo Standardized";
+		description = "Magnitude of the tempo-standardized beat histogram bin with the highest magnitude.";
+
 	}
 	
 

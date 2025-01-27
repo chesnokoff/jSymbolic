@@ -28,7 +28,7 @@ public final class FeatureExtractorAccess
 	 * extractor (including MEIFeatureExtractor features). These are ordered in the same order in which they
 	 * are presented in the jSymbolic manual.
 	 */
-	private static final Feature[] all_implemented_feature_extractors;
+	private static final MIDIFeatureExtractor[] all_implemented_feature_extractors;
 
 	/**
 	 * An array with one entry for every feature implemented as a MIDIFeatureExtractor (including
@@ -68,7 +68,7 @@ public final class FeatureExtractorAccess
 	 */
 	static
 	{
-		all_implemented_feature_extractors = new Feature[]
+		all_implemented_feature_extractors = new MIDIFeatureExtractor[]
 		{
 			// Add features based on pitch statistics
 			new BasicPitchHistogramFeature(),
@@ -596,8 +596,8 @@ public final class FeatureExtractorAccess
 		};
 
 		names_of_all_implemented_features = new ArrayList<>();
-		List<Feature> all_extractors = Arrays.asList(all_implemented_feature_extractors);
-		for (Feature fe : all_extractors)
+		List<MIDIFeatureExtractor> all_extractors = Arrays.asList(all_implemented_feature_extractors);
+		for (MIDIFeatureExtractor fe : all_extractors)
 			names_of_all_implemented_features.add(fe.getFeatureDefinition().name);
 
 		names_of_default_features_to_save = new ArrayList<>();
@@ -606,7 +606,7 @@ public final class FeatureExtractorAccess
 				names_of_default_features_to_save.add(names_of_all_implemented_features.get(i));
 
 		names_of_mei_specific_features = new ArrayList<>();
-		for (Feature feature : all_implemented_feature_extractors)
+		for (MIDIFeatureExtractor feature : all_implemented_feature_extractors)
 		{
 			if (feature instanceof MEIFeatureExtractor)
 			{
@@ -631,7 +631,7 @@ public final class FeatureExtractorAccess
 	 *			feature extractor (including MEIFeatureExtractor features). These are ordered in the same 
 	 *			order in which they are presented in the jSymbolic manual.
 	 */
-	public static Feature[] getAllImplementedFeatureExtractors()
+	public static MIDIFeatureExtractor[] getAllImplementedFeatureExtractors()
 	{
 		return all_implemented_feature_extractors;
 	}
@@ -771,7 +771,7 @@ public final class FeatureExtractorAccess
 		{
             if (features_to_include[i])
             {
-				Feature feat = all_implemented_feature_extractors[i];
+				MIDIFeatureExtractor feat = all_implemented_feature_extractors[i];
 
                 total_unique_features++;
                 
@@ -872,7 +872,7 @@ public final class FeatureExtractorAccess
 		// features that have not themselves been added to all_implemented_feature_extractors
 		for (int feat = 0; feat < all_implemented_feature_extractors.length; feat++)
 		{
-			String[] dependencies = all_implemented_feature_extractors[feat].getDependencies();
+			String[] dependencies = all_implemented_feature_extractors[feat].getDepenedencies();
 			if (dependencies != null)
 			{
 				for (int dep = 0; dep < dependencies.length; dep++)
@@ -1002,12 +1002,12 @@ public final class FeatureExtractorAccess
 		System.out.println("FEATURES WHOSE CALCULATION DEPENDS ON OTHER FEATURES:");
 		for (int i = 0; i < all_implemented_feature_extractors.length; i++)
 		{
-			if (all_implemented_feature_extractors[i].getDependencies() != null)
+			if (all_implemented_feature_extractors[i].getDepenedencies() != null)
 			{
 				System.out.println(all_implemented_feature_extractors[i].getCode() + "\t" +
 			                        all_implemented_feature_extractors[i].getName());
-				for (int j = 0; j < all_implemented_feature_extractors[i].getDependencies().length; j++)
-					System.out.println("\tDEPENDS ON: " + all_implemented_feature_extractors[i].getDependencies()[j]);
+				for (int j = 0; j < all_implemented_feature_extractors[i].getDepenedencies().length; j++)
+					System.out.println("\tDEPENDS ON: " + all_implemented_feature_extractors[i].getDepenedencies()[j]);
 			}
 		}
 	}

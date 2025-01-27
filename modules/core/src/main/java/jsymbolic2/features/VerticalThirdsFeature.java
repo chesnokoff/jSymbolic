@@ -25,11 +25,8 @@ public class VerticalThirdsFeature
 	public VerticalThirdsFeature()
 	{
 		code = "C-16";
-		String name = "Vertical Thirds";
-		String description = "Fraction all wrapped vertical intervals that are minor or major thirds. This is weighted by how long intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		name = "Vertical Thirds";
+		description = "Fraction all wrapped vertical intervals that are minor or major thirds. This is weighted by how long intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note).";
 		dependencies = new String[] { "Wrapped Vertical Interval Histogram" };
 		offsets = null;
 	}

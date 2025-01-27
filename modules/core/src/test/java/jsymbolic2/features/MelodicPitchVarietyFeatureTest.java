@@ -1,6 +1,6 @@
 package jsymbolic2.features;
 
-import jsymbolic2.featureutils.Feature;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.midiUtilities.MidiBuildEvent;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ public class MelodicPitchVarietyFeatureTest {
         t1_tracks.add(e_tracks6);
 
         MIDIIntermediateRepresentations inter = new MIDIIntermediateRepresentations(test_tracks);
-        Feature actual_common = new MelodicPitchVarietyFeature();
+        MIDIFeatureExtractor actual_common = new MelodicPitchVarietyFeature();
         double[] actual_variety = actual_common.extractFeature(test_tracks, inter, null);
         double[] expected_variety = {2};
         assertArrayEquals(expected_variety, actual_variety, 0.1);

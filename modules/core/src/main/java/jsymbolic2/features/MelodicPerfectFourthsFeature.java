@@ -22,13 +22,9 @@ public class MelodicPerfectFourthsFeature
 	public MelodicPerfectFourthsFeature()
 	{
 		code = "M-13";
-		String name = "Melodic Perfect Fourths";
-		String description = "Fraction of melodic intervals that are perfect fourths.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Melodic Perfect Fourths";
+		description = "Fraction of melodic intervals that are perfect fourths.";
+
 	}
 	
 

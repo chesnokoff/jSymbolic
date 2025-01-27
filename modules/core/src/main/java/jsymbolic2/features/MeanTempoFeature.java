@@ -23,13 +23,9 @@ public class MeanTempoFeature
 	public MeanTempoFeature()
 	{
 		code = "RT-2";
-		String name = "Mean Tempo";
-		String description = "Average tempo of the piece in beats per minute. Set to the default MIDI value (120 BPM) if no tempo is specified explicitly.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Mean Tempo";
+		description = "Average tempo of the piece in beats per minute. Set to the default MIDI value (120 BPM) if no tempo is specified explicitly.";
+
 	}
 
 

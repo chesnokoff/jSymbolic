@@ -29,13 +29,9 @@ public class NumberOfGraceNotesMeiFeature
 	public NumberOfGraceNotesMeiFeature()
 	{
 		code = "S-1";
-		String name = "Number of Grace Notes";
-		String description = "The total number of grace notes in a piece (i.e. the number of notes indicated as grace notes in the MEI encoding) divided by the total number of pitched notes in the music.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Number of Grace Notes";
+		description = "The total number of grace notes in a piece (i.e. the number of notes indicated as grace notes in the MEI encoding) divided by the total number of pitched notes in the music.";
+
 	}
 	
 

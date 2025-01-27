@@ -23,13 +23,9 @@ public class LastPitchFeature
 	public LastPitchFeature()
 	{
 		code = "P-36";
-		String name = "Last Pitch";
-		String description = "The MIDI pitch value of the last note in the piece. If there are multiple notes with simultaneous attacks at the end of the piece, then the one with the lowest pitch is selected. Set to 0 if there are no pitched notes.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Last Pitch";
+		description = "The MIDI pitch value of the last note in the piece. If there are multiple notes with simultaneous attacks at the end of the piece, then the one with the lowest pitch is selected. Set to 0 if there are no pitched notes.";
+
 	}
 	
 

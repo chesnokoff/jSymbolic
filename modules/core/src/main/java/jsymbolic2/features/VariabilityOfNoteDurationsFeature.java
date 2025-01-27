@@ -22,13 +22,9 @@ public class VariabilityOfNoteDurationsFeature
 	public VariabilityOfNoteDurationsFeature()
 	{
 		code = "RT-14";
-		String name = "Variability of Note Durations";
-		String description = "Standard deviation of note durations (in seconds).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Variability of Note Durations";
+		description = "Standard deviation of note durations (in seconds).";
+
 	}
 	
 

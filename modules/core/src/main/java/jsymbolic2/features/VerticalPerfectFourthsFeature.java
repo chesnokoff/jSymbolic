@@ -25,11 +25,8 @@ public class VerticalPerfectFourthsFeature
 	public VerticalPerfectFourthsFeature()
 	{
 		code = "C-18";
-		String name = "Vertical Perfect Fourths";
-		String description = "Fraction of all wrapped vertical intervals that are perfect fourths. This is weighted by how long intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		name = "Vertical Perfect Fourths";
+		description = "Fraction of all wrapped vertical intervals that are perfect fourths. This is weighted by how long intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note).";
 		dependencies = new String[] { "Wrapped Vertical Interval Histogram" };
 		offsets = null;
 	}

@@ -24,13 +24,9 @@ public class NumberOfUnpitchedInstrumentsFeature
 	public NumberOfUnpitchedInstrumentsFeature()
 	{
 		code = "I-9";
-		String name = "Number of Unpitched Instruments";
-		String description = "Total number of (unpitched) MIDI Percussion Key Map instruments that are used to play at least one note. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the ones that meet the official standard.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Number of Unpitched Instruments";
+		description = "Total number of (unpitched) MIDI Percussion Key Map instruments that are used to play at least one note. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the ones that meet the official standard.";
+
 	}
 	
 

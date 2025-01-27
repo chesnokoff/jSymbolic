@@ -23,13 +23,9 @@ public class VoiceEqualityNoteDurationFeature
 	public VoiceEqualityNoteDurationFeature()
 	{
 		code = "T-5";
-		String name = "Voice Equality - Note Duration";
-		String description = "Standard deviation of the cumulative amount of time during which one or more notes were sounding in each channel that contains at least one note.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Voice Equality - Note Duration";
+		description = "Standard deviation of the cumulative amount of time during which one or more notes were sounding in each channel that contains at least one note.";
+
 	}
 	
 

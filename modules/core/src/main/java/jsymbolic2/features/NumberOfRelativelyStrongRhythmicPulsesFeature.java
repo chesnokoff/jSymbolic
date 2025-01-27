@@ -23,13 +23,9 @@ public class NumberOfRelativelyStrongRhythmicPulsesFeature
 	public NumberOfRelativelyStrongRhythmicPulsesFeature()
 	{
 		code = "RT-19";
-		String name = "Number of Relatively Strong Rhythmic Pulses";
-		String description = "Number of beat histogram peaks with magnitudes at least 30% as high as the magnitude of the beat histogram peak with the highest magnitude.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Number of Relatively Strong Rhythmic Pulses";
+		description = "Number of beat histogram peaks with magnitudes at least 30% as high as the magnitude of the beat histogram peak with the highest magnitude.";
+
 	}
 	
 

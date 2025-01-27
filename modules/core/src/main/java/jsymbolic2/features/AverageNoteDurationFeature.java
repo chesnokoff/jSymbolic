@@ -22,13 +22,9 @@ public class AverageNoteDurationFeature
 	public AverageNoteDurationFeature()
 	{
 		code = "RT-13";
-		String name = "Average Note Duration";
-		String description = "Average duration of notes (in seconds).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Average Note Duration";
+		description = "Average duration of notes (in seconds).";
+
 	}
 	
 

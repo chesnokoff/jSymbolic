@@ -25,13 +25,10 @@ public class NotePrevalenceOfPitchedInstrumentsFeature
 	public NotePrevalenceOfPitchedInstrumentsFeature()
 	{
 		code = "I-3";
-		String name = "Note Prevalence of Pitched Instruments";
-		String description = "A feature vector indicating the fraction of (pitched) notes played with each of the 128 General MIDI Instrument patches (0 is Acoustic Piano, 40 is Violin, etc.). Has one entry for each of these instruments, and the value of each is set to the number of Note Ons played with the corresponding MIDI patch, divided by the total number of Note Ons in the piece.";
-		boolean is_sequential = true;
-		int dimensions = 128;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Note Prevalence of Pitched Instruments";
+		description = "A feature vector indicating the fraction of (pitched) notes played with each of the 128 General MIDI Instrument patches (0 is Acoustic Piano, 40 is Violin, etc.). Has one entry for each of these instruments, and the value of each is set to the number of Note Ons played with the corresponding MIDI patch, divided by the total number of Note Ons in the piece.";
+		dimensions = 128;
+
 	}
 	
 

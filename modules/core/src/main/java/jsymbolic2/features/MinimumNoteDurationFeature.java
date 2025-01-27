@@ -23,13 +23,9 @@ public class MinimumNoteDurationFeature
 	public MinimumNoteDurationFeature()
 	{
 		code = "RT-11";
-		String name = "Minimum Note Duration";
-		String description = "Duration of the shortest note in the piece (in seconds). Set to 0 if there are no notes.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Minimum Note Duration";
+		description = "Duration of the shortest note in the piece (in seconds). Set to 0 if there are no notes.";
+
 	}
 	
 

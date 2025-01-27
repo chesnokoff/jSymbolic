@@ -23,13 +23,9 @@ public class NumberOfCommonPitchesFeature
 	public NumberOfCommonPitchesFeature()
 	{
 		code = "P-6";
-		String name = "Number of Common Pitches";
-		String description = "Number of unique pitches that account individually for at least 9% of all notes. Enharmonic equivalents are grouped together for the purpose of this calculation.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Number of Common Pitches";
+		description = "Number of unique pitches that account individually for at least 9% of all notes. Enharmonic equivalents are grouped together for the purpose of this calculation.";
+
 	}
 	
 

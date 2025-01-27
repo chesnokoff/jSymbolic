@@ -48,19 +48,14 @@ public abstract class MIDIFeatureExtractor {
      * negative number. Positive numbers are not allowed.
      */
     protected int[] offsets;
+    protected String name;
+    protected String description;
+    protected boolean isSequentional = true;
+    protected int dimensions = 1;
 
 
     /* PUBLIC METHODS ***************************************************************************************/
 
-
-    /**
-     * Returns unique code identifying a feature (see the HTML manual for identifying codes).
-     *
-     * @return The unique code identifying this particular feature.
-     */
-    public String getFeatureCode() {
-        return code;
-    }
 
 
     /**
@@ -73,7 +68,7 @@ public abstract class MIDIFeatureExtractor {
      * @return The definition of this particular feature.
      */
     public FeatureDefinition getFeatureDefinition() {
-        return definition;
+        return new FeatureDefinition(getName(), getDescription(), isSequentional(), getDimensions());
     }
 
 
@@ -122,4 +117,24 @@ public abstract class MIDIFeatureExtractor {
                                             MIDIIntermediateRepresentations sequence_info,
                                             double[][] other_feature_values)
             throws Exception;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public boolean isSequentional() {
+        return isSequentional;
+    }
+
+    public int getDimensions() {
+        return dimensions;
+    }
+
+    public String getCode() {
+        return code;
+    }
 }

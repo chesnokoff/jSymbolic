@@ -25,11 +25,8 @@ public class PrevalenceOfShortRhythmicValuesFeature
 	public PrevalenceOfShortRhythmicValuesFeature()
 	{
 		code = "R-18";
-		String name = "Prevalence of Short Rhythmic Values";
-		String description = "Fraction of all notes in the music that have a quantized rhythmic value less than a dotted eighth note. This includes both pitched and unpitched notes, is calculated after rhythmic quantization, is not influenced by tempo, and is calculated without regard to the dynamics, voice or instrument of any given note.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		name = "Prevalence of Short Rhythmic Values";
+		description = "Fraction of all notes in the music that have a quantized rhythmic value less than a dotted eighth note. This includes both pitched and unpitched notes, is calculated after rhythmic quantization, is not influenced by tempo, and is calculated without regard to the dynamics, voice or instrument of any given note.";
 		dependencies = new String[] { "Rhythmic Value Histogram" };
 		offsets = null;
 	}

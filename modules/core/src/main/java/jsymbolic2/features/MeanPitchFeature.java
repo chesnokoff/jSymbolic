@@ -23,13 +23,9 @@ public class MeanPitchFeature
 	public MeanPitchFeature()
 	{
 		code = "P-14";
-		String name = "Mean Pitch";
-		String description = "Mean MIDI pitch value, averaged across all pitched notes in the piece. Set to 0 if there are no pitched notes.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Mean Pitch";
+		description = "Mean MIDI pitch value, averaged across all pitched notes in the piece. Set to 0 if there are no pitched notes.";
+
 	}
 	
 

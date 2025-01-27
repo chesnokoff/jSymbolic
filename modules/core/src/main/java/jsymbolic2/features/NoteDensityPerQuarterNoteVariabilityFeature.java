@@ -29,13 +29,9 @@ public class NoteDensityPerQuarterNoteVariabilityFeature
 	public NoteDensityPerQuarterNoteVariabilityFeature()
 	{
 		code = "R-12";
-		String name = "Note Density per Quarter Note Variability";
-		String description = "How much the note density per quarter note (average number of note onsetss per idealized quarter note duration) varies throughout the piece. Takes into account all notes in all voices, including both pitched and unpitched notes. In order to calculate this, the piece is broken into windows of 8 quarter note duration, and the note density of each window is calculated. The final value of this feature is then found by calculating the standard deviation of the note densities of these windows. Set to 0 if there is insufficient music for more than one window.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Note Density per Quarter Note Variability";
+		description = "How much the note density per quarter note (average number of note onsetss per idealized quarter note duration) varies throughout the piece. Takes into account all notes in all voices, including both pitched and unpitched notes. In order to calculate this, the piece is broken into windows of 8 quarter note duration, and the note density of each window is calculated. The final value of this feature is then found by calculating the standard deviation of the note densities of these windows. Set to 0 if there is insufficient music for more than one window.";
+
 	}
 	
 

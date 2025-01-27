@@ -23,13 +23,9 @@ public class NumberOfPitchedInstrumentsFeature
 	public NumberOfPitchedInstrumentsFeature()
 	{
 		code = "I-8";
-		String name = "Number of Pitched Instruments";
-		String description = "Total number of (pitched) General MIDI instrument patches that are used to play at least one note.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Number of Pitched Instruments";
+		description = "Total number of (pitched) General MIDI instrument patches that are used to play at least one note.";
+
 	}
 	
 

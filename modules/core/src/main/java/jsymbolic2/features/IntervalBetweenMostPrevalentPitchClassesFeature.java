@@ -23,13 +23,9 @@ public class IntervalBetweenMostPrevalentPitchClassesFeature
 	public IntervalBetweenMostPrevalentPitchClassesFeature()
 	{
 		code = "P-23";
-		String name = "Interval Between Most Prevalent Pitch Classes";
-		String description = "Absolute value of the difference (in semitones) between the pitches of the two most frequently occurring pitch classes.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Interval Between Most Prevalent Pitch Classes";
+		description = "Absolute value of the difference (in semitones) between the pitches of the two most frequently occurring pitch classes.";
+
 	}
 	
 

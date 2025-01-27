@@ -25,13 +25,9 @@ public class VariabilityOfNotePrevalenceOfUnpitchedInstrumentsFeature
 	public VariabilityOfNotePrevalenceOfUnpitchedInstrumentsFeature()
 	{
 		code = "I-7";
-		String name = "Variability of Note Prevalence of Unpitched Instruments";
-		String description = "Standard deviation of the fraction of total notes in the piece played by each (unpitched) MIDI Percussion Key Map instrument that is used to play at least one note. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the ones that meet the official standard.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Variability of Note Prevalence of Unpitched Instruments";
+		description = "Standard deviation of the fraction of total notes in the piece played by each (unpitched) MIDI Percussion Key Map instrument that is used to play at least one note. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the ones that meet the official standard.";
+
 	}
 	
 

@@ -22,13 +22,9 @@ public class DurationInSecondsFeature
 	public DurationInSecondsFeature()
 	{
 		code = "RT-4";
-		String name = "Duration in Seconds";
-		String description = "Total duration (in seconds) of the piece.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Duration in Seconds";
+		description = "Total duration (in seconds) of the piece.";
+
 	}
 	
 

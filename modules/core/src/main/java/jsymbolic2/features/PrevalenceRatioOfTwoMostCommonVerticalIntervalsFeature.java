@@ -24,11 +24,8 @@ public class PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature
 	public PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature()
 	{
 		code = "C-13";
-		String name = "Prevalence Ratio of Two Most Common Vertical Intervals";
-		String description = "Ratio between the fraction of notes corresponding to the second most common vertical interval on the wrapped vertical interval histogram and the fraction of vertical intervals corresponding to the most common vertical interval. Set to 0 if either of these prevalences are 0.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		name = "Prevalence Ratio of Two Most Common Vertical Intervals";
+		description = "Ratio between the fraction of notes corresponding to the second most common vertical interval on the wrapped vertical interval histogram and the fraction of vertical intervals corresponding to the most common vertical interval. Set to 0 if either of these prevalences are 0.";
 		dependencies = new String[] { "Prevalence of Most Common Vertical Interval", "Prevalence of Second Most Common Vertical Interval" };
 		offsets = null;
 	}

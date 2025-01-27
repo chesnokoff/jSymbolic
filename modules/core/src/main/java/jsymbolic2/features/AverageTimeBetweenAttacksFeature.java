@@ -23,13 +23,9 @@ public class AverageTimeBetweenAttacksFeature
 	public AverageTimeBetweenAttacksFeature()
 	{
 		code = "RT-7";
-		String name = "Average Time Between Attacks";
-		String description = "Average time (in seconds) between Note On events (regardless of MIDI channel). Set to 0 if there are less than two attacks.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Average Time Between Attacks";
+		description = "Average time (in seconds) between Note On events (regardless of MIDI channel). Set to 0 if there are less than two attacks.";
+
 	}
 	
 

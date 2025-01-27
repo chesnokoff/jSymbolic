@@ -1,6 +1,6 @@
 package jsymbolic2.features;
 
-import jsymbolic2.featureutils.Feature;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.midiUtilities.MidiBuildEvent;
 import org.junit.jupiter.api.Test;
@@ -41,7 +41,7 @@ public class VerticalMinorThirdPrevalenceFeatureTest {
         double[] vertical_intervals = new WrappedVerticalIntervalHistogramFeature().extractFeature(test_tracks, inter, vertical_interval_other_features);
         double[][] other_features = new double[1][];
         other_features[0] = vertical_intervals;
-        Feature actual_common = new VerticalMinorThirdPrevalenceFeature();
+        MIDIFeatureExtractor actual_common = new VerticalMinorThirdPrevalenceFeature();
         double[] actual_chord_type = actual_common.extractFeature(test_tracks, inter, other_features);
         double[] expected_chord_type = {0.333};
         assertArrayEquals(expected_chord_type, actual_chord_type, 0.01);

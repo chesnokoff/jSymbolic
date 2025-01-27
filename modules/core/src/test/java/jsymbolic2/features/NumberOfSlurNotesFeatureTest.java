@@ -1,6 +1,7 @@
 package jsymbolic2.features;
 
 import jsymbolic2.featureutils.MEIFeatureExtractor;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.jmei2midi.MeiSequence;
 import org.ddmal.jmei2midi.meielements.meispecific.MeiSpecificStorage;

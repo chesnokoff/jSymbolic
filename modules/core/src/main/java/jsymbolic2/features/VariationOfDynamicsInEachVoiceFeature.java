@@ -24,13 +24,9 @@ public class VariationOfDynamicsInEachVoiceFeature
 	public VariationOfDynamicsInEachVoiceFeature()
 	{
 		code = "D-3";
-		String name = "Variation of Dynamics In Each Voice";
-		String description = "Standard deviations of note loudness levels within each MIDI channel, averaged across all channels. Only channels that contain at least one note are included in this calculation.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Variation of Dynamics In Each Voice";
+		description = "Standard deviations of note loudness levels within each MIDI channel, averaged across all channels. Only channels that contain at least one note are included in this calculation.";
+
 	}
 	
 

@@ -23,13 +23,9 @@ public class VoiceEqualityDynamicsFeature
 	public VoiceEqualityDynamicsFeature()
 	{
 		code = "T-6";
-		String name = "Voice Equality - Dynamics";
-		String description = "Standard deviation of the average loudness (MIDI velocity) of notes in each channel that contains at least one note.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Voice Equality - Dynamics";
+		description = "Standard deviation of the average loudness (MIDI velocity) of notes in each channel that contains at least one note.";
+
 	}
 	
 

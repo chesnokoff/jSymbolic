@@ -23,13 +23,9 @@ public class PrevalenceOfMostCommonMelodicInterval
 	public PrevalenceOfMostCommonMelodicInterval()
 	{
 		code = "M-6";
-		String name = "Prevalence of Most Common Melodic Interval";
-		String description = "Fraction of all melodic intervals that corresponds to the most common melodic interval.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Prevalence of Most Common Melodic Interval";
+		description = "Fraction of all melodic intervals that corresponds to the most common melodic interval.";
+
 	}
 	
 

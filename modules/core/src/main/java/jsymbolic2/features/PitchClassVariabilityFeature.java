@@ -24,13 +24,9 @@ public class PitchClassVariabilityFeature
 	public PitchClassVariabilityFeature()
 	{
 		code = "P-25";
-		String name = "Pitch Class Variability";
-		String description = "Standard deviation of the pitch classes (where 0 corresponds to C, 1 to C#/Db, etc.) of all pitched notes in the piece. Provides a measure of how close the pitch classes as a whole are to the mean pitch class.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Pitch Class Variability";
+		description = "Standard deviation of the pitch classes (where 0 corresponds to C, 1 to C#/Db, etc.) of all pitched notes in the piece. Provides a measure of how close the pitch classes as a whole are to the mean pitch class.";
+
 	}
 	
 

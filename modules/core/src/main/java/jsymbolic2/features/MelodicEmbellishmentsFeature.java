@@ -29,13 +29,9 @@ public class MelodicEmbellishmentsFeature
 	public MelodicEmbellishmentsFeature()
 	{
 		code = "M-21";
-		String name = "Melodic Embellishments";
-		String description = "Fraction of all notes that are surrounded on both sides by MIDI Note Ons on the same MIDI channel that have durations at least three times as long as the central note. Set to 0 if there are no notes in the piece.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Melodic Embellishments";
+		description = "Fraction of all notes that are surrounded on both sides by MIDI Note Ons on the same MIDI channel that have durations at least three times as long as the central note. Set to 0 if there are no notes in the piece.";
+
 	}
 	
 

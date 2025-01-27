@@ -23,13 +23,9 @@ public class RelativeNoteDurationsOfLowestLineFeature
 	public RelativeNoteDurationsOfLowestLineFeature()
 	{
 		code = "T-14";
-		String name = "Relative Note Durations of Lowest Line";
-		String description = "Average duration of notes (in seconds) in the channel with the lowest average pitch, divided by the average duration of notes in all channels that contain at least one note.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Relative Note Durations of Lowest Line";
+		description = "Average duration of notes (in seconds) in the channel with the lowest average pitch, divided by the average duration of notes in all channels that contain at least one note.";
+
 	}
 	
 

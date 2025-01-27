@@ -24,13 +24,9 @@ public class VoiceOverlapFeature
 	public VoiceOverlapFeature()
 	{
 		code = "T-16";
-		String name = "Voice Overlap";
-		String description = "Number of notes played within the range of another channel, divided by the total number of notes in the piece as a whole.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Voice Overlap";
+		description = "Number of notes played within the range of another channel, divided by the total number of notes in the piece as a whole.";
+
 	}
 	
 

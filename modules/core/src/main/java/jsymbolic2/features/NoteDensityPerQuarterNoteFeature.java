@@ -24,13 +24,9 @@ public class NoteDensityPerQuarterNoteFeature
 	public NoteDensityPerQuarterNoteFeature()
 	{
 		code = "R-10";
-		String name = "Note Density per Quarter Note";
-		String description = "Average number of note onsets per unit of time corresponding to an idealized quarter note. Takes into account all notes in all voices, including both pitched and unpitched notes.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Note Density per Quarter Note";
+		description = "Average number of note onsets per unit of time corresponding to an idealized quarter note. Takes into account all notes in all voices, including both pitched and unpitched notes.";
+
 	}
 	
 

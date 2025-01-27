@@ -1,6 +1,6 @@
 package jsymbolic2.features;
 
-import jsymbolic2.featureutils.Feature;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.midiUtilities.MidiBuildEvent;
 import org.junit.jupiter.api.AfterEach;
@@ -47,7 +47,7 @@ public class VerticalIntervalWrappedHistogramFeatureTest {
         t1_tracks.add(e_tracks5);
         t1_tracks.add(e_tracks6);
 
-        Feature vertical = new WrappedVerticalIntervalHistogramFeature();
+        MIDIFeatureExtractor vertical = new WrappedVerticalIntervalHistogramFeature();
         MIDIIntermediateRepresentations actual_representation_tracks = new MIDIIntermediateRepresentations(test_tracks);
         double[] unwrapped_vertical_intervals = new VerticalIntervalHistogramFeature().extractFeature(test_tracks, actual_representation_tracks, null);
         double[][] vertical_interval_other_features = new double[1][];

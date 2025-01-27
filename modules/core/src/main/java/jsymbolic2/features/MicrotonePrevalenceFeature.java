@@ -25,13 +25,9 @@ public class MicrotonePrevalenceFeature
 	public MicrotonePrevalenceFeature()
 	{
 		code = "P-41";
-		String name = "Microtone Prevalence";
-		String description = "Number of pitched notes that are each associated with exactly one MIDI Pitch Bend message, divided by the total number of pitched Note Ons in the piece. Set to 0 if there are no pitched Note Ons in the piece.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Microtone Prevalence";
+		description = "Number of pitched notes that are each associated with exactly one MIDI Pitch Bend message, divided by the total number of pitched Note Ons in the piece. Set to 0 if there are no pitched Note Ons in the piece.";
+
 	}
 	
 

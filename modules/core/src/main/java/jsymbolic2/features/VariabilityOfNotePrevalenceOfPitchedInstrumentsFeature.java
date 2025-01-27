@@ -23,13 +23,9 @@ public class VariabilityOfNotePrevalenceOfPitchedInstrumentsFeature
 	public VariabilityOfNotePrevalenceOfPitchedInstrumentsFeature()
 	{
 		code = "I-6";
-		String name = "Variability of Note Prevalence of Pitched Instruments";
-		String description = "Standard deviation of the fraction of total notes in the piece played by each (pitched) General MIDI Instrument patch that is used to play at least one note.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Variability of Note Prevalence of Pitched Instruments";
+		description = "Standard deviation of the fraction of total notes in the piece played by each (pitched) General MIDI Instrument patch that is used to play at least one note.";
+
 	}
 	
 

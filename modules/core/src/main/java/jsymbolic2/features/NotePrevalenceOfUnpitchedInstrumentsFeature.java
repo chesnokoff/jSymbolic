@@ -27,13 +27,10 @@ public class NotePrevalenceOfUnpitchedInstrumentsFeature
 	public NotePrevalenceOfUnpitchedInstrumentsFeature()
 	{
 		code = "I-4";
-		String name = "Note Prevalence of Unpitched Instruments";
-		String description = "A feature vector indicating the fraction of (unpitched) notes played with each of the 47 MIDI Percussion Key Map instruments. Has one entry for each of these 47 instruments, and the value of each is set to the number of Note Ons played with the corresponding instrument, divided by the total number of Note Ons in the piece. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the ones that meet the official standard (they are correspondingly indexed in this feature vector from 0 to 46, such that index 0 corresponds to Acoustic Bass Drum, index 4 corresponds to Hand Clap, etc.).";
-		boolean is_sequential = true;
-		int dimensions = 47;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Note Prevalence of Unpitched Instruments";
+		description = "A feature vector indicating the fraction of (unpitched) notes played with each of the 47 MIDI Percussion Key Map instruments. Has one entry for each of these 47 instruments, and the value of each is set to the number of Note Ons played with the corresponding instrument, divided by the total number of Note Ons in the piece. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the ones that meet the official standard (they are correspondingly indexed in this feature vector from 0 to 46, such that index 0 corresponds to Acoustic Bass Drum, index 4 corresponds to Hand Clap, etc.).";
+		dimensions = 47;
+
 	}
 	
 

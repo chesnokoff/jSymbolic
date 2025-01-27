@@ -25,11 +25,8 @@ public class RelativePrevalenceOfMostCommonRhythmicValuesFeature
 	public RelativePrevalenceOfMostCommonRhythmicValuesFeature()
 	{
 		code = "R-28";
-		String name = "Relative Prevalence of Most Common Rhythmic Values";
-		String description = "Relative frequency of the of the second most common rhythmic value in the piece, divided by the relative frequency of the most common rhythmic value. This calculation includes both pitched and unpitched notes, is calculated after rhythmic quantization, is not influenced by tempo, and is calculated without regard to the dynamics, voice or instrument of any given note.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		name = "Relative Prevalence of Most Common Rhythmic Values";
+		description = "Relative frequency of the of the second most common rhythmic value in the piece, divided by the relative frequency of the most common rhythmic value. This calculation includes both pitched and unpitched notes, is calculated after rhythmic quantization, is not influenced by tempo, and is calculated without regard to the dynamics, voice or instrument of any given note.";
 		dependencies = new String[] { "Rhythmic Value Histogram" };
 		offsets = null;
 	}

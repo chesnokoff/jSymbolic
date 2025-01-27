@@ -23,13 +23,9 @@ public class ElectricGuitarPrevalenceFeature
 	public ElectricGuitarPrevalenceFeature()
 	{
 		code = "I-13";
-		String name = "Electric Guitar Prevalence";
-		String description = "Fraction of all Note Ons played by electric guitar instruments (General MIDI patches 27 to 32).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Electric Guitar Prevalence";
+		description = "Fraction of all Note Ons played by electric guitar instruments (General MIDI patches 27 to 32).";
+
 	}
 	
 

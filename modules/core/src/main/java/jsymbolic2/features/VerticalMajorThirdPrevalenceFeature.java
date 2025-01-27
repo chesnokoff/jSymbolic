@@ -25,13 +25,9 @@ public class VerticalMajorThirdPrevalenceFeature
 	public VerticalMajorThirdPrevalenceFeature()
 	{
 		code = "C-26";
-		String name = "Vertical Major Third Prevalence";
-		String description = "Fraction of the music by time where at least one wrapped vertical major third is sounding (regardless of whatever other vertical intervals may or may not be sounding at the same time). Only that part of the music where one or more pitched notes is sounding is included in this calculation (rests and sections containing only unpitched notes are ignored).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Vertical Major Third Prevalence";
+		description = "Fraction of the music by time where at least one wrapped vertical major third is sounding (regardless of whatever other vertical intervals may or may not be sounding at the same time). Only that part of the music where one or more pitched notes is sounding is included in this calculation (rests and sections containing only unpitched notes are ignored).";
+
 	}
 	
 

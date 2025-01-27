@@ -22,13 +22,9 @@ public class RhythmicVariabilityFeature
 	public RhythmicVariabilityFeature()
 	{
 		code = "RT-27";
-		String name = "Rhythmic Variability";
-		String description = "Standard deviation of the beat histogram bin magnitudes";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Rhythmic Variability";
+		description = "Standard deviation of the beat histogram bin magnitudes";
+
 	}
 	
 

@@ -23,13 +23,9 @@ public class RhythmicVariabilityTempoStandardizedFeature
 	public RhythmicVariabilityTempoStandardizedFeature()
 	{
 		code = "R-64";
-		String name = "Rhythmic Variability - Tempo Standardized";
-		String description = "Standard deviation of the tempo-standardized beat histogram bin magnitudes";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Rhythmic Variability - Tempo Standardized";
+		description = "Standard deviation of the tempo-standardized beat histogram bin magnitudes";
+
 	}
 	
 

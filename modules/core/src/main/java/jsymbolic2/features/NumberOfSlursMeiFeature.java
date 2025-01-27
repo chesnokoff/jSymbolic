@@ -29,13 +29,9 @@ public class NumberOfSlursMeiFeature extends MEIFeatureExtractor
 	public NumberOfSlursMeiFeature()
 	{
 		code = "S-2";
-		String name = "Number of Slurs";
-		String description = "The total number of notes marked with slurs in the piece (i.e. the number of notes indicated as notes with slurs in the MEI encoding) divided by the total number of pitched notes in the music.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Number of Slurs";
+		description = "The total number of notes marked with slurs in the piece (i.e. the number of notes indicated as notes with slurs in the MEI encoding) divided by the total number of pitched notes in the music.";
+
 	}
 	
 

@@ -23,13 +23,9 @@ public class ViolinPrevalenceFeature
 	public ViolinPrevalenceFeature()
 	{
 		code = "I-14";
-		String name = "Violin Prevalence";
-		String description = "Fraction of all Note Ons played by violin instruments (General MIDI patches 41 or 111).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Violin Prevalence";
+		description = "Fraction of all Note Ons played by violin instruments (General MIDI patches 41 or 111).";
+
 	}
 	
 

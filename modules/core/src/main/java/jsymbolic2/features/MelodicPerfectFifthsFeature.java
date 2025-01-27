@@ -22,13 +22,9 @@ public class MelodicPerfectFifthsFeature
 	public MelodicPerfectFifthsFeature()
 	{
 		code = "M-15";
-		String name = "Melodic Perfect Fifths";
-		String description = "Fraction of melodic intervals that are perfect fifths.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Melodic Perfect Fifths";
+		description = "Fraction of melodic intervals that are perfect fifths.";
+
 	}
 	
 

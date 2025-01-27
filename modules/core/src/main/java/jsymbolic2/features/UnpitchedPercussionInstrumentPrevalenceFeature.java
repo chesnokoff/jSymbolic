@@ -24,13 +24,9 @@ public class UnpitchedPercussionInstrumentPrevalenceFeature
 	public UnpitchedPercussionInstrumentPrevalenceFeature()
 	{
 		code = "I-10";
-		String name = "Unpitched Percussion Instrument Prevalence";
-		String description = "Fraction of all Note Ons played by (unpitched) MIDI Percussion Key Map instruments. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the ones that meet the official standard.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Unpitched Percussion Instrument Prevalence";
+		description = "Fraction of all Note Ons played by (unpitched) MIDI Percussion Key Map instruments. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the ones that meet the official standard.";
+
 	}
 	
 

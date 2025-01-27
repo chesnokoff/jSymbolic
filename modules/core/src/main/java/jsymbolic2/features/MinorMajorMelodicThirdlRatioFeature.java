@@ -24,13 +24,9 @@ public class MinorMajorMelodicThirdlRatioFeature
 	public MinorMajorMelodicThirdlRatioFeature()
 	{
 		code = "M-20";
-		String name = "Minor Major Melodic Third Ratio";
-		String description = "Combined fraction of all melodic intervals that are minor thirds, divided by the combined fraction of all melodic intervals that are major thirds. Set to 0 if there are no melodic minor thirds or melodic major thirds.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Minor Major Melodic Third Ratio";
+		description = "Combined fraction of all melodic intervals that are minor thirds, divided by the combined fraction of all melodic intervals that are major thirds. Set to 0 if there are no melodic minor thirds or melodic major thirds.";
+
 	}
 	
 

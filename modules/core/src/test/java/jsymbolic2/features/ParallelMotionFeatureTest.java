@@ -1,6 +1,6 @@
 package jsymbolic2.features;
 
-import jsymbolic2.featureutils.Feature;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
 import jsymbolic2.processing.MIDIIntermediateRepresentations;
 import org.ddmal.midiUtilities.MidiBuildEvent;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ public class ParallelMotionFeatureTest {
         t2_tracks.add(e_tracks14);
 
         MIDIIntermediateRepresentations inter = new MIDIIntermediateRepresentations(test_tracks);
-        Feature actual_common = new ParallelMotionFeature();
+        MIDIFeatureExtractor actual_common = new ParallelMotionFeature();
         double[] actual_value = actual_common.extractFeature(test_tracks, inter, null);
         double[] expected_value = {0.5};
         assertArrayEquals(expected_value, actual_value, 0.0001);

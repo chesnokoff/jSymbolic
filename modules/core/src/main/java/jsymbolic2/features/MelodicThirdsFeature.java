@@ -22,13 +22,9 @@ public class MelodicThirdsFeature
 	public MelodicThirdsFeature()
 	{
 		code = "M-12";
-		String name = "Melodic Thirds";
-		String description = "Fraction of melodic intervals that are major or minor thirds.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Melodic Thirds";
+		description = "Fraction of melodic intervals that are major or minor thirds.";
+
 	}
 	
 

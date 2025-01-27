@@ -23,13 +23,9 @@ public class RelativeNoteDensityOfHighestLineFeature
 	public RelativeNoteDensityOfHighestLineFeature()
 	{
 		code = "T-13";
-		String name = "Relative Note Density of Highest Line";
-		String description = "Number of Note Ons in the channel with the highest average pitch, divided by the average number of Note Ons in all channels that contain at least one note.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Relative Note Density of Highest Line";
+		description = "Number of Note Ons in the channel with the highest average pitch, divided by the average number of Note Ons in all channels that contain at least one note.";
+
 	}
 	
 

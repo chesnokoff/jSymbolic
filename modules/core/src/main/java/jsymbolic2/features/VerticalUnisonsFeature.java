@@ -24,11 +24,8 @@ public class VerticalUnisonsFeature
 	public VerticalUnisonsFeature()
 	{
 		code = "C-14";
-		String name = "Vertical Unisons";
-		String description = "Fraction of all vertical intervals that are unisons. This is weighted by how long intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		name = "Vertical Unisons";
+		description = "Fraction of all vertical intervals that are unisons. This is weighted by how long intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note).";
 		dependencies = new String[] { "Vertical Interval Histogram" };
 		offsets = null;
 	}

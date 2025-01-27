@@ -25,13 +25,9 @@ public class AverageLengthOfMelodicArcsFeature
 	public AverageLengthOfMelodicArcsFeature()
 	{
 		code = "M-23";
-		String name = "Average Length of Melodic Arcs";
-		String description = "Average number of notes that separate melodic peaks and troughs. Similar assumptions are made in the calculation of this feature as for the Melodic Interval Histogram. Set to 0 if no melodic arcs are found.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Average Length of Melodic Arcs";
+		description = "Average number of notes that separate melodic peaks and troughs. Similar assumptions are made in the calculation of this feature as for the Melodic Interval Histogram. Set to 0 if no melodic arcs are found.";
+
 	}
 	
 

@@ -23,13 +23,9 @@ public class AverageNumberOfIndependentVoicesFeature
 	public AverageNumberOfIndependentVoicesFeature()
 	{
 		code = "T-2";
-		String name = "Average Number of Independent Voices";
-		String description = "Average number of different channels in which notes are sounded simultaneously. Rests are not included in this calculation.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Average Number of Independent Voices";
+		description = "Average number of different channels in which notes are sounded simultaneously. Rests are not included in this calculation.";
+
 	}
 	
 

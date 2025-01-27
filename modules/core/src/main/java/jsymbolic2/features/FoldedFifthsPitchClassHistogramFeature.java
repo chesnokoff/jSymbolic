@@ -27,13 +27,10 @@ public class FoldedFifthsPitchClassHistogramFeature
 	public FoldedFifthsPitchClassHistogramFeature()
 	{
 		code = "P-3";
-		String name = "Folded Fifths Pitch Class Histogram";
-		String description = "A feature vector consisting of bin magnitudes of the folded fifths pitch class histogram described in the jSymbolic manual. Each bin corresponds to one of the 12 pitch classes, and the bins are ordered such that adjacent bins are separated by an ascending perfect fifth. Bin 0 corresponds to C. Enharmonic equivalents are assigned the same pitch class number. The magnitude of of each bin is proportional to the the number of times notes occurred at the bin's pitch class in the piece, relative to all other pitch classes in the piece (the histogram is normalized).";
-		boolean is_sequential = true;
-		int dimensions = 12;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Folded Fifths Pitch Class Histogram";
+		description = "A feature vector consisting of bin magnitudes of the folded fifths pitch class histogram described in the jSymbolic manual. Each bin corresponds to one of the 12 pitch classes, and the bins are ordered such that adjacent bins are separated by an ascending perfect fifth. Bin 0 corresponds to C. Enharmonic equivalents are assigned the same pitch class number. The magnitude of of each bin is proportional to the the number of times notes occurred at the bin's pitch class in the piece, relative to all other pitch classes in the piece (the histogram is normalized).";
+		dimensions = 12;
+
 	}
 	
 

@@ -23,13 +23,9 @@ public class StringKeyboardPrevalenceFeature
 	public StringKeyboardPrevalenceFeature()
 	{
 		code = "I-11";
-		String name = "String Keyboard Prevalence";
-		String description = "Fraction of all Note Ons played by string keyboard instruments (General MIDI patches 1 to 8).";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "String Keyboard Prevalence";
+		description = "Fraction of all Note Ons played by string keyboard instruments (General MIDI patches 1 to 8).";
+
 	}
 	
 

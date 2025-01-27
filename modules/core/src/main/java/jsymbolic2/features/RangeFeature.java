@@ -22,13 +22,9 @@ public class RangeFeature
 	public RangeFeature()
 	{
 		code = "P-8";
-		String name = "Range";
-		String description = "Difference in semitones between the highest and lowest pitches.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Range";
+		description = "Difference in semitones between the highest and lowest pitches.";
+
 	}
 	
 

@@ -22,13 +22,9 @@ public class PrevalenceOfMostCommonPitchFeature
 	public PrevalenceOfMostCommonPitchFeature()
 	{
 		code = "P-18";
-		String name = "Prevalence of Most Common Pitch";
-		String description = "Fraction of notes that correspond to the most common pitch.";
-		boolean is_sequential = true;
-		int dimensions = 1;
-		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
-		dependencies = null;
-		offsets = null;
+		name = "Prevalence of Most Common Pitch";
+		description = "Fraction of notes that correspond to the most common pitch.";
+
 	}
 	
 

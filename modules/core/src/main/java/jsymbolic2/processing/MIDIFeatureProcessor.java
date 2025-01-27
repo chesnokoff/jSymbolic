@@ -46,7 +46,7 @@ import java.util.stream.IntStream;
 public class MIDIFeatureProcessor {
     /* FIELDS ****************************************************************/
 
-    private static Map<String, MIDIFeatureExtractor> name2feature = new HashMap<>();
+    private static Map<String, MIDIFeatureExtractor> name2feature = new ConcurrentHashMap<>();
 
     /**
      * The window size in seconds used for dividing up the recordings to
@@ -345,7 +345,7 @@ public class MIDIFeatureProcessor {
                 double[][][] dependencies = new double[sequences.size()][ArrayUtils.nullToEmpty(featureExtractor.getDepenedencies()).length][];
                 for (int j = 0; j < ArrayUtils.nullToEmpty(featureExtractor.getDepenedencies()).length; j++) {
                     String dependency = featureExtractor.getDepenedencies()[j];
-                    dependencies[i][j] = map.get(name2feature.get(dependency))[i];
+                    dependencies[i][j] = map.get(dependency)[i];
                 }
                 try {
                     results[i] = featureExtractor.extractFeature(sequences.get(i),
@@ -399,17 +399,20 @@ public class MIDIFeatureProcessor {
         }
         ForkJoinPool pool = ForkJoinPool.commonPool();
         ConcurrentHashMap<String, double[][]> resultsMap = new ConcurrentHashMap<>();
-        IntStream.range(0, featureExtractorsDefinitions.length)
+        List<ForkJoinTask<Void>> forkJoinTasks = IntStream.range(0,
+                featureExtractorsDefinitions.length)
             .filter(i -> featuresToSaveMask[i])
             .mapToObj(i -> name2feature.get(featureExtractorsDefinitions[i].name))
             .map(featureDefinition -> pool.submit(new Worker(null,
                 Arrays.stream(windows).toList(),
                 representations,
                 resultsMap,
-                featureDefinition))).toList().forEach(voidForkJoinTask -> {
+                featureDefinition))).toList();
+        forkJoinTasks.forEach(voidForkJoinTask -> {
               try {
                 voidForkJoinTask.get();
               } catch (InterruptedException | ExecutionException e) {
+                  e.printStackTrace();
                 throw new RuntimeException(e);
               }
             });

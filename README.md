@@ -1,3 +1,9 @@
+![Static Badge](https://img.shields.io/badge/Java-17-green)
+![Static Badge](https://img.shields.io/badge/Gradle-8.12-blue)
+![Static Badge](https://img.shields.io/badge/Contributions_Welcome-green)
+![Static Badge](https://img.shields.io/badge/License-GNU_GPL_v2-blue)
+![Static Badge](https://img.shields.io/badge/Javadoc-green)
+
 # jSymbolic 2.2
 by Cory McKay
 

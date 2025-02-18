@@ -1,0 +1,767 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MusicFileSelectorPanel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.gui</a> &gt; <span class="el_source">MusicFileSelectorPanel.java</span></div><h1>MusicFileSelectorPanel.java</h1><pre class="source lang-java linenums">package jsymbolic2.gui;
+
+import jsymbolic2.configuration.ConfigurationFileData;
+import jsymbolic2.configuration.ConfigurationInputFiles;
+import jsymbolic2.processing.MIDIReporter;
+import jsymbolic2.processing.MusicFilter;
+import jsymbolic2.processing.SymbolicMusicFileUtilities;
+import mckay.utilities.general.FileFilterImplementation;
+import mckay.utilities.gui.templates.InformationDialogFlexible;
+import mckay.utilities.sound.midi.MIDIMethods;
+import mckay.utilities.staticlibraries.ArrayMethods;
+import mckay.utilities.staticlibraries.StringMethods;
+import org.ddmal.jmei2midi.MeiSequence;
+
+import javax.sound.midi.Sequence;
+import javax.sound.midi.Sequencer;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+/**
+ * A JPanel containing a table listing all files from which features are to be extracted. The first column
+ * indicates the name of each file, and the second indicates its file path. Double clicking on a given row
+ * provides additional metadata about its associated file. Buttons are included for adding or removing files
+ * from the table, for sonifying them and for generating reports on them. The table may be sorted by clicking
+ * on either of the column headings.
+ *
+ * @author Cory McKay and Tristano Tenaglia
+ */
+@SuppressWarnings(&quot;jol&quot;)
+public class MusicFileSelectorPanel
+        extends JPanel
+        implements ActionListener {
+    /* STATIC FINAL FIELDS **********************************************************************************/
+
+
+    /**
+     * The default directory to begin in when looking for symbolic music files to load.
+     */
+    private static final String DEFAULT_LOAD_DIRECTORY = &quot;.&quot;;
+
+    /**
+     * File extensions of symbolic music files recognized by jSymbolic.
+     */
+<span class="nc" id="L52">    private static final String[] ALLOWED_EXTENSIONS = {&quot;mid&quot;, &quot;midi&quot;, &quot;mei&quot;};</span>
+
+
+    /* FIELDS ***********************************************************************************************/
+
+
+    /**
+     * Holds a reference to the JFrame that holds this MusicFileSelectorPanel object.
+     */
+    private final OuterFrame outer_frame;
+
+    /**
+     * The table holding symbolic music files from which features will eventually be extracted.
+     */
+    private JTable symbolic_music_files_table;
+
+    /**
+     * The table model for symbolic_music_files_table.
+     */
+    private SymbolicMusicFilesTableModel symbolic_music_files_table_model;
+
+    /**
+     * A button for adding symbolic music files to the the table of files from which features will eventually
+     * be extracted. Brings up a file chooser dialog box for doing so. An error message will be displayed if
+     * invalid or nonexistent files are chosen. Files chosen that are already on the table will be ignored. If
+     * any files are selected, then a report will be written to the Processing Information text area.
+     */
+    private JButton add_files_button;
+
+    /**
+     * A button for adding symbolic music files to the the table of files from which features will eventually
+     * be extracted. Brings up a file chooser dialog box that allows the user to choose one (and only one)
+     * directory, whose contents are added to the symbolic_music_files_table list of references of symbolic
+     * music files. Any files that do not have a file extension associated with a compatible symbolic music
+     * file are filtered out from consideration. Sub-directories are also explored, recursively. If an entered
+     * path corresponds to a directory that does not exist, or that contains an invalid symbolic music file,
+     * then an error message dialog box is displayed. Files chosen that are already on the table will be
+     * ignored. Prints a report to the Processing Information text area.
+     */
+    private JButton add_directory_button;
+
+    /**
+     * A button for displaying consistency reports. Brings up a new text window holding a formatted
+     * consistency report on those symbolic music files that the user has selected on the
+     * symbolic_music_files_table table (i.e. the particular ones that are selected, not necessarily all of
+     * the ones that appear on the table). This report begins by providing, for each file separately, an
+     * intraconsistenccy report that indicates whether the given file has more than one value for a range of
+     * quantities (e.g. more than one tempo, more than one meter, etc.). Then, if more than one file has been
+     * selected by the user, an interconsistency is provided that indicates, for all files considered as a
+     * whole, whether all the files share the same value or set of values for each of the quantities being
+     * tested for (e.g. all the files have the same tempo, or the same set of tempos).
+     */
+    private JButton get_consistency_reports_button;
+
+    /**
+     * A button for displaying MIDI dump reports. Brings up a new text window holding a report on those
+     * symbolic music files that the user has selected on the symbolic_music_files_table table (i.e. the
+     * particular ones that are selected, not necessarily all of the ones that appear on the table). This
+     * report indicates, separately for each file selected by the user, a structured transcription of all the
+     * relevant MIDI messages that the given file contains. If a given file is an MEI file rather than a MIDI
+     * file, then it is converted to MIDI before the report on it is generated.
+     */
+    private JButton see_midi_messages_button;
+
+    /**
+     * Removes any files selected on the table from the table.
+     */
+    private JButton remove_files_button;
+
+    /**
+     * Plays the selected symbolic music file. Converts it to MIDI if it is not already MIDI.
+     */
+    private JButton sonify_file_directly_button;
+
+    /**
+     * Stops any currently ongoing playback of symbolic music files.
+     */
+    private JButton stop_sonification_button;
+
+    /**
+     * Allows the user to choose one or more symbolic music files to load.
+     */
+    private JFileChooser load_symbolic_music_file_chooser;
+
+    /**
+     * Allows the user to a directory from which all symbolic music files with qualifying file extensions will
+     * be loaded. Sub-directories are explored recursively.
+     */
+    private JFileChooser load_symbolic_music_in_a_directory_chooser;
+
+    /**
+     * For synthesizing MIDI streams.
+     */
+    private Sequencer midi_sequencer;
+
+
+    /* CONSTRUCTOR ******************************************************************************************/
+
+
+    /**
+     * Set up this MusicFileSelector's fields and GUI elements.
+     *
+     * @param outer_frame The JFrame element that contains this JPanel.
+     */
+<span class="nc" id="L156">    public MusicFileSelectorPanel(OuterFrame outer_frame) {</span>
+        // Store a reference to the containing JFrame
+<span class="nc" id="L158">        this.outer_frame = outer_frame;</span>
+
+        // Initialize JFileChoosers
+<span class="nc" id="L161">        load_symbolic_music_file_chooser = null;</span>
+<span class="nc" id="L162">        load_symbolic_music_in_a_directory_chooser = null;</span>
+
+        // Initialize the symbolic_music_files_table and symbolic_music_files_table_model fields.
+<span class="nc" id="L165">        setUpSymbolicMusicFilesTable();</span>
+
+        // Set up the GUI elements on this JPanel
+<span class="nc" id="L168">        formatAndAddGuiElements();</span>
+
+        // Cause the table to respond to double clicks
+<span class="nc" id="L171">        addTableMouseListener();</span>
+<span class="nc" id="L172">    }</span>
+
+
+    /* PUBLIC METHODS ***************************************************************************************/
+
+
+    /**
+     * Calls the appropriate method when one of the JButtons on this JPanel is pressed.
+     *
+     * @param    event    The button-triggered event that is to be reacted to.
+     */
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        // React to the add_files_button
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (event.getSource().equals(add_files_button))</span>
+<span class="nc" id="L187">            addSymbolicMusicFilesToTableWithJFileChooser();</span>
+
+            // React to the add_directory_button
+<span class="nc bnc" id="L190" title="All 2 branches missed.">        else if (event.getSource().equals(add_directory_button))</span>
+<span class="nc" id="L191">            addDirectoryRecursivelyToTableWithJFileChooser();</span>
+
+            // React to the remove_files_button
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        else if (event.getSource().equals(remove_files_button))</span>
+<span class="nc" id="L195">            removeSymbolicMusicFilesFromTable();</span>
+
+            // React to the get_consistency_report_button
+<span class="nc bnc" id="L198" title="All 2 branches missed.">        else if (event.getSource().equals(get_consistency_reports_button))</span>
+<span class="nc" id="L199">            displayConsistencyReport();</span>
+
+            // React to the see_midi_messages_button
+<span class="nc bnc" id="L202" title="All 2 branches missed.">        else if (event.getSource().equals(see_midi_messages_button))</span>
+<span class="nc" id="L203">            displayMidiDump();</span>
+
+            // React to the sonify_file_directly_button
+<span class="nc bnc" id="L206" title="All 2 branches missed.">        else if (event.getSource().equals(sonify_file_directly_button))</span>
+<span class="nc" id="L207">            startMidiPlayback();</span>
+
+            // React to the stop_sonification_button
+<span class="nc bnc" id="L210" title="All 2 branches missed.">        else if (event.getSource().equals(stop_sonification_button))</span>
+<span class="nc" id="L211">            stopMidiPlayback();</span>
+<span class="nc" id="L212">    }</span>
+
+
+    /**
+     * Load references to files from the provided information parsed from a configuration settings file and
+     * add them to the symbolic_music_files_table.
+     *
+     * @param configuration_file_data Data parsed from a configuration settings file, potentially holding
+     *                                references to symbolic music files that should be referenced by the
+     *                                symbolic_music_files_table. Do nothing if this is null.
+     */
+    public void addMusicFilesParsedFromConfigFile(ConfigurationFileData configuration_file_data) {
+<span class="nc bnc" id="L224" title="All 2 branches missed.">        if (null != configuration_file_data) {</span>
+<span class="nc" id="L225">            ConfigurationInputFiles input_files = configuration_file_data.getInputFileList();</span>
+<span class="nc bnc" id="L226" title="All 2 branches missed.">            if (null != input_files)</span>
+<span class="nc" id="L227">                addSymbolicMusicFilesToTable(input_files.getValidFiles().toArray(new File[0]));</span>
+        }
+<span class="nc" id="L229">    }</span>
+
+
+    /**
+     * Get an array indicating all symbolic music files which are currently displayed on this object's
+     * symbolic_music_files_table, in the order that they are displayed on this table.
+     *
+     * @return The symbolic music files to extract features from, in the order they are displayed on the
+     * table. Null if there are none.
+     */
+    public SymbolicMusicFile[] getSymbolicMusicFilesToExtractFeaturesFrom() {
+<span class="nc bnc" id="L240" title="All 2 branches missed.">        if (0 == symbolic_music_files_table_model.getRowCount())</span>
+<span class="nc" id="L241">            return null;</span>
+
+<span class="nc" id="L243">        SymbolicMusicFile[] files_to_extract_features_from = new SymbolicMusicFile[symbolic_music_files_table_model.getRowCount()];</span>
+<span class="nc bnc" id="L244" title="All 2 branches missed.">        for (int i = 0; i &lt; files_to_extract_features_from.length; i++) {</span>
+<span class="nc" id="L245">            int table_model_index = symbolic_music_files_table.convertRowIndexToModel(i);</span>
+<span class="nc" id="L246">            File this_file = new File((String) symbolic_music_files_table_model.getValueAt(table_model_index, 1));</span>
+<span class="nc" id="L247">            files_to_extract_features_from[i] = new SymbolicMusicFile(this_file, null);</span>
+        }
+
+<span class="nc" id="L250">        return files_to_extract_features_from;</span>
+    }
+
+
+    /* STATIC METHODS ***************************************************************************************/
+
+
+    /**
+     * Find the total number of MIDI files and MEI files in the given music_files.
+     *
+     * @param midi_mei_counts An array of size 2, where the 0th entry corresponds to the number of MIDI
+     *                        files and the 1st entry corresponds to the number of MEI files. Both are
+     *                        typically initially 0, but do not have to be. This method adds the respective
+     *                        totals from music_files to these two entries. Sets both values to 0 if
+     *                        music_files is null.
+     * @param music_files     The symbolic music files to count.
+     */
+    private static void findNumberMeiAndMidiFile(int[] midi_mei_counts, SymbolicMusicFile[] music_files) {
+<span class="nc bnc" id="L268" title="All 2 branches missed.">        if (null == music_files) {</span>
+<span class="nc" id="L269">            midi_mei_counts[0] = 0;</span>
+<span class="nc" id="L270">            midi_mei_counts[1] = 0;</span>
+<span class="nc bnc" id="L271" title="All 2 branches missed.">        } else for (SymbolicMusicFile this_music_file : music_files) {</span>
+<span class="nc bnc" id="L272" title="All 2 branches missed.">            if (SymbolicMusicFileUtilities.isValidMidiFile(new File(this_music_file.file_path)))</span>
+<span class="nc" id="L273">                midi_mei_counts[0]++;</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">            else if (SymbolicMusicFileUtilities.isValidMeiFile(new File(this_music_file.file_path)))</span>
+<span class="nc" id="L275">                midi_mei_counts[1]++;</span>
+        }
+<span class="nc" id="L277">    }</span>
+
+
+    /* PRIVATE METHODS **************************************************************************************/
+
+
+    /**
+     * Initialize the symbolic_music_files_table_model and symbolic_music_files_table fields.
+     */
+    private void setUpSymbolicMusicFilesTable() {
+        // Set the column headings and ordering
+<span class="nc" id="L288">        Object[] column_names = {&quot;File Name&quot;, &quot;File Path&quot;};</span>
+
+        // Prepare the symbolic_music_files_table_model and symbolic_music_files_table fields.
+<span class="nc" id="L291">        symbolic_music_files_table_model = new SymbolicMusicFilesTableModel(column_names, 0);</span>
+<span class="nc" id="L292">        symbolic_music_files_table = new JTable(symbolic_music_files_table_model);</span>
+
+        // Make table sortable
+<span class="nc" id="L295">        symbolic_music_files_table.setAutoCreateRowSorter(true);</span>
+<span class="nc" id="L296">    }</span>
+
+
+    /**
+     * Instantiate (where not done already), set up and lay out the various GUI components on this JPanel. Add
+     * action listeners to buttons.
+     */
+    private void formatAndAddGuiElements() {
+        // Prepare this JPanel's basic layout settings
+<span class="nc" id="L305">        int horizontal_gap = OuterFrame.HORIZONTAL_GAP; // horizontal space between GUI elements</span>
+<span class="nc" id="L306">        int vertical_gap = OuterFrame.VERTICAL_GAP; // horizontal space between GUI elements</span>
+<span class="nc" id="L307">        setLayout(new BorderLayout(horizontal_gap, vertical_gap));</span>
+
+        // Add an overall title for this panel
+<span class="nc" id="L310">        JLabel panel_label = new JLabel(&quot;SYMBOLIC FILES TO EXTRACT FEATURES FROM&quot;);</span>
+<span class="nc" id="L311">        OuterFrame.formatLabel(panel_label);</span>
+
+        // Set up buttons
+<span class="nc" id="L314">        add_files_button = new JButton(&quot;Add Files&quot;);</span>
+<span class="nc" id="L315">        add_directory_button = new JButton(&quot;Add Directory&quot;);</span>
+<span class="nc" id="L316">        remove_files_button = new JButton(&quot;Remove Files&quot;);</span>
+<span class="nc" id="L317">        get_consistency_reports_button = new JButton(&quot;Consistency Report&quot;);</span>
+<span class="nc" id="L318">        see_midi_messages_button = new JButton(&quot;Contents Report&quot;);</span>
+<span class="nc" id="L319">        sonify_file_directly_button = new JButton(&quot;Play Sonification&quot;);</span>
+<span class="nc" id="L320">        stop_sonification_button = new JButton(&quot;Stop Sonification&quot;);</span>
+<span class="nc" id="L321">        JPanel button_panel = new JPanel(new GridLayout(2, 4, horizontal_gap, vertical_gap));</span>
+<span class="nc" id="L322">        button_panel.add(add_files_button);</span>
+<span class="nc" id="L323">        button_panel.add(add_directory_button);</span>
+<span class="nc" id="L324">        button_panel.add(remove_files_button);</span>
+<span class="nc" id="L325">        button_panel.add(new JLabel());</span>
+<span class="nc" id="L326">        button_panel.add(get_consistency_reports_button);</span>
+<span class="nc" id="L327">        button_panel.add(see_midi_messages_button);</span>
+<span class="nc" id="L328">        button_panel.add(sonify_file_directly_button);</span>
+<span class="nc" id="L329">        button_panel.add(stop_sonification_button);</span>
+
+        // Add action listeners to buttons
+<span class="nc" id="L332">        add_files_button.addActionListener(this);</span>
+<span class="nc" id="L333">        add_directory_button.addActionListener(this);</span>
+<span class="nc" id="L334">        remove_files_button.addActionListener(this);</span>
+<span class="nc" id="L335">        get_consistency_reports_button.addActionListener(this);</span>
+<span class="nc" id="L336">        see_midi_messages_button.addActionListener(this);</span>
+<span class="nc" id="L337">        sonify_file_directly_button.addActionListener(this);</span>
+<span class="nc" id="L338">        stop_sonification_button.addActionListener(this);</span>
+
+        // Make the symbolic_music_files_table scrollable and place it on its own JPanel
+<span class="nc" id="L341">        JScrollPane symbolic_music_files_scroll_pane = new JScrollPane(symbolic_music_files_table);</span>
+<span class="nc" id="L342">        JPanel symbolic_music_files_panel = new JPanel(new GridLayout(1, 1));</span>
+<span class="nc" id="L343">        symbolic_music_files_panel.add(symbolic_music_files_scroll_pane);</span>
+
+        // Add all GUI elements to this JPanel
+<span class="nc" id="L346">        add(panel_label, BorderLayout.NORTH);</span>
+<span class="nc" id="L347">        add(symbolic_music_files_panel, BorderLayout.CENTER);</span>
+<span class="nc" id="L348">        add(button_panel, BorderLayout.SOUTH);</span>
+<span class="nc" id="L349">        symbolic_music_files_table_model.fireTableDataChanged();</span>
+<span class="nc" id="L350">        repaint();</span>
+<span class="nc" id="L351">        outer_frame.repaint();</span>
+<span class="nc" id="L352">    }</span>
+
+
+    /**
+     * Makes it so that if a row is double clicked on, then a description of the row's corresponding symbolic
+     * music file is displayed in a pop-up window. Display an error dialog if this is not possible.
+     */
+    private void addTableMouseListener() {
+<span class="nc" id="L360">        symbolic_music_files_table.addMouseListener</span>
+<span class="nc" id="L361">                (</span>
+<span class="nc" id="L362">                        new MouseAdapter() {</span>
+                            @Override
+                            public void mouseClicked(MouseEvent event) {
+<span class="nc bnc" id="L365" title="All 2 branches missed.">                                if (2 == event.getClickCount()) {</span>
+<span class="nc" id="L366">                                    int row_clicked = symbolic_music_files_table.rowAtPoint(event.getPoint());</span>
+<span class="nc" id="L367">                                    row_clicked = symbolic_music_files_table.convertRowIndexToModel(row_clicked);</span>
+                                    try {
+<span class="nc" id="L369">                                        File file_to_examine = new File((String) symbolic_music_files_table_model.getValueAt(row_clicked, 1));</span>
+<span class="nc" id="L370">                                        String file_metadata = &quot;FILE PATH: &quot; + file_to_examine.getAbsolutePath() + &quot;\n&quot;;</span>
+<span class="nc" id="L371">                                        MeiSequence mei_sequence = null;</span>
+                                        try {
+<span class="nc" id="L373">                                            mei_sequence = new MeiSequence(file_to_examine);</span>
+<span class="nc" id="L374">                                        } catch (Exception e) {</span>
+<span class="nc" id="L375">                                        }</span>
+<span class="nc bnc" id="L376" title="All 2 branches missed.">                                        if (null != mei_sequence) {</span>
+<span class="nc" id="L377">                                            file_metadata += &quot;FILE TYPE: MEI\n&quot; +</span>
+<span class="nc" id="L378">                                                    &quot;SIZE: &quot; + (file_to_examine.length() / 1024) + &quot; KB\n&quot; +</span>
+<span class="nc" id="L379">                                                    &quot;LAST MODIFIED: &quot; + (new Date(file_to_examine.lastModified())) + &quot;\n&quot; +</span>
+<span class="nc" id="L380">                                                    &quot;FILE NAME: &quot; + file_to_examine.getName();</span>
+                                        } else {
+<span class="nc" id="L382">                                            file_metadata += &quot;FILE TYPE: MIDI\n&quot; +</span>
+<span class="nc" id="L383">                                                    &quot;SIZE: &quot; + (file_to_examine.length() / 1024) + &quot; KB\n&quot; +</span>
+<span class="nc" id="L384">                                                    &quot;LAST MODIFIED: &quot; + (new Date(file_to_examine.lastModified())) + &quot;\n&quot;;</span>
+<span class="nc" id="L385">                                            file_metadata += MIDIMethods.getMIDIFileFormatData(file_to_examine);</span>
+                                        }
+<span class="nc" id="L387">                                        JOptionPane.showMessageDialog(outer_frame,</span>
+<span class="nc" id="L388">                                                StringMethods.wrapString(file_metadata, OuterFrame.DIALOG_BOX_MAX_CHARS_PER_LINE, OuterFrame.DIALOG_BOX_HANGING_INDENT_CHARS),</span>
+                                                &quot;Symbolic Music File Metadata&quot;,
+                                                JOptionPane.INFORMATION_MESSAGE);
+<span class="nc" id="L391">                                    } catch (Exception e) {</span>
+<span class="nc" id="L392">                                        String message = &quot;Could not display metadata for the file:\n&quot; +</span>
+<span class="nc" id="L393">                                                &quot;     &quot; + symbolic_music_files_table_model.getValueAt(row_clicked, 1) + &quot;\n&quot; +</span>
+<span class="nc" id="L394">                                                &quot;Details: &quot; + e.getMessage();</span>
+<span class="nc" id="L395">                                        JOptionPane.showMessageDialog(outer_frame,</span>
+<span class="nc" id="L396">                                                StringMethods.wrapString(message, OuterFrame.DIALOG_BOX_MAX_CHARS_PER_LINE, OuterFrame.DIALOG_BOX_HANGING_INDENT_CHARS),</span>
+                                                &quot;Error&quot;,
+                                                JOptionPane.ERROR_MESSAGE);
+<span class="nc" id="L399">                                    }</span>
+                                }
+<span class="nc" id="L401">                            }</span>
+                        }
+                );
+<span class="nc" id="L404">    }</span>
+
+
+    /**
+     * Instantiates a JFileChooser for the load_symbolic_music_file_chooser field if one does not already
+     * exist. This dialog box allows the user to choose one or more files to add to the
+     * symbolic_music_files_table list of references of symbolic music files. Only symbolic music files of
+     * known types are displayed in this JFileChooser by default. If an entered file path corresponds to a
+     * file that does not exist, then an error message dialog box is displayed. Prints a report to the
+     * status_print_stream.
+     */
+    private void addSymbolicMusicFilesToTableWithJFileChooser() {
+        // Initialize the load_symbolic_music_file_chooser if it has not been opened yet
+<span class="nc bnc" id="L417" title="All 2 branches missed.">        if (null == load_symbolic_music_file_chooser) {</span>
+<span class="nc" id="L418">            load_symbolic_music_file_chooser = new JFileChooser();</span>
+<span class="nc" id="L419">            load_symbolic_music_file_chooser.setCurrentDirectory(new File(MusicFileSelectorPanel.DEFAULT_LOAD_DIRECTORY));</span>
+<span class="nc" id="L420">            load_symbolic_music_file_chooser.setFileFilter(new FileFilterImplementation(MusicFileSelectorPanel.ALLOWED_EXTENSIONS));</span>
+<span class="nc" id="L421">            load_symbolic_music_file_chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);</span>
+<span class="nc" id="L422">            load_symbolic_music_file_chooser.setMultiSelectionEnabled(true);</span>
+        }
+
+        // Read the user's choice of load or cancel
+<span class="nc" id="L426">        int dialog_result = load_symbolic_music_file_chooser.showOpenDialog(this);</span>
+
+        // Add the files to the table
+<span class="nc bnc" id="L429" title="All 2 branches missed.">        if (JFileChooser.APPROVE_OPTION == dialog_result) // only do if OK chosen</span>
+        {
+<span class="nc" id="L431">            File[] load_files = load_symbolic_music_file_chooser.getSelectedFiles();</span>
+<span class="nc" id="L432">            addSymbolicMusicFilesToTable(load_files);</span>
+        }
+<span class="nc" id="L434">    }</span>
+
+
+    /**
+     * Instantiates a JFileChooser for the load_symbolic_music_in_a_directory_chooser field if one does not
+     * already exist. This dialog box allows the user to choose one (and only one) directory, whose contents
+     * are added to the symbolic_music_files_table list of references of symbolic music files. Any files that
+     * do not have a file extension associated with a compatible symbolic music file are filtered out from
+     * consideration. Sub-directories are also explored, recursively. If an entered path corresponds to a
+     * directory that does not exist, or that contains an invalid symbolic music file, then an error message
+     * dialog box is displayed. Files chosen that are already on the table will be ignored. Prints a report to
+     * the status_print_stream.
+     */
+    private void addDirectoryRecursivelyToTableWithJFileChooser() {
+        // Initialize the load_symbolic_music_in_a_directory_chooser if it has not been opened yet
+<span class="nc bnc" id="L449" title="All 2 branches missed.">        if (null == load_symbolic_music_in_a_directory_chooser) {</span>
+<span class="nc" id="L450">            load_symbolic_music_in_a_directory_chooser = new JFileChooser();</span>
+<span class="nc" id="L451">            load_symbolic_music_in_a_directory_chooser.setCurrentDirectory(new File(MusicFileSelectorPanel.DEFAULT_LOAD_DIRECTORY));</span>
+<span class="nc" id="L452">            load_symbolic_music_in_a_directory_chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);</span>
+<span class="nc" id="L453">            load_symbolic_music_in_a_directory_chooser.setMultiSelectionEnabled(false);</span>
+        }
+
+        // Read the user's choice of load or cancel
+<span class="nc" id="L457">        int dialog_result = load_symbolic_music_in_a_directory_chooser.showOpenDialog(this);</span>
+
+        // Add the qualifying files in the directory specified to the table
+<span class="nc bnc" id="L460" title="All 2 branches missed.">        if (JFileChooser.APPROVE_OPTION == dialog_result) // only do if OK chosen</span>
+        {
+            // Note the directory chosen
+<span class="nc" id="L463">            ArrayList&lt;File&gt; directory_chosen = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L464">            directory_chosen.add(load_symbolic_music_in_a_directory_chooser.getSelectedFile());</span>
+
+            // Traverse the files and subdirectories (recursively) in directory_chosen to find files with qualifying extensions
+<span class="nc" id="L467">            ArrayList&lt;File&gt; files_in_directory = SymbolicMusicFileUtilities.getFilteredFilesRecursiveTraversal(directory_chosen,</span>
+                    false,
+                    new MusicFilter(),
+                    null,
+                    new ArrayList&lt;&gt;());
+
+            // Add the files to the table
+<span class="nc" id="L474">            File[] load_files = files_in_directory.toArray(new File[files_in_directory.size()]);</span>
+<span class="nc" id="L475">            addSymbolicMusicFilesToTable(load_files);</span>
+        }
+<span class="nc" id="L477">    }</span>
+
+
+    /**
+     * Adds the given files to the symbolic_music_files_table, after first verifying that they exist and that
+     * they are files that can be parsed. Displays an error dialog box for each file that cannot be added.
+     * Ignores files that have already been added to the table. Prints a report to the status_print_stream.
+     *
+     * @param    files_to_add    The files to add to the table. These files should all exist, and should all
+     * be symbolic music files of types accepted by jSymbolic.
+     */
+    private void addSymbolicMusicFilesToTable(File[] files_to_add) {
+        // The symbolic music files to add to the table
+<span class="nc" id="L490">        SymbolicMusicFile[] music_files_to_add = new SymbolicMusicFile[files_to_add.length];</span>
+
+        // Go through the new symbolic music files one by one. Add them to music_files_to_add. Display an
+        // error dialog box if a problem is encountered.
+<span class="nc bnc" id="L494" title="All 2 branches missed.">        for (int i = 0; i &lt; music_files_to_add.length; i++) {</span>
+            // Assume file is invalid as first guess
+<span class="nc" id="L496">            music_files_to_add[i] = null;</span>
+
+            // Verify that the new file exists and is of a type that can be parsed and display an error dialog
+            // box if a problem is detected.
+<span class="nc bnc" id="L500" title="All 2 branches missed.">            if (files_to_add[i].exists()) {</span>
+<span class="nc" id="L501">                List&lt;String&gt; error_log = new ArrayList&lt;&gt;();</span>
+                try {
+<span class="nc" id="L503">                    SymbolicMusicFileUtilities.getMidiSequenceFromMidiOrMeiFile(files_to_add[i], error_log);</span>
+<span class="nc" id="L504">                    music_files_to_add[i] = new SymbolicMusicFile(files_to_add[i], null);</span>
+<span class="nc" id="L505">                } catch (Exception e) {</span>
+<span class="nc bnc" id="L506" title="All 2 branches missed.">                    if (!error_log.isEmpty()) {</span>
+<span class="nc" id="L507">                        String text = &quot;Could not parse a specified input file.\nDETAILS: &quot; + error_log.get(0);</span>
+<span class="nc" id="L508">                        JOptionPane.showMessageDialog(outer_frame,</span>
+<span class="nc" id="L509">                                StringMethods.wrapString(text, OuterFrame.DIALOG_BOX_MAX_CHARS_PER_LINE, 0),</span>
+                                &quot;Error&quot;,
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+<span class="nc" id="L513">                }</span>
+<span class="nc" id="L514">            } else {</span>
+<span class="nc" id="L515">                String error_message = &quot;Could not parse a specified input file.\n&quot; +</span>
+<span class="nc" id="L516">                        &quot;DETAILS: The file &quot; + files_to_add[i].getPath() + &quot; does not exist.&quot;;</span>
+<span class="nc" id="L517">                JOptionPane.showMessageDialog(outer_frame,</span>
+<span class="nc" id="L518">                        StringMethods.wrapString(error_message, OuterFrame.DIALOG_BOX_MAX_CHARS_PER_LINE, 0),</span>
+                        &quot;Error&quot;,
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        // Combine the new symbolic music files with those already on the table
+<span class="nc" id="L525">        SymbolicMusicFile[] music_files_already_on_table = getSymbolicMusicFilesToExtractFeaturesFrom();</span>
+<span class="nc" id="L526">        int number_music_files_already_on_table = 0;</span>
+<span class="nc bnc" id="L527" title="All 2 branches missed.">        if (music_files_already_on_table != null)</span>
+<span class="nc" id="L528">            number_music_files_already_on_table = music_files_already_on_table.length;</span>
+<span class="nc" id="L529">        int number_music_files_to_add = music_files_to_add.length;</span>
+<span class="nc" id="L530">        SymbolicMusicFile[] new_and_old_music_files = new SymbolicMusicFile[number_music_files_already_on_table + number_music_files_to_add];</span>
+<span class="nc bnc" id="L531" title="All 2 branches missed.">        for (int i = 0; i &lt; number_music_files_already_on_table; i++)</span>
+<span class="nc" id="L532">            new_and_old_music_files[i] = music_files_already_on_table[i];</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">        for (int i = 0; i &lt; number_music_files_to_add; i++)</span>
+<span class="nc" id="L534">            new_and_old_music_files[i + number_music_files_already_on_table] = music_files_to_add[i];</span>
+
+        // Remove duplicate symbolic music files with the same file path
+<span class="nc bnc" id="L537" title="All 2 branches missed.">        for (int i = 0; i &lt; new_and_old_music_files.length - 1; i++) {</span>
+<span class="nc bnc" id="L538" title="All 2 branches missed.">            if (null != new_and_old_music_files[i]) {</span>
+<span class="nc" id="L539">                String current_path = new_and_old_music_files[i].file_path;</span>
+<span class="nc bnc" id="L540" title="All 2 branches missed.">                for (int j = i + 1; j &lt; new_and_old_music_files.length; j++)</span>
+<span class="nc bnc" id="L541" title="All 2 branches missed.">                    if (null != new_and_old_music_files[j])</span>
+<span class="nc bnc" id="L542" title="All 2 branches missed.">                        if (current_path.equals(new_and_old_music_files[j].file_path))</span>
+<span class="nc" id="L543">                            new_and_old_music_files[j] = null;</span>
+            }
+        }
+
+        // Remove null entries
+<span class="nc" id="L548">        Object[] final_combined_and_cleaned_music_files = ArrayMethods.removeNullEntriesFromArray(new_and_old_music_files);</span>
+<span class="nc bnc" id="L549" title="All 2 branches missed.">        if (null != final_combined_and_cleaned_music_files) {</span>
+<span class="nc" id="L550">            music_files_already_on_table = new SymbolicMusicFile[final_combined_and_cleaned_music_files.length];</span>
+<span class="nc bnc" id="L551" title="All 2 branches missed.">            for (int i = 0; i &lt; final_combined_and_cleaned_music_files.length; i++)</span>
+<span class="nc" id="L552">                music_files_already_on_table[i] = (SymbolicMusicFile) final_combined_and_cleaned_music_files[i];</span>
+        }
+
+        // Update the table to display the new symbolic music files
+<span class="nc" id="L556">        symbolic_music_files_table_model.resetAndFillTable(music_files_already_on_table);</span>
+
+        // Add a report to the status_print_stream
+<span class="nc" id="L559">        int[] midi_mei_counts = new int[2];</span>
+<span class="nc" id="L560">        int count_of_final_combined_and_cleaned_music_files = 0;</span>
+<span class="nc bnc" id="L561" title="All 2 branches missed.">        if (null != final_combined_and_cleaned_music_files)</span>
+<span class="nc" id="L562">            count_of_final_combined_and_cleaned_music_files = final_combined_and_cleaned_music_files.length;</span>
+<span class="nc" id="L563">        MusicFileSelectorPanel.findNumberMeiAndMidiFile(midi_mei_counts, getSymbolicMusicFilesToExtractFeaturesFrom());</span>
+<span class="nc" id="L564">        String report = &quot;&gt;&gt;&gt; Adding to the list of symbolic music files from which features are to be extracted . . . \n&quot;;</span>
+<span class="nc bnc" id="L565" title="All 2 branches missed.">        for (int i = 0; i &lt; number_music_files_to_add; i++)</span>
+<span class="nc bnc" id="L566" title="All 2 branches missed.">            if (null != music_files_to_add[i])</span>
+<span class="nc" id="L567">                report += &quot;\t\t&gt;&gt;&gt; &quot; + music_files_to_add[i].file_path + &quot;\n&quot;;</span>
+<span class="nc" id="L568">        report += &quot;\t&gt;&gt;&gt; &quot; + number_music_files_to_add + &quot; files were selected to be added to the existing list of &quot; + number_music_files_already_on_table + &quot; files.\n&quot;;</span>
+<span class="nc" id="L569">        report += &quot;\t&gt;&gt;&gt; Of these, &quot; + (count_of_final_combined_and_cleaned_music_files - number_music_files_already_on_table) + &quot; files were valid non-duplicate files, and were added to the list.\n&quot;;</span>
+<span class="nc" id="L570">        report += &quot;\t&gt;&gt;&gt; There are now a total of &quot; + count_of_final_combined_and_cleaned_music_files + &quot; files ready to have features extracted from them.\n&quot;;</span>
+<span class="nc" id="L571">        report += &quot;\t&gt;&gt;&gt; This total includes &quot; + midi_mei_counts[0] + &quot; MIDI files and &quot; + midi_mei_counts[1] + &quot; MEI files.\n&quot;;</span>
+<span class="nc" id="L572">        outer_frame.status_print_stream.println(report);</span>
+<span class="nc" id="L573">    }</span>
+
+
+    /**
+     * Removes all selected rows from the symbolic_music_files_table. Brings up an error dialog box if no
+     * files are selected for removal.
+     */
+    private void removeSymbolicMusicFilesFromTable() {
+        try {
+            // Remove the rows from the table, and keep track of what is being done
+<span class="nc" id="L583">            int[] selected_rows = symbolic_music_files_table.getSelectedRows();</span>
+<span class="nc bnc" id="L584" title="All 2 branches missed.">            for (int i = 0; i &lt; selected_rows.length; i++)</span>
+<span class="nc" id="L585">                selected_rows[i] = symbolic_music_files_table.convertRowIndexToModel(selected_rows[i]);</span>
+<span class="nc bnc" id="L586" title="All 2 branches missed.">            if (0 == selected_rows.length)</span>
+<span class="nc" id="L587">                throw new Exception(&quot;Could not delete rows from the table.\nDetails: No files selcected on the table.&quot;);</span>
+<span class="nc" id="L588">            SymbolicMusicFile[] symbolic_music_files = getSymbolicMusicFilesToExtractFeaturesFrom();</span>
+<span class="nc" id="L589">            int count_of_files_before_removal = symbolic_music_files.length;</span>
+<span class="nc" id="L590">            String[] paths_of_removed_files = new String[selected_rows.length];</span>
+<span class="nc bnc" id="L591" title="All 2 branches missed.">            for (int i = 0; i &lt; selected_rows.length; i++) {</span>
+<span class="nc" id="L592">                paths_of_removed_files[i] = symbolic_music_files[selected_rows[i]].file_path;</span>
+<span class="nc" id="L593">                symbolic_music_files[selected_rows[i]] = null;</span>
+            }
+<span class="nc" id="L595">            Object[] results = ArrayMethods.removeNullEntriesFromArray(symbolic_music_files);</span>
+<span class="nc bnc" id="L596" title="All 2 branches missed.">            if (null != results) {</span>
+<span class="nc" id="L597">                symbolic_music_files = new SymbolicMusicFile[results.length];</span>
+<span class="nc bnc" id="L598" title="All 2 branches missed.">                for (int i = 0; i &lt; results.length; i++)</span>
+<span class="nc" id="L599">                    symbolic_music_files[i] = (SymbolicMusicFile) results[i];</span>
+<span class="nc" id="L600">                symbolic_music_files_table_model.resetAndFillTable(symbolic_music_files);</span>
+<span class="nc" id="L601">            } else symbolic_music_files_table_model.clearTable();</span>
+
+            // Add a report to the status_print_stream
+<span class="nc" id="L604">            int[] midi_mei_counts = new int[2];</span>
+<span class="nc" id="L605">            int count_of_files_after_removal = 0;</span>
+<span class="nc bnc" id="L606" title="All 2 branches missed.">            if (null != results)</span>
+<span class="nc" id="L607">                count_of_files_after_removal = results.length;</span>
+<span class="nc" id="L608">            MusicFileSelectorPanel.findNumberMeiAndMidiFile(midi_mei_counts, getSymbolicMusicFilesToExtractFeaturesFrom());</span>
+<span class="nc" id="L609">            String report = &quot;&gt;&gt;&gt; Removing entries from the list of symbolic music files from which features are to be extracted . . . \n&quot;;</span>
+<span class="nc bnc" id="L610" title="All 2 branches missed.">            for (int i = 0; i &lt; paths_of_removed_files.length; i++)</span>
+<span class="nc" id="L611">                report += &quot;\t\t&gt;&gt;&gt; &quot; + paths_of_removed_files[i] + &quot;\n&quot;;</span>
+<span class="nc" id="L612">            report += &quot;\t&gt;&gt;&gt; &quot; + paths_of_removed_files.length + &quot; files were selected to be removed from the previous list of &quot; + count_of_files_before_removal + &quot; files.\n&quot;;</span>
+<span class="nc" id="L613">            report += &quot;\t&gt;&gt;&gt; There are now a total of &quot; + count_of_files_after_removal + &quot; files ready to have features extracted from them.\n&quot;;</span>
+<span class="nc" id="L614">            report += &quot;\t&gt;&gt;&gt; This total includes &quot; + midi_mei_counts[0] + &quot; MIDI files and &quot; + midi_mei_counts[1] + &quot; MEI files.\n&quot;;</span>
+<span class="nc" id="L615">            outer_frame.status_print_stream.println(report);</span>
+<span class="nc" id="L616">        } catch (Exception e) {</span>
+<span class="nc" id="L617">            JOptionPane.showMessageDialog(outer_frame,</span>
+<span class="nc" id="L618">                    StringMethods.wrapString(e.getMessage(), OuterFrame.DIALOG_BOX_MAX_CHARS_PER_LINE, 0),</span>
+                    &quot;Error&quot;,
+                    JOptionPane.ERROR_MESSAGE);
+<span class="nc" id="L621">        }</span>
+<span class="nc" id="L622">    }</span>
+
+
+    /**
+     * Spawn a new text window holding a formatted consistency report on those symbolic music files that the
+     * user has selected on the symbolic_music_files_table table (i.e. the particular ones that are selected,
+     * not necessarily all of the ones that appear on the table). This report begins by providing, for each
+     * file separately, an intraconsistenccy report that indicates whether the given file has more than one
+     * value for a range of quantities (e.g. more than one tempo, more than one meter, etc.). Then, if more
+     * than one file has been selected by the user, an interconsistency is provided that indicates, for all
+     * files considered as a whole, whether all the files share the same value or set of values for each of
+     * the quantities being tested for (e.g. all the files have the same tempo, or the same set of tempos).
+     */
+    private void displayConsistencyReport() {
+        try {
+            // Note the files selected on the table by the user
+<span class="nc" id="L638">            File[] selected_files = getSelectedFiles();</span>
+
+            // Prepare the report
+<span class="nc" id="L641">            String report = MIDIReporter.prepareConsistencyReports(selected_files, true, true, true);</span>
+
+            // Display the report in a new window
+<span class="nc" id="L644">            new InformationDialogFlexible(report, &quot;Consistency Report&quot;, false, false, false, true, 80, 50);</span>
+<span class="nc" id="L645">        } catch (Exception e) {</span>
+<span class="nc" id="L646">            JOptionPane.showMessageDialog(outer_frame,</span>
+<span class="nc" id="L647">                    StringMethods.wrapString(e.getMessage(), OuterFrame.DIALOG_BOX_MAX_CHARS_PER_LINE, 0),</span>
+                    &quot;Error&quot;,
+                    JOptionPane.ERROR_MESSAGE);
+<span class="nc" id="L650">        }</span>
+<span class="nc" id="L651">    }</span>
+
+
+    /**
+     * Spawn a new text window holding a MIDI dump report on those symbolic music files that the user has
+     * selected on the symbolic_music_files_table table (i.e. the particular ones that are selected, not
+     * necessarily all of the ones that appear on the table). This report indicates, separately for each file
+     * selected by the user, a structured transcription of all the relevant MIDI messages that the given file
+     * contains. If a given file is an MEI rather than a MIDI file, then it is converted to MIDI before
+     * reporting.
+     */
+    private void displayMidiDump() {
+        try {
+            // Note the files selected on the table by the user
+<span class="nc" id="L665">            File[] selected_files = getSelectedFiles();</span>
+
+            // The report to display
+<span class="nc" id="L668">            StringBuilder report = new StringBuilder();</span>
+
+            // Report on each file
+<span class="nc bnc" id="L671" title="All 2 branches missed.">            for (int i = 0; i &lt; selected_files.length; i++) {</span>
+                // Parse and check the MIDI file
+<span class="nc" id="L673">                MIDIReporter midi_debugger = new MIDIReporter(selected_files[i]);</span>
+
+                // Generate the report
+<span class="nc" id="L676">                report.append(&quot;\n============ MIDI MESSAGES REPORT FOR FILE &quot; + (i + 1) + &quot; / &quot; + selected_files.length + &quot; ============\n&quot;);</span>
+<span class="nc" id="L677">                report.append(midi_debugger.prepareHeaderReport());</span>
+<span class="nc" id="L678">                report.append(midi_debugger.prepareMetaMessageReport(true, true, true, true, true, true));</span>
+<span class="nc" id="L679">                report.append(midi_debugger.prepareProgramChangeAndUnpitchedInstrumentsReport());</span>
+<span class="nc" id="L680">                report.append(midi_debugger.prepareControllerMessageReport());</span>
+<span class="nc" id="L681">                report.append(midi_debugger.prepareNoteReport(false, true));</span>
+            }
+
+            // Display the report in a new window
+<span class="nc" id="L685">            new InformationDialogFlexible(report.toString(), &quot;MIDI Messages Report&quot;, false, false, false, true, 60, 50);</span>
+<span class="nc" id="L686">        } catch (Exception e) {</span>
+<span class="nc" id="L687">            JOptionPane.showMessageDialog(outer_frame,</span>
+<span class="nc" id="L688">                    StringMethods.wrapString(e.getMessage(), OuterFrame.DIALOG_BOX_MAX_CHARS_PER_LINE, 0),</span>
+                    &quot;Error&quot;,
+                    JOptionPane.ERROR_MESSAGE);
+<span class="nc" id="L691">        }</span>
+<span class="nc" id="L692">    }</span>
+
+
+    /**
+     * Plays the selected symbolic music file directly from the file referred to by the currently selected row
+     * on the symbolic_music_files_table. If multiple files are selected, plays only the first one. Any
+     * previous playback is stopped. Can play MIDI files or MEI files (by converting them to MIDI). Displays
+     * an error dialog if the file cannot be played.
+     */
+    private void startMidiPlayback() {
+        try {
+            // Stop any existing playback
+<span class="nc" id="L704">            stopMidiPlayback();</span>
+
+            // Get the file selected for playback
+<span class="nc" id="L707">            int selected_row = symbolic_music_files_table.getSelectedRow();</span>
+<span class="nc" id="L708">            selected_row = symbolic_music_files_table.convertRowIndexToModel(selected_row);</span>
+<span class="nc bnc" id="L709" title="All 2 branches missed.">            if (0 &gt; selected_row)</span>
+<span class="nc" id="L710">                throw new Exception(&quot;No file selcected for playback.&quot;);</span>
+<span class="nc" id="L711">            File play_file = new File((String) symbolic_music_files_table_model.getValueAt(selected_row, 1));</span>
+
+            // Load the file into a MIDI Sequence object
+<span class="nc" id="L714">            Sequence midi_sequence = SymbolicMusicFileUtilities.getMidiSequenceFromMidiOrMeiFile(play_file, new ArrayList&lt;&gt;());</span>
+
+            // Begin playback
+<span class="nc" id="L717">            midi_sequencer = MIDIMethods.playMIDISequence(midi_sequence);</span>
+<span class="nc" id="L718">        } catch (Exception e) {</span>
+<span class="nc" id="L719">            String text = &quot;Could not play specified symbolic file.\nDetails: &quot; + e.getMessage();</span>
+<span class="nc" id="L720">            JOptionPane.showMessageDialog(outer_frame,</span>
+<span class="nc" id="L721">                    StringMethods.wrapString(text, OuterFrame.DIALOG_BOX_MAX_CHARS_PER_LINE, 0),</span>
+                    &quot;Error&quot;,
+                    JOptionPane.ERROR_MESSAGE);
+<span class="nc" id="L724">        }</span>
+<span class="nc" id="L725">    }</span>
+
+
+    /**
+     * Stop any playback of a symbolic MIDI file in progress.
+     */
+    private void stopMidiPlayback() {
+<span class="nc bnc" id="L732" title="All 2 branches missed.">        if (null != midi_sequencer) {</span>
+<span class="nc" id="L733">            midi_sequencer.stop();</span>
+<span class="nc" id="L734">            midi_sequencer = null;</span>
+        }
+<span class="nc" id="L736">    }</span>
+
+
+    /**
+     * Return the files that are currently selected in the symbolic_music_files_table.
+     *
+     * @throws Exception Throws an informative Exception if the user has not selected any files.
+     * @return The selected files. Note that no verification is performed by this particular
+     * method to ensure that the files exist and are valid.
+     */
+    private File[] getSelectedFiles()
+            throws Exception {
+        // Note which rows are selected on the table
+<span class="nc" id="L749">        int[] selected_rows = symbolic_music_files_table.getSelectedRows();</span>
+<span class="nc bnc" id="L750" title="All 2 branches missed.">        for (int i = 0; i &lt; selected_rows.length; i++)</span>
+<span class="nc" id="L751">            selected_rows[i] = symbolic_music_files_table.convertRowIndexToModel(selected_rows[i]);</span>
+<span class="nc bnc" id="L752" title="All 2 branches missed.">        if (0 == selected_rows.length)</span>
+<span class="nc" id="L753">            throw new Exception(&quot;Could not generate the report.\nDetails: No files selcected on the table to generate the report on.&quot;);</span>
+
+        // All the files listed on the table (selected or not)
+<span class="nc" id="L756">        SymbolicMusicFile[] all_symbolic_music_files_on_table = getSymbolicMusicFilesToExtractFeaturesFrom();</span>
+
+        // Find the paths of the particular files selected on the table
+<span class="nc" id="L759">        File[] selected_files = new File[selected_rows.length];</span>
+<span class="nc bnc" id="L760" title="All 2 branches missed.">        for (int i = 0; i &lt; selected_rows.length; i++)</span>
+<span class="nc" id="L761">            selected_files[i] = new File(all_symbolic_music_files_on_table[selected_rows[i]].file_path);</span>
+
+        // Return the results
+<span class="nc" id="L764">        return selected_files;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

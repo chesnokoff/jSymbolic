@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="jSymbolic2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/jSymbolic2/dist/jSymbolic2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/jSymbolic2/dist/lib/ACE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jSymbolic2/dist/lib/UtilityClasses.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jSymbolic2/dist/lib/xercesSamples.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jSymbolic2/dist/lib/resolver.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jSymbolic2/dist/lib/xercesImpl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jSymbolic2/dist/lib/xml-apis.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jSymbolic2/dist/lib/jMei2Midi-1.0-jar-with-dependencies.jar!/" />
+      <root url="jar://$PROJECT_DIR$/jSymbolic2/dist/lib/serializer.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

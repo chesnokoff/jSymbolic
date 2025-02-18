@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConfigurationFileValidatorTxtImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.configuration.txtimplementation</a> &gt; <span class="el_source">ConfigurationFileValidatorTxtImpl.java</span></div><h1>ConfigurationFileValidatorTxtImpl.java</h1><pre class="source lang-java linenums">package jsymbolic2.configuration.txtimplementation;
+
+import jsymbolic2.configuration.ConfigFileHeaderEnum;
+import jsymbolic2.configuration.ConfigurationFileValidator;
+import jsymbolic2.configuration.ConfigurationInputFiles;
+import jsymbolic2.configuration.ConfigurationOptionState;
+import jsymbolic2.configuration.ConfigurationOutputFiles;
+import jsymbolic2.configuration.OptionsEnum;
+import jsymbolic2.configuration.OutputEnum;
+import jsymbolic2.featureutils.FeatureExtractorAccess;
+import jsymbolic2.processing.MusicFilter;
+import jsymbolic2.processing.SymbolicMusicFileUtilities;
+import mckay.utilities.staticlibraries.FileMethods;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * An implementation of the {@link ConfigurationFileValidator} class. This deals with the validation and parsing
+ * of the .txt implementation of the configuration file validator.
+ *
+ * @author Tristano Tenaglia
+ */
+<span class="fc" id="L33">public class ConfigurationFileValidatorTxtImpl extends ConfigurationFileValidator {</span>
+
+    /**
+     * Validate the syntax of the features specified in the rawConfigFile. This includes verifying that
+     * each feature is in fact a valid jSymbolic feature name corresponding to the appropriate
+     * {@link ace.datatypes.FeatureDefinition} of that feature.
+     *
+     * @param rawConfigFile     A list of strings containing the line by line raw configuration file.
+     * @param configurationFile The configuration file for file information.
+     * @return A list of strings containing the line by line raw configuration file, with the feature syntax
+     * validated.
+     * @throws Exception Thrown if a particular feature is not valid in jSymbolic.
+     */
+    @Override
+    public List&lt;String&gt; validateFeatureSyntax(List&lt;String&gt; rawConfigFile, File configurationFile) throws Exception {
+<span class="fc" id="L48">        String featureHeader = ConfigFileHeaderEnum.FEATURE_HEADER.toString();</span>
+<span class="fc" id="L49">        int featureHeaderIndex = rawConfigFile.indexOf(featureHeader);</span>
+<span class="fc" id="L50">        int nextHeaderIndex = nextHeaderIndex(rawConfigFile, featureHeader);</span>
+
+        //Look for each feature one by one and verify
+<span class="fc" id="L53">        List&lt;String&gt; extractorName = FeatureExtractorAccess.getNamesOfAllImplementedFeatures();</span>
+<span class="fc" id="L54">        List&lt;String&gt; featuresToSave = rawConfigFile.subList(featureHeaderIndex + 1, nextHeaderIndex);</span>
+<span class="fc" id="L55">        int lineNumber = featureHeaderIndex + 1;</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">        for (String featureLine : featuresToSave) {</span>
+            //Check to make sure feature actually exists in jSymbolic
+<span class="fc bfc" id="L58" title="All 2 branches covered.">            if (!extractorName.contains(featureLine)) {</span>
+<span class="fc" id="L59">                throw new Exception(&quot;The &quot; + configurationFile.getName() + &quot; configuration file has an error at line &quot; + lineNumber + &quot;: &quot; + featureLine + &quot; is a non-existant feature in jSymbolic.&quot;);</span>
+            }
+<span class="fc" id="L61">            lineNumber++;</span>
+<span class="fc" id="L62">        }</span>
+<span class="fc" id="L63">        return featuresToSave;</span>
+    }
+
+    /**
+     * Validates the logic of the features, specifically by removing any duplicate feature names that are
+     * passed in the rawConfigFile.
+     *
+     * @param rawConfigFile     A list of strings containing the line by line raw configuration file.
+     * @param configurationFile The configuration file for file information.
+     * @return A list of strings containing the line by line raw configuration file, with the feature logic
+     * validated.
+     * @throws Exception None currently thrown.
+     */
+    @Override
+    public List&lt;String&gt; validateFeatureLogic(List&lt;String&gt; rawConfigFile, File configurationFile) throws Exception {
+        //Remove duplicate features
+<span class="fc" id="L79">        return new ArrayList&lt;&gt;(new HashSet&lt;&gt;(rawConfigFile));</span>
+    }
+
+    /**
+     * Validate the syntax of the options in the rawConfigFile input. This deals with the verifications made in the
+     * {@link #checkOptionLine(String, List, int, File)} function, which validates syntax and type for the options.
+     * It also validates that all the options do in fact exist in the configuration file.
+     *
+     * @param rawConfigFile     A list of strings containing the line by line raw configuration file.
+     * @param configurationFile The configuration file for file information.
+     * @return The option state of the configuration file through a {@link ConfigurationOptionState} object.
+     * @throws Exception Thrown if option syntax or format is invalid.
+     */
+    @Override
+    public ConfigurationOptionState validateOptionSyntax(List&lt;String&gt; rawConfigFile, File configurationFile) throws Exception {
+<span class="fc" id="L94">        String optionHeader = ConfigFileHeaderEnum.OPTION_HEADER.toString();</span>
+<span class="fc" id="L95">        int currentHeaderIndex = rawConfigFile.indexOf(optionHeader);</span>
+<span class="fc" id="L96">        int nextHeaderIndex = nextHeaderIndex(rawConfigFile, optionHeader);</span>
+
+        //Option value storage for later instantiation of option state object
+<span class="fc" id="L99">        boolean saveWindow = false;</span>
+<span class="fc" id="L100">        boolean saveOverall = false;</span>
+<span class="fc" id="L101">        boolean convertToArff = false;</span>
+<span class="fc" id="L102">        boolean convertToCsv = false;</span>
+<span class="fc" id="L103">        double windowSize = 0;</span>
+<span class="fc" id="L104">        double windowOverlap = 0;</span>
+
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">        if (nextHeaderIndex - currentHeaderIndex - 1 != OptionsEnum.values().length) {</span>
+<span class="nc" id="L107">            throw new Exception(&quot;Configuration file for jSymbolic &quot; + configurationFile.getName() + &quot; does not &quot; +</span>
+<span class="nc" id="L108">                    &quot;contain all possible options. It is required that all of &quot; + Arrays.toString(ConfigFileHeaderEnum.values())</span>
+                    + &quot; must be options under &quot; + optionHeader + &quot; in configuration file.&quot;);
+        }
+
+        //List and check all options mentioned in config
+<span class="fc" id="L113">        List&lt;String&gt; optionLineList = rawConfigFile.subList(currentHeaderIndex + 1, nextHeaderIndex);</span>
+<span class="fc" id="L114">        List&lt;String&gt; optionsInConfig = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L115">        int lineNumber = nextHeaderIndex + 1;</span>
+<span class="fc bfc" id="L116" title="All 2 branches covered.">        for (String optionLine : optionLineList) {</span>
+            //Check this particular option
+<span class="fc" id="L118">            ConfigurationOption option = checkOptionLine(optionLine, rawConfigFile, lineNumber, configurationFile);</span>
+<span class="fc" id="L119">            optionsInConfig.add(option.getOptionName().toString());</span>
+
+            //Assign appropriate values for later processing
+            //This can be assigned directly since the option has already been checked
+<span class="pc bpc" id="L123" title="1 of 7 branches missed.">            switch (option.getOptionName()) {</span>
+                case window_size:
+<span class="fc" id="L125">                    windowSize = Double.parseDouble(option.getOptionValue());</span>
+<span class="fc" id="L126">                    break;</span>
+                case window_overlap:
+<span class="fc" id="L128">                    windowOverlap = Double.parseDouble(option.getOptionValue());</span>
+<span class="fc" id="L129">                    break;</span>
+                case save_features_for_each_window:
+<span class="fc" id="L131">                    saveWindow = Boolean.parseBoolean(option.getOptionValue());</span>
+<span class="fc" id="L132">                    break;</span>
+                case save_overall_recording_features:
+<span class="fc" id="L134">                    saveOverall = Boolean.parseBoolean(option.getOptionValue());</span>
+<span class="fc" id="L135">                    break;</span>
+                case convert_to_arff:
+<span class="fc" id="L137">                    convertToArff = Boolean.parseBoolean(option.getOptionValue());</span>
+<span class="fc" id="L138">                    break;</span>
+                case convert_to_csv:
+<span class="fc" id="L140">                    convertToCsv = Boolean.parseBoolean(option.getOptionValue());</span>
+                    break;
+            }
+<span class="fc" id="L143">            lineNumber++;</span>
+<span class="fc" id="L144">        }</span>
+
+        //Return option state if all options are in fact mentioned in config file
+<span class="pc bpc" id="L147" title="1 of 2 branches missed.">        if (OptionsEnum.allOptionsExist(optionsInConfig)) {</span>
+<span class="fc" id="L148">            return new ConfigurationOptionState(windowSize, windowOverlap, saveWindow, saveOverall, convertToArff, convertToCsv);</span>
+        } else {
+<span class="nc" id="L150">            throw new Exception(&quot;Configuration file for jSymbolic &quot; + configurationFile.getName() + &quot; does not &quot; +</span>
+<span class="nc" id="L151">                    &quot;contain all possible options. It is required that all of &quot; + Arrays.toString(ConfigFileHeaderEnum.values())</span>
+                    + &quot; must be options under &quot; + optionHeader + &quot; in configuration file.&quot;);
+        }
+    }
+
+    /**
+     * Validate the logic of the options in the passed in configOption state object. This currently ensures that the
+     * save overall recording features and save windowed recording features are not the same boolean value.
+     *
+     * @param configOption      The syntax validated configuration option data.
+     * @param configurationFile The configuration file for file information.
+     * @return The configuration option state with the validated logic.
+     * @throws Exception Thrown if overall and windowed recording feature option are the same boolean value.
+     */
+    @Override
+    public ConfigurationOptionState validateOptionLogic(ConfigurationOptionState configOption, File configurationFile)
+            throws Exception {
+        //Check that save overall and save window are not the same
+<span class="pc bpc" id="L169" title="1 of 4 branches missed.">        if (configOption.isSave_overall_recording_features() &amp;&amp; configOption.isSave_features_for_each_window()) {</span>
+<span class="nc" id="L170">            throw new Exception(&quot;In configuration file &quot; + configurationFile.getName() +</span>
+<span class="nc" id="L171">                    OptionsEnum.save_overall_recording_features.name() + &quot; and &quot; +</span>
+<span class="nc" id="L172">                    OptionsEnum.save_features_for_each_window.name() + &quot; are both true. &quot; +</span>
+                    &quot;This is not allowed in jSymbolic, either one or the other must be true, but not both.&quot;);
+        }
+<span class="pc bpc" id="L175" title="1 of 4 branches missed.">        if (!configOption.isSave_overall_recording_features() &amp;&amp; !configOption.isSave_features_for_each_window()) {</span>
+<span class="nc" id="L176">            throw new Exception(&quot;In configuration file &quot; + configurationFile.getName() +</span>
+<span class="nc" id="L177">                    OptionsEnum.save_overall_recording_features.name() + &quot; and &quot; +</span>
+<span class="nc" id="L178">                    OptionsEnum.save_features_for_each_window.name() + &quot; are both false. &quot; +</span>
+                    &quot;This is not allowed in jSymbolic, either one or the other must be true, but not both.&quot;);
+        }
+<span class="fc" id="L181">        return configOption;</span>
+    }
+
+    /**
+     * Performs checks for each option in the configuration file. Specifically, checks
+     * 1) format is optionName=optionValue
+     * 2) optionName is a valid option
+     * 3) optionValue is appropriate type for corresponding optionName
+     *
+     * @param optionLine        The current option line that needs to be checked.
+     * @param rawConfigData     The configuration file that the option was taken from.
+     * @param lineNumber        The line that the option is on in the configuration file.
+     * @param configurationFile The configuration file that was parsed.
+     * @return ConfigurationOption object that contains both the appropriate value and key.
+     * @throws Exception Thrown if any syntax errors are found in the options portion of the configuration file.
+     */
+    private ConfigurationOption checkOptionLine(String optionLine, List&lt;String&gt; rawConfigData, int lineNumber, File configurationFile)
+            throws Exception {
+        //Check that we have optionName=optionValue format
+<span class="fc" id="L200">        String[] optionArray = optionLine.split(&quot;=&quot;);</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">        if (2 != optionArray.length) {</span>
+<span class="fc" id="L202">            throw new Exception(&quot;Configuration file for jSymbolic &quot; + configurationFile.getName() + &quot; at line &quot; +</span>
+                    lineNumber + &quot; - &quot; + optionLine + &quot; is incorrect option for config file format.&quot;);
+        }
+
+        //Check that optionName is in fact a valid known option
+<span class="fc" id="L207">        String optionName = optionArray[0];</span>
+<span class="fc" id="L208">        String optionValue = optionArray[1];</span>
+<span class="fc" id="L209">        ConfigurationOption option =</span>
+<span class="fc" id="L210">                new ConfigurationOption(OptionsEnum.valueOf(optionName), optionValue);</span>
+<span class="pc bpc" id="L211" title="1 of 2 branches missed.">        if (!OptionsEnum.contains(optionName)) {</span>
+<span class="nc" id="L212">            throw new Exception(&quot;Configuration file for jSymbolic &quot; + configurationFile.getName() + &quot; at line &quot; +</span>
+                    lineNumber + &quot; - &quot; + optionLine + &quot; is non-existent option for config file.&quot;);
+        }
+
+        //Check that the optionValue type corresponds to the appropriate optionName
+<span class="fc" id="L217">        OptionsEnum optEnum = OptionsEnum.valueOf(optionName);</span>
+<span class="pc bpc" id="L218" title="1 of 2 branches missed.">        if (!optEnum.checkValue(optionValue)) {</span>
+<span class="nc" id="L219">            throw new Exception(&quot;Configuration file for jSymbolic &quot; + configurationFile.getName() + &quot; at line &quot; +</span>
+                    lineNumber + &quot; - &quot; + optionLine + &quot; is incorrect value format for &quot; + optEnum);
+        }
+
+<span class="fc" id="L223">        return option;</span>
+    }
+
+    /**
+     * Implementation for the checking of invalid input files. Only single mei and midi files are allowed
+     * as per the use of the Music File Filter. Any invalid files will be added to the invalid log which
+     * this function will return. Directories are also considered invalid and will not be processed
+     * and simply returned in the invalid return log.
+     *
+     * @param rawConfigFile     The configuration file that needs to be checked.
+     * @param configurationFile The configuration file for file information.
+     * @return A list of invalid files and directories specified in the configuration file.
+     * @throws Exception Thrown if input file is not valid.
+     */
+    @Override
+    public ConfigurationInputFiles checkForInvalidInputFiles(List&lt;String&gt; rawConfigFile, File configurationFile) throws Exception {
+<span class="fc" id="L239">        ConfigurationInputFiles inputFileList = new ConfigurationInputFiles();</span>
+<span class="fc" id="L240">        String inputHeader = ConfigFileHeaderEnum.INPUT_FILE_HEADER.toString();</span>
+<span class="fc" id="L241">        int currentHeaderIndex = rawConfigFile.indexOf(inputHeader);</span>
+<span class="fc" id="L242">        int nextHeaderIndex = nextHeaderIndex(rawConfigFile, inputHeader);</span>
+<span class="fc" id="L243">        List&lt;String&gt; inputFiles = rawConfigFile.subList(currentHeaderIndex + 1, nextHeaderIndex);</span>
+<span class="fc bfc" id="L244" title="All 2 branches covered.">        for (String inputLine : inputFiles) {</span>
+            //Check each file in configuration
+<span class="fc" id="L246">            File inputFile = new File(inputLine);</span>
+            //Directories not currently allowed, so only validate file
+<span class="fc" id="L248">            validateSingleFile(inputFile, inputFileList);</span>
+<span class="fc" id="L249">        }</span>
+<span class="fc" id="L250">        return inputFileList;</span>
+    }
+
+    /**
+     * Checks for invalid output files in the given configuration file. This needs to be of the precise format
+     * &amp;lt;output_files&amp;gt; header with 2 fields below it. These 2 fields need to be in the format
+     * 1) feature_values_save_path=test_value.xml
+     * 2) feature_definitions_save_path=test_definition.xml
+     * and the specified files need to exist and be accessible in the local system.
+     * Anything else will result in a thrown exception.
+     *
+     * @param rawConfigFile The raw line by line configuration file that needs to be validated.
+     * @return A List of the valid files. Index 1 would contain feature value save path
+     * and index 2 would contain feature definition save path.
+     * @throws Exception thrown if format is wrong or if path does not exist in local system
+     */
+    @Override
+    public ConfigurationOutputFiles checkForInvalidOutputFiles(List&lt;String&gt; rawConfigFile, File configurationFile) throws Exception {
+<span class="fc" id="L268">        String outputHeader = ConfigFileHeaderEnum.OUTPUT_FILE_HEADER.toString();</span>
+<span class="fc" id="L269">        String valueSavePath = OutputEnum.feature_values_save_path.name();</span>
+<span class="fc" id="L270">        String definitionSavePath = OutputEnum.feature_definitions_save_path.name();</span>
+
+<span class="fc" id="L272">        int currentHeaderIndex = rawConfigFile.indexOf(outputHeader);</span>
+<span class="fc" id="L273">        int nextHeaderIndex = nextHeaderIndex(rawConfigFile, outputHeader);</span>
+
+<span class="fc" id="L275">        List&lt;String&gt; outputFileList = rawConfigFile.subList(currentHeaderIndex + 1, nextHeaderIndex);</span>
+<span class="pc bpc" id="L276" title="1 of 2 branches missed.">        if (outputFileList.size() != OutputEnum.values().length) {</span>
+<span class="nc" id="L277">            throw new Exception(&quot;Missing output files. Need to include line of the form &quot; +</span>
+                    &quot;feature_value_save_path=example.xml and feature_definition_save_path under the header &quot; +
+                    outputHeader);
+        }
+
+<span class="fc" id="L282">        String featureValuesSavePath = &quot;&quot;;</span>
+<span class="fc" id="L283">        String featureDefinitionsSavePath = &quot;&quot;;</span>
+<span class="fc bfc" id="L284" title="All 2 branches covered.">        for (String output : outputFileList) {</span>
+<span class="fc bfc" id="L285" title="All 2 branches covered.">            if (output.contains(valueSavePath)) {</span>
+<span class="fc" id="L286">                featureValuesSavePath = output;</span>
+            }
+<span class="fc bfc" id="L288" title="All 2 branches covered.">            if (output.contains(definitionSavePath)) {</span>
+<span class="fc" id="L289">                featureDefinitionsSavePath = output;</span>
+            }
+<span class="fc" id="L291">        }</span>
+
+<span class="fc" id="L293">        String[] valuesArray = featureValuesSavePath.split(&quot;=&quot;);</span>
+<span class="fc" id="L294">        String[] definitionArray = featureDefinitionsSavePath.split(&quot;=&quot;);</span>
+<span class="fc bfc" id="L295" title="All 2 branches covered.">        if (2 != valuesArray.length) {</span>
+<span class="fc" id="L296">            throw new Exception(&quot;Configuration file for jSymbolic &quot; + configurationFile.getName() +</span>
+                    &quot; is invalid feature value format for config file format. Need to have &quot; +
+                    &quot;feature_value_save_path=example.xml&quot;);
+        }
+<span class="pc bpc" id="L300" title="1 of 2 branches missed.">        if (2 != definitionArray.length) {</span>
+<span class="nc" id="L301">            throw new Exception(&quot;Configuration file for jSymbolic &quot; + configurationFile.getName() +</span>
+                    &quot; is invalid feature definition format for config file format. Need to have &quot; +
+                    &quot;feature_definition_save_path=example.xml&quot;);
+        }
+
+        //Ensured to not throw null pointer due to previous check for array length = 2
+<span class="fc" id="L307">        String valuesName = valuesArray[0];</span>
+<span class="fc" id="L308">        String valuesValue = valuesArray[1];</span>
+<span class="fc" id="L309">        String definitionName = definitionArray[0];</span>
+<span class="fc" id="L310">        String definitionValue = definitionArray[1];</span>
+<span class="pc bpc" id="L311" title="1 of 2 branches missed.">        if (!valuesName.equals(valueSavePath)) {</span>
+<span class="nc" id="L312">            throw new Exception(&quot;Name of features values must be: &quot; + valueSavePath + &quot;. It is now &quot; +</span>
+                    valuesName);
+        }
+<span class="pc bpc" id="L315" title="1 of 2 branches missed.">        if (!definitionName.equals(definitionSavePath)) {</span>
+<span class="nc" id="L316">            throw new Exception(&quot;Name of feature definitions must be: &quot; + definitionSavePath + &quot;. It is now &quot; +</span>
+                    definitionName);
+        }
+
+        //Check that path exists for feature value and definition save paths
+<span class="pc bpc" id="L321" title="1 of 2 branches missed.">        if (!SymbolicMusicFileUtilities.filePathExists(valuesValue)) {</span>
+<span class="nc" id="L322">            throw new Exception(&quot;Feature value save path &quot; + definitionValue + &quot; is not a valid path in configuration file &quot;</span>
+<span class="nc" id="L323">                    + configurationFile.getName());</span>
+        }
+<span class="pc bpc" id="L325" title="1 of 2 branches missed.">        if (!SymbolicMusicFileUtilities.filePathExists(definitionValue)) {</span>
+<span class="nc" id="L326">            throw new Exception(&quot;Feature definition save path &quot; + valuesValue + &quot; is not a valid path in configuration file &quot;</span>
+<span class="nc" id="L327">                    + configurationFile.getName());</span>
+        }
+
+        //Check and correct that the extension is in fact xml
+<span class="fc" id="L331">        valuesValue = SymbolicMusicFileUtilities.correctFileExtension(valuesValue, &quot;xml&quot;);</span>
+<span class="fc" id="L332">        definitionValue = SymbolicMusicFileUtilities.correctFileExtension(definitionValue, &quot;xml&quot;);</span>
+<span class="fc" id="L333">        ConfigurationOutputFiles outputFile = new ConfigurationOutputFiles(valuesValue, definitionValue);</span>
+<span class="fc" id="L334">        return outputFile;</span>
+    }
+
+    /**
+     * Validates if all headers to check in HeaderEnum are in the specified configuration file.
+     *
+     * @param rawConfigFile     Raw string lines of the configuration file.
+     * @param configurationFile The original configuration file for extra data (e.g. file name).
+     * @param headersToCheck    Headers that need to be checked in the configuration file.
+     * @throws Exception Thrown if any header in the HeaderEnum is missing and if headers that
+     *                   do not need to be checked are found in the configuration file.
+     */
+    @Override
+    public void validateHeaders(List&lt;String&gt; rawConfigFile, File configurationFile, List&lt;ConfigFileHeaderEnum&gt; headersToCheck)
+            throws Exception {
+<span class="fc bfc" id="L349" title="All 2 branches covered.">        for (ConfigFileHeaderEnum header : headersToCheck) {</span>
+<span class="fc bfc" id="L350" title="All 2 branches covered.">            if (1 != Collections.frequency(rawConfigFile, header.toString())) {</span>
+<span class="fc" id="L351">                throw new Exception(configurationFile.getName() + &quot; is not a valid configuration file &quot; +</span>
+                        &quot;as it does not contain 1 of the following header : &quot; + header);
+            }
+<span class="fc" id="L354">        }</span>
+
+<span class="fc" id="L356">        List&lt;ConfigFileHeaderEnum&gt; headersNotToCheck = headersNotToCheck(headersToCheck);</span>
+<span class="fc bfc" id="L357" title="All 2 branches covered.">        for (ConfigFileHeaderEnum header : headersNotToCheck) {</span>
+<span class="fc bfc" id="L358" title="All 2 branches covered.">            if (rawConfigFile.contains(header.toString())) {</span>
+<span class="fc" id="L359">                throw new Exception(&quot;jSymbolic configuration file &quot; + configurationFile.getName() + &quot; contains &quot; +</span>
+                        header + &quot; which has already been specified in the command line.\n Either &quot; +
+                        &quot;include this header/data in the configuration file or in the command line, but not both.&quot;);
+            }
+<span class="fc" id="L363">        }</span>
+<span class="fc" id="L364">    }</span>
+
+    /**
+     * Helper function to get the headers that do not need to be checked.
+     *
+     * @param headersToCheck List of headers that need to be checked.
+     * @return List of headers that do not need to be checked.
+     */
+    private List&lt;ConfigFileHeaderEnum&gt; headersNotToCheck(List&lt;ConfigFileHeaderEnum&gt; headersToCheck) {
+<span class="fc" id="L373">        ConfigFileHeaderEnum[] allHeaders = ConfigFileHeaderEnum.values();</span>
+<span class="fc" id="L374">        List&lt;ConfigFileHeaderEnum&gt; headersNotToCheck = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L375" title="All 2 branches covered.">        for (ConfigFileHeaderEnum header : allHeaders) {</span>
+<span class="fc bfc" id="L376" title="All 2 branches covered.">            if (!headersToCheck.contains(header)) {</span>
+<span class="fc" id="L377">                headersNotToCheck.add(header);</span>
+            }
+        }
+<span class="fc" id="L380">        return headersNotToCheck;</span>
+    }
+
+    /**
+     * Helper function to return next header index after in raw data after the given header.
+     *
+     * @param rawData Raw data of config file to be checked.
+     * @param header  Header to start from.
+     * @return Next header index if it is found, otherwise returns rawData.size().
+     */
+    private int nextHeaderIndex(List&lt;String&gt; rawData, String header) {
+<span class="fc" id="L391">        int currentHeaderIndex = rawData.indexOf(header);</span>
+<span class="fc bfc" id="L392" title="All 2 branches covered.">        for (int nextIndex = currentHeaderIndex + 1; nextIndex &lt; rawData.size(); nextIndex++) {</span>
+<span class="fc" id="L393">            String nextLine = rawData.get(nextIndex);</span>
+<span class="fc bfc" id="L394" title="All 2 branches covered.">            if (ConfigFileHeaderEnum.contains(nextLine)) {</span>
+<span class="fc" id="L395">                return nextIndex;</span>
+            }
+        }
+<span class="fc" id="L398">        return rawData.size();</span>
+    }
+
+    /**
+     * Read in the file line by line.
+     *
+     * @param configurationFile File to be read in.
+     * @return The raw data from the file line by line.
+     * @throws IOException Thrown if there were problems parsing or retrieving the configuration file.
+     */
+    @Override
+    public List&lt;String&gt; extractRawConfigurationFile(File configurationFile) throws IOException {
+<span class="fc" id="L410">        return Files.lines(Paths.get(configurationFile.getAbsolutePath()), StandardCharsets.ISO_8859_1)</span>
+<span class="fc" id="L411">                .collect(Collectors.toList());</span>
+    }
+
+    private void validateSingleFile(File file, ConfigurationInputFiles inputFiles) {
+        try {
+<span class="fc" id="L416">            FileMethods.validateFile(file, true, false);</span>
+<span class="fc" id="L417">            inputFiles.addValidFile(file);</span>
+<span class="fc" id="L418">        } catch (Exception e) {</span>
+<span class="fc" id="L419">            inputFiles.addInvalidFile(file);</span>
+<span class="fc" id="L420">        }</span>
+<span class="fc" id="L421">    }</span>
+
+    /**
+     * Currently unused as input directories are considered invalid in the configuration file.
+     *
+     * @param directory  The directory that needs to be validated.
+     * @param inputFiles The input files extracted from the configuration file.
+     */
+    private void validateDirectory(File directory, ConfigurationInputFiles inputFiles) {
+<span class="nc" id="L430">        File[] allFiles = FileMethods.getAllFilesInDirectory(directory, true, new MusicFilter(), null);</span>
+<span class="nc bnc" id="L431" title="All 2 branches missed.">        for (File file : allFiles) {</span>
+<span class="nc" id="L432">            validateSingleFile(file, inputFiles);</span>
+        }
+<span class="nc" id="L434">    }</span>
+
+    /**
+     * Validates the configuration file to see if the give file exists and if it is a .txt.
+     *
+     * @param configurationFile File name to be validated.
+     * @return The associated file if it is valid.
+     * @throws Exception Thrown if file dne or if it is not in .txt format.
+     */
+    @Override
+    public File checkConfigFile(String configurationFile) throws Exception {
+<span class="fc" id="L445">        File configFile = new File(configurationFile);</span>
+<span class="fc" id="L446">        String configFileName = &quot;.*\\.&quot; + ConfigurationFileExtensionEnum.txt.name();</span>
+<span class="pc bpc" id="L447" title="1 of 4 branches missed.">        if (null == configFile || !configFile.exists()) {</span>
+<span class="fc" id="L448">            throw new Exception(&quot;The configuration file specified at &quot; + configurationFile + &quot; does not exist.&quot;);</span>
+        }
+<span class="fc bfc" id="L450" title="All 2 branches covered.">        if (!configurationFile.matches(configFileName)) {</span>
+<span class="fc" id="L451">            throw new Exception(&quot;The file &quot; + configurationFile + &quot; does not have a txt extension.&quot;);</span>
+        }
+<span class="fc" id="L453">        return configFile;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

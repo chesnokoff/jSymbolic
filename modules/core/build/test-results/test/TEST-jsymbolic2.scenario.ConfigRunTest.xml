@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="jsymbolic2.scenario.ConfigRunTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-02-18T17:04:55" hostname="MacBook-Pro-Aleksandr-5.local" time="7.944">
+  <properties/>
+  <testcase name="testAllFeaturesConfigRun()" classname="jsymbolic2.scenario.ConfigRunTest" time="4.989"/>
+  <testcase name="testWindowFeaturesConfigRun()" classname="jsymbolic2.scenario.ConfigRunTest" time="1.341"/>
+  <testcase name="testOverallFeaturesConfigRun()" classname="jsymbolic2.scenario.ConfigRunTest" time="1.613"/>
+  <system-out><![CDATA[>>> Loading configuration settings from: src/test/java/jsymbolic2/scenario/resources/configs/all_features_config.txt.
+
+>>> Extracting features from 5 input files, one file at at time:
+
+	>>> 0/5 Extracting features: 005ed798038238d8666457bc61ec5dd1.mid  . . .
+	>>> 0/5 Successfully extracted: 005ed798038238d8666457bc61ec5dd1.mid.
+	>>> 1/5 Extracting features: 0a4fe1154dc96ed40d3c49017a163a11.mid  . . .
+	>>> 1/5 Successfully extracted: 0a4fe1154dc96ed40d3c49017a163a11.mid.
+	>>> 2/5 Extracting features: 007237d19324d40117332173dcb16738.mid  . . .
+	>>> 2/5 Successfully extracted: 007237d19324d40117332173dcb16738.mid.
+	>>> 3/5 Extracting features: 7d2e363a699917c37b274d173e183d30.mid  . . .
+	>>> 3/5 Successfully extracted: 7d2e363a699917c37b274d173e183d30.mid.
+	>>> 4/5 Extracting features: 0095961e638da8a451f9712f35cc4d56.mid  . . .
+	>>> 4/5 Successfully extracted: 0095961e638da8a451f9712f35cc4d56.mid.
+
+>>> Saving extracted features as an ACE XML Feature Values file: src/test/java/jsymbolic2/scenario/resources/values/all_features_values_actual.xml.
+
+>>> Feature extraction complete.
+
+	>>> Features succesfully extracted and saved from 5 of 5 attempted files.
+
+>>> Saving feature metadata as an ACE XML Feature Definitions file: src/test/java/jsymbolic2/scenario/resources/values/all_features_values_actual.xml.
+
+
+>>> Saving extracted features as an ACE XML Feature Values file: src/test/java/jsymbolic2/scenario/resources/values/all_features_values_actual.xml.
+
+>>> ALL PROCESSING COMPLETE. EXECUTION ENDED.
+
+>>> Loading configuration settings from: src/test/java/jsymbolic2/scenario/resources/configs/window_config.txt.
+
+>>> Extracting features from 5 input files, one file at at time:
+
+	>>> 0/5 Extracting features: 005ed798038238d8666457bc61ec5dd1.mid  . . .
+	>>> 0/5 Successfully extracted: 005ed798038238d8666457bc61ec5dd1.mid.
+	>>> 1/5 Extracting features: 0a4fe1154dc96ed40d3c49017a163a11.mid  . . .
+	>>> 1/5 Successfully extracted: 0a4fe1154dc96ed40d3c49017a163a11.mid.
+	>>> 2/5 Extracting features: 007237d19324d40117332173dcb16738.mid  . . .
+	>>> 2/5 Successfully extracted: 007237d19324d40117332173dcb16738.mid.
+	>>> 3/5 Extracting features: 7d2e363a699917c37b274d173e183d30.mid  . . .
+	>>> 3/5 Successfully extracted: 7d2e363a699917c37b274d173e183d30.mid.
+	>>> 4/5 Extracting features: 0095961e638da8a451f9712f35cc4d56.mid  . . .
+	>>> 4/5 Successfully extracted: 0095961e638da8a451f9712f35cc4d56.mid.
+
+>>> Saving extracted features as an ACE XML Feature Values file: src/test/java/jsymbolic2/scenario/resources/values/window_values_actual.xml.
+
+>>> Feature extraction complete.
+
+	>>> Features succesfully extracted and saved from 5 of 5 attempted files.
+
+>>> Saving feature metadata as an ACE XML Feature Definitions file: src/test/java/jsymbolic2/scenario/resources/values/window_values_actual.xml.
+
+
+>>> Saving extracted features as an ACE XML Feature Values file: src/test/java/jsymbolic2/scenario/resources/values/window_values_actual.xml.
+
+>>> ALL PROCESSING COMPLETE. EXECUTION ENDED.
+
+>>> Loading configuration settings from: src/test/java/jsymbolic2/scenario/resources/configs/overall_config.txt.
+
+>>> Extracting features from 5 input files, one file at at time:
+
+	>>> 0/5 Extracting features: 005ed798038238d8666457bc61ec5dd1.mid  . . .
+	>>> 0/5 Successfully extracted: 005ed798038238d8666457bc61ec5dd1.mid.
+	>>> 1/5 Extracting features: 0a4fe1154dc96ed40d3c49017a163a11.mid  . . .
+	>>> 1/5 Successfully extracted: 0a4fe1154dc96ed40d3c49017a163a11.mid.
+	>>> 2/5 Extracting features: 007237d19324d40117332173dcb16738.mid  . . .
+	>>> 2/5 Successfully extracted: 007237d19324d40117332173dcb16738.mid.
+	>>> 3/5 Extracting features: 7d2e363a699917c37b274d173e183d30.mid  . . .
+	>>> 3/5 Successfully extracted: 7d2e363a699917c37b274d173e183d30.mid.
+	>>> 4/5 Extracting features: 0095961e638da8a451f9712f35cc4d56.mid  . . .
+	>>> 4/5 Successfully extracted: 0095961e638da8a451f9712f35cc4d56.mid.
+
+>>> Saving extracted features as an ACE XML Feature Values file: src/test/java/jsymbolic2/scenario/resources/values/overall_values_actual.xml.
+
+>>> Feature extraction complete.
+
+	>>> Features succesfully extracted and saved from 5 of 5 attempted files.
+
+>>> Saving feature metadata as an ACE XML Feature Definitions file: src/test/java/jsymbolic2/scenario/resources/values/overall_values_actual.xml.
+
+
+>>> Saving extracted features as an ACE XML Feature Values file: src/test/java/jsymbolic2/scenario/resources/values/overall_values_actual.xml.
+
+>>> ALL PROCESSING COMPLETE. EXECUTION ENDED.
+
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VibratoPrevalenceFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">VibratoPrevalenceFeature.java</span></div><h1>VibratoPrevalenceFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import java.util.LinkedList;
+import javax.sound.midi.*;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the number of pitched notes that have associated MIDI Pitch Bend messages
+ * change direction at least twice in connection with the note in question, divided by the total number of
+ * pitched Note Ons in the piece.
+ *
+ * @author Cory McKay
+ */
+public class VibratoPrevalenceFeature
+     extends MIDIFeatureExtractor
+{
+	/* CONSTRUCTOR ******************************************************************************************/
+
+	
+	/**
+	 * Basic constructor that sets the values of the fields inherited from this class' superclass.
+	 */
+	public VibratoPrevalenceFeature()
+<span class="fc" id="L26">	{</span>
+<span class="fc" id="L27">		code = &quot;P-40&quot;;</span>
+<span class="fc" id="L28">		name = &quot;Vibrato Prevalence&quot;;</span>
+<span class="fc" id="L29">		description = &quot;Number of pitched notes that have associated MIDI Pitch Bend messages change direction at least twice in connection with the note in question, divided by the total number of pitched Note Ons in the piece.&quot;;</span>
+
+<span class="fc" id="L31">	}</span>
+	
+
+	/* PUBLIC METHODS ***************************************************************************************/
+	
+	
+	/**
+	 * Extract this feature from the given sequence of MIDI data and its associated information.
+	 *
+	 * @param sequence				The MIDI data to extract the feature from.
+	 * @param sequence_info			Additional data already extracted from the the MIDI sequence.
+	 * @param other_feature_values	The values of other features that may be needed to calculate this feature. 
+	 *								The order and offsets of these features must be the same as those returned
+	 *								by this class' getDependencies and getDependencyOffsets methods, 
+	 *								respectively. The first indice indicates the feature/window, and the 
+	 *								second indicates the value.
+	 * @return						The extracted feature value(s).
+	 * @throws Exception			Throws an informative exception if the feature cannot be calculated.
+	 */
+	@Override
+	public double[] extractFeature( Sequence sequence,
+									MIDIIntermediateRepresentations sequence_info,
+									double[][] other_feature_values )
+	throws Exception
+	{
+		double value;
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">		if (sequence_info != null)</span>
+		{
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">			if (sequence_info.pitch_bends_list.isEmpty()) // If there are no pitch bends</span>
+<span class="fc" id="L60">				value = 0.0;</span>
+			else
+			{
+				// Generate array of pitch bends
+<span class="nc" id="L64">				Object[] notes_objects = sequence_info.pitch_bends_list.toArray();</span>
+<span class="nc" id="L65">				LinkedList[] notes = new LinkedList[notes_objects.length];</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">				for (int i = 0; i &lt; notes.length; i++)</span>
+<span class="nc" id="L67">					notes[i] = (LinkedList) notes_objects[i];</span>
+<span class="nc" id="L68">				int[][] pitch_bends = new int[notes.length][];</span>
+<span class="nc bnc" id="L69" title="All 2 branches missed.">				for (int i = 0; i &lt; notes.length; i++)</span>
+				{
+<span class="nc" id="L71">					Object[] this_note_pitch_bends_objects = notes[i].toArray();</span>
+<span class="nc" id="L72">					pitch_bends[i] = new int[this_note_pitch_bends_objects.length];</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">					for (int j = 0; j &lt; pitch_bends[i].length; j++)</span>
+<span class="nc" id="L74">						pitch_bends[i][j] = ((Integer) this_note_pitch_bends_objects[j]).intValue();</span>
+				}
+
+				// Find the number of changes of direction of bend bend for each note
+<span class="nc" id="L78">				int notes_with_vibrato = 0;</span>
+<span class="nc bnc" id="L79" title="All 2 branches missed.">				for (int note = 0; note &lt; pitch_bends.length; note++)</span>
+				{
+<span class="nc" id="L81">					int changes = 0;</span>
+<span class="nc" id="L82">					int last_value = pitch_bends[note][0];</span>
+<span class="nc" id="L83">					int direction = 0;</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">					for (int bend = 0; bend &lt; pitch_bends[note].length; bend++)</span>
+					{
+<span class="nc bnc" id="L86" title="All 2 branches missed.">						if (pitch_bends[note][bend] &gt; last_value)</span>
+						{
+<span class="nc bnc" id="L88" title="All 2 branches missed.">							if (direction == -1)</span>
+<span class="nc" id="L89">								changes++;</span>
+<span class="nc" id="L90">							direction = 1;</span>
+						}
+						else
+						{
+<span class="nc bnc" id="L94" title="All 2 branches missed.">							if (pitch_bends[note][bend] &lt; last_value)</span>
+							{
+<span class="nc bnc" id="L96" title="All 2 branches missed.">								if (direction == 1)</span>
+<span class="nc" id="L97">									changes++;</span>
+<span class="nc" id="L98">								direction = -1;</span>
+							}
+						}
+					}
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">					if (changes &gt; 2)</span>
+<span class="nc" id="L104">						notes_with_vibrato++;</span>
+				}
+
+				// Calculate the value
+<span class="nc bnc" id="L108" title="All 2 branches missed.">				if (sequence_info.total_number_pitched_note_ons == 0)</span>
+<span class="nc" id="L109">					value = 0.0;</span>
+				else 
+<span class="nc" id="L111">					value = (double) notes_with_vibrato / (double) sequence_info.total_number_pitched_note_ons;</span>
+<span class="nc" id="L112">			}</span>
+		}
+<span class="nc" id="L114">		else value = -1.0;</span>
+
+<span class="fc" id="L116">		double[] result = new double[1];</span>
+<span class="fc" id="L117">		result[0] = value;</span>
+<span class="fc" id="L118">		return result;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

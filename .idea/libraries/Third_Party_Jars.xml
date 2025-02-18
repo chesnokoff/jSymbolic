@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Third-Party-Jars">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Third-Party-Jars/jMei2Midi-1.0-jar-with-dependencies.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Third-Party-Jars/ACE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Third-Party-Jars/UtilityClasses.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

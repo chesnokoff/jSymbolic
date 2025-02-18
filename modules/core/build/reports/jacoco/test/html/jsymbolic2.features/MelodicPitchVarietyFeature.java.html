@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MelodicPitchVarietyFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">MelodicPitchVarietyFeature.java</span></div><h1>MelodicPitchVarietyFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import java.util.List;
+import java.util.Map;
+import javax.sound.midi.Sequence;
+import ace.datatypes.FeatureDefinition;
+import java.util.Arrays;
+import jsymbolic2.featureutils.CollectedNoteInfo;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.featureutils.NoteInfo;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the average number of notes that go by in a MIDI channel before a note's
+ * pitch is repeated (including the repeated note itself). This is calculated across each channel individually
+ * before being combined. Notes that occur simultaneously on the same MIDI tick are only counted as one note
+ * for the purpose of this calculation. Notes that do not recur after 16 notes in the same channel are not
+ * included in this calculation. Set to 0 if there are no qualifying repeated notes in the piece.
+ *
+ * @author Cory McKay and Tristano Tenaglia
+ */
+public class MelodicPitchVarietyFeature
+		extends MIDIFeatureExtractor
+{
+
+	/* CONSTRUCTOR ******************************************************************************************/
+
+	/**
+	 * Basic constructor that sets the values of the fields inherited from this class' superclass.
+	 */
+	public MelodicPitchVarietyFeature()
+<span class="fc" id="L32">	{</span>
+<span class="fc" id="L33">		code = &quot;M-25&quot;;</span>
+<span class="fc" id="L34">		name = &quot;Melodic Pitch Variety&quot;;</span>
+<span class="fc" id="L35">		description = &quot;Average number of notes that go by in a MIDI channel before a note's pitch is repeated (including the repeated note itself). This is calculated across each channel individually before being combined. Notes that occur simultaneously on the same MIDI tick are only counted as one note for the purpose of this calculation. Notes that do not recur after 16 notes in the same channel are not included in this calculation. Set to 0 if there are no qualifying repeated notes in the piece.&quot;;</span>
+
+<span class="fc" id="L37">	}</span>
+	
+
+	/* PUBLIC METHODS ***************************************************************************************/
+	
+	
+	/**
+	 * Extract this feature from the given sequence of MIDI data and its associated information.
+	 *
+	 * @param sequence				The MIDI data to extract the feature from.
+	 * @param sequence_info			Additional data already extracted from the the MIDI sequence.
+	 * @param other_feature_values	The values of other features that may be needed to calculate this feature. 
+	 *								The order and offsets of these features must be the same as those returned
+	 *								by this class' getDependencies and getDependencyOffsets methods, 
+	 *								respectively. The first indice indicates the feature/window, and the 
+	 *								second indicates the value.
+	 * @return						The extracted feature value(s).
+	 * @throws Exception			Throws an informative exception if the feature cannot be calculated.
+	 */
+	@Override
+	public double[] extractFeature( Sequence sequence,
+									MIDIIntermediateRepresentations sequence_info,
+									double[][] other_feature_values )
+	throws Exception
+	{
+		double value;
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">		if (sequence_info != null)</span>
+		{
+			// The total number of notes for which a repeated note is found
+<span class="fc" id="L66">			double number_of_repeated_notes_found = 0.0;</span>
+
+			// The total number of notes that go by before a note is repeated, all added together for all
+			// note that are repeated within max_notes_that_can_go_by
+<span class="fc" id="L70">			double summed_number_of_notes_before_pitch_repeated = 0.0;</span>
+
+			// Go through channel by channel
+<span class="fc bfc" id="L73" title="All 2 branches covered.">			for (int channel = 0; channel &lt; 16; channel++)</span>
+			{
+<span class="fc bfc" id="L75" title="All 2 branches covered.">				if (channel != (10 - 1))  // Skip over the unpitched percussion channel</span>
+				{
+					// The maximum number of notes that can go by before a note is discounted for the purposes
+					// of this feature
+<span class="fc" id="L79">					final int max_notes_that_can_go_by = 16;</span>
+
+					// Prepare a list of all notes on this channel sorted by start tick
+<span class="fc" id="L82">					List&lt;NoteInfo&gt; all_notes_in_this_channel = sequence_info.all_notes.getNotesOnChannel(channel);</span>
+<span class="fc" id="L83">					all_notes_in_this_channel = CollectedNoteInfo.noteListToSortedNoteList(all_notes_in_this_channel);</span>
+
+					// Prepare a map indicating all notes starting on any given MIDI tick, where the start 
+					// tick value serves as the map key and the map value is a list of all notes starting on 
+					// the specified tick. The particular ordering of notes in this List value is not 
+					// necessarily meaningful.
+<span class="fc" id="L89">					Map&lt;Integer, List&lt;NoteInfo&gt;&gt; note_start_tick_map_this_channel = CollectedNoteInfo.noteListToStartTickNoteMap(all_notes_in_this_channel);</span>
+
+					// Prepare a sorted set of all ticks containing one or more note on messages
+<span class="fc" id="L92">					Integer[] sorted_note_on_ticks_this_channel = note_start_tick_map_this_channel.keySet().toArray(new Integer[0]);</span>
+<span class="fc" id="L93">					Arrays.sort(sorted_note_on_ticks_this_channel);</span>
+
+					// For each note in this channel, compare with the pitches of all other notes up to 
+					// max_notes_that_can_go_by notes after it
+<span class="fc bfc" id="L97" title="All 2 branches covered.">					for (NoteInfo current_note : all_notes_in_this_channel)</span>
+					{
+<span class="fc" id="L99">						boolean found_repeated_pitch = false;</span>
+<span class="fc" id="L100">						int notes_gone_by_with_different_pitch = 0;</span>
+<span class="fc" id="L101">						int last_tick_examined = 0;</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">						for (Integer tick_following_note : sorted_note_on_ticks_this_channel)</span>
+						{
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">							if ( !found_repeated_pitch &amp;&amp; </span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">								 tick_following_note &gt; current_note.getStartTick() )</span>
+							{
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">								if (tick_following_note != last_tick_examined)</span>
+<span class="fc" id="L108">									notes_gone_by_with_different_pitch++;</span>
+								
+<span class="fc" id="L110">								last_tick_examined = tick_following_note;</span>
+
+<span class="fc" id="L112">								List&lt;NoteInfo&gt; notes_starting_this_following_tick = note_start_tick_map_this_channel.get(tick_following_note);</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">								for (NoteInfo following_note : notes_starting_this_following_tick)</span>
+								{
+<span class="pc bpc" id="L115" title="1 of 6 branches missed.">									if ( current_note.getPitch() == following_note.getPitch() &amp;&amp; </span>
+										 !found_repeated_pitch &amp;&amp;
+										 notes_gone_by_with_different_pitch &lt;= max_notes_that_can_go_by )
+									{
+<span class="fc" id="L119">										found_repeated_pitch = true;</span>
+<span class="fc" id="L120">										number_of_repeated_notes_found++;</span>
+<span class="fc" id="L121">										summed_number_of_notes_before_pitch_repeated += notes_gone_by_with_different_pitch;</span>
+									}
+<span class="fc" id="L123">								}</span>
+							}
+
+<span class="fc bfc" id="L126" title="All 4 branches covered.">							if ( found_repeated_pitch ||</span>
+								 notes_gone_by_with_different_pitch &gt; max_notes_that_can_go_by)
+<span class="fc" id="L128">								break;</span>
+						}
+<span class="fc" id="L130">					}</span>
+				}
+			}
+			
+			// To deal with music with no repeated notes
+<span class="fc bfc" id="L135" title="All 2 branches covered.">			if (number_of_repeated_notes_found == 0)</span>
+<span class="fc" id="L136">				value = 0.0;</span>
+			else
+<span class="fc" id="L138">				value = summed_number_of_notes_before_pitch_repeated / number_of_repeated_notes_found;</span>
+<span class="fc" id="L139">		}</span>
+<span class="nc" id="L140">		else value = -1.0;</span>
+
+<span class="fc" id="L142">		double[] result = new double[1];</span>
+<span class="fc" id="L143">		result[0] = value;</span>
+<span class="fc" id="L144">		return result;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

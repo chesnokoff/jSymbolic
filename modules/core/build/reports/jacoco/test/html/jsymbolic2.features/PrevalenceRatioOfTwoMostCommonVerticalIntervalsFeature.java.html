@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature.java</span></div><h1>PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import javax.sound.midi.Sequence;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the ratio between the fraction of notes corresponding to the second most
+ * common vertical interval on the wrapped vertical interval histogram and the fraction of vertical intervals
+ * corresponding to the most common vertical interval. Set to 0 if either of these prevalences are 0.
+ *
+ * @author Tristano Tenaglia and Cory McKay
+ */
+public class PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature
+		extends MIDIFeatureExtractor
+{
+	/* CONSTRUCTOR ******************************************************************************************/
+
+	
+	/**
+	 * Basic constructor that sets the values of the fields inherited from this class' superclass.
+	 */
+	public PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature()
+<span class="fc" id="L25">	{</span>
+<span class="fc" id="L26">		code = &quot;C-13&quot;;</span>
+<span class="fc" id="L27">		name = &quot;Prevalence Ratio of Two Most Common Vertical Intervals&quot;;</span>
+<span class="fc" id="L28">		description = &quot;Ratio between the fraction of notes corresponding to the second most common vertical interval on the wrapped vertical interval histogram and the fraction of vertical intervals corresponding to the most common vertical interval. Set to 0 if either of these prevalences are 0.&quot;;</span>
+<span class="fc" id="L29">		dependencies = new String[] { &quot;Prevalence of Most Common Vertical Interval&quot;, &quot;Prevalence of Second Most Common Vertical Interval&quot; };</span>
+<span class="fc" id="L30">		offsets = null;</span>
+<span class="fc" id="L31">	}</span>
+	
+
+	/* PUBLIC METHODS ***************************************************************************************/
+	
+	
+	/**
+	 * Extract this feature from the given sequence of MIDI data and its associated information.
+	 *
+	 * @param sequence				The MIDI data to extract the feature from.
+	 * @param sequence_info			Additional data already extracted from the the MIDI sequence.
+	 * @param other_feature_values	The values of other features that may be needed to calculate this feature. 
+	 *								The order and offsets of these features must be the same as those returned
+	 *								by this class' getDependencies and getDependencyOffsets methods, 
+	 *								respectively. The first indice indicates the feature/window, and the 
+	 *								second indicates the value.
+	 * @return						The extracted feature value(s).
+	 * @throws Exception			Throws an informative exception if the feature cannot be calculated.
+	 */
+	@Override
+	public double[] extractFeature( Sequence sequence,
+									MIDIIntermediateRepresentations sequence_info,
+									double[][] other_feature_values )
+	throws Exception
+	{
+		double value;
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">		if (sequence_info != null)</span>
+		{
+<span class="fc" id="L59">			double prevalence_of_most_common_vertical_interval = other_feature_values[0][0];</span>
+<span class="fc" id="L60">			double prevalence_of_second_common_vertical_interval = other_feature_values[1][0];</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">			if (prevalence_of_most_common_vertical_interval == 0.0)</span>
+<span class="fc" id="L62">				value = 0.0;</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">			else if (prevalence_of_second_common_vertical_interval == 0.0)</span>
+<span class="nc" id="L64">				value = 0.0;</span>
+			else
+<span class="fc" id="L66">				value = prevalence_of_second_common_vertical_interval / prevalence_of_most_common_vertical_interval;</span>
+<span class="fc" id="L67">		}</span>
+<span class="nc" id="L68">		else value = -1.0;</span>
+
+<span class="fc" id="L70">		double[] result = new double[1];</span>
+<span class="fc" id="L71">		result[0] = value;</span>
+<span class="fc" id="L72">		return result;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

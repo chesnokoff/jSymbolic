@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="jsymbolic2.api.jSymbolicProcessorTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-02-18T17:04:54" hostname="MacBook-Pro-Aleksandr-5.local" time="0.229">
+  <properties/>
+  <testcase name="getJsymbolicDataDirectory()" classname="jsymbolic2.api.jSymbolicProcessorTest" time="0.229"/>
+  <system-out><![CDATA[>>> Loading configuration settings from: src/test/java/jsymbolic2/api/resources/sampleConfiguration.txt.
+
+>>> Loading configuration settings from: src/test/java/jsymbolic2/api/resources/sampleConfigConvert.txt.
+
+]]></system-out>
+  <system-err><![CDATA[
+ERROR: There are no files to parse!
+
+]]></system-err>
+</testsuite>

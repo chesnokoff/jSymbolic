@@ -1,0 +1,877 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MIDIFeatureProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.processing</a> &gt; <span class="el_source">MIDIFeatureProcessor.java</span></div><h1>MIDIFeatureProcessor.java</h1><pre class="source lang-java linenums">package jsymbolic2.processing;
+
+import ace.datatypes.DataBoard;
+import ace.datatypes.DataSet;
+import ace.datatypes.FeatureDefinition;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinTask;
+import jsymbolic2.featureutils.FeatureExtractorAccess;
+import jsymbolic2.featureutils.MEIFeatureExtractor;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import mckay.utilities.sound.midi.MIDIMethods;
+import org.apache.commons.lang3.ArrayUtils;
+import org.ddmal.jmei2midi.meielements.meispecific.MeiSpecificStorage;
+
+import javax.sound.midi.Sequence;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.CountedCompleter;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.IntStream;
+
+
+/**
+ * This class is used to pre-process and extract features from MIDI recordings.
+ * An object of this class should be instantiated with parameters indicating
+ * the details of how features are to be extracted.
+ *
+ * &lt;p&gt;The extractFeatures method should be called whenever recordings are
+ * available to be analyzed. This method should be called once for each
+ * recording. It will generate DataSet for each recording and add it in List of DataSets
+ *
+ * &lt;p&gt;When you finish with pocessing the records, call generateDataBoard to get DataBoard
+ * that contains all DataSets.
+ *
+ * &lt;p&gt;Features are extracted for each window and, when appropriate, the average
+ * and standard deviation of each of these features is extracted for each
+ * recording.
+ *
+ * @author Cory McKay and Tristano Tenaglia
+ */
+public class MIDIFeatureProcessor {
+    /* FIELDS ****************************************************************/
+
+<span class="fc" id="L49">    private static Map&lt;String, MIDIFeatureExtractor&gt; name2feature = new ConcurrentHashMap&lt;&gt;();</span>
+
+    /**
+     * The window size in seconds used for dividing up the recordings to
+     * classify.
+     */
+    private final double windowSize;
+
+    /**
+     * The number of seconds that windows are offset by. A value of zero means
+     * that there is no window overlap.
+     */
+    private final double windowOverlapOffset;
+
+    /**
+     * The features that are to be extracted (including dependencies of features to be saved, not just the
+     * features to be saved themselves).
+     */
+    private MIDIFeatureExtractor[] midiFeatureExtractors;
+
+    /**
+     * The dependencies of the features in the feature_extractors field.
+     * The first indice corresponds to the feature_extractors indice
+     * and the second identifies the number of the dependent feature.
+     * The entry identifies the indice of the feature in feature_extractors
+     * that corresponds to a dependant feature. The first dimension will be
+     * null if there are no dependent features.
+     */
+    private int[][] featureExtractorDependencies;
+
+    /**
+     * The longest number of windows of previous features that each feature
+     * must have before it can be extracted. The indice corresponds to that of
+     * feature_extractors.
+     */
+    private int[] maxFeatureOffsets;
+
+    /**
+     * Which features are to be saved after processing. Entries correspond to
+     * the feature_extractors field.
+     */
+    private boolean[] featuresToSaveMask;
+
+    /**
+     * Whether or not to save features individually for each window.
+     */
+    private final boolean saveFeaturesForEachWindow;
+
+    /**
+     * Whether or not to save the average and standard deviation of each
+     * feature across all windows.
+     */
+    private final boolean saveOverallRecordingFeatures;
+
+    /**
+     * List of DataSets. Each DataSet corresponds to record that was processed.
+     */
+<span class="fc" id="L106">    private final List&lt;DataSet&gt; dataSets = new ArrayList&lt;&gt;();</span>
+
+    /**
+     * Array of overall FeatureDefinitions.
+     */
+    private final FeatureDefinition[] overallFeatureDefinitions;
+
+    /**
+     * Array of FeatureDefinitions of extractors.
+     */
+    private final FeatureDefinition[] featureExtractorsDefinitions;
+
+    /**
+     * Array of overall FeatureDefinitions' names.
+     */
+    private final String[] overallFeatureNames;
+
+    /**
+     * Array of extractors' FeatureDefinitions names.
+     */
+    private final String[] featureExtractorsNames;
+
+    /* CONSTRUCTORS **********************************************************/
+
+    /**
+     * Validates and stores the configuration to use for extracting features
+     * from MIDI recordings.
+     * &lt;p&gt;
+     * meaning no overlap.
+     *
+     * @param allFeatureExtractors         All features that can be
+     *                                     extracted.
+     * @param featuresToSaveAmongAll       Which features are to be
+     *                                     saved. Entries correspond to
+     *                                     the allFeatureExtractors
+     *                                     parameter.
+     * @param saveOverallRecordingFeatures Whetehr or not to save the
+     *                                     average and standard deviation
+     *                                     of each feature across all
+     *                                     windows.
+     * @throws Exception Throws an informative
+     *                   exception if the input
+     *                   parameters are invalid, including if any of the feature
+     *                   in allFeatureExtractors have dependencies that do not
+     *                   exist in allFeatureExtractors.
+     */
+    public MIDIFeatureProcessor(WindowInfo windowInfo,
+        MIDIFeatureExtractor[] allFeatureExtractors,
+        boolean[] featuresToSaveAmongAll,
+<span class="fc" id="L155">        boolean saveOverallRecordingFeatures) throws Exception {</span>
+<span class="fc" id="L156">        checkWindowFlags(windowInfo.window_size(), windowInfo.window_overlap(), windowInfo.save_features_for_each_window(), saveOverallRecordingFeatures);</span>
+<span class="fc" id="L157">        checkAtLeastOneFlagToSaveWasSelected(featuresToSaveAmongAll);</span>
+<span class="fc" id="L158">        checkExtractors(allFeatureExtractors);</span>
+        // Save parameters as fields
+<span class="fc" id="L160">        windowSize = windowInfo.window_size();</span>
+<span class="fc" id="L161">        saveFeaturesForEachWindow = windowInfo.save_features_for_each_window();</span>
+<span class="fc" id="L162">        this.saveOverallRecordingFeatures = saveOverallRecordingFeatures;</span>
+
+<span class="fc bfc" id="L164" title="All 2 branches covered.">        for (MIDIFeatureExtractor allFeatureExtractor : allFeatureExtractors) {</span>
+<span class="fc" id="L165">            name2feature.put(allFeatureExtractor.getFeatureDefinition().name, allFeatureExtractor);</span>
+        }
+        // Calculate the window offset
+<span class="fc" id="L168">        windowOverlapOffset = windowInfo.window_overlap() * windowSize;</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">        if (windowOverlapOffset &gt; windowSize)</span>
+<span class="nc" id="L170">            throw new Exception(&quot;Window overlap offset is greater than window size, this is not possible.&quot;);</span>
+        // Find which features need to be extracted and in what order. Also find
+        // the indices of dependencies and the maximum offsets for each feature.
+<span class="fc" id="L173">        findAndOrderFeaturesToExtract(allFeatureExtractors, featuresToSaveAmongAll);</span>
+
+<span class="fc" id="L175">        featureExtractorsDefinitions = new FeatureDefinition[allFeatureExtractors.length];</span>
+<span class="fc" id="L176">        featureExtractorsNames = new String[allFeatureExtractors.length];</span>
+<span class="fc bfc" id="L177" title="All 2 branches covered.">        for (int feat = 0; feat &lt; featureExtractorsDefinitions.length; ++feat) {</span>
+<span class="fc" id="L178">            featureExtractorsDefinitions[feat] = allFeatureExtractors[feat].getFeatureDefinition();</span>
+<span class="fc" id="L179">            featureExtractorsNames[feat] = featureExtractorsDefinitions[feat].name;</span>
+        }
+<span class="fc" id="L181">        overallFeatureDefinitions = generateOverallFeatureDefinitions();</span>
+<span class="fc" id="L182">        overallFeatureNames = new String[overallFeatureDefinitions.length];</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">        for (int feat = 0; feat &lt; overallFeatureDefinitions.length; ++feat) {</span>
+<span class="fc" id="L184">            overallFeatureNames[feat] = overallFeatureDefinitions[feat].name;</span>
+        }
+<span class="fc" id="L186">    }</span>
+
+    private void checkExtractors(MIDIFeatureExtractor[] allFeatureExtractors) throws Exception {
+        // Verify that feature names referred to by all dependencies actually exist.
+<span class="fc bfc" id="L190" title="All 2 branches covered.">        for (MIDIFeatureExtractor featureExtractor : allFeatureExtractors) {</span>
+<span class="fc" id="L191">            String[] thisFeatureDependencies = featureExtractor.getDepenedencies();</span>
+<span class="fc bfc" id="L192" title="All 2 branches covered.">            if (null == thisFeatureDependencies) {</span>
+<span class="fc" id="L193">                continue;</span>
+            }
+<span class="fc" id="L195">            boolean foundDependency = false;</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">            for (String dependency : thisFeatureDependencies) {</span>
+<span class="pc bpc" id="L197" title="1 of 2 branches missed.">                for (int i = 0; i &lt; allFeatureExtractors.length; i++) {</span>
+<span class="fc bfc" id="L198" title="All 2 branches covered.">                    if (dependency.equals(allFeatureExtractors[i].getFeatureDefinition().name)) {</span>
+                        {
+<span class="fc" id="L200">                            foundDependency = true;</span>
+<span class="fc" id="L201">                            break;</span>
+                        }
+                    }
+                }
+<span class="pc bpc" id="L205" title="1 of 2 branches missed.">                if (!foundDependency) {</span>
+<span class="nc" id="L206">                    throw new Exception(&quot;The &quot; +</span>
+<span class="nc" id="L207">                        featureExtractor.getName() +</span>
+                        &quot; feature needs the &quot; + dependency +
+                        &quot; feature in order to be calculated, yet no feature with the latter name could be found.&quot;);
+                }
+            }
+        }
+<span class="fc" id="L213">    }</span>
+
+    private void checkAtLeastOneFlagToSaveWasSelected(boolean[] featuresToSaveAmongAll) throws Exception {
+<span class="fc" id="L216">        boolean one_selected = false;</span>
+<span class="pc bpc" id="L217" title="1 of 2 branches missed.">        for (boolean featureToSaveFlag : featuresToSaveAmongAll) {</span>
+<span class="fc bfc" id="L218" title="All 2 branches covered.">            if (featureToSaveFlag) {</span>
+<span class="fc" id="L219">                one_selected = true;</span>
+<span class="fc" id="L220">                break;</span>
+            }
+        }
+<span class="pc bpc" id="L223" title="1 of 2 branches missed.">        if (!one_selected) {</span>
+<span class="nc" id="L224">            throw new Exception(&quot;No features have been set to be saved.&quot;);</span>
+        }
+<span class="fc" id="L226">    }</span>
+
+    private void checkWindowFlags(double windowSize, double windowOverlap, boolean saveFeaturesForEachWindow, boolean saveOverallRecordingFeatures) throws Exception {
+        // Throw an exception if the control parameters are invalid
+<span class="pc bpc" id="L230" title="1 of 4 branches missed.">        if (!saveFeaturesForEachWindow &amp;&amp; !saveOverallRecordingFeatures)</span>
+<span class="nc" id="L231">            throw new Exception(&quot;&quot;&quot;</span>
+                    You must save at least one of the windows-based
+                    features and the overall file-based features if
+                    windows are to be used.&quot;&quot;&quot;);
+<span class="pc bpc" id="L235" title="2 of 4 branches missed.">        if (0.0 &gt; windowOverlap || 1.0 &lt;= windowOverlap)</span>
+<span class="nc" id="L236">            throw new Exception(&quot;&quot;&quot;</span>
+                    Window overlap fraction is %s.
+<span class="nc" id="L238">                    This value must be 0.0 or above and less than 1.0.&quot;&quot;&quot;.formatted(windowOverlap));</span>
+<span class="pc bpc" id="L239" title="1 of 2 branches missed.">        if (0.0 &gt; windowSize)</span>
+<span class="nc" id="L240">            throw new Exception(&quot;&quot;&quot;</span>
+                    Window size is %s.
+<span class="nc" id="L242">                    This value must be at or above 0.0 seconds.&quot;&quot;&quot;.formatted(windowSize));</span>
+<span class="fc" id="L243">    }</span>
+
+    /*PUBLIC METHODS ********************************************************/
+
+    /**
+     * @return The features that are to be extracted (including dependencies of features to be saved, not
+     * just the features to be saved themselves).
+     */
+    public MIDIFeatureExtractor[] getFinalFeaturesToBeExtracted() {
+<span class="nc" id="L252">        return midiFeatureExtractors;</span>
+    }
+
+    /**
+     * @return True if it has features for MEI files.
+     */
+    public boolean containsMeiFeatures() {
+<span class="fc" id="L259">        List&lt;String&gt; all_mei_specific_features = FeatureExtractorAccess.getNamesOfMeiSpecificFeatures();</span>
+<span class="fc bfc" id="L260" title="All 2 branches covered.">        for (MIDIFeatureExtractor feature : midiFeatureExtractors) {</span>
+<span class="pc bpc" id="L261" title="1 of 2 branches missed.">            if (all_mei_specific_features.contains(feature.getFeatureDefinition().name)) {</span>
+<span class="nc" id="L262">                return true;</span>
+            }
+        }
+<span class="fc" id="L265">        return false;</span>
+    }
+
+    /**
+     * Extract the features from the provided MeiSequence.
+     *
+     * @param name               How to name sequence in DataBoard.
+     * @param sequence
+     * @param meiSpecificStorage
+     * @throws Exception When an unforeseen runtime exception occurs.
+     */
+    public void extractFeaturesFromSequence(String name, Sequence sequence, MeiSpecificStorage meiSpecificStorage)
+            throws Exception {
+        // Extract the data from the file and check for exceptions
+        // Prepare the windows for feature extraction with correct times
+        // Tick arrays have been added to account for multiple windows
+<span class="fc" id="L281">        double[] secondsPerTick = MIDIMethods.getSecondsPerTick(sequence);</span>
+        int[] startTicks;
+        int[] endTicks;
+        Sequence[] windows;
+<span class="fc bfc" id="L285" title="All 2 branches covered.">        if (!saveFeaturesForEachWindow) {</span>
+<span class="fc" id="L286">            List&lt;int[]&gt; startEndTickArrays = MIDIMethods.getStartEndTickArrays(sequence, sequence.getMicrosecondLength() / 1000000.0, 0.0, secondsPerTick);</span>
+<span class="fc" id="L287">            startTicks = startEndTickArrays.get(0);</span>
+<span class="fc" id="L288">            endTicks = startEndTickArrays.get(1);</span>
+<span class="fc" id="L289">            windows = new Sequence[1];</span>
+<span class="fc" id="L290">            windows[0] = sequence;</span>
+<span class="fc" id="L291">        } else {</span>
+<span class="fc" id="L292">            List&lt;int[]&gt; startEndTickArrays = MIDIMethods.getStartEndTickArrays(sequence, windowSize, windowOverlapOffset, secondsPerTick);</span>
+<span class="fc" id="L293">            startTicks = startEndTickArrays.get(0);</span>
+<span class="fc" id="L294">            endTicks = startEndTickArrays.get(1);</span>
+<span class="fc" id="L295">            windows = MIDIMethods.breakSequenceIntoWindows(sequence, windowSize, windowOverlapOffset, startTicks, endTicks);</span>
+        }
+        //Mei Specific Storage added here and null is set if the file is not an mei file
+        // Extract the feature values from the samples
+<span class="fc" id="L299">        double[][][] windowFeatureValues = getFeatures(windows, meiSpecificStorage);</span>
+        // Find the feature averages and standard deviations if appropriate
+<span class="fc" id="L301">        double[][] overallFeatureValues = null;</span>
+<span class="fc bfc" id="L302" title="All 2 branches covered.">        if (saveOverallRecordingFeatures) {</span>
+<span class="fc" id="L303">            overallFeatureValues = generateOverallRecordingFeatures(windowFeatureValues);</span>
+        }
+<span class="fc" id="L305">        addDataSet(windowFeatureValues, name, overallFeatureValues, startTicks, endTicks, secondsPerTick);</span>
+<span class="fc" id="L306">    }</span>
+
+    private static class Worker extends CountedCompleter&lt;Void&gt; {
+        private final List&lt;Sequence&gt; sequences;
+        private final List&lt;MIDIIntermediateRepresentations&gt; representations;
+        private final ConcurrentMap&lt;String, double[][]&gt; map;
+        private final MIDIFeatureExtractor featureExtractor;
+
+        private Worker(CountedCompleter&lt;?&gt; completer,
+            List&lt;Sequence&gt; sequences,
+            List&lt;MIDIIntermediateRepresentations&gt; representations,
+            ConcurrentMap&lt;String, double[][]&gt; map,
+            MIDIFeatureExtractor featureExtractor) {
+<span class="fc" id="L319">            super(completer);</span>
+<span class="fc" id="L320">            this.sequences = sequences;</span>
+<span class="fc" id="L321">            this.representations = representations;</span>
+<span class="fc" id="L322">            this.map = map;</span>
+<span class="fc" id="L323">            this.featureExtractor = featureExtractor;</span>
+<span class="fc" id="L324">        }</span>
+
+        @Override
+        public void compute() {
+<span class="fc" id="L328">            List&lt;Worker&gt; workers = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L329" title="All 2 branches covered.">            for (String dependency : ArrayUtils.nullToEmpty(featureExtractor.getDepenedencies())) {</span>
+<span class="fc" id="L330">                workers.add(new Worker(this,</span>
+                    sequences,
+                    representations,
+                    map,
+<span class="fc" id="L334">                    name2feature.get(dependency)));</span>
+            }
+<span class="fc" id="L336">            addToPendingCount(workers.size());</span>
+<span class="fc" id="L337">            workers.forEach(ForkJoinTask::fork);</span>
+<span class="fc" id="L338">            tryComplete();</span>
+<span class="fc" id="L339">        }</span>
+
+        @Override
+        public void onCompletion(CountedCompleter&lt;?&gt; caller) {
+<span class="fc" id="L343">            double[][] results = new double[sequences.size()][];</span>
+<span class="fc bfc" id="L344" title="All 2 branches covered.">            for (int i = 0; i &lt; representations.size(); i++) {</span>
+<span class="fc" id="L345">                double[][][] dependencies = new double[sequences.size()][ArrayUtils.nullToEmpty(featureExtractor.getDepenedencies()).length][];</span>
+<span class="fc bfc" id="L346" title="All 2 branches covered.">                for (int j = 0; j &lt; ArrayUtils.nullToEmpty(featureExtractor.getDepenedencies()).length; j++) {</span>
+<span class="fc" id="L347">                    String dependency = featureExtractor.getDepenedencies()[j];</span>
+<span class="fc" id="L348">                    dependencies[i][j] = map.get(dependency)[i];</span>
+                }
+                try {
+<span class="fc" id="L351">                    results[i] = featureExtractor.extractFeature(sequences.get(i),</span>
+<span class="fc" id="L352">                        representations.get(i),</span>
+                        dependencies[i]);
+<span class="nc" id="L354">                } catch (Exception e) {</span>
+<span class="nc" id="L355">                    throw new RuntimeException(e);</span>
+<span class="fc" id="L356">                }</span>
+            }
+<span class="fc" id="L358">            map.putIfAbsent(featureExtractor.getName(), results);</span>
+<span class="fc" id="L359">        }</span>
+    }
+
+    /**
+     * Extracts features from each window of the given MIDI sequences. If the
+     * passed windows parameter consists of only one window, then this could
+     * be a whole unwindowed MIDI file.
+     *
+     * @param meiSpecificStorage The mei specific data storage used to extract
+     *                           mei specific features from the sequence windows.
+     *                           This will be null if the file is not an mei file
+     *                           and otherwise it will contain all mei specific data
+     *                           extracted by jMei2Midi.
+     * @param windows            The ordered MIDI windows to extract features from.
+     * @return The extracted feature values for this recording.
+     * The first indice identifies the window, the second
+     * identifies the feature and the third identifies
+     * the feature value. The third dimension will be
+     * null if the given feature could not be extracted
+     * for the given window.
+     * @throws Exception Throws an exception if a problem occurs.
+     */
+    public double[][][] getFeatures(Sequence[] windows, MeiSpecificStorage meiSpecificStorage) throws Exception {
+        // The extracted feature values for this recording. The first indice
+        // identifies the window, the second identifies the feature and the
+        // third identifies the feature value.
+<span class="fc" id="L385">        double[][][] results = new double[windows.length][midiFeatureExtractors.length][];</span>
+
+        // Extract features from each window one by one and add save the results.
+        // The last window is zero-padded at the end if it falls off the edge of the
+        // provided samples.
+<span class="fc" id="L390">        List&lt;MIDIIntermediateRepresentations&gt; representations = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L391" title="All 2 branches covered.">        for (int win = 0; win &lt; windows.length; win++) {</span>
+            // Extract information from sequence that is needed to extract features
+<span class="fc" id="L393">            MIDIIntermediateRepresentations intermediate = new MIDIIntermediateRepresentations(windows[win]);</span>
+
+<span class="fc" id="L395">            representations.add(intermediate);</span>
+            // Extract the features one by one
+//            for (int feat = 0; feat &lt; Features.length; feat++)
+//                processFeature(windows, meiSpecificStorage, results, win, intermediate, feat);
+        }
+<span class="fc" id="L400">        ForkJoinPool pool = ForkJoinPool.commonPool();</span>
+<span class="fc" id="L401">        ConcurrentHashMap&lt;String, double[][]&gt; resultsMap = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L402">        List&lt;ForkJoinTask&lt;Void&gt;&gt; forkJoinTasks = IntStream.range(0,</span>
+                featureExtractorsDefinitions.length)
+<span class="fc" id="L404">            .filter(i -&gt; featuresToSaveMask[i])</span>
+<span class="fc" id="L405">            .mapToObj(i -&gt; name2feature.get(featureExtractorsDefinitions[i].name))</span>
+<span class="fc" id="L406">            .map(featureDefinition -&gt; pool.submit(new Worker(null,</span>
+<span class="fc" id="L407">                Arrays.stream(windows).toList(),</span>
+                representations,
+                resultsMap,
+<span class="fc" id="L410">                featureDefinition))).toList();</span>
+<span class="fc" id="L411">        forkJoinTasks.forEach(voidForkJoinTask -&gt; {</span>
+              try {
+<span class="fc" id="L413">                voidForkJoinTask.get();</span>
+<span class="nc" id="L414">              } catch (InterruptedException | ExecutionException e) {</span>
+<span class="nc" id="L415">                  e.printStackTrace();</span>
+<span class="nc" id="L416">                throw new RuntimeException(e);</span>
+<span class="fc" id="L417">              }</span>
+<span class="fc" id="L418">            });</span>
+
+<span class="fc bfc" id="L420" title="All 2 branches covered.">        for (int i = 0; i &lt; results.length; i++) {</span>
+<span class="fc bfc" id="L421" title="All 2 branches covered.">            for (int j = 0; j &lt; midiFeatureExtractors.length; j++) {</span>
+<span class="fc" id="L422">                MIDIFeatureExtractor feature = midiFeatureExtractors[j];</span>
+<span class="fc" id="L423">                results[i][j] = resultsMap.get(feature.getName())[i];</span>
+            }
+        }
+<span class="fc" id="L426">        return results;</span>
+    }
+
+    private void processFeature(Sequence[] windows, MeiSpecificStorage meiSpecificStorage, double[][][] results, int win, MIDIIntermediateRepresentations intermediate, int feat) throws Exception {
+        // Only extract this feature if enough previous information
+        // is available to extract this feature
+<span class="nc bnc" id="L432" title="All 2 branches missed.">        if (win &gt;= maxFeatureOffsets[feat]) {</span>
+            // Find the correct feature
+<span class="nc" id="L434">            MIDIFeatureExtractor feature = midiFeatureExtractors[feat];</span>
+
+<span class="nc" id="L436">            double[][] otherFeatureValues = findPreviousExtractedFeatures(results, win, feat, feature);</span>
+
+            //Check here if the file is an MEI file and if the feature is an MEI feature
+            //Otherwise just extract the midi feature data
+<span class="nc bnc" id="L440" title="All 4 branches missed.">            if (meiSpecificStorage == null &amp;&amp; feature instanceof MEIFeatureExtractor) {</span>
+                //Skip if this is a non-mei file as mei features are not valid
+<span class="nc" id="L442">                return;</span>
+            }
+<span class="nc bnc" id="L444" title="All 4 branches missed.">            if (meiSpecificStorage != null &amp;&amp; feature instanceof MEIFeatureExtractor) {</span>
+<span class="nc" id="L445">                results[win][feat] = ((MEIFeatureExtractor) feature).extractMEIFeature(meiSpecificStorage, windows[win], intermediate, otherFeatureValues);</span>
+<span class="nc" id="L446">                return;</span>
+            }
+            // Store the extracted feature values
+<span class="nc" id="L449">            results[win][feat] = feature.extractFeature(windows[win], intermediate, otherFeatureValues);</span>
+<span class="nc" id="L450">            return;</span>
+        }
+<span class="nc" id="L452">        results[win][feat] = null;</span>
+<span class="nc" id="L453">    }</span>
+
+    /**
+     * Find previously extracted feature values that this feature needs
+     *
+     * @param results
+     * @param win
+     * @param feat
+     * @param feature
+     * @return
+     */
+    private double[][] findPreviousExtractedFeatures(double[][][] results, int win, int feat, MIDIFeatureExtractor feature) {
+<span class="nc" id="L465">        double[][] otherFeatureValues = null;</span>
+<span class="nc bnc" id="L466" title="All 2 branches missed.">        if (featureExtractorDependencies[feat] != null) {</span>
+<span class="nc" id="L467">            otherFeatureValues = new double[featureExtractorDependencies[feat].length][];</span>
+<span class="nc bnc" id="L468" title="All 2 branches missed.">            for (int i = 0; i &lt; featureExtractorDependencies[feat].length; i++) {</span>
+<span class="nc" id="L469">                int featureIndice = featureExtractorDependencies[feat][i];</span>
+                /* TODO Check if this is a correct bug fix */
+<span class="nc bnc" id="L471" title="All 2 branches missed.">                if (feature.getDepenedencyOffsets() == null) {</span>
+<span class="nc" id="L472">                    otherFeatureValues[i] = results[win][featureIndice];</span>
+                } else {
+<span class="nc" id="L474">                    int offset = feature.getDepenedencyOffsets()[i];</span>
+<span class="nc" id="L475">                    otherFeatureValues[i] = results[win + offset][featureIndice];</span>
+                }
+            }
+        }
+<span class="nc" id="L479">        return otherFeatureValues;</span>
+    }
+
+    /**
+     * Generates DataBoard based in list of DataSets that were constructed during features extractions
+     *
+     * @return DataBoard of processed recordings
+     * @throws Exception Throws an exception if it cannot create DataBoard object.
+     */
+    public DataBoard generateDataBoard() throws Exception {
+<span class="fc" id="L489">        DataBoard dataBoard = new DataBoard(null, null, dataSets.toArray(new DataSet[0]), null);</span>
+<span class="fc bfc" id="L490" title="All 2 branches covered.">        if (saveOverallRecordingFeatures) {</span>
+<span class="fc" id="L491">            dataBoard.feature_definitions = IntStream.range(0, featureExtractorsDefinitions.length)</span>
+<span class="fc" id="L492">                    .filter(i -&gt; featuresToSaveMask[i])</span>
+<span class="fc" id="L493">                    .mapToObj(i -&gt; featureExtractorsDefinitions[i])</span>
+<span class="fc" id="L494">                    .toArray(FeatureDefinition[]::new);</span>
+        } else {
+<span class="fc" id="L496">            dataBoard.feature_definitions = IntStream.range(0, featureExtractorsDefinitions.length)</span>
+<span class="fc" id="L497">                    .filter(i -&gt; featuresToSaveMask[i])</span>
+<span class="fc" id="L498">                    .mapToObj(i -&gt; featureExtractorsDefinitions[i])</span>
+<span class="fc" id="L499">                    .toArray(FeatureDefinition[]::new);</span>
+        }
+<span class="fc" id="L501">        return dataBoard;</span>
+    }
+
+    /* PRIVATE METHODS *******************************************************/
+
+    /**
+     * Fills the feature_extractors, feature_extractor_dependencies,
+     * max_feature_offsets and features_to_save fields. This involves finding
+     * which features need to be extracted and in what order and finding
+     * the indices of dependencies and the maximum offsets for each feature.
+     *
+     * @param allFeatureExtractors   All features that can be extracted.
+     * @param featuresToSaveAmongAll Which features are to be saved.
+     *                               Entries correspond to the
+     *                               allFeatureExtractors parameter.
+     */
+    private void findAndOrderFeaturesToExtract(MIDIFeatureExtractor[] allFeatureExtractors,
+        boolean[] featuresToSaveAmongAll) {
+<span class="fc" id="L519">        String[] allFeatureNames = getAllFeatureNames(allFeatureExtractors);</span>
+<span class="fc" id="L520">        String[][] dependencies = getDependencies(allFeatureExtractors, featuresToSaveAmongAll);</span>
+        // Start off the array of which features to extract by making sure to extract all those features
+        // whose values are marked to be saved.
+<span class="fc" id="L523">        boolean[] featuresToExtractIncludingDependencies = new boolean[allFeatureExtractors.length];</span>
+<span class="fc" id="L524">        System.arraycopy(featuresToSaveAmongAll, 0, featuresToExtractIncludingDependencies,</span>
+            0, allFeatureExtractors.length);
+<span class="fc" id="L526">        updateExtraDependencies(allFeatureExtractors, allFeatureNames, dependencies, featuresToExtractIncludingDependencies);</span>
+<span class="fc" id="L527">        orderFeaturesToExtract(allFeatureExtractors, featuresToSaveAmongAll, allFeatureNames, dependencies, featuresToExtractIncludingDependencies);</span>
+//        prepareIndicies();
+<span class="fc" id="L529">        setMaxOffset();</span>
+<span class="fc" id="L530">    }</span>
+
+    /**
+     * Begin the process of finding the correct order to extract features in by filling the
+     * feature_extractors field with all features that are to be extracted (i.e. the combination of
+     * those features whose values are marked to be saved and those features that are needed in order
+     * to calculate those features marked to be saved). The ordering consists of the originally
+     * specified feature order, with dependent features added in before they are needed.
+     * Also note which of these have values that are actually to be saved by filling in
+     * features_to_save.
+     *
+     * @param allFeatureExtractors
+     * @param featuresToSaveAmongAll
+     * @param allFeatureNames
+     * @param dependencies
+     * @param featuresToExtractIncludingDependencies
+     */
+    private void orderFeaturesToExtract(MIDIFeatureExtractor[] allFeatureExtractors, boolean[] featuresToSaveAmongAll, String[] allFeatureNames, String[][] dependencies, boolean[] featuresToExtractIncludingDependencies) {
+<span class="fc" id="L548">        int numberFeaturesToExtract = 0;</span>
+<span class="fc bfc" id="L549" title="All 2 branches covered.">        for (int i = 0; i &lt; featuresToExtractIncludingDependencies.length; i++)</span>
+<span class="fc bfc" id="L550" title="All 2 branches covered.">            if (featuresToExtractIncludingDependencies[i]) numberFeaturesToExtract++;</span>
+<span class="fc" id="L551">        midiFeatureExtractors = new MIDIFeatureExtractor[numberFeaturesToExtract];</span>
+<span class="fc" id="L552">        featuresToSaveMask = featuresToSaveAmongAll;</span>
+<span class="fc" id="L553">        boolean[] featureAdded = new boolean[allFeatureExtractors.length];</span>
+<span class="fc bfc" id="L554" title="All 2 branches covered.">        for (int i = 0; i &lt; featureAdded.length; i++)</span>
+<span class="fc" id="L555">            featureAdded[i] = false;</span>
+<span class="fc" id="L556">        int currentPosition = 0;</span>
+<span class="fc" id="L557">        boolean inProcess = true;</span>
+<span class="fc bfc" id="L558" title="All 2 branches covered.">        while (inProcess) {</span>
+<span class="fc" id="L559">            inProcess = false;</span>
+
+            // Add all features that have no remaining dependencies and remove
+            // their dependencies from all unadded features
+<span class="fc bfc" id="L563" title="All 2 branches covered.">            for (int feat = 0; feat &lt; allFeatureExtractors.length; feat++) {</span>
+<span class="fc bfc" id="L564" title="All 4 branches covered.">                if (featuresToExtractIncludingDependencies[feat] &amp;&amp; !featureAdded[feat]) {</span>
+<span class="pc bpc" id="L565" title="1 of 2 branches missed.">                    if (dependencies[feat] == null) // add feature if it has no dependencies</span>
+                    {
+<span class="fc" id="L567">                        featureAdded[feat] = true;</span>
+<span class="fc" id="L568">                        midiFeatureExtractors[currentPosition] = allFeatureExtractors[feat];</span>
+<span class="fc" id="L569">                        currentPosition++;</span>
+<span class="fc" id="L570">                        inProcess = true;</span>
+<span class="fc" id="L571">                        removeDependency(allFeatureExtractors, allFeatureNames, dependencies, featuresToExtractIncludingDependencies, feat);</span>
+                    }
+                }
+            }
+        }
+<span class="fc" id="L576">    }</span>
+
+    /**
+     * Remove this dependency from all features that have
+     * it as a dependency and are marked to be extracted
+     *
+     * @param allFeatureExtractors
+     * @param allFeatureNames
+     * @param dependencies
+     * @param featuresToExtractIncludingDependencies
+     * @param feat
+     */
+    private void removeDependency(MIDIFeatureExtractor[] allFeatureExtractors, String[] allFeatureNames, String[][] dependencies, boolean[] featuresToExtractIncludingDependencies, int feat) {
+<span class="fc bfc" id="L589" title="All 2 branches covered.">        for (int i = 0; i &lt; allFeatureExtractors.length; i++) {</span>
+<span class="fc bfc" id="L590" title="All 4 branches covered.">            if (featuresToExtractIncludingDependencies[i] &amp;&amp; null != dependencies[i]) {</span>
+<span class="fc" id="L591">                int numDefs = dependencies[i].length;</span>
+<span class="fc bfc" id="L592" title="All 2 branches covered.">                for (int j = 0; j &lt; numDefs; j++) {</span>
+<span class="fc bfc" id="L593" title="All 2 branches covered.">                    if (dependencies[i][j].equals(allFeatureNames[feat])) {</span>
+<span class="fc bfc" id="L594" title="All 2 branches covered.">                        if (1 == dependencies[i].length) {</span>
+<span class="fc" id="L595">                            dependencies[i] = null;</span>
+<span class="fc" id="L596">                            j = numDefs;</span>
+                        } else {
+<span class="fc" id="L598">                            String[] temp = new String[dependencies[i].length - 1];</span>
+<span class="fc" id="L599">                            int m = 0;</span>
+<span class="fc bfc" id="L600" title="All 2 branches covered.">                            for (int k = 0; k &lt; dependencies[i].length; k++) {</span>
+<span class="fc bfc" id="L601" title="All 2 branches covered.">                                if (k != j) {</span>
+<span class="fc" id="L602">                                    temp[m] = dependencies[i][k];</span>
+<span class="fc" id="L603">                                    m++;</span>
+                                }
+                            }
+<span class="fc" id="L606">                            dependencies[i] = temp;</span>
+<span class="fc" id="L607">                            j--;</span>
+<span class="fc" id="L608">                            numDefs--;</span>
+                        }
+                    }
+                }
+            }
+        }
+<span class="fc" id="L614">    }</span>
+
+    /**
+     * Update featuresToExtractIncludingDependencies to ALSO include those features that are not
+     * marked to be saved, but are needed as dependencies in order to calculate features that are
+     * marked to be saved. Also update dependencies to include any new dependencies that are introduced
+     * by scheduling new features to be extracted because they themselves are dependencies of other
+     * features.
+     *
+     * @param allFeatureExtractors
+     * @param allFeatureNames
+     * @param dependencies
+     * @param featuresToExtractIncludingDependencies
+     */
+    private void updateExtraDependencies(MIDIFeatureExtractor[] allFeatureExtractors, String[] allFeatureNames, String[][] dependencies, boolean[] featuresToExtractIncludingDependencies) {
+<span class="fc" id="L629">        boolean done = false;</span>
+<span class="fc bfc" id="L630" title="All 2 branches covered.">        while (!done) {</span>
+<span class="fc" id="L631">            done = true;</span>
+<span class="fc bfc" id="L632" title="All 2 branches covered.">            for (int feat = 0; feat &lt; allFeatureExtractors.length; feat++) {</span>
+<span class="fc bfc" id="L633" title="All 2 branches covered.">                if (null != dependencies[feat]) {</span>
+<span class="fc bfc" id="L634" title="All 2 branches covered.">                    for (int dep = 0; dep &lt; dependencies[feat].length; dep++) {</span>
+<span class="fc" id="L635">                        String thisDependencyName = dependencies[feat][dep];</span>
+<span class="fc bfc" id="L636" title="All 2 branches covered.">                        for (int j = 0; j &lt; allFeatureExtractors.length; j++) {</span>
+<span class="fc bfc" id="L637" title="All 2 branches covered.">                            if (thisDependencyName.equals(allFeatureNames[j])) {</span>
+<span class="pc bpc" id="L638" title="1 of 2 branches missed.">                                if (!featuresToExtractIncludingDependencies[j]) {</span>
+<span class="nc" id="L639">                                    featuresToExtractIncludingDependencies[j] = true;</span>
+<span class="nc" id="L640">                                    dependencies[j] = allFeatureExtractors[j].getDepenedencies();</span>
+<span class="nc bnc" id="L641" title="All 2 branches missed.">                                    if (null != dependencies[j]) done = false;</span>
+                                }
+<span class="fc" id="L643">                                j = allFeatureExtractors.length;</span>
+                            }
+                        }
+                    }
+                }
+            }
+        }
+<span class="fc" id="L650">    }</span>
+
+    /**
+     * Find the indices of the feature extractor dependencies for each feature extractor
+     */
+    private void prepareIndicies() {
+<span class="nc" id="L656">        featureExtractorDependencies = new int[midiFeatureExtractors.length][];</span>
+<span class="nc" id="L657">        String[] feature_names = new String[midiFeatureExtractors.length];</span>
+<span class="nc bnc" id="L658" title="All 2 branches missed.">        for (int feat = 0; feat &lt; feature_names.length; feat++)</span>
+<span class="nc" id="L659">            feature_names[feat] = midiFeatureExtractors[feat].getFeatureDefinition().name;</span>
+<span class="nc" id="L660">        String[][] featureDependenciesStr = new String[midiFeatureExtractors.length][];</span>
+<span class="nc bnc" id="L661" title="All 2 branches missed.">        for (int feat = 0; feat &lt; featureDependenciesStr.length; feat++)</span>
+<span class="nc" id="L662">            featureDependenciesStr[feat] = midiFeatureExtractors[feat].getDepenedencies();</span>
+<span class="nc bnc" id="L663" title="All 2 branches missed.">        for (int i = 0; i &lt; featureDependenciesStr.length; i++)</span>
+<span class="nc bnc" id="L664" title="All 2 branches missed.">            if (null != featureDependenciesStr[i]) {</span>
+<span class="nc" id="L665">                featureExtractorDependencies[i] = new int[featureDependenciesStr[i].length];</span>
+<span class="nc bnc" id="L666" title="All 2 branches missed.">                for (int j = 0; j &lt; featureDependenciesStr[i].length; j++)</span>
+<span class="nc bnc" id="L667" title="All 2 branches missed.">                    for (int k = 0; k &lt; feature_names.length; k++)</span>
+<span class="nc bnc" id="L668" title="All 2 branches missed.">                        if (featureDependenciesStr[i][j].equals(feature_names[k]))</span>
+<span class="nc" id="L669">                            featureExtractorDependencies[i][j] = k;</span>
+            }
+<span class="nc" id="L671">    }</span>
+
+    /**
+     * Find the maximum offset for each feature
+     */
+    private void setMaxOffset() {
+<span class="fc" id="L677">        maxFeatureOffsets = new int[midiFeatureExtractors.length];</span>
+<span class="fc bfc" id="L678" title="All 2 branches covered.">        for (int feat = 0; feat &lt; maxFeatureOffsets.length; feat++) {</span>
+<span class="pc bpc" id="L679" title="1 of 2 branches missed.">            if (null == midiFeatureExtractors[feat].getDepenedencyOffsets()) {</span>
+<span class="fc" id="L680">                maxFeatureOffsets[feat] = 0;</span>
+<span class="fc" id="L681">                continue;</span>
+            }
+<span class="nc" id="L683">            int[] offsetsOfCurrentFeature = midiFeatureExtractors[feat].getDepenedencyOffsets();</span>
+<span class="nc" id="L684">            maxFeatureOffsets[feat] = Math.abs(offsetsOfCurrentFeature[0]);</span>
+<span class="nc bnc" id="L685" title="All 2 branches missed.">            for (int offsetOfCurrentFeature : offsetsOfCurrentFeature) {</span>
+<span class="nc" id="L686">                maxFeatureOffsets[feat] = Math.max(Math.abs(offsetOfCurrentFeature), offsetOfCurrentFeature);</span>
+            }
+        }
+<span class="fc" id="L689">    }</span>
+
+    /**
+     * Find the dependencies of each feature marked to be extracted.
+     * Mark an entry as null if that entry's matching feature is not set to be extracted.
+     * Note that an entry will also be null if the corresponding feature has no dependencies.
+     *
+     * @param allFeatureExtractors
+     * @param featuresToSaveAmongAll
+     * @return
+     */
+    private String[][] getDependencies(MIDIFeatureExtractor[] allFeatureExtractors, boolean[] featuresToSaveAmongAll) {
+<span class="fc" id="L701">        String[][] dependencies = new String[allFeatureExtractors.length][];</span>
+<span class="fc bfc" id="L702" title="All 2 branches covered.">        for (int feat = 0; feat &lt; allFeatureExtractors.length; feat++) {</span>
+<span class="fc" id="L703">            dependencies[feat] = null;</span>
+<span class="fc bfc" id="L704" title="All 2 branches covered.">            if (featuresToSaveAmongAll[feat]) dependencies[feat] = allFeatureExtractors[feat].getDepenedencies();</span>
+        }
+<span class="fc" id="L706">        return dependencies;</span>
+    }
+
+    /**
+     * Find the names of all features
+     *
+     * @param allFeatureExtractors
+     * @return
+     */
+    private String[] getAllFeatureNames(MIDIFeatureExtractor[] allFeatureExtractors) {
+<span class="fc" id="L716">        String[] allFeatureNames = new String[allFeatureExtractors.length];</span>
+<span class="fc bfc" id="L717" title="All 2 branches covered.">        for (int feat = 0; feat &lt; allFeatureExtractors.length; feat++)</span>
+<span class="fc" id="L718">            allFeatureNames[feat] = allFeatureExtractors[feat].getFeatureDefinition().name;</span>
+<span class="fc" id="L719">        return allFeatureNames;</span>
+    }
+
+
+    /**
+     * Calculates the averages and standard deviations over a whole recording
+     * of each of the windows-based features. Generates a feature definition
+     * for each such feature. If only one value is present (dep.e. only one
+     * window) then this value is stored without any standard deviation.
+     *
+     * @param windowFeatureValues The extracted window feature values
+     *                            for this recording. The first
+     *                            indice identifies the window, the
+     *                            second identifies the feature and
+     *                            the third identifies the feature
+     *                            value. The third dimension will
+     *                            be null if the given feature could
+     *                            not be extracted for the given
+     *                            window.
+     * @return The extracted overall average and
+     * standard deviations of the window
+     * feature values that were passed to
+     * this method. The first indice
+     * identifies the feature and the
+     * second identifies the feature
+     * value. The order of the features
+     * correspond to the
+     * FeatureDefinitions that the
+     * overallFeatureDefinitions
+     * parameter is filled with.
+     */
+    private double[][] generateOverallRecordingFeatures(double[][][] windowFeatureValues) {
+        double[][] featureOverallValues;
+<span class="pc bpc" id="L752" title="1 of 2 branches missed.">        if (windowFeatureValues.length == 1) {</span>
+<span class="fc" id="L753">            featureOverallValues = windowFeatureValues[0];</span>
+<span class="fc" id="L754">            return featureOverallValues;</span>
+        }
+<span class="nc" id="L756">        featureOverallValues = new double[midiFeatureExtractors.length * 2][];</span>
+<span class="nc bnc" id="L757" title="All 2 branches missed.">        for (int feat = 0; feat &lt; midiFeatureExtractors.length; feat++) {</span>
+<span class="nc bnc" id="L758" title="All 4 branches missed.">            if (windowFeatureValues[windowFeatureValues.length - 1][feat] == null || !featuresToSaveMask[feat]) {</span>
+<span class="nc" id="L759">                featureOverallValues[2 * feat] = null;</span>
+<span class="nc" id="L760">                featureOverallValues[2 * feat + 1] = null;</span>
+<span class="nc" id="L761">                continue;</span>
+            }
+            // Find the averages and standard deviations
+<span class="nc" id="L764">            double[] averages = new double[windowFeatureValues[windowFeatureValues.length - 1][feat].length];</span>
+<span class="nc" id="L765">            double[] stdvs = new double[windowFeatureValues[windowFeatureValues.length - 1][feat].length];</span>
+<span class="nc bnc" id="L766" title="All 2 branches missed.">            for (int val = 0; val &lt; windowFeatureValues[windowFeatureValues.length - 1][feat].length; val++) {</span>
+                // Find the number of windows that have featureOverallValues for this value feature
+<span class="nc" id="L768">                int count = 0;</span>
+<span class="nc bnc" id="L769" title="All 2 branches missed.">                for (double[][] windowFeaturesValues : windowFeatureValues) {</span>
+<span class="nc bnc" id="L770" title="All 2 branches missed.">                    if (windowFeaturesValues[feat] != null) count++;</span>
+                }
+
+                // Find the featureOverallValues to find the average and standard deviations of
+<span class="nc" id="L774">                double[] valuesToProcess = new double[count];</span>
+<span class="nc" id="L775">                int current = 0;</span>
+<span class="nc bnc" id="L776" title="All 2 branches missed.">                for (double[][] windowFeaturesValues : windowFeatureValues)</span>
+<span class="nc bnc" id="L777" title="All 2 branches missed.">                    if (windowFeaturesValues[feat] != null) {</span>
+<span class="nc" id="L778">                        valuesToProcess[current] = windowFeaturesValues[feat][val];</span>
+<span class="nc" id="L779">                        current++;</span>
+                    }
+                // Calculate the averages and standard deviations
+<span class="nc" id="L782">                averages[val] = mckay.utilities.staticlibraries.MathAndStatsMethods.getAverage(valuesToProcess);</span>
+<span class="nc" id="L783">                stdvs[val] = mckay.utilities.staticlibraries.MathAndStatsMethods.getStandardDeviation(valuesToProcess);</span>
+            }
+            // Store the results
+<span class="nc" id="L786">            featureOverallValues[2 * feat] = averages;</span>
+<span class="nc" id="L787">            featureOverallValues[2 * feat + 1] = stdvs;</span>
+        }
+<span class="nc" id="L789">        return featureOverallValues;</span>
+    }
+
+    /**
+     * Generates FeatureDefinitions for overall features
+     *
+     * @return array of overall FeatureDefinitions
+     */
+    private FeatureDefinition[] generateOverallFeatureDefinitions() {
+<span class="fc" id="L798">        FeatureDefinition[] definitions = new FeatureDefinition[midiFeatureExtractors.length * 2];</span>
+<span class="fc bfc" id="L799" title="All 2 branches covered.">        for (int feat = 0; feat &lt; midiFeatureExtractors.length; feat++) {</span>
+            // Make the definitions
+<span class="fc" id="L801">            FeatureDefinition thisDef = midiFeatureExtractors[feat].getFeatureDefinition();</span>
+<span class="fc" id="L802">            FeatureDefinition averageDefinition = new FeatureDefinition(thisDef.name + &quot; Overall Average&quot;, thisDef.description + &quot;\nThis is the overall average over all windows.&quot;, thisDef.is_sequential, thisDef.dimensions);</span>
+<span class="fc" id="L803">            FeatureDefinition stdvDefinition = new FeatureDefinition(thisDef.name + &quot; Overall Standard Deviation&quot;, thisDef.description + &quot;\nThis is the overall standard deviation over all windows.&quot;, thisDef.is_sequential, thisDef.dimensions);</span>
+            // Store the results
+<span class="fc" id="L805">            definitions[2 * feat] = averageDefinition;</span>
+<span class="fc" id="L806">            definitions[2 * feat + 1] = stdvDefinition;</span>
+        }
+        // Finalize the values
+<span class="fc" id="L809">        return definitions;</span>
+    }
+
+    /**
+     * Generates DataSet for current recording and adds it in list of DataSets
+     *
+     * @param windowFeatureValues  The extracted window feature values
+     *                             for this recording. The first
+     *                             indice identifies the window, the
+     *                             second identifies the feature and
+     *                             the third identifies the feature
+     *                             value. The third dimension will
+     *                             be null if the given feature could
+     *                             not be extracted for the given
+     *                             window.
+     * @param overallFeatureValues The extracted overall average and
+     *                             standard deviations of the window
+     *                             feature values. The first indice
+     *                             identifies the feature and the
+     *                             second identifies the feature
+     *                             value. The order of the features
+     *                             correspond to the
+     *                             overall_feature_definitions
+     *                             parameter. This value is null if
+     *                             overall feature values were not
+     *                             extracted.
+     * @param startTicks           The start ticks that correspond to each MIDI window.
+     * @param endTicks             The end ticks that correspond to each MIDI window.
+     * @param secondsPerTick       The number of seconds in a MIDI tick given by the sequence.
+     */
+    private void addDataSet(double[][][] windowFeatureValues, String identifier,
+                            double[][] overallFeatureValues,
+                            int[] startTicks,
+                            int[] endTicks,
+                            double[] secondsPerTick) {
+<span class="fc" id="L844">        DataSet rootDataSet = new DataSet(identifier, null, Double.NaN, Double.NaN,</span>
+                null, null, null);
+<span class="fc bfc" id="L846" title="All 2 branches covered.">        if (saveOverallRecordingFeatures) {</span>
+<span class="fc" id="L847">            rootDataSet.feature_values = windowFeatureValues[0];</span>
+<span class="fc" id="L848">            rootDataSet.feature_names = IntStream.range(0, featureExtractorsNames.length)</span>
+<span class="fc" id="L849">                    .filter(i -&gt; featuresToSaveMask[i])</span>
+<span class="fc" id="L850">                    .mapToObj(i -&gt; featureExtractorsNames[i])</span>
+<span class="fc" id="L851">                    .toArray(String[]::new);</span>
+<span class="fc" id="L852">            dataSets.add(rootDataSet);</span>
+<span class="fc" id="L853">            return;</span>
+        }
+<span class="fc" id="L855">        rootDataSet.sub_sets = new DataSet[windowFeatureValues.length];</span>
+<span class="fc bfc" id="L856" title="All 2 branches covered.">        for (int win = 0; win &lt; windowFeatureValues.length; ++win) {</span>
+<span class="fc" id="L857">            double startTime = MIDIMethods.getSecondsAtTick(startTicks[win], secondsPerTick);</span>
+            //check for non-negative
+<span class="pc bpc" id="L859" title="1 of 2 branches missed.">            startTime = (startTime &gt; 0) ? startTime : 0;</span>
+<span class="fc" id="L860">            double endTime = MIDIMethods.getSecondsAtTick(endTicks[win], secondsPerTick);</span>
+
+<span class="fc" id="L862">            DataSet windowDataSet = new DataSet(null, null,</span>
+<span class="fc" id="L863">                    startTime, endTime,</span>
+<span class="fc" id="L864">                    windowFeatureValues[win], IntStream.range(0, featureExtractorsNames.length)</span>
+<span class="fc" id="L865">                    .filter(i -&gt; featuresToSaveMask[i])</span>
+<span class="fc" id="L866">                    .mapToObj(i -&gt; featureExtractorsNames[i])</span>
+<span class="fc" id="L867">                    .toArray(String[]::new), rootDataSet);</span>
+<span class="fc" id="L868">            rootDataSet.sub_sets[win] = windowDataSet;</span>
+        }
+<span class="pc bpc" id="L870" title="1 of 2 branches missed.">        if (overallFeatureValues != null) {</span>
+<span class="nc" id="L871">            rootDataSet.feature_values = overallFeatureValues;</span>
+<span class="nc" id="L872">            rootDataSet.feature_names = overallFeatureNames;</span>
+        }
+<span class="fc" id="L874">        dataSets.add(rootDataSet);</span>
+<span class="fc" id="L875">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

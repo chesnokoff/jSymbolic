@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotePrevalenceOfUnpitchedInstrumentsFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">NotePrevalenceOfUnpitchedInstrumentsFeature.java</span></div><h1>NotePrevalenceOfUnpitchedInstrumentsFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import javax.sound.midi.*;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature vector indicating the fraction of (unpitched) notes played with each of the 47 MIDI Percussion
+ * Key Map instruments. Has one entry for each of these 47 instruments, and the value of each is set to the
+ * number of Note Ons played with the corresponding instrument, divided by the total number of Note Ons in the
+ * piece. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the
+ * ones that meet the official standard (they are correspondingly indexed in this feature vector from 0 to 46,
+ * such that index 0 corresponds to Acoustic Bass Drum, index 4 corresponds to Hand Clap, etc.).
+ *
+ * @author Cory McKay
+ */
+public class NotePrevalenceOfUnpitchedInstrumentsFeature
+		extends MIDIFeatureExtractor
+{
+	/* CONSTRUCTOR ******************************************************************************************/
+
+	
+	/**
+	 * Basic constructor that sets the values of the fields inherited from this class' superclass.
+	 */
+	public NotePrevalenceOfUnpitchedInstrumentsFeature()
+<span class="fc" id="L28">	{</span>
+<span class="fc" id="L29">		code = &quot;I-4&quot;;</span>
+<span class="fc" id="L30">		name = &quot;Note Prevalence of Unpitched Instruments&quot;;</span>
+<span class="fc" id="L31">		description = &quot;A feature vector indicating the fraction of (unpitched) notes played with each of the 47 MIDI Percussion Key Map instruments. Has one entry for each of these 47 instruments, and the value of each is set to the number of Note Ons played with the corresponding instrument, divided by the total number of Note Ons in the piece. It should be noted that only MIDI Channel 10 instruments 35 to 81 are included here, as they are the ones that meet the official standard (they are correspondingly indexed in this feature vector from 0 to 46, such that index 0 corresponds to Acoustic Bass Drum, index 4 corresponds to Hand Clap, etc.).&quot;;</span>
+<span class="fc" id="L32">		dimensions = 47;</span>
+
+<span class="fc" id="L34">	}</span>
+	
+
+	/* PUBLIC METHODS ***************************************************************************************/
+	
+
+	/**
+	 * Extract this feature from the given sequence of MIDI data and its associated information.
+	 *
+	 * @param sequence				The MIDI data to extract the feature from.
+	 * @param sequence_info			Additional data already extracted from the the MIDI sequence.
+	 * @param other_feature_values	The values of other features that may be needed to calculate this feature. 
+	 *								The order and offsets of these features must be the same as those returned
+	 *								by this class' getDependencies and getDependencyOffsets methods, 
+	 *								respectively. The first indice indicates the feature/window, and the 
+	 *								second indicates the value.
+	 * @return						The extracted feature value(s).
+	 * @throws Exception			Throws an informative exception if the feature cannot be calculated.
+	 */
+	@Override
+	public double[] extractFeature( Sequence sequence,
+									MIDIIntermediateRepresentations sequence_info,
+									double[][] other_feature_values )
+	throws Exception
+	{
+<span class="fc" id="L59">		double[] result = null;</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">		if (sequence_info != null)</span>
+		{
+<span class="fc" id="L62">			result = new double[47];</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">			for (int instrument = 35; instrument &lt; 82; instrument++)</span>
+			{
+<span class="pc bpc" id="L65" title="1 of 2 branches missed.">				if (sequence_info.total_number_note_ons == 0)</span>
+<span class="nc" id="L66">					result[instrument - 35] = 0.0;</span>
+				else
+<span class="fc" id="L68">					result[instrument - 35] = sequence_info.non_pitched_instrument_prevalence[instrument] /</span>
+					                          (double) sequence_info.total_number_note_ons;
+			}
+		}
+<span class="fc" id="L72">		return result;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FeatureSelectorTableModel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.gui</a> &gt; <span class="el_source">FeatureSelectorTableModel.java</span></div><h1>FeatureSelectorTableModel.java</h1><pre class="source lang-java linenums">package jsymbolic2.gui;
+
+import javax.swing.table.DefaultTableModel;
+
+import jsymbolic2.featureutils.MEIFeatureExtractor;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+
+/**
+ * The table model used by the features_table JTable in FeatureSelectorPanel to list all features that
+ * jSymbolic can extract, metadata about each such features, and whether each feature should be extracted and
+ * saved during the next feature extraction. Provides methods to fill the table row by row. Makes all columns
+ * except the first non-editable. The first column is filled with check boxes indicating whether the feature
+ * in the corresponding row should be saved, and this class also includes a method for changing which of these
+ * check boxes are selected.
+ *
+ * @author Cory McKay
+ */
+public class FeatureSelectorTableModel
+	extends DefaultTableModel
+{
+	/* CONSTRUCTOR ******************************************************************************************/
+
+	
+	/**
+	 * Simply calls the DefaultTableModel constructor.
+	 *
+	 * @param column_names	The names of each column in the table model.
+	 * @param rows			The number of rows in the table.
+	 */
+	public FeatureSelectorTableModel(Object[] column_names, int rows)
+	{
+<span class="nc" id="L32">		super(column_names, rows);</span>
+<span class="nc" id="L33">	}</span>
+
+	
+	/* OVERRIDDEN PUBLIC METHODS ****************************************************************************/
+	
+	
+	/**
+	 * Returns the type of class held by the entries of each column. Necessary in order for text boxes to be
+	 * properly displayed.
+	 *
+	 * @param	column	The table column to check.
+	 * @return			The type of class used by the specified column.
+	 */
+	@Override
+	public Class getColumnClass(int column)
+	{
+<span class="nc" id="L49">		return getValueAt(0, column).getClass();</span>
+	}
+
+	
+	/**
+	 * Returns false for all cells except those in the first column, so that only cells in the first column
+	 * are editable.
+	 *
+	 * @param	row		The table row to check.
+	 * @param	column	The table column to check.
+	 * @return			Whether or not the cell at the specified row and column is editable.
+	 */
+	@Override
+	public boolean isCellEditable(int row, int column)
+	{
+<span class="nc bnc" id="L64" title="All 2 branches missed.">		return column == 0;</span>
+	}	
+
+	
+	/* PUBLIC METHODS ***************************************************************************************/
+	
+	
+	/**
+	 * Delete everything in the table and then fill it up one row at a time to hold the contents of the 
+	 * given FeatureDefinition array.
+	 *
+	 * @param features				The features to list in the table, in the order that they will be listed.
+	 * @param feature_save_defaults	Whether each feature in features should be marked to be extracted and
+	 *								saved by default (i.e. in the first column text box). Order corresponds
+	 *								to the order of the MIDIFeatureExtractor objects passed to the features
+	 *								parameter.
+	 */
+	public void fillTable(MIDIFeatureExtractor[] features, boolean[] feature_save_defaults)
+	{
+		// Remove all rows in the table
+<span class="nc bnc" id="L84" title="All 2 branches missed.">		while (getRowCount() != 0)</span>
+<span class="nc" id="L85">			removeRow(0);</span>
+
+		// Add each feature one by one
+<span class="nc bnc" id="L88" title="All 2 branches missed.">		for (int i = 0; i &lt; features.length; i++)</span>
+		{
+<span class="nc" id="L90">			Object[] row_contents = new Object[5];</span>
+			
+<span class="nc" id="L92">			row_contents[0] = feature_save_defaults[i];</span>
+
+<span class="nc" id="L94">			row_contents[1] = features[i].getFeatureDefinition().name;</span>
+
+<span class="nc" id="L96">			row_contents[2] = features[i].getCode();</span>
+
+<span class="nc bnc" id="L98" title="All 2 branches missed.">			if (features[i].getFeatureDefinition().dimensions &gt; 0)</span>
+<span class="nc" id="L99">				row_contents[3] = features[i].getFeatureDefinition().dimensions;</span>
+<span class="nc" id="L100">			else row_contents[3] = &quot;variable&quot;;</span>
+
+<span class="nc bnc" id="L102" title="All 2 branches missed.">			if (features[i] instanceof MEIFeatureExtractor)</span>
+<span class="nc" id="L103">				row_contents[4] = &quot;Yes&quot;;</span>
+<span class="nc" id="L104">			else row_contents[4] = &quot;No&quot;;</span>
+			
+			//if (features[i].getFeatureDefinition().is_sequential)
+			//	row_contents[5] = &quot;Yes&quot;;
+			//else row_contents[5] = &quot;No&quot;;
+			
+<span class="nc" id="L110">			addRow(row_contents);</span>
+		}
+<span class="nc" id="L112">	}</span>
+	
+	
+	/**
+	 * Sets the checkboxes in the first column of each row to the corresponding value in the specified
+	 * should_save.
+	 * 
+	 * @param should_save	Whether or not each feature should be saved when feature extraction occurs. Must
+	 *						be the same size as the number of rows in the table, and must have an ordering
+	 *						corresponding to the rows in the table.
+	 */
+	public void setFeaturesMarkedForSaving(boolean[] should_save)
+	{
+<span class="nc bnc" id="L125" title="All 2 branches missed.">		for (int i = 0; i &lt; getRowCount(); i++)</span>
+<span class="nc" id="L126">			setValueAt(should_save[i], i, 0);</span>
+<span class="nc" id="L127">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

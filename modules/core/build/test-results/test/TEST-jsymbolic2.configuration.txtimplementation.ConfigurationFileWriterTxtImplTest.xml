@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="jsymbolic2.configuration.txtimplementation.ConfigurationFileWriterTxtImplTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-02-18T17:04:54" hostname="MacBook-Pro-Aleksandr-5.local" time="0.011">
+  <properties/>
+  <testcase name="addFormattedFeatures()" classname="jsymbolic2.configuration.txtimplementation.ConfigurationFileWriterTxtImplTest" time="0.002"/>
+  <testcase name="addFormattedOutputFiles()" classname="jsymbolic2.configuration.txtimplementation.ConfigurationFileWriterTxtImplTest" time="0.003"/>
+  <testcase name="addFormattedOptions()" classname="jsymbolic2.configuration.txtimplementation.ConfigurationFileWriterTxtImplTest" time="0.005"/>
+  <testcase name="addFormattedInputFiles()" classname="jsymbolic2.configuration.txtimplementation.ConfigurationFileWriterTxtImplTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

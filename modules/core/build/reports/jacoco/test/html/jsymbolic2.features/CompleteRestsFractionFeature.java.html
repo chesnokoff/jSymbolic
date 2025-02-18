@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CompleteRestsFractionFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">CompleteRestsFractionFeature.java</span></div><h1>CompleteRestsFractionFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import java.util.stream.DoubleStream;
+import javax.sound.midi.Sequence;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the fraction of the music during which no pitched notes are sounding on any
+ * MIDI channel. Non-pitched (MIDI channel 10) notes are not considered in this calculation.
+ *
+ * @author Tristano Tenaglia and Cory McKay
+ */
+public class CompleteRestsFractionFeature
+		extends MIDIFeatureExtractor
+{
+	/* CONSTRUCTOR ******************************************************************************************/
+
+	
+	/**
+	 * Basic constructor that sets the values of the fields inherited from this class' superclass.
+	 */
+	public CompleteRestsFractionFeature()
+<span class="fc" id="L25">	{</span>
+<span class="fc" id="L26">		code = &quot;R-41&quot;;</span>
+<span class="fc" id="L27">		name = &quot;Complete Rests Fraction&quot;;</span>
+<span class="fc" id="L28">		description = &quot;Fraction of the music during which no pitched notes are sounding on any MIDI channel. Non-pitched (MIDI channel 10) notes are not considered in this calculation.&quot;;</span>
+
+<span class="fc" id="L30">	}</span>
+	
+
+	/* PUBLIC METHODS ***************************************************************************************/
+	
+	
+	/**
+	 * Extract this feature from the given sequence of MIDI data and its associated information.
+	 *
+	 * @param sequence				The MIDI data to extract the feature from.
+	 * @param sequence_info			Additional data already extracted from the the MIDI sequence.
+	 * @param other_feature_values	The values of other features that may be needed to calculate this feature. 
+	 *								The order and offsets of these features must be the same as those returned
+	 *								by this class' getDependencies and getDependencyOffsets methods, 
+	 *								respectively. The first indice indicates the feature/window, and the 
+	 *								second indicates the value.
+	 * @return						The extracted feature value(s).
+	 * @throws Exception			Throws an informative exception if the feature cannot be calculated.
+	 */
+	@Override
+	public double[] extractFeature( Sequence sequence,
+									MIDIIntermediateRepresentations sequence_info,
+									double[][] other_feature_values )
+	throws Exception
+	{
+		double value;
+<span class="pc bpc" id="L56" title="1 of 2 branches missed.">		if (sequence_info != null)</span>
+		{	
+			// Get information from sequence_info
+<span class="fc" id="L59">			short[][] pitch_strength_by_tick_chart = sequence_info.pitch_strength_by_tick_chart;</span>
+<span class="fc" id="L60">			double[] seconds_per_tick = sequence_info.duration_of_ticks_in_seconds;</span>
+			
+			// The number of ticks to examine (the minus 1 is because Java doesn't count the last tick
+<span class="fc" id="L63">			int ticks_to_test = pitch_strength_by_tick_chart.length - 1;</span>
+			
+			// Find the durations of complete rests, tick by tick
+<span class="fc" id="L66">			double[] seconds_of_rest_per_tick = new double[ticks_to_test];</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">			for (int tick = 0; tick &lt; ticks_to_test; tick++)</span>
+			{
+<span class="fc" id="L69">				short[] pitch_velocities = pitch_strength_by_tick_chart[tick];</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">				if (mckay.utilities.staticlibraries.ArrayMethods.doesArrayContainOnlyThisValue(pitch_velocities, 0))</span>
+<span class="fc" id="L71">					seconds_of_rest_per_tick[tick] = seconds_per_tick[tick];</span>
+			}
+			
+			// Add up the durations of all the complete rests
+<span class="fc" id="L75">			double total_complete_rests = DoubleStream.of(seconds_of_rest_per_tick).sum();</span>
+			
+			// Divide by the length of the piece
+<span class="pc bpc" id="L78" title="1 of 2 branches missed.">			if (sequence_info.sequence_duration_precise == 0.0)</span>
+<span class="nc" id="L79">				value = 0.0;</span>
+			else
+<span class="fc" id="L81">				value = total_complete_rests / sequence_info.sequence_duration_precise;</span>
+<span class="fc" id="L82">		}</span>
+<span class="nc" id="L83">		else value = -1.0;</span>
+
+<span class="fc" id="L85">		double[] result = new double[1];</span>
+<span class="fc" id="L86">		result[0] = value;</span>
+<span class="fc" id="L87">		return result;		</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

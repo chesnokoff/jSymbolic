@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CollectedNoteInfo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.featureutils</a> &gt; <span class="el_source">CollectedNoteInfo.java</span></div><h1>CollectedNoteInfo.java</h1><pre class="source lang-java linenums">package jsymbolic2.featureutils;
+
+import javax.sound.midi.MidiEvent;
+import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Track;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+/**
+ * An object of this class holds information on the pitch, start, end, track and channel of notes parsed from
+ * a MIDI stream (including Channel 10 unpitched notes). Information on each note is stored in a separate
+ * NoteInfo object, and these are made accessible based on temporal location as specified by the MIDI tick on
+ * which a note started.
+ *
+ * @author Tristano Tenaglia and Cory McKay
+ */
+public class CollectedNoteInfo {
+    /* PRIVATE FIELDS ***************************************************************************************/
+
+
+    /**
+     * A list of notes from a MIDI stream. Temporal order is not necessarily guaranteed.
+     */
+    private final List&lt;NoteInfo&gt; note_list;
+
+    /**
+     * A map indicating all notes starting on any given MIDI tick, where the start tick value serves as the
+     * map key and the map value is a list of all notes starting on the specified tick, on any track and on
+     * any channel. The particular ordering of notes in this List value is not necessarily meaningful.
+     */
+    private final Map&lt;Integer, List&lt;NoteInfo&gt;&gt; start_tick_note_map;
+
+
+    /* CONSTRUCTORS *****************************************************************************************/
+
+
+    /**
+     * Instantiate a CollectedNoteInfo object that does not yet hold any notes.
+     */
+<span class="nc" id="L43">    public CollectedNoteInfo() {</span>
+<span class="nc" id="L44">        note_list = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L45">        start_tick_note_map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L46">    }</span>
+
+
+    /**
+     * Instantiate a CollectedNoteInfo object holding all notes in the provided tracks.
+     *
+     * @param tracks All the MIDI tracks loaded from the MIDI sequence.
+     */
+<span class="fc" id="L54">    public CollectedNoteInfo(Track[] tracks) {</span>
+        // Initialize fields
+<span class="fc" id="L56">        note_list = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L57">        start_tick_note_map = new HashMap&lt;&gt;();</span>
+
+        // Go through all tracks and all events in each track, looking for note ons and note offs, and adding
+        // each note to the class fields
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        for (int track_i = 0; track_i &lt; tracks.length; track_i++) {</span>
+<span class="fc" id="L62">            Track this_track = tracks[track_i];</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">            for (int event_i = 0; event_i &lt; this_track.size(); event_i++) {</span>
+<span class="fc" id="L64">                MidiEvent this_event = this_track.get(event_i);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">                if (this_event.getMessage() instanceof ShortMessage start_message) {</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">                    if (0x90 == start_message.getCommand()) // If a Note On message is encountered</span>
+                    {
+<span class="fc bfc" id="L68" title="All 2 branches covered.">                        if (0 != start_message.getData2()) // If not velocity 0</span>
+                        {
+                            // Store the pitch and velocity of this note
+<span class="fc" id="L71">                            int pitch = start_message.getData1();</span>
+<span class="fc" id="L72">                            int velocity = start_message.getData2();</span>
+
+                            // Look ahead to find the corresponding Note Off for this Note On
+<span class="fc" id="L75">                            int event_start_tick = (int) this_event.getTick();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">                            for (int i = event_i + 1; i &lt; this_track.size(); i++) {</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">                                if (this_track.get(i).getMessage() instanceof ShortMessage end_message) {</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">                                    if (end_message.getChannel() == start_message.getChannel()) // Must be on same channel as Note On was</span>
+                                    {
+<span class="fc bfc" id="L80" title="All 2 branches covered.">                                        if (0x80 == end_message.getCommand()) // Note Off</span>
+                                        {
+<span class="fc bfc" id="L82" title="All 2 branches covered.">                                            if (end_message.getData1() == start_message.getData1()) // Must be same pitch as Note On</span>
+                                            {
+<span class="fc" id="L84">                                                int event_end_tick = (int) this_track.get(i).getTick();</span>
+<span class="fc" id="L85">                                                NoteInfo this_note = new NoteInfo(pitch,</span>
+                                                        velocity,
+                                                        event_start_tick,
+                                                        event_end_tick,
+                                                        track_i,
+<span class="fc" id="L90">                                                        end_message.getChannel());</span>
+<span class="fc" id="L91">                                                addNote(this_note);</span>
+<span class="fc" id="L92">                                                i = this_track.size() + 1; // exit loop</span>
+                                            }
+                                        }
+<span class="fc bfc" id="L95" title="All 2 branches covered.">                                        if (0x90 == end_message.getCommand()) // Note On (with velocity 0 is equivalent to note off)</span>
+                                        {
+<span class="fc bfc" id="L97" title="All 2 branches covered.">                                            if (0 == end_message.getData2()) // Velocity 0</span>
+                                            {
+<span class="fc bfc" id="L99" title="All 2 branches covered.">                                                if (end_message.getData1() == start_message.getData1()) // same pitch</span>
+                                                {
+<span class="fc" id="L101">                                                    int event_end_tick = (int) this_track.get(i).getTick();</span>
+<span class="fc" id="L102">                                                    NoteInfo this_note = new NoteInfo(pitch,</span>
+                                                            velocity,
+                                                            event_start_tick,
+                                                            event_end_tick,
+                                                            track_i,
+<span class="fc" id="L107">                                                            end_message.getChannel());</span>
+<span class="fc" id="L108">                                                    addNote(this_note);</span>
+<span class="fc" id="L109">                                                    i = this_track.size() + 1; // exit loop</span>
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+<span class="fc" id="L121">    }</span>
+
+
+    /* PUBLIC METHODS ***************************************************************************************/
+
+
+    /**
+     * Add a note to be stored and indexed in this object.
+     *
+     * @param this_note The note to be stored.
+     */
+    public final void addNote(NoteInfo this_note) {
+<span class="fc" id="L133">        note_list.add(this_note);</span>
+
+<span class="fc" id="L135">        int start_tick = this_note.getStartTick();</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (null == start_tick_note_map.get(start_tick)) {</span>
+<span class="fc" id="L137">            List&lt;NoteInfo&gt; temp = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L138">            temp.add(this_note);</span>
+<span class="fc" id="L139">            start_tick_note_map.put(start_tick, temp);</span>
+<span class="fc" id="L140">        } else start_tick_note_map.get(start_tick).add(this_note);</span>
+<span class="fc" id="L141">    }</span>
+
+
+    /**
+     * @return A list of notes added to this object from a MIDI stream so far. Temporal order is not
+     * necessarily guaranteed.
+     */
+    public List&lt;NoteInfo&gt; getNoteList() {
+<span class="fc" id="L149">        return note_list;</span>
+    }
+
+
+    /**
+     * @return A map holding all notes parsed from a MIDI stream so far. It stores all notes starting on any
+     * given MIDI tick, where the start tick value serves as the map key and the map value is a list
+     * of all notes starting on the specified tick, on any track and on any channel. The particular
+     * ordering of notes in this List value is not necessarily meaningful.
+     */
+    public Map&lt;Integer, List&lt;NoteInfo&gt;&gt; getStartTickNoteMap() {
+<span class="nc" id="L160">        return start_tick_note_map;</span>
+    }
+
+
+    /**
+     * Get a list of notes in a given MIDI channel.
+     *
+     * @param    channel    The MIDI channel to find notes from.
+     * @return A list of all notes added so far from a MIDI stream with the given channel number.
+     * Temporal order is not necessarily guaranteed.
+     */
+    public List&lt;NoteInfo&gt; getNotesOnChannel(int channel) {
+<span class="fc bfc" id="L172" title="All 2 branches covered.">        return note_list.stream().filter(n -&gt; n.getChannel() == channel).collect(Collectors.toList());</span>
+    }
+
+
+    /**
+     * Get a list of notes starting on the given MIDI start_tick.
+     *
+     * @param tick The MIDI start_tick to find notes starting on.
+     * @return A list holding all notes parsed from a MIDI stream so far that start at the specified MIDI
+     * tick. The particular ordering of notes in this list is not necessarily meaningful.
+     */
+    public List&lt;NoteInfo&gt; getNotesStartingOnTick(int tick) {
+<span class="nc" id="L184">        return start_tick_note_map.get(tick);</span>
+    }
+
+
+    /* PUBLIC STATIC METHODS ********************************************************************************/
+
+
+    /**
+     * Convert a list of notes into a map indicating all notes starting on any given MIDI tick, where the
+     * start tick value serves as the map key and the map value is a list of all notes starting on the
+     * specified tick, on any track and on any channel. The particular ordering of notes in this List value is
+     * not necessarily meaningful.
+     *
+     * @param note_list The list of notes to populate the returned object with.
+     * @return The map linking MIDI ticks to the notes that start on those ticks.
+     */
+    public static Map&lt;Integer, List&lt;NoteInfo&gt;&gt; noteListToStartTickNoteMap(List&lt;NoteInfo&gt; note_list) {
+<span class="fc" id="L201">        Map&lt;Integer, List&lt;NoteInfo&gt;&gt; this_map = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">        for (NoteInfo note : note_list) {</span>
+<span class="fc" id="L203">            int start_tick = note.getStartTick();</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">            if (null == this_map.get(start_tick)) {</span>
+<span class="fc" id="L205">                List&lt;NoteInfo&gt; temp = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L206">                temp.add(note);</span>
+<span class="fc" id="L207">                this_map.put(start_tick, temp);</span>
+<span class="fc" id="L208">            } else this_map.get(start_tick).add(note);</span>
+<span class="fc" id="L209">        }</span>
+<span class="fc" id="L210">        return this_map;</span>
+    }
+
+
+    /**
+     * Return a copy of the the given list of notes sorted in increasing order by start tick. Note that the
+     * original list is not changed in any way.
+     *
+     * @param note_list The list of notes to sort.
+     * @return The sorted copy.
+     */
+    public static List&lt;NoteInfo&gt; noteListToSortedNoteList(List&lt;NoteInfo&gt; note_list) {
+        // Copy note_list
+<span class="fc" id="L223">        List&lt;NoteInfo&gt; sorted_list = new ArrayList&lt;&gt;(note_list.size());</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">        for (NoteInfo note : note_list)</span>
+<span class="fc" id="L225">            sorted_list.add(note);</span>
+
+        // Sort and return the copy of note_list
+<span class="fc" id="L228">        sorted_list.sort((s1, s2) -&gt; Integer.compare(s1.getStartTick(), s2.getStartTick()));</span>
+<span class="fc" id="L229">        return sorted_list;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

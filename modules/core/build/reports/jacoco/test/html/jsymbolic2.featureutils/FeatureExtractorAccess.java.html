@@ -1,0 +1,1015 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FeatureExtractorAccess.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.featureutils</a> &gt; <span class="el_source">FeatureExtractorAccess.java</span></div><h1>FeatureExtractorAccess.java</h1><pre class="source lang-java linenums">package jsymbolic2.featureutils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import jsymbolic2.features.*;
+
+/**
+ * This class collects all implemented MIDIFeatureExtractor classes (including MEIFeatureExtractor
+ * extractors), orders them to match the specifications of the jSymbolic manual, and indicates which ones are
+ * set to be extracted and saved by default. This allows for consistent access to implemented features,
+ * regardless of whether the jSymbolic GUI, command line interface, API of configuration file is being used.
+ *
+ * &lt;p&gt; &lt;b&gt;IMPORTANT:&lt;/b&gt;All newly implemented MIDIFeatureExtractor objects must be referenced in the
+ * all_implemented_feature_extractors and default_features_to_save fields of this class. Automatic error
+ * checking is performed on all_implemented_feature_extractors and default_features_to_save at instantiation,
+ * and potential problems are printed to standard error.&lt;/p&gt;
+ *
+ * @author Cory McKay and Tristano Tenaglia
+ */
+<span class="nc" id="L21">public final class FeatureExtractorAccess</span>
+{
+	/* FIELDS ***********************************************************************************************/
+
+	
+	/**
+	 * An array consisting of one instantiated MIDIFeatureExtractor object for each implemented feature
+	 * extractor (including MEIFeatureExtractor features). These are ordered in the same order in which they
+	 * are presented in the jSymbolic manual.
+	 */
+	private static final MIDIFeatureExtractor[] all_implemented_feature_extractors;
+
+	/**
+	 * An array with one entry for every feature implemented as a MIDIFeatureExtractor (including
+	 * MEIFeatureExtractor features). These are ordered in the same order in which they are presented in the
+	 * jSymbolic manual. Each entry is set to true if that feature is to be extracted and saved by default,
+	 * and to false if is not.
+	 */
+	private static final boolean[] default_features_to_save;
+
+	/**
+	 * A List consisting of the feature names of every feature implemented as a MIDIFeatureExtractor
+	 * (including MEIFeatureExtractor features). These are ordered in the same order in which they are
+	 * presented in the jSymbolic manual.
+	 */
+	private static final List&lt;String&gt; names_of_all_implemented_features;
+
+	/**
+	 * A List consisting of the feature names of every feature implemented as a MIDIFeatureExtractor
+	 * (including MEIFeatureExtractor features) and that has also been chosen to be saved by default. These
+	 * are ordered in the same order in which they are presented in the jSymbolic manual.
+	 */
+	private static final List&lt;String&gt; names_of_default_features_to_save;
+
+	/**
+	 * A List consisting of the feature names of every feature implemented as an MEIeatureExtractor. These
+	 * are ordered in the same order in which they are presented in the jSymbolic manual.
+	 */
+	private static final List&lt;String&gt; names_of_mei_specific_features;
+
+	
+	/* STATIC INITIALIZATION BLOCK **************************************************************************/
+
+	
+	/**
+	 * Initialize the fields of this class. Print warnings about any potential initialization problems
+	 * detected to standard error, along with an indication of problem severity.
+	 */
+	static
+	{
+<span class="fc" id="L71">		all_implemented_feature_extractors = new MIDIFeatureExtractor[]</span>
+		{
+			// Add features based on pitch statistics
+			new BasicPitchHistogramFeature(),
+			new PitchClassHistogramFeature(),
+			new FoldedFifthsPitchClassHistogramFeature(),
+			new NumberOfPitchesFeature(),
+			new NumberOfPitchClassesFeature(),
+			new NumberOfCommonPitchesFeature(),
+			new NumberOfCommonPitchClassesFeature(),
+			new RangeFeature(),
+			new ImportanceOfBassRegisterFeature(),
+			new ImportanceOfMiddleRegisterFeature(),
+			new ImportanceOfHighRegisterFeature(),
+			new DominantSpreadFeature(),
+			new StrongTonalCentresFeature(),
+			new MeanPitchFeature(),
+			new MeanPitchClassFeature(),
+			new MostCommonPitchFeature(),
+			new MostCommonPitchClassFeature(),
+			new PrevalenceOfMostCommonPitchFeature(),
+			new PrevalenceOfMostCommonPitchClassFeature(),
+			new RelativePrevalenceOfTopPitchesFeature(),
+			new RelativePrevalenceOfTopPitchClassesFeature(),
+			new IntervalBetweenMostPrevalenttPitchesFeature(),
+			new IntervalBetweenMostPrevalentPitchClassesFeature(),
+			new PitchVariabilityFeature(),
+			new PitchClassVariabilityFeature(),
+			new PitchClassVariabilityAfterFoldingFeature(),
+			new PitchSkewnessFeature(),
+			new PitchClassSkewnessFeature(),
+			new PitchClassSkewnessAfterFoldingFeature(),
+			new PitchKurtosisFeature(),
+			new PitchClassKurtosisFeature(),
+			new PitchClassKurtosisAfterFoldingFeature(),
+			new MajorOrMinorFeature(),
+			new FirstPitchFeature(),
+			new FirstPitchClassFeature(),
+			new LastPitchFeature(),
+			new LastPitchClassFeature(),
+			new GlissandoPrevalenceFeature(),
+			new AverageRangeOfGlissandosFeature(),
+			new VibratoPrevalenceFeature(),
+			new MicrotonePrevalenceFeature(),
+			
+			// Add features based on melodic intervals
+			new MelodicIntervalHistogramFeature(),
+			new MostCommonMelodicIntervalFeature(),
+			new MeanMelodicIntervalFeature(),
+			new NumberOfCommonMelodicIntervalsFeature(),
+			new DistanceBetweenMostPrevalentMelodicIntervalsFeature(),
+			new PrevalenceOfMostCommonMelodicInterval(),
+			new RelativePrevalenceOfMostCommonMelodicIntervals(),
+			new AmountOfArpeggiationFeature(),
+			new RepeatedNotesFeature(),
+			new ChromaticMotionFeature(),
+			new StepwiseMotionFeature(),
+			new MelodicThirdsFeature(),
+			new MelodicPerfectFourthsFeature(),
+			new MelodicTritonesFeature(),
+			new MelodicPerfectFifthsFeature(),
+			new MelodicSixthsFeature(),
+			new MelodicSeventhsFeature(),
+			new MelodicOctavesFeature(),
+			new MelodicLargeIntervalsFeature(),
+			new MinorMajorMelodicThirdlRatioFeature(),
+			new MelodicEmbellishmentsFeature(),
+			new DirectionOfMelodicMotionFeature(),
+			new AverageLengthOfMelodicArcsFeature(),
+			new AverageIntervalSpannedByMelodicArcs(),
+			new MelodicPitchVarietyFeature(),
+			
+			// Add features based on chords and vertical intervals
+			new VerticalIntervalHistogramFeature(),
+			new WrappedVerticalIntervalHistogramFeature(),
+			new ChordTypeHistogramFeature(),
+			new AverageNumberOfSimultaneousPitchClassesFeature(),
+			new VariabilityOfNumberOfSimultaneousPitchClassesFeature(),
+			new AverageNumberOfSimultaneousPitchesFeature(),
+			new VariabilityOfNumberOfSimultaneousPitchesFeature(),
+			new MostCommonVerticalIntervalFeature(),
+			new SecondMostCommonVerticalIntervalFeature(),
+			new DistanceBetweenTwoMostCommonVerticalIntervalsFeature(),
+			new PrevalenceOfMostCommonVerticalIntervalFeature(),
+			new PrevalenceOfSecondMostCommonVerticalIntervalFeature(),
+			new PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature(),
+			new VerticalUnisonsFeature(),
+			new VerticalMinorSecondsFeature(),
+			new VerticalThirdsFeature(),
+			new VerticalTritonesFeature(),
+			new VerticalPerfectFourthsFeature(),
+			new VerticalPerfectFifthsFeature(),
+			new VerticalSixthsFeature(),
+			new VerticalSeventhsFeature(),
+			new VerticalOctavesFeature(),
+			new PerfectVerticalIntervalsFeature(),
+			new VerticalDissonanceRatioFeature(),
+			new VerticalMinorThirdPrevalenceFeature(),
+			new VerticalMajorThirdPrevalenceFeature(),
+			new ChordDurationFeature(),
+			new PartialChordsFeature(),
+			new StandardTriadsFeature(),
+			new DiminishedAndAugmentedTriadsFeature(),
+			new DominantSeventhChordsFeature(),
+			new SeventhChordsFeature(),
+			new NonStandardChordsFeature(),
+			new ComplexChordsFeature(),
+			new MinorMajorTriadRatioFeature(),
+			
+			// Add features based on rhythm (that do NOT take tempo into account)
+			new InitialTimeSignatureFeature(),
+			new SimpleInitialMeterFeature(),
+			new CompoundMeterFeature(),
+			new ComplexInitialMeterFeature(),
+			new DupleInitialMeterFeature(),
+			new TripleInitialMeterFeature(),
+			new QuadrupleInitialMeterFeature(),
+			new MetricalDiversityFeature(),
+			new TotalNumberOfNotesFeature(),
+			new NoteDensityPerQuarterNoteFeature(),
+			new NoteDensityPerQuarterNotePerVoiceFeature(),
+			new NoteDensityPerQuarterNoteVariabilityFeature(),
+			new RhythmicValueHistogramFeature(),
+			new RangeOfRhythmicValuesFeature(),
+			new NumberOfDifferentRhythmicValuesPresentFeature(),
+			new NumberOfCommonRhythmicValuesPresentFeature(),
+			new PrevalenceOfVeryShortRhythmicValuesFeature(),
+			new PrevalenceOfShortRhythmicValuesFeature(),
+			new PrevalenceOfMediumRhythmicValuesFeature(),
+			new PrevalenceOfLongRhythmicValuesFeature(),
+			new PrevalenceOfVeryLongRhythmicValuesFeature(),
+			new PrevalenceOfDottedNotesFeature(),
+			new ShortestRhythmicValueFeature(),
+			new LongestRhythmicValueFeature(),
+			new MeanRhythmicValueFeature(),
+			new MostCommonRhythmicValueFeature(),
+			new PrevalenceOfMostCommonRhythmicValueFeature(),
+			new RelativePrevalenceOfMostCommonRhythmicValuesFeature(),
+			new DifferenceBetweenMostCommonRhythmicValuesFeature(),
+			new RhythmicValueVariabilityFeature(),
+			new RhythmicValueSkewnessFeature(),
+			new RhythmicValueKurtosisFeature(),
+			new RhythmicValueMedianRunLengthsHistogramFeature(),
+			new MeanRhythmicValueRunLengthFeature(),
+			new MedianRhythmicValueRunLengthFeature(),
+			new VariabilityInRhythmicValueRunLengthsFeature(),
+			new RhythmicValueVariabilityInRunLengthsHistogramFeature(),
+			new MeanRhythmicValueOffsetFeature(),
+			new MedianRhythmicValueOffsetFeature(),
+			new VariabilityOfRhythmicValueOffsetsFeature(),
+			new CompleteRestsFractionFeature(),
+			new PartialRestsFractionFeature(),
+			new AverageRestFractionAcrossVoicesFeature(),
+			new LongestCompleteRestFeature(),
+			new LongestPartialRestFeature(),
+			new MeanCompleteRestDurationFeature(),
+			new MeanPartialRestDurationFeature(),
+			new MedianCompleteRestDurationFeature(),
+			new MedianPartialRestDurationFeature(),
+			new VariabilityOfCompleteRestDurationsFeature(),
+			new VariabilityOfPartialRestDurationsFeature(),
+			new VariabilityAcrossVoicesOfCombinedRestsFeature(),
+			new BeatHistogramTempoStandardizedFeature(),
+			new NumberOfStrongRhythmicPulsesTempoStandardizedFeature(),
+			new NumberOfModerateRhythmicPulsesTempoStandardizedFeature(),
+			new NumberOfRelativelyStrongRhythmicPulsesTempoStandardizedFeature(),
+			new StrongestRhythmicPulseTempoStandardizedFeature(),
+			new SecondStrongestRhythmicPulseTempoStandardizedFeature(),
+			new HarmonicityOfTwoStrongestRhythmicPulsesTempoStandardizedFeature(),
+			new StrengthOfStrongestRhythmicPulseTempoStandardizedFeature(),
+			new StrengthOfSecondStrongestRhythmicPulseTempoStandardizedFeature(),
+			new StrengthRatioOfTwoStrongestRhythmicPulsesTempoStandardizedFeature(),
+			new CombinedStrengthOfTwoStrongestRhythmicPulsesTempoStandardizedFeature(),
+			new RhythmicVariabilityTempoStandardizedFeature(),
+			new RhythmicLoosenessTempoStandardizedFeature(),
+			new PolyrhythmsTempoStandardizedFeature(),
+			
+			// Add features based on rhythm (that DO take tempo into account)
+			new InitialTempoFeature(),
+			new MeanTempoFeature(),
+			new TempoVariabilityFeature(),
+			new DurationInSecondsFeature(),
+			new NoteDensityFeature(),
+			new NoteDensityVariabilityFeature(),
+			new AverageTimeBetweenAttacksFeature(),
+			new AverageTimeBetweenAttacksForEachVoiceFeature(),
+			new VariabilityOfTimeBetweenAttacksFeature(),
+			new AverageVariabilityOfTimeBetweenAttacksForEachVoiceFeature(),
+			new MinimumNoteDurationFeature(),
+			new MaximumNoteDurationFeature(),
+			new AverageNoteDurationFeature(),
+			new VariabilityOfNoteDurationsFeature(),
+			new AmountOfStaccatoFeature(),
+			new BeatHistogramFeature(),
+			new NumberOfStrongRhythmicPulsesFeature(),
+			new NumberOfModerateRhythmicPulsesFeature(),
+			new NumberOfRelativelyStrongRhythmicPulsesFeature(),
+			new StrongestRhythmicPulseFeature(),
+			new SecondStrongestRhythmicPulseFeature(),
+			new HarmonicityOfTwoStrongestRhythmicPulsesFeature(),
+			new StrengthOfStrongestRhythmicPulseFeature(),
+			new StrengthOfSecondStrongestRhythmicPulseFeature(),
+			new StrengthRatioOfTwoStrongestRhythmicPulsesFeature(),
+			new CombinedStrengthOfTwoStrongestRhythmicPulsesFeature(),
+			new RhythmicVariabilityFeature(),
+			new RhythmicLoosenessFeature(),
+			new PolyrhythmsFeature(),
+			
+			// Add features based on instrumentation
+			new PitchedInstrumentsPresentFeature(),
+			new UnpitchedInstrumentsPresentFeature(),
+			new NotePrevalenceOfPitchedInstrumentsFeature(),
+			new NotePrevalenceOfUnpitchedInstrumentsFeature(),
+			new TimePrevalenceOfPitchedInstrumentsFeature(),
+			new VariabilityOfNotePrevalenceOfPitchedInstrumentsFeature(),
+			new VariabilityOfNotePrevalenceOfUnpitchedInstrumentsFeature(),
+			new NumberOfPitchedInstrumentsFeature(),
+			new NumberOfUnpitchedInstrumentsFeature(),
+			new UnpitchedPercussionInstrumentPrevalenceFeature(),
+			new StringKeyboardPrevalenceFeature(),
+			new AcousticGuitarPrevalenceFeature(),
+			new ElectricGuitarPrevalenceFeature(),
+			new ViolinPrevalenceFeature(),
+			new SaxophonePrevalenceFeature(),
+			new BrassPrevalenceFeature(),
+			new WoodwindsPrevalenceFeature(),
+			new OrchestralStringsPrevalenceFeature(),
+			new StringEnsemblePrevalenceFeature(),
+			new ElectricInstrumentPrevalenceFeature(),
+			
+			// Add features based on musical texture
+			new MaximumNumberOfIndependentVoicesFeature(),
+			new AverageNumberOfIndependentVoicesFeature(),
+			new VariabilityOfNumberOfIndependentVoicesFeature(),
+			new VoiceEqualityNumberOfNotesFeature(),
+			new VoiceEqualityNoteDurationFeature(),
+			new VoiceEqualityDynamicsFeature(),
+			new VoiceEqualityMelodicLeapsFeature(),
+			new VoiceEqualityRangeFeature(),
+			new ImportanceOfLoudestVoiceFeature(),
+			new RelativeRangeOfLoudestVoiceFeature(),
+			new RelativeRangeIsolationOfLoudestVoiceFeature(),
+			new RelativeRangeOfHighestLineFeature(),
+			new RelativeNoteDensityOfHighestLineFeature(),
+			new RelativeNoteDurationsOfLowestLineFeature(),
+			new RelativeSizeOfMelodicIntervalsInLowestLineFeature(),
+			new VoiceOverlapFeature(),
+			new VoiceSeparationFeature(),
+			new VariabilityOfVoiceSeparationFeature(),
+			new ParallelMotionFeature(),
+			new SimilarMotionFeature(),
+			new ContraryMotionFeature(),
+			new ObliqueMotionFeature(),
+			new ParallelFifthsFeature(),
+			new ParallelOctavesFeature(),
+			
+			// Add features based on dynamics
+			new DynamicRangeFeature(),
+			new VariationOfDynamicsFeature(),
+			new VariationOfDynamicsInEachVoiceFeature(),
+			new AverageNoteToNoteChangeInDynamics(),
+		};
+
+<span class="fc" id="L334">		default_features_to_save = new boolean[]</span>
+		{
+			// Features based on pitch statistics
+			false, // BasicPitchHistogramFeature
+			false, // PitchClassHistogramFeature
+			false, // FoldedFifthsPitchClassHistogramFeature
+			true, // NumberOfPitchesFeature
+			true, // NumberOfPitchClassesFeature
+			true, // NumberOfCommonPitchesFeature
+			true, // NumberOfCommonPitchClassesFeature
+			true, // RangeFeature
+			true, // ImportanceOfBassRegisterFeature
+			true, // ImportanceOfMiddleRegisterFeature
+			true, // ImportanceOfHighRegisterFeature
+			true, // DominantSpreadFeature
+			true, // StrongTonalCentresFeature
+			true, // MeanPitchFeature
+			true, // MeanPitchClassFeature
+			true, // MostCommonPitchFeature
+			true, // MostCommonPitchClassFeature
+			true, // PrevalenceOfMostCommonPitchFeature
+			true, // PrevalenceOfMostCommonPitchClassFeature
+			true, // RelativePrevalenceOfTopPitchesFeature
+			true, // RelativePrevalenceOfTopPitchClassesFeature
+			true, // IntervalBetweenMostPrevalenttPitchesFeature
+			true, // IntervalBetweenMostPrevalentPitchClassesFeature
+			true, // PitchVariabilityFeature
+			true, // PitchClassVariabilityFeature
+			true, // PitchClassVariabilityAfterFoldingFeature
+			true, // PitchSkewnessFeature
+			true, // PitchClassSkewnessFeature
+			true, // PitchClassSkewnessAfterFoldingFeature
+			true, // PitchKurtosisFeature
+			true, // PitchClassKurtosisFeature
+			true, // PitchClassKurtosisAfterFoldingFeature
+			true, // MajorOrMinorFeature
+			true, // FirstPitchFeature
+			true, // FirstPitchClassFeature
+			true, // LastPitchFeature
+			true, // LastPitchClassFeature
+			true, // GlissandoPrevalenceFeature
+			true, // AverageRangeOfGlissandosFeature
+			true, // VibratoPrevalenceFeature
+			true, // MicrotonePrevalenceFeature
+
+			// Features based on melodic intervals
+			false, // MelodicIntervalHistogramFeature
+			true, // MostCommonMelodicIntervalFeature
+			true, // MeanMelodicIntervalFeature
+			true, // NumberOfCommonMelodicIntervalsFeature
+			true, // DistanceBetweenMostPrevalentMelodicIntervalsFeature
+			true, // PrevalenceOfMostCommonMelodicInterval
+			true, // RelativePrevalenceOfMostCommonMelodicIntervals
+			true, // AmountOfArpeggiationFeature
+			true, // RepeatedNotesFeature
+			true, // ChromaticMotionFeature
+			true, // StepwiseMotionFeature
+			true, // MelodicThirdsFeature
+			true, // MelodicPerfectFourthsFeature
+			true, // MelodicTritonesFeature
+			true, // MelodicPerfectFifthsFeature
+			true, // MelodicSixthsFeature
+			true, // MelodicSeventhsFeature
+			true, // MelodicOctavesFeature
+			true, // MelodicLargeIntervalsFeature
+			true, // MinorMajorMelodicThirdlRatioFeature
+			true, // MelodicEmbellishmentsFeature
+			true, // DirectionOfMelodicMotionFeature
+			true, // AverageLengthOfMelodicArcsFeature
+			true, // AverageIntervalSpannedByMelodicArcs
+			true, // MelodicPitchVarietyFeature
+
+			// Features based on chords and vertical intervals
+			false, // VerticalIntervalHistogramFeature
+			false, // WrappedVerticalIntervalHistogramFeature
+			false, // ChordTypeHistogramFeature			
+			true, // AverageNumberOfSimultaneousPitchClassesFeature
+			true, // VariabilityOfNumberOfSimultaneousPitchClassesFeature
+			true, // AverageNumberOfSimultaneousPitchesFeature
+			true, // VariabilityOfNumberOfSimultaneousPitchesFeature
+			true, // MostCommonVerticalIntervalFeature
+			true, // SecondMostCommonVerticalIntervalFeature
+			true, // DistanceBetweenTwoMostCommonVerticalIntervalsFeature
+			true, // PrevalenceOfMostCommonVerticalIntervalFeature
+			true, // PrevalenceOfSecondMostCommonVerticalIntervalFeature
+			true, // PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature
+			true, // VerticalUnisonsFeature
+			true, // VerticalMinorSecondsFeature
+			true, // VerticalThirdsFeature
+			true, // VerticalTritonesFeature
+			true, // VerticalPerfectFourthsFeature
+			true, // VerticalPerfectFifthsFeature
+			true, // VerticalSixthsFeature
+			true, // VerticalSeventhsFeature
+			true, // VerticalOctavesFeature
+			true, // PerfectVerticalIntervalsFeature
+			true, // VerticalDissonanceRatioFeature
+			true, // VerticalMinorThirdPrevalenceFeature
+			true, // VerticalMajorThirdPrevalenceFeature
+			true, // ChordDurationFeature
+			true, // PartialChordsFeature
+			true, // StandardTriadsFeature
+			true, // DiminishedAndAugmentedTriadsFeature
+			true, // DominantSeventhChordsFeature
+			true, // SeventhChordsFeature
+			true, // NonStandardChordsFeature
+			true, // ComplexChordsFeature
+			true, // MinorMajorTriadRatioFeature
+			
+			// Features based on rhythm (that do NOT take tempo into account)
+			false, // InitialTimeSignatureFeature
+			true, // SimpleInitialMeterFeature
+			true, // CompoundMeterFeature
+			true, // ComplexInitialMeterFeature
+			true, // DupleInitialMeterFeature
+			true, // TripleInitialMeterFeature
+			true, // QuadrupleInitialMeterFeature
+			true, // MetricalDiversityFeature
+			true, // TotalNumberOfNotesFeature
+			true, // NoteDensityPerQuarterNoteFeature
+			true, // NoteDensityPerQuarterNotePerVoiceFeature
+			true, // NoteDensityPerQuarterNoteVariabilityFeature
+			false, // RhythmicValueHistogramFeature
+			true, // RangeOfRhythmicValuesFeature
+			true, // NumberOfDifferentRhythmicValuesPresentFeature
+			true, // NumberOfCommonRhythmicValuesPresentFeature
+			true, // PrevalenceOfVeryShortRhythmicValuesFeature
+			true, // PrevalenceOfShortRhythmicValuesFeature
+			true, // PrevalenceOfMediumRhythmicValuesFeature
+			true, // PrevalenceOfLongRhythmicValuesFeature
+			true, // PrevalenceOfVeryLongRhythmicValuesFeature
+			true, // PrevalenceOfDottedNotesFeature
+			true, // ShortestRhythmicValueFeature
+			true, // LongestRhythmicValueFeature
+			true, // MeanRhythmicValueFeature
+			true, // MostCommonRhythmicValueFeature
+			true, // PrevalenceOfMostCommonRhythmicValueFeature
+			true, // RelativePrevalenceOfMostCommonRhythmicValuesFeature
+			true, // DifferenceBetweenMostCommonRhythmicValuesFeature
+			true, // RhythmicValueVariabilityFeature
+			true, // RhythmicValueSkewnessFeature
+			true, // RhythmicValueKurtosisFeature
+			false, // RhythmicValueMedianRunLengthsHistogramFeature
+			true, // MeanRhythmicValueRunLengthFeature
+			true, // MedianRhythmicValueRunLengthFeature
+			true, // VariabilityInRhythmicValueRunLengthsFeature
+			false, // RhythmicValueVariabilityInRunLengthsHistogramFeature
+			true, // MeanRhythmicValueOffsetFeature
+			true, // MedianRhythmicValueOffsetFeature
+			true, // VariabilityOfRhythmicValueOffsetsFeature
+			true, // CompleteRestsFractionFeature
+			true, // PartialRestsFractionFeature
+			true, // AverageRestFractionAcrossVoicesFeature
+			true, // LongestCompleteRestFeature
+			true, // LongestPartialRestFeature
+			true, // MeanCompleteRestDurationFeature
+			true, // MeanPartialRestDurationFeature
+			true, // MedianCompleteRestDurationFeature
+			true, // MedianPartialRestDurationFeature
+			true, // VariabilityOfCompleteRestDurationsFeature
+			true, // VariabilityOfPartialRestDurationsFeature
+			true, // VariabilityAcrossVoicesOfCombinedRestsFeature
+			false, // BeatHistogramTempoStandardizedFeature
+			true, // NumberOfStrongRhythmicPulsesTempoStandardizedFeature
+			true, // NumberOfModerateRhythmicPulsesTempoStandardizedFeature
+			true, // NumberOfRelativelyStrongRhythmicPulsesTempoStandardizedFeature
+			true, // StrongestRhythmicPulseTempoStandardizedFeature
+			true, // SecondStrongestRhythmicPulseTempoStandardizedFeature
+			true, // HarmonicityOfTwoStrongestRhythmicPulsesTempoStandardizedFeature
+			true, // StrengthOfStrongestRhythmicPulseTempoStandardizedFeature
+			true, // StrengthOfSecondStrongestRhythmicPulseTempoStandardizedFeature
+			true, // StrengthRatioOfTwoStrongestRhythmicPulsesTempoStandardizedFeature
+			true, // CombinedStrengthOfTwoStrongestRhythmicPulsesTempoStandardizedFeature
+			true, // RhythmicVariabilityTempoStandardizedFeature
+			true, // RhythmicLoosenessTempoStandardizedFeature
+			true, // PolyrhythmsTempoStandardizedFeature			
+			
+			// Features based on rhythm (that DO take tempo into account)
+			true, // InitialTempoFeature
+			true, // MeanTempoFeature
+			true, // TempoVariabilityFeature
+			true, // DurationInSecondsFeature
+			true, // NoteDensityFeature
+			true, // NoteDensityVariabilityFeature
+			true, // AverageTimeBetweenAttacksFeature
+			true, // AverageTimeBetweenAttacksForEachVoiceFeature
+			true, // VariabilityOfTimeBetweenAttacksFeature
+			true, // AverageVariabilityOfTimeBetweenAttacksForEachVoiceFeature
+			true, // MinimumNoteDurationFeature
+			true, // MaximumNoteDurationFeature
+			true, // AverageNoteDurationFeature
+			true, // VariabilityOfNoteDurationsFeature
+			true, // AmountOfStaccatoFeature
+			false, // BeatHistogramFeature
+			true, // NumberOfStrongRhythmicPulsesFeature
+			true, // NumberOfModerateRhythmicPulsesFeature
+			true, // NumberOfRelativelyStrongRhythmicPulsesFeature
+			true, // StrongestRhythmicPulseFeature
+			true, // SecondStrongestRhythmicPulseFeature
+			true, // HarmonicityOfTwoStrongestRhythmicPulsesFeature
+			true, // StrengthOfStrongestRhythmicPulseFeature
+			true, // StrengthOfSecondStrongestRhythmicPulseFeature
+			true, // StrengthRatioOfTwoStrongestRhythmicPulsesFeature
+			true, // CombinedStrengthOfTwoStrongestRhythmicPulsesFeature
+			true, // RhythmicVariabilityFeature
+			true, // RhythmicLoosenessFeature
+			true, // PolyrhythmsFeature
+
+			// Fatures based on instrumentation
+			false, // PitchedInstrumentsPresentFeature
+			false, // UnpitchedInstrumentsPresentFeature
+			false, // NotePrevalenceOfPitchedInstrumentsFeature
+			false, // NotePrevalenceOfUnpitchedInstrumentsFeature
+			false, // TimePrevalenceOfPitchedInstrumentsFeature
+			true, // VariabilityOfNotePrevalenceOfPitchedInstrumentsFeature
+			true, // VariabilityOfNotePrevalenceOfUnpitchedInstrumentsFeature			
+			true, // NumberOfPitchedInstrumentsFeature
+			true, // NumberOfUnpitchedInstrumentsFeature
+			true, // UnpitchedPercussionInstrumentPrevalenceFeature
+			true, // StringKeyboardPrevalenceFeature
+			true, // AcousticGuitarPrevalenceFeature
+			true, // ElectricGuitarPrevalenceFeature
+			true, // ViolinPrevalenceFeature
+			true, // SaxophonePrevalenceFeature
+			true, // BrassPrevalenceFeature
+			true, // WoodwindsPrevalenceFeature
+			true, // OrchestralStringsPrevalenceFeature
+			true, // StringEnsemblePrevalenceFeature
+			true, // ElectricInstrumentPrevalenceFeature
+
+			// Features based on musical texture
+			true, // MaximumNumberOfIndependentVoicesFeature
+			true, // AverageNumberOfIndependentVoicesFeature
+			true, // VariabilityOfNumberOfIndependentVoicesFeature
+			true, // VoiceEqualityNumberOfNotesFeature
+			true, // VoiceEqualityNoteDurationFeature
+			true, // VoiceEqualityDynamicsFeature
+			true, // VoiceEqualityMelodicLeapsFeature
+			true, // VoiceEqualityRangeFeature
+			true, // ImportanceOfLoudestVoiceFeature
+			true, // RelativeRangeOfLoudestVoiceFeature
+			true, // RelativeRangeIsolationOfLoudestVoiceFeature
+			true, // RelativeRangeOfHighestLineFeature
+			true, // RelativeNoteDensityOfHighestLineFeature
+			true, // RelativeNoteDurationsOfLowestLineFeature
+			true, // RelativeSizeOfMelodicIntervalsInLowestLineFeature
+			true, // VoiceOverlapFeature
+			true, // VoiceSeparationFeature
+			true, // VariabilityOfVoiceSeparationFeature
+			true, // ParallelMotionFeature
+			true, // SimilarMotionFeature
+			true, // ContraryMotionFeature
+			true, // ObliqueMotionFeature
+			true, // ParallelFifthsFeature
+			true, // ParallelOctavesFeature
+			
+			// Features based on dynamics
+			true, // DynamicRangeFeature
+			true, // VariationOfDynamicsFeature
+			true, // VariationOfDynamicsInEachVoiceFeature
+			true, // AverageNoteToNoteChangeInDynamicsFeature
+
+		};
+
+<span class="fc" id="L598">		names_of_all_implemented_features = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L599">		List&lt;MIDIFeatureExtractor&gt; all_extractors = Arrays.asList(all_implemented_feature_extractors);</span>
+<span class="fc bfc" id="L600" title="All 2 branches covered.">		for (MIDIFeatureExtractor fe : all_extractors)</span>
+<span class="fc" id="L601">			names_of_all_implemented_features.add(fe.getFeatureDefinition().name);</span>
+
+<span class="fc" id="L603">		names_of_default_features_to_save = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L604" title="All 2 branches covered.">		for (int i = 0; i &lt; default_features_to_save.length; i++)</span>
+<span class="fc bfc" id="L605" title="All 2 branches covered.">			if (default_features_to_save[i] == true)</span>
+<span class="fc" id="L606">				names_of_default_features_to_save.add(names_of_all_implemented_features.get(i));</span>
+
+<span class="fc" id="L608">		names_of_mei_specific_features = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L609" title="All 2 branches covered.">		for (MIDIFeatureExtractor feature : all_implemented_feature_extractors)</span>
+		{
+<span class="pc bpc" id="L611" title="1 of 2 branches missed.">			if (feature instanceof MEIFeatureExtractor)</span>
+			{
+<span class="nc" id="L613">				String mei_feature_name = feature.getFeatureDefinition().name;</span>
+<span class="nc" id="L614">				names_of_mei_specific_features.add(mei_feature_name);</span>
+			}
+		}
+		
+		// Validation and testing
+<span class="fc" id="L619">		printWarningReportIfFeaturesAddedImproperly();</span>
+		//printAllFeatures();
+		//printAllFeatureDependencies();
+		//System.out.println(&quot;DEFAULT FEATURES:/n&quot; + getFeatureCatalogueOverviewReport(default_features_to_save));
+<span class="fc" id="L623">	}</span>
+	
+
+	/* PUBLIC STATIC METHODS ********************************************************************************/
+	
+	
+	/**
+	 * @return	An array consisting of one instantiated MIDIFeatureExtractor object for each implemented
+	 *			feature extractor (including MEIFeatureExtractor features). These are ordered in the same 
+	 *			order in which they are presented in the jSymbolic manual.
+	 */
+	public static MIDIFeatureExtractor[] getAllImplementedFeatureExtractors()
+	{
+<span class="fc" id="L636">		return all_implemented_feature_extractors;</span>
+	}
+
+	/**
+	 * @return	An array with one entry for every feature implemented as a MIDIFeatureExtractor (including 
+	 *			MEIFeatureExtractor features). These are ordered in the same order in which they are presented
+	 *			in the jSymbolic manual. Each entry is set to true if that feature is to be extracted and
+	 *			saved by default, and to false if is not.
+	 */
+	public static boolean[] getDefaultFeaturesToSave()
+	{
+<span class="nc" id="L647">		return default_features_to_save;</span>
+	}
+
+	/**
+	 * @return	A List consisting of the feature names of every feature implemented as a MIDIFeatureExtractor
+	 *			(including MEIFeatureExtractor features). These are ordered in the same order in which they 
+	 *			are presented in the jSymbolic manual.
+	 */
+	public static List&lt;String&gt; getNamesOfAllImplementedFeatures()
+	{
+<span class="fc" id="L657">		return names_of_all_implemented_features;</span>
+	}
+
+	/**
+	 * @return	A List consisting of the feature names of every feature implemented as a MIDIFeatureExtractor
+	 *			(including MEIFeatureExtractor features) and that has also been chosen to be saved by default.
+	 *			These are ordered in the same order in which they are presented in the jSymbolic manual.
+	 */
+	public static List&lt;String&gt; getNamesOfDefaultFeaturesToSave()
+	{
+<span class="nc" id="L667">		return names_of_default_features_to_save;</span>
+	}
+
+	/**
+	 * @return	A List consisting of the feature names of every feature implemented as an MEIFeatureExtractor.
+	 * 			These are ordered in the same order in which they are presented in the jSymbolic manual.
+	 */
+	public static List&lt;String&gt; getNamesOfMeiSpecificFeatures()
+	{
+<span class="fc" id="L676">		return names_of_mei_specific_features;</span>
+	}
+			
+	/**
+	 * Given a list of which features should be extracted, return the names of those features that are set to
+	 * be extracted by this list.
+	 * 
+	 * @param features_to_extract	Which features should be extracted. This must correspond in size to the 
+	 *								total number of features implemented, and must be ordered in the same 
+	 *								order in which they are presented in the jSymbolic manual.
+	 * @return						The names of the features to extract.
+	 */
+	public static List&lt;String&gt; getNamesOfFeaturesToExtract(boolean[] features_to_extract)
+	{
+<span class="nc" id="L690">		List&lt;String&gt; names_of_all_features = FeatureExtractorAccess.getNamesOfAllImplementedFeatures();</span>
+<span class="nc" id="L691">		List&lt;String&gt; feature_names_to_return = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L692" title="All 2 branches missed.">		for (int f = 0; f &lt; names_of_all_features.size(); f++)</span>
+<span class="nc bnc" id="L693" title="All 2 branches missed.">			if (features_to_extract[f])</span>
+<span class="nc" id="L694">				feature_names_to_return.add(names_of_all_features.get(f));</span>
+<span class="nc" id="L695">		return feature_names_to_return;</span>
+	}
+		
+	/**
+	 * Take the specified list of feature names and return a boolean array indicating which amongst all the
+	 * features jSymbolic can extract have their names included in the specified list.
+	 *
+	 * @param chosen_feature_names	A list of names of features that should be marked as true in the returned
+	 *								array.
+	 * @return						An array sized to match the complete list of features that jSymbolic
+	 *								can extract, in the order that they are specified in the manual. A given
+	 *								entry is set to true if the name of the corresponding feature is contained
+	 *								in chosen_feature_names, and to false otherwise.
+	 * @throws Exception			An informative Exception is thrown if one of the feature names in
+	 *								chosen_feature_names does not correspond to the name of an implemented
+	 *								feature.
+	 */
+	public static boolean[] findSpecifiedFeatures(List&lt;String&gt; chosen_feature_names)
+			throws Exception
+	{
+<span class="fc" id="L715">		List&lt;String&gt; names_of_all_features = FeatureExtractorAccess.getNamesOfAllImplementedFeatures();</span>
+<span class="fc" id="L716">		boolean[] chosen_features = new boolean[names_of_all_features.size()];</span>
+<span class="fc bfc" id="L717" title="All 2 branches covered.">		for (int i = 0; i &lt; chosen_features.length; i++)</span>
+<span class="fc" id="L718">			chosen_features[i] = false;</span>
+<span class="fc bfc" id="L719" title="All 2 branches covered.">		for (String this_feature_name : chosen_feature_names)</span>
+		{
+<span class="pc bpc" id="L721" title="1 of 2 branches missed.">			if (!names_of_all_features.contains(this_feature_name))</span>
+<span class="nc" id="L722">				throw new Exception(this_feature_name + &quot; is not the name of a feature implemented in this version of jSymbolic.&quot;);</span>
+<span class="fc" id="L723">			int feature_index = names_of_all_features.lastIndexOf(this_feature_name);</span>
+<span class="fc" id="L724">			chosen_features[feature_index] = true;</span>
+<span class="fc" id="L725">		}</span>
+<span class="fc" id="L726">		return chosen_features;</span>
+	}
+	
+	/**
+	 * Prepare a formatted report outlining statistics about the breakdown of all features, as well as of only
+	 * those features selected as defaults.
+     * 
+     * @param   features_to_include An array corresponding in size and order to the contents of the
+     *                              all_implemented_feature_extractors field of this class. Values of true
+     *                              indicate that that feature should be included in this report, and false
+     *                              indicate that it should not. If this is null, then a report is generated
+     *                              for all implemented features.
+	 * @return                      The formatted report.
+	 */
+	public static String getFeatureCatalogueOverviewReport(boolean[] features_to_include)
+	{
+        // Set to report on all feautures if no specific features are specified.
+<span class="nc bnc" id="L743" title="All 2 branches missed.">        if (features_to_include == null)</span>
+        {
+<span class="nc" id="L745">            features_to_include = new boolean[all_implemented_feature_extractors.length];</span>
+<span class="nc bnc" id="L746" title="All 2 branches missed.">            for (int i = 0; i &lt; features_to_include.length; i++)</span>
+<span class="nc" id="L747">                features_to_include[i] = true;</span>
+        }
+        
+		// Information relating to feature dimensions
+<span class="nc" id="L751">		int total_unique_features = 0;</span>
+<span class="nc" id="L752">        int total_feature_dimensions = 0;</span>
+<span class="nc" id="L753">		int total_one_dimensional_features = 0;</span>
+<span class="nc" id="L754">		int total_multi_dimensional_features = 0;</span>
+		
+		// Information relating to sequential features
+<span class="nc" id="L757">		int total_sequential_features = 0;</span>
+		
+		// Information relating to feature types
+<span class="nc" id="L760">		String[] feature_type_labels = {&quot;Overall Pitch Statistics&quot;, &quot;Melodic Intervals&quot;, &quot;Chords and Vertical Intervals&quot;, &quot;Rhythm&quot;, &quot;Instrumentation&quot;, &quot;Musical Texture&quot;, &quot;Dynamics&quot;, &quot;MEI-Specific&quot;};</span>
+<span class="nc" id="L761">		int[] unique_features_by_type = new int[feature_type_labels.length];</span>
+<span class="nc" id="L762">		int[] total_dimensions_by_type = new int[feature_type_labels.length];</span>
+<span class="nc bnc" id="L763" title="All 2 branches missed.">        for (int i = 0; i &lt; feature_type_labels.length; i++)</span>
+        {
+<span class="nc" id="L765">            unique_features_by_type[i] = 0;</span>
+<span class="nc" id="L766">            total_dimensions_by_type[i] = 0;</span>
+        }
+		
+		// Collect feature stats by going through features one by one
+<span class="nc bnc" id="L770" title="All 2 branches missed.">		for (int i = 0; i &lt;  all_implemented_feature_extractors.length; i++)</span>
+		{
+<span class="nc bnc" id="L772" title="All 2 branches missed.">            if (features_to_include[i])</span>
+            {
+<span class="nc" id="L774">				MIDIFeatureExtractor feat = all_implemented_feature_extractors[i];</span>
+
+<span class="nc" id="L776">                total_unique_features++;</span>
+                
+<span class="nc" id="L778">                total_feature_dimensions += feat.getFeatureDefinition().dimensions;</span>
+<span class="nc bnc" id="L779" title="All 2 branches missed.">                if (feat.getFeatureDefinition().dimensions == 1)</span>
+<span class="nc" id="L780">                    total_one_dimensional_features++;</span>
+<span class="nc" id="L781">                else total_multi_dimensional_features++;</span>
+
+<span class="nc bnc" id="L783" title="All 2 branches missed.">                if (feat.getFeatureDefinition().is_sequential)</span>
+<span class="nc" id="L784">                    total_sequential_features++;</span>
+
+<span class="nc" id="L786">                char code = feat.getCode().charAt(0);</span>
+<span class="nc bnc" id="L787" title="All 9 branches missed.">                switch (code)</span>
+                {
+                    case 'P':
+<span class="nc" id="L790">                        unique_features_by_type[0]++;</span>
+<span class="nc" id="L791">                        total_dimensions_by_type[0] += feat.getFeatureDefinition().dimensions;</span>
+<span class="nc" id="L792">                        break;</span>
+                    case 'M':
+<span class="nc" id="L794">                        unique_features_by_type[1]++;</span>
+<span class="nc" id="L795">                        total_dimensions_by_type[1] += feat.getFeatureDefinition().dimensions;</span>
+<span class="nc" id="L796">                        break;</span>
+                    case 'C':
+<span class="nc" id="L798">                        unique_features_by_type[2]++;</span>
+<span class="nc" id="L799">                        total_dimensions_by_type[2] += feat.getFeatureDefinition().dimensions;</span>
+<span class="nc" id="L800">                        break;</span>
+                    case 'R':
+<span class="nc" id="L802">                        unique_features_by_type[3]++;</span>
+<span class="nc" id="L803">                        total_dimensions_by_type[3] += feat.getFeatureDefinition().dimensions;</span>
+<span class="nc" id="L804">                        break;</span>
+                    case 'I':
+<span class="nc" id="L806">                        unique_features_by_type[4]++;</span>
+<span class="nc" id="L807">                        total_dimensions_by_type[4] += feat.getFeatureDefinition().dimensions;</span>
+<span class="nc" id="L808">                        break;</span>
+                    case 'T':
+<span class="nc" id="L810">                        unique_features_by_type[5]++;</span>
+<span class="nc" id="L811">                        total_dimensions_by_type[5] += feat.getFeatureDefinition().dimensions;</span>
+<span class="nc" id="L812">                        break;</span>
+                    case 'D':
+<span class="nc" id="L814">                        unique_features_by_type[6]++;</span>
+<span class="nc" id="L815">                        total_dimensions_by_type[6] += feat.getFeatureDefinition().dimensions;</span>
+<span class="nc" id="L816">                        break;</span>
+                    case 'S':
+<span class="nc" id="L818">                        unique_features_by_type[7]++;</span>
+<span class="nc" id="L819">                        total_dimensions_by_type[7] += feat.getFeatureDefinition().dimensions;</span>
+                        break;
+                }
+            }
+		}
+		
+		// Prepare the part of the report relating to all features
+<span class="nc" id="L826">		String report = total_unique_features + &quot; unique features\n&quot;;</span>
+<span class="nc" id="L827">		report += total_feature_dimensions + &quot; combined feature dimensions\n&quot;;</span>
+<span class="nc" id="L828">		report += total_one_dimensional_features + &quot; unique one-dimensional features\n&quot;;</span>
+<span class="nc" id="L829">		report += total_multi_dimensional_features + &quot; unique multi-dimensional features\n&quot;;</span>
+<span class="nc" id="L830">		report += total_sequential_features + &quot; sequential features\n&quot;;</span>
+<span class="nc" id="L831">		report += &quot;Feature breakdown by type:\n&quot;;</span>
+<span class="nc bnc" id="L832" title="All 2 branches missed.">		for (int i = 0; i &lt; feature_type_labels.length; i++)</span>
+<span class="nc" id="L833">			report += &quot;\t&quot; + unique_features_by_type[i] + &quot; unique &quot; + feature_type_labels[i] + &quot; features (&quot; + total_dimensions_by_type[i] + &quot; total dimensions)\n&quot;;</span>
+
+		// Return the report
+<span class="nc" id="L836">		return report;</span>
+	}
+	
+
+	/* PRIVATE STATIC METHODS *******************************************************************************/
+	
+	
+	/**
+	 * Verify that the all_implemented_feature_extractors and default_features_to_save fields have been set
+	 * up in ways that are individually self-consistent and compatible with one another. Print warnings about
+	 * any potential problems detected to standard error, along with an indication of problem severity. This
+	 * is a useful error checker to help make sure that new features added to extend jSymbolic have been added
+	 * properly. The following potential issues are checked:
+	 * 
+	 * 1) Verify that no features have been added to all_implemented_feature_extractors that are dependent on 
+	 * features  that have not themselves been added to all_implemented_feature_extractors.
+	 * 2) Verify that no more than one feature with any given feature name has been added to 
+	 * all_implemented_feature_extractors.
+	 * 3) Verify that no more than one feature with any given feature code has been added to 
+	 * all_implemented_feature_extractors.
+	 * 4) Verify that all features have been added contiguously to all_implemented_feature_extractors, based 
+	 * on their feature code groups and numbers, and that all feature codes are properly formatted.
+	 * 5) Verify that all_implemented_feature_extractors and default_features_to_save are of the same size.
+	 * 6) Verify that, by default, all multi-dimensional features have been set to not be extracted, that all
+	 * MEI-specific features have been set to not be extracted, and that all other features have been set to
+	 * be extracted.
+	 */
+	private static void printWarningReportIfFeaturesAddedImproperly()
+	{
+		// A report of problems encountered
+<span class="fc" id="L866">		String problem_report = &quot;&quot;;</span>
+				
+		// The names of all features added, in the order they have been added
+<span class="fc" id="L869">		String[] names_of_all_features_added = names_of_all_implemented_features.toArray(new String[names_of_all_implemented_features.size()]);</span>
+
+		// Verify that no features have been added to all_implemented_feature_extractors that are dependent on
+		// features that have not themselves been added to all_implemented_feature_extractors
+<span class="fc bfc" id="L873" title="All 2 branches covered.">		for (int feat = 0; feat &lt; all_implemented_feature_extractors.length; feat++)</span>
+		{
+<span class="fc" id="L875">			String[] dependencies = all_implemented_feature_extractors[feat].getDepenedencies();</span>
+<span class="fc bfc" id="L876" title="All 2 branches covered.">			if (dependencies != null)</span>
+			{
+<span class="fc bfc" id="L878" title="All 2 branches covered.">				for (int dep = 0; dep &lt; dependencies.length; dep++)</span>
+				{
+<span class="fc" id="L880">					boolean found = false;</span>
+<span class="pc bpc" id="L881" title="1 of 2 branches missed.">					for (int name = 0; name &lt; names_of_all_features_added.length; name++)</span>
+					{
+<span class="fc bfc" id="L883" title="All 2 branches covered.">						if (names_of_all_features_added[name].equals(dependencies[dep]))</span>
+						{
+<span class="fc" id="L885">							found = true;</span>
+<span class="fc" id="L886">							break;</span>
+						}
+					}
+<span class="pc bpc" id="L889" title="1 of 2 branches missed.">					if (!found)</span>
+<span class="nc" id="L890">						problem_report += &quot;WARNING: The feature &quot; + names_of_all_features_added[feat] + &quot; has the following feature dependency: &quot; + dependencies[dep] + &quot;. This dependency has not been added to jSymbolic. This is a serious problem, as a feature cannot be extracted unless all of its dependencies have been added.\n&quot;;</span>
+				}
+			}
+		}		
+		
+		// Verify that no more than one feature with any given feature name has been added to
+		// all_implemented_feature_extractors
+<span class="fc" id="L897">		int[][] duplicate_names = mckay.utilities.staticlibraries.StringMethods.getIndexesOfDuplicateEntries(names_of_all_features_added);</span>
+<span class="pc bpc" id="L898" title="1 of 2 branches missed.">		if (duplicate_names != null)</span>
+		{
+<span class="nc bnc" id="L900" title="All 2 branches missed.">			for (int i = 0; i &lt; duplicate_names.length; i++)</span>
+			{
+<span class="nc" id="L902">				String duplicated_feature_name = names_of_all_features_added[duplicate_names[i][0]];</span>
+<span class="nc" id="L903">				int number_of_occurrences = duplicate_names[i].length;</span>
+<span class="nc" id="L904">				problem_report += &quot;WARNING: The feature &quot; + duplicated_feature_name + &quot; has been added to jSymbolic &quot; + number_of_occurrences + &quot; times. No feature should be added more than once. This is not a serious problem, but it could result in redundant feature extraction.\n&quot;;</span>
+			}
+		}
+		
+		// Verify that no more than one feature with any given feature code has been added to
+		// all_implemented_feature_extractors
+<span class="fc" id="L910">		String[] all_feature_codes = new String[all_implemented_feature_extractors.length];</span>
+<span class="fc bfc" id="L911" title="All 2 branches covered.">		for (int i = 0; i &lt; all_feature_codes.length; i++)</span>
+<span class="fc" id="L912">			all_feature_codes[i] = all_implemented_feature_extractors[i].getCode();</span>
+<span class="fc" id="L913">		int[][] duplicate_codes = mckay.utilities.staticlibraries.StringMethods.getIndexesOfDuplicateEntries(all_feature_codes);</span>
+<span class="pc bpc" id="L914" title="1 of 2 branches missed.">		if (duplicate_codes != null)</span>
+		{
+<span class="nc bnc" id="L916" title="All 2 branches missed.">			for (int i = 0; i &lt; duplicate_codes.length; i++)</span>
+			{
+<span class="nc" id="L918">				String duplicated_feature_code = all_implemented_feature_extractors[duplicate_codes[i][0]].getCode();</span>
+<span class="nc" id="L919">				int number_of_occurrences = duplicate_codes[i].length;</span>
+<span class="nc" id="L920">				problem_report += &quot;WARNING: The feature code &quot; + duplicated_feature_code + &quot; has been added to jSymbolic in &quot; + number_of_occurrences + &quot; features. No feature code should be used more than once. This is not a serious problem, but it could result in confusion or redundant feature extraction.\n&quot;;</span>
+			}
+		}
+		
+		// Verify that all features have been added contiguously to all_implemented_feature_extractors, based
+		// on their feature code groups and numbers, and that all feature codes are properly formatted
+<span class="fc" id="L926">		String last_group = &quot;&quot;;</span>
+<span class="fc" id="L927">		int last_number = 0;</span>
+<span class="fc bfc" id="L928" title="All 2 branches covered.">		for (int feat = 0; feat &lt; all_implemented_feature_extractors.length; feat++)</span>
+		{
+			try
+			{
+<span class="fc" id="L932">				String[] split_code = all_implemented_feature_extractors[feat].getCode().split(&quot;-&quot;);</span>
+<span class="fc" id="L933">				String this_group = split_code[0];</span>
+<span class="fc" id="L934">				int this_number = Integer.parseInt(split_code[1]);</span>
+
+<span class="fc bfc" id="L936" title="All 2 branches covered.">				if (feat != 0)</span>
+				{
+<span class="fc bfc" id="L938" title="All 2 branches covered.">					if (this_group.equals(last_group))</span>
+					{
+<span class="pc bpc" id="L940" title="1 of 2 branches missed.">						if (this_number != (last_number + 1))</span>
+<span class="nc" id="L941">							problem_report += &quot;WARNING: The feature &quot; + all_implemented_feature_extractors[feat].getCode() + &quot; has been added to jSymbolic out of sequence (its code does not numerically follow the previous feature in its group). This is not a serious problem, but it could result in confusion.\n&quot;;</span>
+					}
+<span class="pc bpc" id="L943" title="1 of 2 branches missed.">					else if (this_number != 1)</span>
+<span class="nc" id="L944">						problem_report += &quot;WARNING: The feature &quot; + all_implemented_feature_extractors[feat].getCode() + &quot; has been added to jSymbolic out of sequence (a new feature group should be numbered as 0). This is not a serious problem, but it could result in confusion.\n&quot;;</span>
+				}
+
+<span class="fc" id="L947">				last_group = this_group;</span>
+<span class="fc" id="L948">				last_number = this_number;</span>
+			}
+<span class="nc" id="L950">			catch (Exception e)</span>
+			{
+<span class="nc" id="L952">				problem_report += &quot;WARNING: The feature &quot; + all_implemented_feature_extractors[feat].getCode() + &quot; has an improperly formatted code. The code should consist of one or more letters identifying the feature group the feature belongs to, followed by a hyphen, followed by the number of the feature within that group. For example, a code of I-7 would be appropriate for the seventh feature of the Instrumentation feature group. This is not a serious problem, but it could result in confusion.\n&quot;;</span>
+<span class="fc" id="L953">			}</span>
+		}
+		
+		// Verify that all_implemented_feature_extractors and default_features_to_save are of the same size.
+		// Verify that, by default, all multi-dimensional features have been set to not be extracted, that all
+		// MEI-specific features have been set to not be extracted, and that all other features have been set
+		// to be extracted.
+<span class="pc bpc" id="L960" title="1 of 2 branches missed.">		if (default_features_to_save.length != all_implemented_feature_extractors.length)</span>
+<span class="nc" id="L961">			problem_report += &quot;WARNING: &quot; + all_implemented_feature_extractors.length + &quot; features have been added to jSymbolic, but settings for &quot; + default_features_to_save.length + &quot; features have been specified as to which features are to be extracted and saved by default. These numbers should be identical. This is a serious problem, as a mismatch could cause jSymbolic to crash.\n&quot;;</span>
+<span class="fc bfc" id="L962" title="All 2 branches covered.">		else for (int feat = 0; feat &lt; all_implemented_feature_extractors.length; feat++)</span>
+		{
+<span class="fc bfc" id="L964" title="All 2 branches covered.">			if (!default_features_to_save[feat])</span>
+			{
+<span class="pc bpc" id="L966" title="3 of 4 branches missed.">				if ( all_implemented_feature_extractors[feat].getFeatureDefinition().dimensions == 1 &amp;&amp;</span>
+			         !(all_implemented_feature_extractors[feat] instanceof MEIFeatureExtractor) )
+<span class="nc" id="L968">					problem_report += &quot;WARNING: &quot; + names_of_all_features_added[feat] + &quot; is set to not be extracted and saved by default. Typically, all one-dimensional and non-MEI specific features such as this one are set to be saved by default. This is not a serious issue, but it might cause confusion.\n&quot;;</span>
+			}
+			else
+			{
+<span class="pc bpc" id="L972" title="1 of 2 branches missed.">				if (all_implemented_feature_extractors[feat].getFeatureDefinition().dimensions != 1)</span>
+<span class="nc" id="L973">					problem_report += &quot;WARNING: &quot; + names_of_all_features_added[feat] + &quot; is set to be extracted and saved by default. Typically, multi-dimensional features such as this one are not set to be saved by default. This is not a serious issue, but it might cause confusion.\n&quot;;</span>
+<span class="pc bpc" id="L974" title="1 of 2 branches missed.">				if (all_implemented_feature_extractors[feat] instanceof MEIFeatureExtractor)</span>
+<span class="nc" id="L975">					problem_report += &quot;WARNING: &quot; + names_of_all_features_added[feat] + &quot; is set to be extracted and saved by default. Typically, MEI-specific features such as this one are not set to be saved by default. This is not a serious issue, but it might cause confusion.\n&quot;;</span>
+			}
+		}		
+		
+		// Print error report if a problem was found
+<span class="pc bpc" id="L980" title="1 of 2 branches missed.">		if (!problem_report.isEmpty())</span>
+<span class="nc" id="L981">			System.err.println(&quot;\n&quot; + problem_report + &quot;\n&quot;);</span>
+<span class="fc" id="L982">	}</span>
+	
+	/**
+	 * Debugging method that prints the total number of implemented features, including the code and name of
+	 * each feature, in the correct listed order.
+	 */
+	private static void printAllFeatures()
+	{
+<span class="nc" id="L990">		System.out.println(&quot;ALL &quot; + all_implemented_feature_extractors.length + &quot; IMPLEMENTED FEATURES:&quot;);</span>
+<span class="nc bnc" id="L991" title="All 2 branches missed.">		for (int i = 0; i &lt; all_implemented_feature_extractors.length; i++)</span>
+<span class="nc" id="L992">			System.out.println( (i+1) + &quot;:\t&quot; + all_implemented_feature_extractors[i].getCode() + &quot;\t&quot; +</span>
+<span class="nc" id="L993">			                    all_implemented_feature_extractors[i].getName());</span>
+<span class="nc" id="L994">	}</span>
+	
+	/**
+	 * Debugging method that identifies all features whose calculation depends directly on the use of another
+	 * implemented feature, and lists what the dependencies are of each of these features.
+	 */	
+	private static void printAllFeatureDependencies()
+	{
+<span class="nc" id="L1002">		System.out.println(&quot;FEATURES WHOSE CALCULATION DEPENDS ON OTHER FEATURES:&quot;);</span>
+<span class="nc bnc" id="L1003" title="All 2 branches missed.">		for (int i = 0; i &lt; all_implemented_feature_extractors.length; i++)</span>
+		{
+<span class="nc bnc" id="L1005" title="All 2 branches missed.">			if (all_implemented_feature_extractors[i].getDepenedencies() != null)</span>
+			{
+<span class="nc" id="L1007">				System.out.println(all_implemented_feature_extractors[i].getCode() + &quot;\t&quot; +</span>
+<span class="nc" id="L1008">			                        all_implemented_feature_extractors[i].getName());</span>
+<span class="nc bnc" id="L1009" title="All 2 branches missed.">				for (int j = 0; j &lt; all_implemented_feature_extractors[i].getDepenedencies().length; j++)</span>
+<span class="nc" id="L1010">					System.out.println(&quot;\tDEPENDS ON: &quot; + all_implemented_feature_extractors[i].getDepenedencies()[j]);</span>
+			}
+		}
+<span class="nc" id="L1013">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PolyrhythmsFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">PolyrhythmsFeature.java</span></div><h1>PolyrhythmsFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import javax.sound.midi.*;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the number of beat histogram peaks with magnitudes at least 30% as high as
+ * the magnitude of the highest peak, and whose bin labels are not integer multiples or factors (using only
+ * multipliers of 1, 2, 3, 4, 6 and 8, and with an accepted error of +/- 3 bins) of the bin label of the peak
+ * with the highest magnitude. This number is then divided by the total number of bins with frequencies over
+ * 30% of the highest magnitude.
+ *
+ * @author Cory McKay
+ */
+public class PolyrhythmsFeature
+		extends MIDIFeatureExtractor
+{
+	/* CONSTRUCTOR ******************************************************************************************/
+
+	
+	/**
+	 * Basic constructor that sets the values of the fields inherited from this class' superclass.
+	 */
+	public PolyrhythmsFeature()
+<span class="fc" id="L27">	{</span>
+<span class="fc" id="L28">		code = &quot;RT-29&quot;;</span>
+<span class="fc" id="L29">		name = &quot;Polyrhythms&quot;;</span>
+<span class="fc" id="L30">		description = &quot;Number of beat histogram peaks with magnitudes at least 30% as high as the magnitude of the highest peak, and whose bin labels are not integer multiples or factors (using only multipliers of 1, 2, 3, 4, 6 and 8, and with an accepted error of +/- 3 bins) of the bin label of the peak with the highest magnitude. This number is then divided by the total number of bins with frequencies over 30% of the highest magnitude.&quot;;</span>
+
+<span class="fc" id="L32">	}</span>
+	
+
+	/* PUBLIC METHODS ***************************************************************************************/
+	
+	
+	/**
+	 * Extract this feature from the given sequence of MIDI data and its associated information.
+	 *
+	 * @param sequence				The MIDI data to extract the feature from.
+	 * @param sequence_info			Additional data already extracted from the the MIDI sequence.
+	 * @param other_feature_values	The values of other features that may be needed to calculate this feature. 
+	 *								The order and offsets of these features must be the same as those returned
+	 *								by this class' getDependencies and getDependencyOffsets methods, 
+	 *								respectively. The first indice indicates the feature/window, and the 
+	 *								second indicates the value.
+	 * @return						The extracted feature value(s).
+	 * @throws Exception			Throws an informative exception if the feature cannot be calculated.
+	 */
+	@Override
+	public double[] extractFeature( Sequence sequence,
+									MIDIIntermediateRepresentations sequence_info,
+									double[][] other_feature_values )
+	throws Exception
+	{
+		double value;
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">		if (sequence_info != null)</span>
+		{
+			// Find the number of sufficiently large peaks
+<span class="fc" id="L61">			int count = 0;</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">			for (int bin = 0; bin &lt; sequence_info.beat_histogram_thresholded_table.length; bin++)</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">				if (sequence_info.beat_histogram_thresholded_table[bin][2] &gt; 0.001)</span>
+<span class="fc" id="L64">					count++;</span>
+
+			// Store the peak bins
+<span class="fc" id="L67">			int[] peak_bins = new int[count];</span>
+<span class="fc" id="L68">			int so_far = 0;</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">			for (int bin = 0; bin &lt; sequence_info.beat_histogram_thresholded_table.length; bin++)</span>
+			{
+<span class="fc bfc" id="L71" title="All 2 branches covered.">				if (sequence_info.beat_histogram_thresholded_table[bin][2] &gt; 0.001)</span>
+				{
+<span class="fc" id="L73">					peak_bins[so_far] = bin;</span>
+<span class="fc" id="L74">					so_far++;</span>
+				}
+			}
+
+			// Find the highest peak
+<span class="fc" id="L79">			int highest_index = 0;</span>
+<span class="fc" id="L80">			double max_so_far = 0.0;</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">			for (int bin = 0; bin &lt; peak_bins.length; bin++)</span>
+			{
+<span class="fc bfc" id="L83" title="All 2 branches covered.">				if (sequence_info.beat_histogram_thresholded_table[peak_bins[bin]][2] &gt; max_so_far)</span>
+				{
+<span class="fc" id="L85">					max_so_far = sequence_info.beat_histogram_thresholded_table[peak_bins[bin]][2];</span>
+<span class="fc" id="L86">					highest_index = peak_bins[bin];</span>
+				}
+			}
+
+			// Find the number of peak bins which are multiples or factors of the highest bin
+<span class="fc" id="L91">			int hits = 0;</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">			for (int i = 0; i &lt; peak_bins.length; i++)</span>
+			{
+<span class="fc" id="L94">				int left_limit = peak_bins[i] - 3;</span>
+<span class="pc bpc" id="L95" title="1 of 2 branches missed.">				if (left_limit &lt; 0)</span>
+<span class="nc" id="L96">					left_limit = 0;</span>
+
+<span class="fc" id="L98">				int right_limit = peak_bins[i] + 4;</span>
+<span class="pc bpc" id="L99" title="1 of 2 branches missed.">				if (right_limit &gt; sequence_info.beat_histogram_thresholded_table.length)</span>
+<span class="nc" id="L100">					right_limit = sequence_info.beat_histogram_thresholded_table.length;</span>
+
+<span class="fc" id="L102">				int[] multipliers = { 1, 2, 3, 4, 6, 8 };</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">				for (int j = left_limit; j &lt; right_limit; j++)</span>
+				{
+<span class="fc bfc" id="L105" title="All 2 branches covered.">					if (mckay.utilities.staticlibraries.MathAndStatsMethods.isFactorOrMultiple(j, highest_index, multipliers))</span>
+					{
+<span class="fc" id="L107">						hits++;</span>
+<span class="fc" id="L108">						left_limit = right_limit + 1; // exit loop</span>
+					}
+				}
+			}
+
+			// Calculate the feature value
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">			if (peak_bins.length == 0)</span>
+<span class="nc" id="L115">				value = 0.0;</span>
+			else 
+<span class="fc" id="L117">				value = (double) hits / (double) peak_bins.length;</span>
+<span class="fc" id="L118">		}</span>
+<span class="nc" id="L119">		else value = -1.0;</span>
+
+<span class="fc" id="L121">		double[] result = new double[1];</span>
+<span class="fc" id="L122">		result[0] = value;</span>
+<span class="fc" id="L123">		return result;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

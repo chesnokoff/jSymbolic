@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="jsymbolic2.processing.FileValidatorTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2025-02-18T17:04:55" hostname="MacBook-Pro-Aleksandr-5.local" time="0.002">
+  <properties/>
+  <testcase name="testGetMIDISequence()" classname="jsymbolic2.processing.FileValidatorTest" time="0.001"/>
+  <testcase name="testCorrectFileExtension()" classname="jsymbolic2.processing.FileValidatorTest" time="0.0"/>
+  <testcase name="testGetMEISequence()" classname="jsymbolic2.processing.FileValidatorTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

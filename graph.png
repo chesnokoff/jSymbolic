@@ -1,0 +1,830 @@
+graph {
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfSecondStrongestRhythmicPulseFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfSecondStrongestRhythmicPulseFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfSecondStrongestRhythmicPulseFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ImportanceOfLoudestVoiceFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ImportanceOfLoudestVoiceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfPitchedInstrumentsFeature.java"
+	pitched_instrument_prevalence
+	pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfPitchedInstrumentsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicLoosenessTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicLoosenessTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table_120_bpm_standardized
+	beat_histogram_thresholded_table_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicLoosenessTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicLoosenessTempoStandardizedFeature.java"
+	beat_histogram_120_bpm_standardized
+	beat_histogram_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicLoosenessTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ObliqueMotionFeature.java"
+	oblique_motion_fraction
+	oblique_motion_fraction -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ObliqueMotionFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanRhythmicValueOffsetFeature.java"
+	rhythmic_value_offsets
+	rhythmic_value_offsets -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanRhythmicValueOffsetFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/FirstPitchClassFeature.java"
+	pitches_present_by_tick_excluding_rests
+	pitches_present_by_tick_excluding_rests -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/FirstPitchClassFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageLengthOfMelodicArcsFeature.java"
+	melodic_intervals_by_track_and_channel
+	melodic_intervals_by_track_and_channel -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageLengthOfMelodicArcsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfLongRhythmicValuesFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfLongRhythmicValuesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageVariabilityOfTimeBetweenAttacksForEachVoiceFeature.java"
+	note_attack_tick_map
+	note_attack_tick_map -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageVariabilityOfTimeBetweenAttacksForEachVoiceFeature.java"
+	duration_of_ticks_in_seconds
+	duration_of_ticks_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageVariabilityOfTimeBetweenAttacksForEachVoiceFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageVariabilityOfTimeBetweenAttacksForEachVoiceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeSizeOfMelodicIntervalsInLowestLineFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeSizeOfMelodicIntervalsInLowestLineFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassVariabilityFeature.java"
+	pitch_classes_of_all_note_ons
+	pitch_classes_of_all_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassVariabilityFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanPartialRestDurationFeature.java"
+	rest_durations_separated_by_channel
+	rest_durations_separated_by_channel -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanPartialRestDurationFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ChordTypeHistogramFeature.java"
+	pitch_strength_by_tick_chart
+	pitch_strength_by_tick_chart -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ChordTypeHistogramFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/HarmonicityOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/HarmonicityOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table_120_bpm_standardized
+	beat_histogram_thresholded_table_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/HarmonicityOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/HarmonicityOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_120_bpm_standardized
+	beat_histogram_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/HarmonicityOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfRhythmicValueOffsetsFeature.java"
+	rhythmic_value_offsets
+	rhythmic_value_offsets -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfRhythmicValueOffsetsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ImportanceOfMiddleRegisterFeature.java"
+	basic_pitch_histogram
+	basic_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ImportanceOfMiddleRegisterFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityAcrossVoicesOfCombinedRestsFeature.java"
+	sequence_duration_precise
+	sequence_duration_precise -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityAcrossVoicesOfCombinedRestsFeature.java"
+	total_time_notes_sounding_per_channel
+	total_time_notes_sounding_per_channel -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityAcrossVoicesOfCombinedRestsFeature.java"
+	sequence_duration
+	sequence_duration -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityAcrossVoicesOfCombinedRestsFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityAcrossVoicesOfCombinedRestsFeature.java"
+	average_quarter_note_duration_in_seconds
+	average_quarter_note_duration_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityAcrossVoicesOfCombinedRestsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/UnpitchedPercussionInstrumentPrevalenceFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/UnpitchedPercussionInstrumentPrevalenceFeature.java"
+	total_number_note_ons
+	total_number_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/UnpitchedPercussionInstrumentPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityPerQuarterNoteFeature.java"
+	sequence_duration
+	sequence_duration -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityPerQuarterNoteFeature.java"
+	sequence_duration_precise
+	sequence_duration_precise -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityPerQuarterNoteFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityPerQuarterNoteFeature.java"
+	average_quarter_note_duration_in_seconds
+	average_quarter_note_duration_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityPerQuarterNoteFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalPerfectFourthsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MinorMajorMelodicThirdlRatioFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MinorMajorMelodicThirdlRatioFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceEqualityMelodicLeapsFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceEqualityMelodicLeapsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanPitchFeature.java"
+	total_number_pitched_note_ons
+	total_number_pitched_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanPitchFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanPitchFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/BrassPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfPitchesFeature.java"
+	basic_pitch_histogram
+	basic_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfPitchesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MaximumNoteDurationFeature.java"
+	note_durations
+	note_durations -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MaximumNoteDurationFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageNumberOfIndependentVoicesFeature.java"
+	note_sounding_on_a_channel_tick_map
+	note_sounding_on_a_channel_tick_map -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageNumberOfIndependentVoicesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AcousticGuitarPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariationOfDynamicsFeature.java"
+	note_loudnesses
+	note_loudnesses -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariationOfDynamicsFeature.java"
+	total_number_note_ons
+	total_number_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariationOfDynamicsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicOctavesFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicOctavesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageTimeBetweenAttacksFeature.java"
+	note_attack_tick_map
+	note_attack_tick_map -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageTimeBetweenAttacksFeature.java"
+	duration_of_ticks_in_seconds
+	duration_of_ticks_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageTimeBetweenAttacksFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassHistogramFeature.java"
+	pitch_class_histogram
+	pitch_class_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassHistogramFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfMostCommonMelodicInterval.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfMostCommonMelodicInterval.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfMostCommonRhythmicValueFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfMostCommonRhythmicValueFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicSixthsFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicSixthsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfDifferentRhythmicValuesPresentFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfDifferentRhythmicValuesPresentFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NonStandardChordsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/InitialTimeSignatureFeature.java"
+	overall_metadata
+	overall_metadata -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/InitialTimeSignatureFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalDissonanceRatioFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RangeFeature.java"
+	basic_pitch_histogram
+	basic_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RangeFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceEqualityNumberOfNotesFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceEqualityNumberOfNotesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchedInstrumentsPresentFeature.java"
+	pitched_instrument_prevalence
+	pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchedInstrumentsPresentFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/IntervalBetweenMostPrevalenttPitchesFeature.java"
+	basic_pitch_histogram
+	basic_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/IntervalBetweenMostPrevalenttPitchesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/HarmonicityOfTwoStrongestRhythmicPulsesFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/HarmonicityOfTwoStrongestRhythmicPulsesFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/HarmonicityOfTwoStrongestRhythmicPulsesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/TempoVariabilityFeature.java"
+	duration_of_ticks_in_seconds
+	duration_of_ticks_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/TempoVariabilityFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MedianPartialRestDurationFeature.java"
+	rest_durations_separated_by_channel
+	rest_durations_separated_by_channel -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MedianPartialRestDurationFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageNoteToNoteChangeInDynamics.java"
+	note_loudnesses
+	note_loudnesses -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageNoteToNoteChangeInDynamics.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfModerateRhythmicPulsesFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfModerateRhythmicPulsesFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfModerateRhythmicPulsesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SecondMostCommonVerticalIntervalFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/BasicPitchHistogramFeature.java"
+	basic_pitch_histogram
+	basic_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/BasicPitchHistogramFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityInRhythmicValueRunLengthsFeature.java"
+	runs_of_same_rhythmic_value
+	runs_of_same_rhythmic_value -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityInRhythmicValueRunLengthsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ParallelOctavesFeature.java"
+	parallel_octaves_fraction
+	parallel_octaves_fraction -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ParallelOctavesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/FirstPitchFeature.java"
+	pitches_present_by_tick_excluding_rests
+	pitches_present_by_tick_excluding_rests -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/FirstPitchFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfMostCommonPitchFeature.java"
+	basic_pitch_histogram
+	basic_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfMostCommonPitchFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SecondStrongestRhythmicPulseFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SecondStrongestRhythmicPulseFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SecondStrongestRhythmicPulseFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MedianRhythmicValueOffsetFeature.java"
+	rhythmic_value_offsets
+	rhythmic_value_offsets -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MedianRhythmicValueOffsetFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNumberOfIndependentVoicesFeature.java"
+	note_sounding_on_a_channel_tick_map
+	note_sounding_on_a_channel_tick_map -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNumberOfIndependentVoicesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StepwiseMotionFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StepwiseMotionFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativePrevalenceOfTopPitchClassesFeature.java"
+	pitch_class_histogram
+	pitch_class_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativePrevalenceOfTopPitchClassesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicVariabilityFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicVariabilityFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfCommonPitchClassesFeature.java"
+	pitch_class_histogram
+	pitch_class_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfCommonPitchClassesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ParallelMotionFeature.java"
+	parallel_motion_fraction
+	parallel_motion_fraction -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ParallelMotionFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNotePrevalenceOfUnpitchedInstrumentsFeature.java"
+	pitched_instrument_prevalence
+	pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNotePrevalenceOfUnpitchedInstrumentsFeature.java"
+	non_pitched_instrument_prevalence
+	non_pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNotePrevalenceOfUnpitchedInstrumentsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VibratoPrevalenceFeature.java"
+	total_number_pitched_note_ons
+	total_number_pitched_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VibratoPrevalenceFeature.java"
+	pitch_bends_list
+	pitch_bends_list -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VibratoPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfUnpitchedInstrumentsFeature.java"
+	pitched_instrument_prevalence
+	pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfUnpitchedInstrumentsFeature.java"
+	non_pitched_instrument_prevalence
+	non_pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfUnpitchedInstrumentsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicLargeIntervalsFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicLargeIntervalsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalPerfectFifthsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/LastPitchFeature.java"
+	pitches_present_by_tick_excluding_rests
+	pitches_present_by_tick_excluding_rests -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/LastPitchFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfStrongestRhythmicPulseTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfStrongestRhythmicPulseTempoStandardizedFeature.java"
+	beat_histogram_120_bpm_standardized
+	beat_histogram_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfStrongestRhythmicPulseTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrongTonalCentresFeature.java"
+	fifths_pitch_histogram
+	fifths_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrongTonalCentresFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NotePrevalenceOfPitchedInstrumentsFeature.java"
+	pitched_instrument_prevalence
+	pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NotePrevalenceOfPitchedInstrumentsFeature.java"
+	total_number_note_ons
+	total_number_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NotePrevalenceOfPitchedInstrumentsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MinimumNoteDurationFeature.java"
+	note_durations
+	note_durations -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MinimumNoteDurationFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfShortRhythmicValuesFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfShortRhythmicValuesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DominantSpreadFeature.java"
+	fifths_pitch_histogram
+	fifths_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DominantSpreadFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ContraryMotionFeature.java"
+	contrary_motion_fraction
+	contrary_motion_fraction -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ContraryMotionFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/UnpitchedInstrumentsPresentFeature.java"
+	pitched_instrument_prevalence
+	pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/UnpitchedInstrumentsPresentFeature.java"
+	non_pitched_instrument_prevalence
+	non_pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/UnpitchedInstrumentsPresentFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DupleInitialMeterFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/LongestCompleteRestFeature.java"
+	complete_rest_durations
+	complete_rest_durations -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/LongestCompleteRestFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanMelodicIntervalFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanMelodicIntervalFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfStrongestRhythmicPulseFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfStrongestRhythmicPulseFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfRelativelyStrongRhythmicPulsesFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfRelativelyStrongRhythmicPulsesFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfRelativelyStrongRhythmicPulsesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageNumberOfSimultaneousPitchesFeature.java"
+	pitches_present_by_tick_excluding_rests
+	pitches_present_by_tick_excluding_rests -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageNumberOfSimultaneousPitchesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNumberOfSimultaneousPitchesFeature.java"
+	pitches_present_by_tick_excluding_rests
+	pitches_present_by_tick_excluding_rests -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNumberOfSimultaneousPitchesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RangeOfRhythmicValuesFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RangeOfRhythmicValuesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfSecondStrongestRhythmicPulseTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfSecondStrongestRhythmicPulseTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table_120_bpm_standardized
+	beat_histogram_thresholded_table_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfSecondStrongestRhythmicPulseTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfSecondStrongestRhythmicPulseTempoStandardizedFeature.java"
+	beat_histogram_120_bpm_standardized
+	beat_histogram_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthOfSecondStrongestRhythmicPulseTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SimpleInitialMeterFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalUnisonsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfStrongRhythmicPulsesFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfStrongRhythmicPulsesFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfStrongRhythmicPulsesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PolyrhythmsFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PolyrhythmsFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PolyrhythmsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/OrchestralStringsPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageRangeOfGlissandosFeature.java"
+	pitch_bends_list
+	pitch_bends_list -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageRangeOfGlissandosFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DistanceBetweenTwoMostCommonVerticalIntervalsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CombinedStrengthOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CombinedStrengthOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table_120_bpm_standardized
+	beat_histogram_thresholded_table_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CombinedStrengthOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CombinedStrengthOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_120_bpm_standardized
+	beat_histogram_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CombinedStrengthOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SaxophonePrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicSeventhsFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicSeventhsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfMostCommonPitchClassFeature.java"
+	pitch_class_histogram
+	pitch_class_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfMostCommonPitchClassFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfStrongRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfStrongRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table_120_bpm_standardized
+	beat_histogram_thresholded_table_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfStrongRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfStrongRhythmicPulsesTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DistanceBetweenMostPrevalentMelodicIntervalsFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DistanceBetweenMostPrevalentMelodicIntervalsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MaximumNumberOfIndependentVoicesFeature.java"
+	note_sounding_on_a_channel_tick_map
+	note_sounding_on_a_channel_tick_map -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MaximumNumberOfIndependentVoicesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DirectionOfMelodicMotionFeature.java"
+	melodic_intervals_by_track_and_channel
+	melodic_intervals_by_track_and_channel -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DirectionOfMelodicMotionFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ShortestRhythmicValueFeature.java"
+	rhythmic_value_of_each_note_in_quarter_notes
+	rhythmic_value_of_each_note_in_quarter_notes -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ShortestRhythmicValueFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfDottedNotesFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfDottedNotesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicLoosenessFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicLoosenessFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicLoosenessFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ViolinPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicIntervalHistogramFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicIntervalHistogramFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicValueHistogramFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicValueHistogramFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalMinorThirdPrevalenceFeature.java"
+	pitches_present_by_tick_excluding_rests
+	pitches_present_by_tick_excluding_rests -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalMinorThirdPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageRestFractionAcrossVoicesFeature.java"
+	total_time_notes_sounding_per_channel
+	total_time_notes_sounding_per_channel -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageRestFractionAcrossVoicesFeature.java"
+	sequence_duration
+	sequence_duration -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageRestFractionAcrossVoicesFeature.java"
+	sequence_duration_precise
+	sequence_duration_precise -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageRestFractionAcrossVoicesFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageRestFractionAcrossVoicesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ElectricGuitarPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalIntervalHistogramFeature.java"
+	pitch_strength_by_tick_chart
+	pitch_strength_by_tick_chart -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalIntervalHistogramFeature.java"
+	total_vertical_unison_velocity
+	total_vertical_unison_velocity -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalIntervalHistogramFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ChordDurationFeature.java"
+	pitch_classes_present_by_tick_excluding_rests
+	pitch_classes_present_by_tick_excluding_rests -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ChordDurationFeature.java"
+	duration_of_ticks_in_seconds
+	duration_of_ticks_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ChordDurationFeature.java"
+	average_quarter_note_duration_in_seconds
+	average_quarter_note_duration_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ChordDurationFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassVariabilityAfterFoldingFeature.java"
+	pitch_classes_of_all_note_ons
+	pitch_classes_of_all_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassVariabilityAfterFoldingFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfCommonMelodicIntervalsFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfCommonMelodicIntervalsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DifferenceBetweenMostCommonRhythmicValuesFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DifferenceBetweenMostCommonRhythmicValuesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/QuadrupleInitialMeterFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariationOfDynamicsInEachVoiceFeature.java"
+	note_loudnesses
+	note_loudnesses -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariationOfDynamicsInEachVoiceFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariationOfDynamicsInEachVoiceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicTritonesFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicTritonesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeRangeOfHighestLineFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeRangeOfHighestLineFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalSixthsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MostCommonPitchClassFeature.java"
+	pitch_class_histogram
+	pitch_class_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MostCommonPitchClassFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfMediumRhythmicValuesFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfMediumRhythmicValuesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanRhythmicValueFeature.java"
+	rhythmic_value_of_each_note_in_quarter_notes
+	rhythmic_value_of_each_note_in_quarter_notes -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanRhythmicValueFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MedianCompleteRestDurationFeature.java"
+	complete_rest_durations
+	complete_rest_durations -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MedianCompleteRestDurationFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityPerQuarterNotePerVoiceFeature.java"
+	number_of_active_voices
+	number_of_active_voices -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityPerQuarterNotePerVoiceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PartialChordsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StringEnsemblePrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNoteDurationsFeature.java"
+	note_durations
+	note_durations -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNoteDurationsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceRatioOfTwoMostCommonVerticalIntervalsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfCommonPitchesFeature.java"
+	basic_pitch_histogram
+	basic_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfCommonPitchesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativePrevalenceOfMostCommonRhythmicValuesFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativePrevalenceOfMostCommonRhythmicValuesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfPartialRestDurationsFeature.java"
+	rest_durations_separated_by_channel
+	rest_durations_separated_by_channel -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfPartialRestDurationsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfMostCommonVerticalIntervalFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DynamicRangeFeature.java"
+	note_loudnesses
+	note_loudnesses -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DynamicRangeFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MetricalDiversityFeature.java"
+	overall_metadata
+	overall_metadata -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MetricalDiversityFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SeventhChordsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceEqualityRangeFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceEqualityRangeFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfSlursMeiFeature.java"
+	total_number_pitched_note_ons
+	total_number_pitched_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfSlursMeiFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AmountOfArpeggiationFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AmountOfArpeggiationFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SimilarMotionFeature.java"
+	similar_motion_fraction
+	similar_motion_fraction -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SimilarMotionFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicValueVariabilityInRunLengthsHistogramFeature.java"
+	runs_of_same_rhythmic_value
+	runs_of_same_rhythmic_value -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicValueVariabilityInRunLengthsHistogramFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanPitchClassFeature.java"
+	pitch_classes_of_all_note_ons
+	pitch_classes_of_all_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanPitchClassFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityFeature.java"
+	sequence_duration
+	sequence_duration -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityFeature.java"
+	sequence_duration_precise
+	sequence_duration_precise -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/TripleInitialMeterFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicValueKurtosisFeature.java"
+	rhythmic_value_of_each_note_in_quarter_notes
+	rhythmic_value_of_each_note_in_quarter_notes -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicValueKurtosisFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceEqualityNoteDurationFeature.java"
+	total_time_notes_sounding_per_channel
+	total_time_notes_sounding_per_channel -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceEqualityNoteDurationFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceEqualityNoteDurationFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MicrotonePrevalenceFeature.java"
+	total_number_pitched_note_ons
+	total_number_pitched_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MicrotonePrevalenceFeature.java"
+	pitch_bends_list
+	pitch_bends_list -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MicrotonePrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ImportanceOfBassRegisterFeature.java"
+	basic_pitch_histogram
+	basic_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ImportanceOfBassRegisterFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageTimeBetweenAttacksForEachVoiceFeature.java"
+	note_attack_tick_map
+	note_attack_tick_map -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageTimeBetweenAttacksForEachVoiceFeature.java"
+	duration_of_ticks_in_seconds
+	duration_of_ticks_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageTimeBetweenAttacksForEachVoiceFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageTimeBetweenAttacksForEachVoiceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfSecondMostCommonVerticalIntervalFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfPitchClassesFeature.java"
+	pitch_class_histogram
+	pitch_class_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfPitchClassesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NotePrevalenceOfUnpitchedInstrumentsFeature.java"
+	pitched_instrument_prevalence
+	pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NotePrevalenceOfUnpitchedInstrumentsFeature.java"
+	total_number_note_ons
+	total_number_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NotePrevalenceOfUnpitchedInstrumentsFeature.java"
+	non_pitched_instrument_prevalence
+	non_pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NotePrevalenceOfUnpitchedInstrumentsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MajorOrMinorFeature.java"
+	overall_metadata
+	overall_metadata -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MajorOrMinorFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfCommonRhythmicValuesPresentFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfCommonRhythmicValuesPresentFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/LongestRhythmicValueFeature.java"
+	rhythmic_value_of_each_note_in_quarter_notes
+	rhythmic_value_of_each_note_in_quarter_notes -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/LongestRhythmicValueFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthRatioOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthRatioOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table_120_bpm_standardized
+	beat_histogram_thresholded_table_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthRatioOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthRatioOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_120_bpm_standardized
+	beat_histogram_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthRatioOfTwoStrongestRhythmicPulsesTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfVeryShortRhythmicValuesFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfVeryShortRhythmicValuesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/WrappedVerticalIntervalHistogramFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StandardTriadsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNumberOfSimultaneousPitchClassesFeature.java"
+	pitch_classes_present_by_tick_excluding_rests
+	pitch_classes_present_by_tick_excluding_rests -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNumberOfSimultaneousPitchClassesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/IntervalBetweenMostPrevalentPitchClassesFeature.java"
+	pitch_class_histogram
+	pitch_class_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/IntervalBetweenMostPrevalentPitchClassesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchVariabilityFeature.java"
+	pitches_of_all_note_ons
+	pitches_of_all_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchVariabilityFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ComplexChordsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MostCommonPitchFeature.java"
+	basic_pitch_histogram
+	basic_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MostCommonPitchFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicPerfectFifthsFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicPerfectFifthsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ElectricInstrumentPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfVoiceSeparationFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfVoiceSeparationFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassKurtosisFeature.java"
+	pitch_classes_of_all_note_ons
+	pitch_classes_of_all_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassKurtosisFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassKurtosisAfterFoldingFeature.java"
+	pitch_classes_of_all_note_ons
+	pitch_classes_of_all_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassKurtosisAfterFoldingFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AmountOfStaccatoFeature.java"
+	note_durations
+	note_durations -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AmountOfStaccatoFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AmountOfStaccatoFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RepeatedNotesFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RepeatedNotesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalMinorSecondsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicValueVariabilityFeature.java"
+	rhythmic_value_of_each_note_in_quarter_notes
+	rhythmic_value_of_each_note_in_quarter_notes -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicValueVariabilityFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeRangeIsolationOfLoudestVoiceFeature.java"
+	list_of_note_on_pitches_by_channel
+	list_of_note_on_pitches_by_channel -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeRangeIsolationOfLoudestVoiceFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeRangeIsolationOfLoudestVoiceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceSeparationFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceSeparationFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/WoodwindsPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceEqualityDynamicsFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceEqualityDynamicsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/TimePrevalenceOfPitchedInstrumentsFeature.java"
+	pitched_instrument_prevalence
+	pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/TimePrevalenceOfPitchedInstrumentsFeature.java"
+	sequence_duration
+	sequence_duration -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/TimePrevalenceOfPitchedInstrumentsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicPitchVarietyFeature.java"
+	all_notes
+	all_notes -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicPitchVarietyFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/LastPitchClassFeature.java"
+	pitches_present_by_tick_excluding_rests
+	pitches_present_by_tick_excluding_rests -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/LastPitchClassFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfModerateRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfModerateRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table_120_bpm_standardized
+	beat_histogram_thresholded_table_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfModerateRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfModerateRhythmicPulsesTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicEmbellishmentsFeature.java"
+	all_notes
+	all_notes -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicEmbellishmentsFeature.java"
+	total_number_note_ons
+	total_number_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicEmbellishmentsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/LongestPartialRestFeature.java"
+	rest_durations_separated_by_channel
+	rest_durations_separated_by_channel -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/LongestPartialRestFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchSkewnessFeature.java"
+	pitches_of_all_note_ons
+	pitches_of_all_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchSkewnessFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageNumberOfSimultaneousPitchClassesFeature.java"
+	pitch_classes_present_by_tick_excluding_rests
+	pitch_classes_present_by_tick_excluding_rests -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageNumberOfSimultaneousPitchClassesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicThirdsFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicThirdsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrongestRhythmicPulseFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrongestRhythmicPulseFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageNoteDurationFeature.java"
+	note_durations
+	note_durations -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageNoteDurationFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DiminishedAndAugmentedTriadsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MedianRhythmicValueRunLengthFeature.java"
+	runs_of_same_rhythmic_value
+	runs_of_same_rhythmic_value -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MedianRhythmicValueRunLengthFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/BeatHistogramFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/BeatHistogramFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthRatioOfTwoStrongestRhythmicPulsesFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthRatioOfTwoStrongestRhythmicPulsesFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrengthRatioOfTwoStrongestRhythmicPulsesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ComplexInitialMeterFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceOverlapFeature.java"
+	list_of_note_on_pitches_by_channel
+	list_of_note_on_pitches_by_channel -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceOverlapFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceOverlapFeature.java"
+	total_number_note_ons
+	total_number_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VoiceOverlapFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeRangeOfLoudestVoiceFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeRangeOfLoudestVoiceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SecondStrongestRhythmicPulseTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SecondStrongestRhythmicPulseTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table_120_bpm_standardized
+	beat_histogram_thresholded_table_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SecondStrongestRhythmicPulseTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SecondStrongestRhythmicPulseTempoStandardizedFeature.java"
+	beat_histogram_120_bpm_standardized
+	beat_histogram_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/SecondStrongestRhythmicPulseTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalTritonesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PartialRestsFractionFeature.java"
+	sequence_duration_precise
+	sequence_duration_precise -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PartialRestsFractionFeature.java"
+	duration_of_ticks_in_seconds
+	duration_of_ticks_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PartialRestsFractionFeature.java"
+	note_sounding_on_a_channel_tick_map
+	note_sounding_on_a_channel_tick_map -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PartialRestsFractionFeature.java"
+	sequence_duration
+	sequence_duration -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PartialRestsFractionFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PartialRestsFractionFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/FoldedFifthsPitchClassHistogramFeature.java"
+	fifths_pitch_histogram
+	fifths_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/FoldedFifthsPitchClassHistogramFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DurationInSecondsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CompleteRestsFractionFeature.java"
+	sequence_duration
+	sequence_duration -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CompleteRestsFractionFeature.java"
+	sequence_duration_precise
+	sequence_duration_precise -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CompleteRestsFractionFeature.java"
+	duration_of_ticks_in_seconds
+	duration_of_ticks_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CompleteRestsFractionFeature.java"
+	pitch_strength_by_tick_chart
+	pitch_strength_by_tick_chart -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CompleteRestsFractionFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanCompleteRestDurationFeature.java"
+	complete_rest_durations
+	complete_rest_durations -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanCompleteRestDurationFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativePrevalenceOfMostCommonMelodicIntervals.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativePrevalenceOfMostCommonMelodicIntervals.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrongestRhythmicPulseTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrongestRhythmicPulseTempoStandardizedFeature.java"
+	beat_histogram_120_bpm_standardized
+	beat_histogram_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StrongestRhythmicPulseTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ParallelFifthsFeature.java"
+	parallel_fifths_fraction
+	parallel_fifths_fraction -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ParallelFifthsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicValueSkewnessFeature.java"
+	rhythmic_value_of_each_note_in_quarter_notes
+	rhythmic_value_of_each_note_in_quarter_notes -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicValueSkewnessFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfGraceNotesMeiFeature.java"
+	total_number_pitched_note_ons
+	total_number_pitched_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfGraceNotesMeiFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfRelativelyStrongRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfRelativelyStrongRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table_120_bpm_standardized
+	beat_histogram_thresholded_table_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfRelativelyStrongRhythmicPulsesTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NumberOfRelativelyStrongRhythmicPulsesTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalOctavesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNotePrevalenceOfPitchedInstrumentsFeature.java"
+	pitched_instrument_prevalence
+	pitched_instrument_prevalence -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfNotePrevalenceOfPitchedInstrumentsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MostCommonRhythmicValueFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MostCommonRhythmicValueFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanTempoFeature.java"
+	duration_of_ticks_in_seconds
+	duration_of_ticks_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanTempoFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MostCommonMelodicIntervalFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MostCommonMelodicIntervalFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicVariabilityTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicVariabilityTempoStandardizedFeature.java"
+	beat_histogram_120_bpm_standardized
+	beat_histogram_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicVariabilityTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CompoundMeterFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CombinedStrengthOfTwoStrongestRhythmicPulsesFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CombinedStrengthOfTwoStrongestRhythmicPulsesFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/CombinedStrengthOfTwoStrongestRhythmicPulsesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/GlissandoPrevalenceFeature.java"
+	total_number_pitched_note_ons
+	total_number_pitched_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/GlissandoPrevalenceFeature.java"
+	pitch_bends_list
+	pitch_bends_list -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/GlissandoPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ChromaticMotionFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ChromaticMotionFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalMajorThirdPrevalenceFeature.java"
+	pitches_present_by_tick_excluding_rests
+	pitches_present_by_tick_excluding_rests -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalMajorThirdPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/BeatHistogramTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/BeatHistogramTempoStandardizedFeature.java"
+	beat_histogram_120_bpm_standardized
+	beat_histogram_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/BeatHistogramTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MostCommonVerticalIntervalFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/StringKeyboardPrevalenceFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfTimeBetweenAttacksFeature.java"
+	note_attack_tick_map
+	note_attack_tick_map -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfTimeBetweenAttacksFeature.java"
+	duration_of_ticks_in_seconds
+	duration_of_ticks_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfTimeBetweenAttacksFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ImportanceOfHighRegisterFeature.java"
+	basic_pitch_histogram
+	basic_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/ImportanceOfHighRegisterFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/InitialTempoFeature.java"
+	overall_metadata
+	overall_metadata -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/InitialTempoFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassSkewnessFeature.java"
+	pitch_classes_of_all_note_ons
+	pitch_classes_of_all_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassSkewnessFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfCompleteRestDurationsFeature.java"
+	complete_rest_durations
+	complete_rest_durations -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VariabilityOfCompleteRestDurationsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PerfectVerticalIntervalsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativePrevalenceOfTopPitchesFeature.java"
+	basic_pitch_histogram
+	basic_pitch_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativePrevalenceOfTopPitchesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityVariabilityFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalThirdsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassSkewnessAfterFoldingFeature.java"
+	pitch_classes_of_all_note_ons
+	pitch_classes_of_all_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchClassSkewnessAfterFoldingFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/VerticalSeventhsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeNoteDensityOfHighestLineFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeNoteDensityOfHighestLineFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PolyrhythmsTempoStandardizedFeature.java"
+	beat_histogram
+	beat_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PolyrhythmsTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table_120_bpm_standardized
+	beat_histogram_thresholded_table_120_bpm_standardized -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PolyrhythmsTempoStandardizedFeature.java"
+	beat_histogram_thresholded_table
+	beat_histogram_thresholded_table -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PolyrhythmsTempoStandardizedFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfVeryLongRhythmicValuesFeature.java"
+	rhythmic_value_histogram
+	rhythmic_value_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PrevalenceOfVeryLongRhythmicValuesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageIntervalSpannedByMelodicArcs.java"
+	melodic_intervals_by_track_and_channel
+	melodic_intervals_by_track_and_channel -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/AverageIntervalSpannedByMelodicArcs.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeNoteDurationsOfLowestLineFeature.java"
+	note_durations
+	note_durations -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeNoteDurationsOfLowestLineFeature.java"
+	channel_statistics
+	channel_statistics -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RelativeNoteDurationsOfLowestLineFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicValueMedianRunLengthsHistogramFeature.java"
+	runs_of_same_rhythmic_value
+	runs_of_same_rhythmic_value -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/RhythmicValueMedianRunLengthsHistogramFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityPerQuarterNoteVariabilityFeature.java"
+	average_quarter_note_duration_in_seconds
+	average_quarter_note_duration_in_seconds -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/NoteDensityPerQuarterNoteVariabilityFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanRhythmicValueRunLengthFeature.java"
+	runs_of_same_rhythmic_value
+	runs_of_same_rhythmic_value -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MeanRhythmicValueRunLengthFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MinorMajorTriadRatioFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicPerfectFourthsFeature.java"
+	melodic_interval_histogram
+	melodic_interval_histogram -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/MelodicPerfectFourthsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/TotalNumberOfNotesFeature.java"
+	total_number_note_ons
+	total_number_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/TotalNumberOfNotesFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/DominantSeventhChordsFeature.java"
+	"/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchKurtosisFeature.java"
+	pitches_of_all_note_ons
+	pitches_of_all_note_ons -- "/Users/aleksandr/IdeaProjects/jSymbolic/jSymbolic2/src/jsymbolic2/features/PitchKurtosisFeature.java"
+}

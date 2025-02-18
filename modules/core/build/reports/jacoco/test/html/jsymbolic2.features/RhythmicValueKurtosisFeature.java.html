@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RhythmicValueKurtosisFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">RhythmicValueKurtosisFeature.java</span></div><h1>RhythmicValueKurtosisFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import javax.sound.midi.*;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the kurtosis of the note durations in quarter notes of all notes in the
+ * music. Provides a measure of how peaked or flat the rhythmic value distribution is. The higher the
+ * kurtosis, the more the rhythmic values are clustered near the mean and the fewer outliers there are. This
+ * calculation includes both pitched and unpitched notes, is calculated after rhythmic quantization, is not
+ * influenced by tempo, and is calculated without regard to the dynamics, voice or instrument of any given
+ * note.
+ *
+ * @author Cory McKay
+ */
+public class RhythmicValueKurtosisFeature
+		extends MIDIFeatureExtractor
+{
+	/* CONSTRUCTOR ******************************************************************************************/
+
+	
+	/**
+	 * Basic constructor that sets the values of the fields inherited from this class' superclass.
+	 */
+	public RhythmicValueKurtosisFeature()
+<span class="fc" id="L28">	{</span>
+<span class="fc" id="L29">		code = &quot;R-32&quot;;</span>
+<span class="fc" id="L30">		name = &quot;Rhythmic Value Kurtosis&quot;;</span>
+<span class="fc" id="L31">		description = &quot;Kurtosis of the note durations in quarter notes of all notes in the music. Provides a measure of how peaked or flat the rhythmic value distribution is. The higher the kurtosis, the more the rhythmic values are clustered near the mean and the fewer outliers there are. This calculation includes both pitched and unpitched notes, is calculated after rhythmic quantization, is not influenced by tempo, and is calculated without regard to the dynamics, voice or instrument of any given note.&quot;;</span>
+
+<span class="fc" id="L33">	}</span>
+	
+
+	/* PUBLIC METHODS ***************************************************************************************/
+	
+	
+	/**
+	 * Extract this feature from the given sequence of MIDI data and its associated information.
+	 *
+	 * @param sequence				The MIDI data to extract the feature from.
+	 * @param sequence_info			Additional data already extracted from the the MIDI sequence.
+	 * @param other_feature_values	The values of other features that may be needed to calculate this feature. 
+	 *								The order and offsets of these features must be the same as those returned
+	 *								by this class' getDependencies and getDependencyOffsets methods, 
+	 *								respectively. The first indice indicates the feature/window, and the 
+	 *								second indicates the value.
+	 * @return						The extracted feature value(s).
+	 * @throws Exception			Throws an informative exception if the feature cannot be calculated.
+	 */
+	@Override
+	public double[] extractFeature( Sequence sequence,
+									MIDIIntermediateRepresentations sequence_info,
+									double[][] other_feature_values )
+	throws Exception
+	{
+		double value;
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">		if (sequence_info != null)</span>
+<span class="fc" id="L60">			value = mckay.utilities.staticlibraries.MathAndStatsMethods.getSampleExcessKurtosis(sequence_info.rhythmic_value_of_each_note_in_quarter_notes);</span>
+<span class="nc" id="L61">		else value = -1.0;</span>
+
+<span class="fc" id="L63">		double[] result = new double[1];</span>
+<span class="fc" id="L64">		result[0] = value;</span>
+<span class="fc" id="L65">		return result;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

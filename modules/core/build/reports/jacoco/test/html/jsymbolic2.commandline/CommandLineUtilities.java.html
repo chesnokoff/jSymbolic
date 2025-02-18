@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommandLineUtilities.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.commandline</a> &gt; <span class="el_source">CommandLineUtilities.java</span></div><h1>CommandLineUtilities.java</h1><pre class="source lang-java linenums">package jsymbolic2.commandline;
+
+import jsymbolic2.processing.FeatureExtractionJobProcessor;
+import jsymbolic2.processing.PrintStreams;
+import jsymbolic2.processing.SaveInfo;
+import jsymbolic2.processing.UserFeedbackGenerator;
+import jsymbolic2.processing.WindowInfo;
+
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Holder class for static methods related to command line processing.
+ *
+ * @author Cory McKay and Tristano Tenaglia
+ */
+<span class="nc" id="L18">public enum CommandLineUtilities {</span>
+    ;
+    /* PUBLIC STATIC METHODS ********************************************************************************/
+
+
+    /**
+     * Parses command line arguments that do not require accessing a configuration settings file. Carries
+     * out feature extraction and saving of output files based on the specified arguments. Prints status
+     * messages during processing to standard out, and error messages to standard err. Outputs an appropriate
+     * error message if invalid arguments are specified.
+     *
+     * @param args Arguments with which jSymbolic was run at the command line. Note that this method is only
+     *             equipped to deal with arguments that do not involve accessing a configuration settings
+     *             file, and do not access GUI; any arguments that do in fact indicate either of these things
+     *             this will be treated as invalid by this method.
+     */
+    public static void parseNoConfigFileCommandLineAndExtractAndSaveFeatures(String[] args) {
+        // To hold feature extraction settings
+<span class="nc" id="L36">        boolean convert_to_arff = true;</span>
+<span class="nc" id="L37">        boolean convert_to_csv = true;</span>
+<span class="nc" id="L38">        PrintStream status_print_stream = System.out;</span>
+<span class="nc" id="L39">        PrintStream error_print_stream = System.err;</span>
+
+        // Define search patterns for parsing command line arguments
+<span class="nc" id="L42">        final String window_size_pattern = &quot;\\d*.?\\d*&quot;;</span>
+<span class="nc" id="L43">        final String window_offset_pattern = &quot;0?.\\d*&quot;;</span>
+
+        // Define flags
+<span class="nc" id="L46">        final String arff_flag = &quot;-arff&quot;;</span>
+<span class="nc" id="L47">        final String csv_flag = &quot;-csv&quot;;</span>
+<span class="nc" id="L48">        final String window_flag = &quot;-window&quot;;</span>
+
+        // Find out if CSV and/or ARFF files should be generated. Create reduced_args to hold the command line
+        // arguments with CSV or ARFF flags, if any, removed.
+<span class="nc" id="L52">        String[] reduced_args = new String[args.length];</span>
+<span class="nc" id="L53">        System.arraycopy(args, 0, reduced_args, 0, reduced_args.length);</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (2 &lt; args.length) {</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">            if (args[0].equalsIgnoreCase(csv_flag) ||</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">                    args[0].equalsIgnoreCase(arff_flag) ||</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">                    args[1].equalsIgnoreCase(csv_flag) ||</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">                    args[1].equalsIgnoreCase(arff_flag)) {</span>
+
+<span class="nc" id="L60">                List&lt;String&gt; reduced_args_list = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L61" title="All 2 branches missed.">                for (String arg : args)</span>
+<span class="nc bnc" id="L62" title="All 4 branches missed.">                    if (!arg.equalsIgnoreCase(csv_flag) &amp;&amp; !arg.equalsIgnoreCase(arff_flag))</span>
+<span class="nc" id="L63">                        reduced_args_list.add(arg);</span>
+<span class="nc" id="L64">                reduced_args = reduced_args_list.toArray(new String[0]);</span>
+            }
+        }
+
+        // If there are a proper number of command line arguments, assuming no windowing
+<span class="nc" id="L69">        PrintStreams printStreams = new PrintStreams(status_print_stream, error_print_stream);</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (3 == reduced_args.length) {</span>
+<span class="nc" id="L71">            String input_file_path = reduced_args[0];</span>
+<span class="nc" id="L72">            String ace_xml_feature_values_file_path = reduced_args[1];</span>
+<span class="nc" id="L73">            String ace_xml_feature_definitions_file_path = reduced_args[2];</span>
+<span class="nc" id="L74">            boolean save_features_for_each_window = false;</span>
+<span class="nc" id="L75">            boolean save_overall_recording_features = true;</span>
+<span class="nc" id="L76">            double window_size = 0.0;</span>
+<span class="nc" id="L77">            double window_overlap = 0.0;</span>
+
+<span class="nc" id="L79">            SaveInfo saveInfo = new SaveInfo(ace_xml_feature_values_file_path, ace_xml_feature_definitions_file_path, save_overall_recording_features, convert_to_arff, convert_to_csv);</span>
+<span class="nc" id="L80">            WindowInfo windowInfo = new WindowInfo(save_features_for_each_window, window_size, window_overlap);</span>
+<span class="nc" id="L81">            FeatureExtractionJobProcessor.extractAndSaveDefaultFeatures(input_file_path,</span>
+                    saveInfo,
+                    windowInfo,
+                    printStreams,
+                    false);
+<span class="nc" id="L86">        } else {</span>
+            // If proper command line arguments are present for windowing
+<span class="nc bnc" id="L88" title="All 4 branches missed.">            if (6 == reduced_args.length &amp;&amp; reduced_args[0].equals(window_flag) &amp;&amp;</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">                    reduced_args[4].matches(window_size_pattern) &amp;&amp;</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">                    reduced_args[5].matches(window_offset_pattern)) {</span>
+<span class="nc" id="L91">                String input_file_path = reduced_args[1];</span>
+<span class="nc" id="L92">                String ace_xml_feature_values_file_path = reduced_args[2];</span>
+<span class="nc" id="L93">                String ace_xml_feature_definitions_file_path = reduced_args[3];</span>
+<span class="nc" id="L94">                boolean save_features_for_each_window = true;</span>
+<span class="nc" id="L95">                boolean save_overall_recording_features = false;</span>
+<span class="nc" id="L96">                double window_size = Double.parseDouble(reduced_args[4]);</span>
+<span class="nc" id="L97">                double window_overlap = Double.parseDouble(reduced_args[5]);</span>
+
+<span class="nc" id="L99">                SaveInfo saveInfo = new SaveInfo(ace_xml_feature_values_file_path, ace_xml_feature_definitions_file_path, save_overall_recording_features, convert_to_arff, convert_to_csv);</span>
+<span class="nc" id="L100">                WindowInfo windowInfo = new WindowInfo(save_features_for_each_window, window_size, window_overlap);</span>
+<span class="nc" id="L101">                FeatureExtractionJobProcessor.extractAndSaveDefaultFeatures(input_file_path,</span>
+                        saveInfo, windowInfo,
+                        printStreams, false);
+<span class="nc" id="L104">            }</span>
+
+            // Indicate invalid choice of command line arguments
+            else
+<span class="nc" id="L108">                UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(System.err, args);</span>
+        }
+<span class="nc" id="L110">    }</span>
+
+
+    /**
+     * Returns instructions on how to properly format command line arguments for execution of jSymbolic,
+     * including all available switches and options.
+     *
+     * @return Usage instructions for the jSymbolic command line interface.
+     */
+    public static String getCommandLineCorrectUsage() {
+<span class="nc" id="L120">        return &quot;&quot;&quot;</span>
+                
+                Proper usage of jSymbolic via the command line requires one of the following command line argument configurations (see the manual for more details):
+                
+                1) No arguments (automaticallys run the GUI under default settings)
+                2) &lt;SymbolicMusicFileOrDirectoryInputPath&gt; &lt;AceXmlFeatureValuesOutputPath&gt; &lt;AceXmlFeatureDefinitionsOutputPath&gt;
+                \t-arff and/or -csv can be optionally be added before the above arguments.
+                3) -window &lt;SymbolicMusicFileInputPath&gt; &lt;AceXmlFeatureValuesOutputPath&gt; &lt;AceXmlFeatureDefinitionsOutputPath&gt; &lt;WindowLength&gt; &lt;WindowOverlapFraction&gt;
+                \t-arff and/or -csv can be optionally be added before the above arguments.
+                4) -configrun &lt;ConfigurationFilePath&gt;
+                5) -configrun &lt;ConfigurationFilePath&gt; &lt;SymbolicMusicFileInputPath&gt; &lt;AceXmlFeatureValuesOutputPath&gt; &lt;AceXmlFeatureDefinitionsOutputPath&gt;
+                6) -configgui &lt;ConfigurationFilePath&gt;
+                7) -validateconfigallheaders &lt;ConfigurationFilePath&gt;
+                8) -validateconfigfeatureoption &lt;ConfigurationFilePath&gt;
+                9) -consistencycheck &lt;MidiFileOrMeiFileOrDirectoryPath&gt;
+                10) -mididump &lt;MidiFileOrMeiFileOrDirectoryPath&gt;
+                11) -help
+                
+                Command line variable descriptions:
+                * SymbolicMusicFileOrDirectoryInputPath: The file path of the MIDI or MEI file from which features are to be extracted. May alternatively be a directory holding one or more such files (sub-folders are searched recursively, and files must have qualifying MIDI or MEI extensions to be included).
+                * AceXmlFeatureValuesOutputPath: The path of the ACE XML file to which extracted feature values will be saved.
+                * AceXmlFeatureDefinitionsOutputPath: The path of the ACE XML file to to which metadata descriptions of the extracted features will be saved.
+                * WindowLength: The duration in seconds of windows to be used during windowed feature extraction.
+                * WindowOverlapFraction: A value between 0 and 1 specifying the fractional overlap between consecutive windows.
+                * ConfigurationFilePath: The path of a configuration file to load jSymbolic settings from.
+                * MidiOrMeiOrDirectoryPath: The path of a MIDI or MEI file to parse and report on. May alternatively be a directory holding one or more such files (sub-folders are searched recursively, and files must have qualifying MIDI or MEI extensions to be included). MEI files are converted to MIDI as part of this process.
+                
+                NOTE: All specified file paths must either be absolute or relative to the directory holding jSymbolic2.jar.
+                
+                &quot;&quot;&quot;;
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

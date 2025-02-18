@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PartialRestsFractionFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">PartialRestsFractionFeature.java</span></div><h1>PartialRestsFractionFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import java.util.stream.DoubleStream;
+import javax.sound.midi.Sequence;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that calculates the fraction of the music during which no note is sounding on at least
+ * one active MIDI channel. Non-pitched (MIDI channel 10) notes ARE considered in this calculation. Only
+ * channels containing at least one note are counted in this calculation.
+ *
+ * @author Cory McKay
+ */
+public class PartialRestsFractionFeature
+		extends MIDIFeatureExtractor
+{
+	/* CONSTRUCTOR ******************************************************************************************/
+
+	
+	/**
+	 * Basic constructor that sets the values of the fields inherited from this class' superclass.
+	 */
+	public PartialRestsFractionFeature()
+<span class="fc" id="L26">	{</span>
+<span class="fc" id="L27">		code = &quot;R-42&quot;;</span>
+<span class="fc" id="L28">		name = &quot;Partial Rests Fraction&quot;;</span>
+<span class="fc" id="L29">		description = &quot;Fraction of the music during which no note is sounding on at least one active MIDI channel. Non-pitched (MIDI channel 10) notes ARE considered in this calculation. Only channels containing at least one note are counted in this calculation.&quot;;</span>
+
+<span class="fc" id="L31">	}</span>
+	
+
+	/* PUBLIC METHODS ***************************************************************************************/
+	
+	
+	/**
+	 * Extract this feature from the given sequence of MIDI data and its associated information.
+	 *
+	 * @param sequence				The MIDI data to extract the feature from.
+	 * @param sequence_info			Additional data already extracted from the the MIDI sequence.
+	 * @param other_feature_values	The values of other features that may be needed to calculate this feature. 
+	 *								The order and offsets of these features must be the same as those returned
+	 *								by this class' getDependencies and getDependencyOffsets methods, 
+	 *								respectively. The first indice indicates the feature/window, and the 
+	 *								second indicates the value.
+	 * @return						The extracted feature value(s).
+	 * @throws Exception			Throws an informative exception if the feature cannot be calculated.
+	 */
+	@Override
+	public double[] extractFeature( Sequence sequence,
+									MIDIIntermediateRepresentations sequence_info,
+									double[][] other_feature_values )
+	throws Exception
+	{
+		double value;
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">		if (sequence_info != null)</span>
+		{
+			// The number of note ons per channel
+<span class="fc" id="L60">			int[] notes_per_channel = new int[sequence_info.channel_statistics.length];</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">			for (int i = 0; i &lt; notes_per_channel.length; i++)</span>
+<span class="fc" id="L62">				notes_per_channel[i] = sequence_info.channel_statistics[i][0];</span>
+			
+			// Tick by tick (first index) indication of whether a note is sounding on each channel (second
+			// index).
+<span class="fc" id="L66">			boolean[][] note_sounding_on_a_channel_tick_map = sequence_info.note_sounding_on_a_channel_tick_map;</span>
+			
+			// The duration of each tick
+<span class="fc" id="L69">			double[] seconds_per_tick = sequence_info.duration_of_ticks_in_seconds;</span>
+
+			// Set non_empty_channels to true for channels that have at least one note
+<span class="fc" id="L72">			boolean[] non_empty_channels = new boolean[notes_per_channel.length];</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">			for (int i = 0; i &lt; non_empty_channels.length; i++)</span>
+			{
+<span class="fc bfc" id="L75" title="All 2 branches covered.">				if (notes_per_channel[i] != 0) non_empty_channels[i] = true;</span>
+<span class="fc" id="L76">				else non_empty_channels[i] = false;</span>
+			}
+
+			// The number of ticks to examine (the minus 1 is because Java doesn't count the last tick
+<span class="fc" id="L80">			int ticks_to_test = note_sounding_on_a_channel_tick_map.length - 1;</span>
+			
+			// Find the durations of partial rests, tick by tick
+<span class="fc" id="L83">			double[] seconds_of_rest_per_tick = new double[ticks_to_test];</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">			for (int i = 0; i &lt; seconds_of_rest_per_tick.length; i++)</span>
+<span class="fc" id="L85">				seconds_of_rest_per_tick[i] = 0.0;</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">			for (int tick = 0; tick &lt; ticks_to_test; tick++)</span>
+			{
+<span class="fc" id="L88">				boolean at_least_one_chan_not_sounding = false;</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">				for (int chan = 0; chan &lt; non_empty_channels.length; chan++)</span>
+<span class="fc bfc" id="L90" title="All 4 branches covered.">					if (non_empty_channels[chan] &amp;&amp; !note_sounding_on_a_channel_tick_map[tick][chan])</span>
+					{
+<span class="fc" id="L92">						at_least_one_chan_not_sounding = true;</span>
+<span class="fc" id="L93">						break;</span>
+					}
+<span class="fc bfc" id="L95" title="All 2 branches covered.">				if (at_least_one_chan_not_sounding)</span>
+<span class="fc" id="L96">					seconds_of_rest_per_tick[tick] = seconds_per_tick[tick];</span>
+			}
+			
+			// Add up the durations of all the rests
+<span class="fc" id="L100">			double total_partial_rest_time = DoubleStream.of(seconds_of_rest_per_tick).sum();</span>
+			
+			// Divide by the length of the piece
+<span class="pc bpc" id="L103" title="1 of 2 branches missed.">			if (sequence_info.sequence_duration_precise == 0.0)</span>
+<span class="nc" id="L104">				value = 0.0;</span>
+			else
+<span class="fc" id="L106">				value = total_partial_rest_time / sequence_info.sequence_duration_precise;</span>
+<span class="fc" id="L107">		}</span>
+<span class="nc" id="L108">		else value = -1.0;</span>
+
+<span class="fc" id="L110">		double[] result = new double[1];</span>
+<span class="fc" id="L111">		result[0] = value;</span>
+<span class="fc" id="L112">		return result;		</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

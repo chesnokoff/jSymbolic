@@ -1,0 +1,322 @@
+<!--
+    https://pmd.github.io/latest/index.html
+-->
+<ruleset name="java rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>Java Codestyle Rules</description>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            JAVA :: BEST PRACTICES                                                                           -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/java/bestpractices.xml">
+        <exclude name="AvoidStringBufferField"/>
+        <exclude name="AvoidUsingHardCodedIP"/>
+        <exclude name="ConstantsInInterface"/>
+        <exclude name="ForLoopVariableCount"/>
+        <!--
+            exclude to prevent rule firing on for-loop with multiple declarations, instead use the rule with the same
+            name below
+        -->
+        <exclude name="OneDeclarationPerLine"/>
+        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
+        <exclude name="JUnitTestContainsTooManyAsserts"/>
+        <!--
+            to prevent conflicts with testng that uses junit naming conventions like setUp, tearDown, etc. but
+            annotated with testng annotations
+         -->
+        <exclude name="JUnit4TestShouldUseBeforeAnnotation"/>
+        <exclude name="JUnit4TestShouldUseAfterAnnotation"/>
+        <exclude name="JUnit5TestShouldBePackagePrivate"/>
+    </rule>
+    <rule name="OneDeclarationPerLine" language="java" since="5.0"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          message="Use one line for each declaration, it enhances code readability.">
+        <description>
+            <![CDATA[
+            Java allows the use of several variable declarations of the same type on one line.
+            However, it can lead to messy code. This rule checks for multiple declarations on the same line.
+        ]]>
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+                    //LocalVariableDeclaration[count(VariableDeclarator) > 1 and local-name(..) != 'ForInit']
+                ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+            String name;            // separate declarations
+            String lastname;
+            String name, lastname;  // combined declaration, a violation
+            String name,
+                   lastname;        // combined declaration on multiple lines, a violation.
+            // combined declaration in a for-loop, no violation
+            for (int i = 0, length = array.length; i < length; i++) {
+                ...
+            }
+        ]]>
+        </example>
+    </rule>
+
+    <rule ref="category/java/bestpractices.xml/ConstantsInInterface">
+        <properties>
+            <property name="ignoreIfHasMethods" value="true"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/bestpractices.xml/ForLoopVariableCount">
+        <properties>
+            <property name="maximumVariables" value="2"/>
+        </properties>
+    </rule>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            JAVA :: CODE STYLE                                                                               -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/java/codestyle.xml">
+        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="AvoidUsingNativeCode"/>
+        <exclude name="BooleanGetMethodName"/>
+        <exclude name="CallSuperInConstructor"/>
+        <exclude name="ClassNamingConventions"/>
+        <exclude name="ConfusingTernary"/>
+        <exclude name="CommentDefaultAccessModifier"/>
+        <exclude name="ForLoopShouldBeWhileLoop"/>
+        <exclude name="GenericsNaming"/>
+        <exclude name="LinguisticNaming"/>
+        <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="LongVariable"/>
+        <exclude name="MethodArgumentCouldBeFinal"/>
+        <exclude name="MethodNamingConventions"/>
+        <exclude name="OnlyOneReturn"/>
+        <exclude name="PrematureDeclaration"/>
+        <exclude name="ShortClassName"/>
+        <exclude name="ShortMethodName"/>
+        <exclude name="ShortVariable"/>
+        <exclude name="TooManyStaticImports"/>
+        <exclude name="UselessParentheses"/>
+        <exclude name="UseUnderscoresInNumericLiterals"/>
+        <exclude name="UnnecessaryLocalBeforeReturn"/>
+    </rule>
+    <rule name="MethodNamingConventions" language="java" since="5.0"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="The instance method name doesn't match '[a-z][a-zA-Z0-9]*'">
+        <description>
+            <![CDATA[
+                Restricts instance method names of classes to match standard java conventions.
+            ]]>
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+                        //ClassOrInterfaceBodyDeclaration[
+                            not(exists(./Annotation[matches(@AnnotationName, '([A-Z][a-zA-Z0-9]*)?Test')]))
+                        ]/MethodDeclaration[
+                            not(matches(@Name, '^[a-z][a-zA-Z0-9]*$'))
+                        ]
+                    ]]>
+                </value>
+            </property>
+            <property name="version" value="2.0"/>
+        </properties>
+        <example>
+            <![CDATA[
+                void marshalHeaders() {
+                    ...
+                }
+
+                void unmarshalHeaders() {
+                    ...
+                }
+            ]]>
+        </example>
+    </rule>
+    <rule name="TestMethodNamingConventions" language="java" since="5.0"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="The test method name doesn't match BDD-like naming convention '*_should_*(_when_*)?'">
+        <description>
+            <![CDATA[
+                Restricts method names of test case classes to match BDD-like naming convention.
+            ]]>
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+                        //ClassOrInterfaceBodyDeclaration[
+                            exists(./Annotation[matches(@AnnotationName, '([A-Z][a-zA-Z0-9]*)?Test')])
+                        ]/MethodDeclaration[not(
+                            matches(@Name, '^[a-z][a-zA-Z0-9]+_should_[a-z][a-zA-Z0-9]+(_when_[a-z][a-zA-Z0-9]+)?$')
+                        )]
+                    ]]>
+                </value>
+            </property>
+            <property name="version" value="2.0"/>
+        </properties>
+        <example>
+            <![CDATA[
+                @Test
+                void marshalHeaders_should_succeed() {
+                    ...
+                }
+
+                @Test
+                void marshalHeaders_should_fail_when_noHeaderProvided() {
+                    ...
+                }
+            ]]>
+        </example>
+    </rule>
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+        <properties>
+            <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]*"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/LinguisticNaming">
+        <properties>
+            <property name="ignoredAnnotations" value="
+                java.lang.Override|
+                org.junit.jupiter.api.Test|
+                org.junit.jupiter.params.ParameterizedTest|
+                org.junit.Test|
+                org.testng.annotations.Test"/>
+            <property name="checkBooleanMethod" value="true"/>
+            <property name="checkGetters" value="true"/>
+            <property name="checkSetters" value="true"/>
+            <property name="checkPrefixedTransformMethods" value="true"/>
+            <property name="checkTransformMethods" value="false"/>
+            <property name="booleanMethodPrefixes" value="is|has|can|have|will|should"/>
+            <property name="transformMethodNames" value="to|as"/>
+            <property name="checkFields" value="true"/>
+            <property name="checkVariables" value="true"/>
+            <property name="booleanFieldPrefixes" value="is|has|can|have|will|should"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/ShortMethodName">
+        <properties>
+            <property name="minimum" value="2"/>
+        </properties>
+    </rule>
+    <rule ref="category/java/codestyle.xml/ShortVariable">
+        <properties>
+            <property name="minimum" value="1"/>
+        </properties>
+    </rule>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            JAVA :: DESIGN                                                                                   -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/java/design.xml">
+        <exclude name="AvoidCatchingGenericException"/>
+        <exclude name="AvoidRethrowingException"/>
+        <exclude name="CyclomaticComplexity"/>
+        <exclude name="ExcessiveParameterList"/>
+        <exclude name="ExcessivePublicCount"/>
+        <exclude name="GodClass"/>
+        <exclude name="LawOfDemeter"/>
+        <exclude name="LogicInversion"/>
+        <exclude name="LoosePackageCoupling"/>
+        <exclude name="SignatureDeclareThrowsException"/>
+        <exclude name="TooManyMethods"/>
+        <exclude name="UseObjectForClearerAPI"/>
+    </rule>
+    <rule ref="category/java/design.xml/NPathComplexity">
+        <properties>
+            <property name="reportLevel" value="500"/>
+        </properties>
+    </rule>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            JAVA :: DOCUMENTATION                                                                            -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/java/documentation.xml">
+        <exclude name="CommentRequired"/>
+        <exclude name="CommentSize"/>
+        <exclude name="UncommentedEmptyConstructor"/>
+        <exclude name="UncommentedEmptyMethodBody"/>
+    </rule>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            JAVA :: ERROR-PRONE                                                                              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="AssignmentInOperand"/>
+        <exclude name="AvoidDuplicateLiterals"/>
+        <exclude name="AvoidFieldNameMatchingMethodName"/>
+        <exclude name="AvoidLiteralsInIfCondition"/>
+        <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="NullAssignment"/>
+        <exclude name="UseProperClassLoader"/>
+        <exclude name="UseLocaleWithCaseConversions"/>
+    </rule>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            JAVA :: MULTI-THREADING                                                                          -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/java/multithreading.xml">
+        <exclude name="AvoidUsingVolatile"/>
+        <exclude name="DoubleCheckedLocking"/>
+        <exclude name="UseConcurrentHashMap"/>
+    </rule>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            JAVA :: PERFORMANCE                                                                              -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/java/performance.xml">
+        <exclude name="AvoidInstantiatingObjectsInLoops"/>
+        <exclude name="ConsecutiveAppendsShouldReuse"/>
+        <exclude name="TooFewBranchesForASwitchStatement"/>
+    </rule>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            JAVA :: SECURITY                                                                                 -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/java/security.xml"/>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            MAVEN :: ERROR-PRONE                                                                             -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/pom/errorprone.xml"/>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            VELOCITY :: BEST PRACTICES                                                                       -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/vm/bestpractices.xml">
+
+    </rule>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            VELOCITY :: DESIGN                                                                               -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/vm/design.xml"/>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            VELOCITY :: ERROR-PRONE                                                                          -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/vm/errorprone.xml"/>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            XML :: ERROR-PRONE                                                                               -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/xml/errorprone.xml"/>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            XSL :: CODE STYLE                                                                                -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/xsl/codestyle.xml"/>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!--            XSL :: PERFORMACE                                                                                -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <rule ref="category/xsl/performance.xml"/>
+
+</ruleset>

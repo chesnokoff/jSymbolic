@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CommandLineSwitchEnum.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jsymbolic-core</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.commandline</a> &gt; <span class="el_source">CommandLineSwitchEnum.java</span></div><h1>CommandLineSwitchEnum.java</h1><pre class="source lang-java linenums">package jsymbolic2.commandline;
+
+import jsymbolic2.configuration.ConfigFileHeaderEnum;
+import jsymbolic2.configuration.ConfigurationFileData;
+import jsymbolic2.configuration.txtimplementation.ConfigurationFileValidatorTxtImpl;
+import jsymbolic2.processing.FeatureExtractionJobProcessor;
+import jsymbolic2.processing.MIDIReporter;
+import jsymbolic2.processing.MusicFilter;
+import jsymbolic2.processing.PrintStreams;
+import jsymbolic2.processing.SymbolicMusicFileUtilities;
+import jsymbolic2.processing.UserFeedbackGenerator;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+/**
+ * An enumerator for parsing command line arguments and directing execution appropriately. A given enum of the
+ * CommandLineSwitchEnum type corresponds to a different type of processing specified at the command line.
+ * More particularly, a CommandLineSwitchEnum is initiated by the first command line argument specified at the
+ * command line. The switch_string field of a CommandLineSwitchEnum identifies the first command line argument
+ * that initiated it, and the switch_actions field identifies the kind of processing that will correspondingly
+ * be carried out (via the runProcessing method of the particular SwitchCommandEnum that is pointed to by that
+ * field).
+ *
+ * @author Tristano Tenaglia and Cory McKay
+ */
+<span class="nc" id="L31">public enum CommandLineSwitchEnum {</span>
+    /* CONSTANTS ********************************************************************************************/
+
+
+    /**
+     * To run the GUI under default settings.
+     */
+<span class="nc" id="L38">    GUI(SwitchCommandEnum.PLAIN_GUI, &quot;&quot;),</span>
+
+    /**
+     * To run via the command line with no switches and only input and output file paths specified. This is
+     * also used a temporary mapping for invalid command line arguments.
+     */
+<span class="nc" id="L44">    NOSWITCH(SwitchCommandEnum.COMMAND_LINE, &quot;&quot;),</span>
+
+    /**
+     * A command line switch for running windowed extraction.
+     */
+<span class="nc" id="L49">    WINDOW(SwitchCommandEnum.COMMAND_LINE, &quot;-window&quot;),</span>
+
+    /**
+     * A command line switch for saving extracted feature values in a Weka ARFF file.
+     */
+<span class="nc" id="L54">    ARFF(SwitchCommandEnum.COMMAND_LINE, &quot;-arff&quot;),</span>
+
+    /**
+     * A command line switch for saving extracted feature values in a CSV file.
+     */
+<span class="nc" id="L59">    CSV(SwitchCommandEnum.COMMAND_LINE, &quot;-csv&quot;),</span>
+
+    /**
+     * A command line switch for running the GUI using data parsed from a specified configuration file.
+     */
+<span class="nc" id="L64">    CONFIGURATION_GUI(SwitchCommandEnum.CONFIG_GUI, &quot;-configgui&quot;),</span>
+
+    /**
+     * A command line switch for running command line processing using data parsed from a specified
+     * configuration file.
+     */
+<span class="nc" id="L70">    CONFIGURATION_RUN(SwitchCommandEnum.CONFIG_RUN, &quot;-configrun&quot;),</span>
+
+    /**
+     * A command line switch for checking if the specified configuration file is valid with all data
+     * specified, including both input and output save paths.
+     */
+<span class="nc" id="L76">    VALIDATE_CONFIGURATION_ALL(SwitchCommandEnum.VALIDATE_CONFIG_ALL_HEADERS, &quot;-validateconfigallheaders&quot;),</span>
+
+    /**
+     * A command line switch for checking if the specified configuration file is valid with all data
+     * specified, excluding input and output save paths.
+     */
+<span class="nc" id="L82">    VALIDATE_CONFIGURATION_FEATURE_OPTION(SwitchCommandEnum.VALIDATE_CONFIG_FEATURE_OPTION, &quot;-validateconfigfeatureoption&quot;),</span>
+
+    /**
+     * A command line switch for checking if certain musical characteristics are consistent both across a set
+     * of MIDI or MEI files, and internally within each file.
+     */
+<span class="nc" id="L88">    CONSISTENCY_CHECK(SwitchCommandEnum.CONSISTENCY_CHECK, &quot;-consistencycheck&quot;),</span>
+
+    /**
+     * A command line switch for printing out reports on the contents of a MIDI (or converted) MEI files.
+     */
+<span class="nc" id="L93">    MIDI_DUMP(SwitchCommandEnum.MIDI_DUMP, &quot;-mididump&quot;),</span>
+
+    /**
+     * A command line switch for printing out valid command line usage instructions.
+     */
+<span class="nc" id="L98">    HELP(SwitchCommandEnum.HELP, &quot;-help&quot;);</span>
+
+
+    /* STATIC FINAL FIELDS **********************************************************************************/
+
+
+    /**
+     * The path where the default configuration file is stored.
+     */
+    public static final String default_config_file_path = &quot;./jSymbolicDefaultConfigs.txt&quot;;
+
+
+    /* FIELDS ***********************************************************************************************/
+
+
+    /**
+     * The actions associated with a particular command line argument switch.
+     */
+    private final SwitchCommandEnum switch_actions;
+
+
+    /**
+     * The command line text key corresponding to a particular command line argument switch.
+     */
+    private final String switch_string;
+
+
+    /* CONSTRUCTOR ******************************************************************************************/
+
+
+    /**
+     * Instantiate a CommandLineSwitchEnum corresponding to a certain command line argument / switch.
+     *
+     * @param switch_action An enum specifying actions associated with a particular command line switch.
+     * @param switchString  The command line text corresponding to a particular switch.
+     */
+<span class="nc" id="L134">    CommandLineSwitchEnum(SwitchCommandEnum switch_action, String switch_string) {</span>
+<span class="nc" id="L135">        switch_actions = switch_action;</span>
+<span class="nc" id="L136">        this.switch_string = switch_string;</span>
+<span class="nc" id="L137">    }</span>
+
+
+    /* PUBLIC STATIC METHODS ********************************************************************************/
+
+
+    /**
+     * Execute processing based on the given command line arguments.
+     *
+     * @param args Arguments with which jSymbolic was run at the command line.
+     */
+    public static void runCommandLine(String[] args) {
+        // Will hold appropriate processing for the specified args
+        CommandLineSwitchEnum this_switch_to_run;
+
+        // If there are no command line arguments
+<span class="nc bnc" id="L153" title="All 4 branches missed.">        if (null == args || 0 &gt;= args.length)</span>
+<span class="nc" id="L154">            this_switch_to_run = CommandLineSwitchEnum.GUI;</span>
+
+            // If there are command line arguments
+        else {
+            // If the first command line argument is known
+<span class="nc bnc" id="L159" title="All 2 branches missed.">            if (CommandLineSwitchEnum.matchesKnownConstant(args[0]))</span>
+<span class="nc" id="L160">                this_switch_to_run = CommandLineSwitchEnum.stringToSwitch(args[0]);</span>
+
+                // If the first command line argument is not a known switch. This could mean that invalid command
+                // line arguments were specified, or it could mean that there is no switch, but three valid I/O
+                // file paths were specified.
+<span class="nc" id="L165">            else this_switch_to_run = CommandLineSwitchEnum.NOSWITCH;</span>
+        }
+
+        // Run processing via the SwitchCommandEnum internal enum
+<span class="nc" id="L169">        this_switch_to_run.switch_actions.runProcessing(args);</span>
+<span class="nc" id="L170">    }</span>
+
+
+    /* PRIVATE STATIC METHODS *******************************************************************************/
+
+
+    /**
+     * Check to see if the given arg matches the switch_string of a known CommandLineSwitchEnum.
+     *
+     * @param arg A command line argument to check to see if it matches.
+     * @return True if arg matches, false if it does not.
+     */
+    private static boolean matchesKnownConstant(String arg) {
+<span class="nc bnc" id="L183" title="All 2 branches missed.">        for (CommandLineSwitchEnum e : CommandLineSwitchEnum.values())</span>
+<span class="nc bnc" id="L184" title="All 2 branches missed.">            if (e.switch_string.equals(arg))</span>
+<span class="nc" id="L185">                return true;</span>
+<span class="nc" id="L186">        return false;</span>
+    }
+
+
+    /**
+     * Get a CommandLineSwitchEnum with a switch_string matching the given arg.
+     *
+     * @param arg A command line argument to match.
+     * @return The CommandLineSwitchEnum with a switch_string matching arg.
+     */
+    private static CommandLineSwitchEnum stringToSwitch(String arg) {
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        for (CommandLineSwitchEnum e : CommandLineSwitchEnum.values())</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">            if (e.switch_string.equals(arg))</span>
+<span class="nc" id="L199">                return e;</span>
+<span class="nc" id="L200">        return null;</span>
+    }
+
+
+    /* INTERNAL ENUM ****************************************************************************************/
+
+
+    /**
+     * An internal enum that allows the outer CommandLineSwitchEnum enum to specify a particular type of
+     * processing to occur based on parsed command line arguments.
+     */
+<span class="nc" id="L211">    private enum SwitchCommandEnum {</span>
+        /* CONSTANTS ****************************************************************************************/
+
+
+<span class="nc" id="L215">        COMMAND_LINE {</span>
+            /**
+             * Runs command line feature extraction under settings where there is no configuration file
+             * specified by the user, and where the GUI is not used. If there is a configuration at the
+             * default path, then settings are loaded from it. If such a file is invalid or does not exist,
+             * then jSybmolic command line feature extraction is performed under standard settings. Note that
+             * this method also serves as a catchall for generally erroneous command line arguments. If
+             * extraction is successful, then save ACE XML feature values and feature definitions files as
+             * well as, if appropriate, Weka ARFF and CSV files.
+             *
+             * @param args    Arguments with which jSymbolic was run at the command line.
+             */
+            @Override
+            public void runProcessing(String[] args) {
+<span class="nc bnc" id="L229" title="All 4 branches missed.">                if (3 == args.length &amp;&amp; Files.exists(Paths.get(CommandLineSwitchEnum.default_config_file_path))) {</span>
+                    // Try loading configuration file at default path
+                    try {
+<span class="nc" id="L232">                        List&lt;File&gt; input_file_list = List.of(new File(args[0]));</span>
+<span class="nc" id="L233">                        String feature_values_save_path = args[1];</span>
+<span class="nc" id="L234">                        String feature_definitions_save_path = args[2];</span>
+<span class="nc" id="L235">                        List&lt;ConfigFileHeaderEnum&gt; config_file_headers_to_check = Arrays.asList(ConfigFileHeaderEnum.FEATURE_HEADER, ConfigFileHeaderEnum.OPTION_HEADER);</span>
+<span class="nc" id="L236">                        UserFeedbackGenerator.printParsingConfigFileMessage(System.out, CommandLineSwitchEnum.default_config_file_path);</span>
+<span class="nc" id="L237">                        ConfigurationFileData config_file_data = new ConfigurationFileValidatorTxtImpl().parseConfigFile(CommandLineSwitchEnum.default_config_file_path, config_file_headers_to_check, System.err);</span>
+<span class="nc" id="L238">                        FeatureExtractionJobProcessor.extractAndSaveFeaturesConfigFileSettings(input_file_list,</span>
+                                config_file_data,
+                                feature_values_save_path,
+                                feature_definitions_save_path,
+                                new PrintStreams(System.out, System.err), false);
+                    }
+
+                    // Run without configuration file if does not exist at default path
+<span class="nc" id="L246">                    catch (Exception ex) {</span>
+<span class="nc" id="L247">                        UserFeedbackGenerator.simplePrintln(System.out, &quot;NON-CRITICAL WARNING: Could not find a configurations file called &quot; + CommandLineSwitchEnum.default_config_file_path + &quot;  in the jSymbolic home directory that is valid under current settings. As a result, processing will continue using standard settings (unless specified manually). Although a default configurations file is by no means necessary to use jSymbolic, it is often convenient. You can save one at anytime either manually or using the jSymbolic GUI, if you wish (see the manual for more details).\n&quot;);</span>
+<span class="nc" id="L248">                        CommandLineUtilities.parseNoConfigFileCommandLineAndExtractAndSaveFeatures(args);</span>
+<span class="nc" id="L249">                    }</span>
+                }
+
+                // Run without configuration file if does not exist at default path
+<span class="nc bnc" id="L253" title="All 2 branches missed.">                else if (3 == args.length) {</span>
+<span class="nc" id="L254">                    UserFeedbackGenerator.simplePrintln(System.out, &quot;NON-CRITICAL WARNING: Could not find a configurations file called &quot; + CommandLineSwitchEnum.default_config_file_path + &quot; in the jSymbolic home directory that is valid under current settings. As a result, processing will continue using standard settings (unless specified manually). Although a default configurations file is by no means necessary to use jSymbolic, it is often convenient. You can save one at anytime either manually or using the jSymbolic GUI, if you wish (see the manual for more details).\n&quot;);</span>
+<span class="nc" id="L255">                    CommandLineUtilities.parseNoConfigFileCommandLineAndExtractAndSaveFeatures(args);</span>
+                }
+
+                // Run without configuration file if does not exist at default path if three are some other
+                // number of command line arguments than 3
+<span class="nc" id="L260">                else CommandLineUtilities.parseNoConfigFileCommandLineAndExtractAndSaveFeatures(args);</span>
+<span class="nc" id="L261">            }</span>
+        },
+
+<span class="nc" id="L264">        PLAIN_GUI {</span>
+            /**
+             * Runs the GUI. If a file named jSymbolicDefaultConfigs.txt is in the same directory as the
+             * jSymbolic2.jar at runtime, then the GUI will be pre-loaded with the settings specified in that
+             * file at runtime. If this default configuration file does not exist or is invalid, then the
+             * jSymbolic GUI is run with default settings (and a message is output indicating that the
+             * default configuration file was absent).
+             *
+             * @param args    Arguments with which jSymbolic was run at the command line.
+             */
+            @Override
+            public void runProcessing(String[] args) {
+                // Try parsing default configuration file if it exists
+<span class="nc bnc" id="L277" title="All 2 branches missed.">                if (Files.exists(Paths.get(CommandLineSwitchEnum.default_config_file_path))) {</span>
+                    try {
+<span class="nc" id="L279">                        UserFeedbackGenerator.printParsingConfigFileMessage(System.out, CommandLineSwitchEnum.default_config_file_path);</span>
+<span class="nc" id="L280">                        ConfigurationFileData config_file_data = new ConfigurationFileValidatorTxtImpl().parseConfigFileTwoThreeOrFour(CommandLineSwitchEnum.default_config_file_path, System.err);</span>
+<span class="nc" id="L281">                        new jsymbolic2.gui.OuterFrame(config_file_data);</span>
+<span class="nc" id="L282">                    } catch (Exception e) {</span>
+<span class="nc" id="L283">                        new jsymbolic2.gui.OuterFrame(null);</span>
+<span class="nc" id="L284">                    }</span>
+                } else {
+<span class="nc" id="L286">                    new jsymbolic2.gui.OuterFrame(null);</span>
+                }
+<span class="nc" id="L288">            }</span>
+        },
+
+<span class="nc" id="L291">        CONFIG_GUI {</span>
+            /**
+             * Runs the GUI with settings pre-loaded from the configuration file specified in args.
+             *
+             * @param args    Arguments with which jSymbolic was run at the command line.
+             */
+            @Override
+            public void runProcessing(String[] args) {
+<span class="nc bnc" id="L299" title="All 2 branches missed.">                if (2 != args.length)</span>
+<span class="nc" id="L300">                    UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(System.err, args);</span>
+
+<span class="nc" id="L302">                String config_file_path = args[1];</span>
+                try {
+<span class="nc" id="L304">                    UserFeedbackGenerator.printParsingConfigFileMessage(System.out, config_file_path);</span>
+<span class="nc" id="L305">                    ConfigurationFileData config_file_data = new ConfigurationFileValidatorTxtImpl().parseConfigFileTwoThreeOrFour(config_file_path, System.err);</span>
+<span class="nc" id="L306">                    new jsymbolic2.gui.OuterFrame(config_file_data);</span>
+<span class="nc" id="L307">                } catch (Exception e) {</span>
+<span class="nc" id="L308">                    UserFeedbackGenerator.printExceptionErrorMessage(System.err, e);</span>
+<span class="nc" id="L309">                }</span>
+<span class="nc" id="L310">            }</span>
+        },
+
+<span class="nc" id="L313">        CONFIG_RUN {</span>
+            /**
+             * Parse the command line specified in args and carry out feature extraction based on its contents
+             * and, potentially, additional information specified in args. Output any errors that occur to
+             * System.err. If extraction is successful, then save ACE XML feature values and feature
+             * definitions files as well as, if appropriate, Weka ARFF and CSV files.
+             *
+             * @param args Arguments with which jSymbolic was run at the command line.
+             */
+            @Override
+            public void runProcessing(String[] args) {
+                // The path of the configuration file
+<span class="nc" id="L325">                String config_file_path = args[1];</span>
+
+                // If only configuration file path is specified in args
+<span class="nc bnc" id="L328" title="All 2 branches missed.">                if (2 == args.length) {</span>
+                    try {
+<span class="nc" id="L330">                        UserFeedbackGenerator.printParsingConfigFileMessage(System.out, config_file_path);</span>
+<span class="nc" id="L331">                        ConfigurationFileData config_file_data = new ConfigurationFileValidatorTxtImpl().parseConfigFileAllHeaders(config_file_path, System.err);</span>
+<span class="nc" id="L332">                        List&lt;File&gt; input_file_list = config_file_data.getInputFileList().getValidFiles();</span>
+<span class="nc" id="L333">                        String feature_values_save_path = config_file_data.getFeatureValueSavePath();</span>
+<span class="nc" id="L334">                        String feature_definitions_save_path = config_file_data.getFeatureDefinitionSavePath();</span>
+<span class="nc" id="L335">                        FeatureExtractionJobProcessor.extractAndSaveFeaturesConfigFileSettings(input_file_list,</span>
+                                config_file_data,
+                                feature_values_save_path,
+                                feature_definitions_save_path,
+                                new PrintStreams(System.out, System.err), false);
+<span class="nc" id="L340">                    } catch (Exception e) {</span>
+<span class="nc" id="L341">                        UserFeedbackGenerator.printExceptionErrorMessage(System.err, e);</span>
+<span class="nc" id="L342">                    }</span>
+                }
+
+                // If input and output file paths are specified in args, in addition to the configuration
+                // file path
+                else {
+                    // Must be either 2 or 5 command line arguments for CONFIG_RUN option
+<span class="nc bnc" id="L349" title="All 2 branches missed.">                    if (5 != args.length)</span>
+<span class="nc" id="L350">                        UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(System.err, args);</span>
+
+                    // Parse args
+<span class="nc" id="L353">                    String input_file_path = args[2];</span>
+<span class="nc" id="L354">                    String feature_values_save_path = args[3];</span>
+<span class="nc" id="L355">                    String feature_definitions_save_path = args[4];</span>
+<span class="nc" id="L356">                    List&lt;ConfigFileHeaderEnum&gt; config_file_headers_to_check = Arrays.asList(ConfigFileHeaderEnum.FEATURE_HEADER, ConfigFileHeaderEnum.OPTION_HEADER);</span>
+
+                    // Parse configuration file and extract features based on its contents and the supplied
+                    // command line arguments
+                    try {
+<span class="nc" id="L361">                        UserFeedbackGenerator.printParsingConfigFileMessage(System.out, config_file_path);</span>
+<span class="nc" id="L362">                        ConfigurationFileData config_file_data = new ConfigurationFileValidatorTxtImpl().parseConfigFile(config_file_path, config_file_headers_to_check, System.err);</span>
+<span class="nc" id="L363">                        List&lt;File&gt; input_file_list = List.of(new File(input_file_path));</span>
+<span class="nc" id="L364">                        FeatureExtractionJobProcessor.extractAndSaveFeaturesConfigFileSettings(input_file_list,</span>
+                                config_file_data,
+                                feature_values_save_path,
+                                feature_definitions_save_path,
+                                new PrintStreams(System.out, System.err), false);
+<span class="nc" id="L369">                    } catch (Exception e) {</span>
+<span class="nc" id="L370">                        UserFeedbackGenerator.printExceptionErrorMessage(System.err, e);</span>
+<span class="nc" id="L371">                    }</span>
+                }
+<span class="nc" id="L373">            }</span>
+        },
+
+<span class="nc" id="L376">        VALIDATE_CONFIG_ALL_HEADERS {</span>
+            /**
+             * Print out whether the configuration file referred to in args is valid. In this case, it is
+             * considered valid only if feature settings, option settings, input file paths and output file
+             * paths are all specified. in the configuration file.
+             *
+             * @param args            Arguments with which jSymbolic was run at the command line.
+             */
+            @Override
+            public void runProcessing(String[] args) {
+                // Check valid number of command line arguments
+<span class="nc bnc" id="L387" title="All 2 branches missed.">                if (2 != args.length)</span>
+<span class="nc" id="L388">                    UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(System.err, args);</span>
+
+<span class="nc" id="L390">                String config_file_path = args[1];</span>
+                try {
+                    // Try parsing configuration file to see if it is valid
+<span class="nc" id="L393">                    UserFeedbackGenerator.printParsingConfigFileMessage(System.out, config_file_path);</span>
+<span class="nc" id="L394">                    new ConfigurationFileValidatorTxtImpl().parseConfigFileAllHeaders(config_file_path, System.err);</span>
+
+                    // If the configuration file is valid as defined by this method
+<span class="nc" id="L397">                    UserFeedbackGenerator.simplePrintln(System.out, &quot;\n&quot; + config_file_path + &quot; is a valid configuration file that specifies features to be extracted, extraction options, input file paths and output file paths.\n&quot;);</span>
+                }
+
+                // If the configuration file is not valid as defined by this method
+<span class="nc" id="L401">                catch (Exception e) {</span>
+<span class="nc" id="L402">                    UserFeedbackGenerator.simplePrintln(System.out, &quot;\n&quot; + e.getMessage() + &quot;\n&quot;);</span>
+<span class="nc" id="L403">                }</span>
+<span class="nc" id="L404">            }</span>
+        },
+
+<span class="nc" id="L407">        VALIDATE_CONFIG_FEATURE_OPTION {</span>
+            /**
+             * Print out whether the configuration file referred to in args is valid. In this case, it is
+             * considered valid only if feature and option settings are both specified, but input and output
+             * file paths are NOT specified in the configuration file.
+             *
+             * @param args    Arguments with which jSymbolic was run at the command line.
+             */
+            @Override
+            public void runProcessing(String[] args) {
+                // Check valid number of command line arguments
+<span class="nc bnc" id="L418" title="All 2 branches missed.">                if (2 != args.length)</span>
+<span class="nc" id="L419">                    UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(System.err, args);</span>
+
+<span class="nc" id="L421">                String config_file_path = args[1];</span>
+<span class="nc" id="L422">                List&lt;ConfigFileHeaderEnum&gt; config_headers_to_check = Arrays.asList(ConfigFileHeaderEnum.FEATURE_HEADER,</span>
+                        ConfigFileHeaderEnum.OPTION_HEADER);
+                try {
+                    // Try parsing configuration file to see if it is valid
+<span class="nc" id="L426">                    UserFeedbackGenerator.printParsingConfigFileMessage(System.out, config_file_path);</span>
+<span class="nc" id="L427">                    new ConfigurationFileValidatorTxtImpl().parseConfigFile(config_file_path, config_headers_to_check, System.err);</span>
+
+                    // If the configuration file is valid as defined by this method
+<span class="nc" id="L430">                    UserFeedbackGenerator.simplePrintln(System.out, &quot;\n&quot; + config_file_path + &quot; is a valid configuration file that specifies features to be extracted and extraction options, but does not specify input or output files.\n&quot;);</span>
+                }
+
+                // If the configuration file is not valid as defined by this method
+<span class="nc" id="L434">                catch (Exception e) {</span>
+<span class="nc" id="L435">                    UserFeedbackGenerator.simplePrintln(System.out, &quot;\n&quot; + e.getMessage() + &quot;\n&quot;);</span>
+<span class="nc" id="L436">                }</span>
+<span class="nc" id="L437">            }</span>
+        },
+
+<span class="nc" id="L440">        CONSISTENCY_CHECK {</span>
+            /**
+             * Parses the MIDI and/or MEI files referred to in args (either a single file or a directory
+             * holding MIDI and/or MEI files) and prints out ordered reports to standard out on whether or not
+             * certain musical characteristics are consistent both across the files as a group, and internally
+             * within each file. In the case of directories, processing is recursive, and only files with
+             * qualifying MIDI or MEI file extensions are included.
+             *
+             * @param args    Arguments with which jSymbolic was run at the command line.
+             */
+            @Override
+            public void runProcessing(String[] args) {
+                // Check valid number of command line arguments
+<span class="nc bnc" id="L453" title="All 2 branches missed.">                if (2 != args.length)</span>
+<span class="nc" id="L454">                    UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(System.err, args);</span>
+
+                try {
+                    // Prepare the set of files (after recursive directory parsing and extension filtering, if
+                    // appropriate), to report on
+<span class="nc" id="L459">                    File[] midi_or_mei_file_list = SymbolicMusicFileUtilities.getRecursiveListOfFiles(args[1],</span>
+                            new MusicFilter(),
+                            System.err,
+                            new ArrayList&lt;&gt;());
+
+                    // Prepare and output the reports
+<span class="nc bnc" id="L465" title="All 2 branches missed.">                    if (null != midi_or_mei_file_list) {</span>
+<span class="nc" id="L466">                        String report = MIDIReporter.prepareConsistencyReports(midi_or_mei_file_list,</span>
+                                true,
+                                true,
+                                true);
+<span class="nc" id="L470">                        UserFeedbackGenerator.simplePrint(System.out, report);</span>
+                    }
+                }
+                // If the MIDI file is not valid
+<span class="nc" id="L474">                catch (Exception e) {</span>
+<span class="nc" id="L475">                    UserFeedbackGenerator.printExceptionErrorMessage(System.err, e);</span>
+<span class="nc" id="L476">                }</span>
+<span class="nc" id="L477">            }</span>
+        },
+
+<span class="nc" id="L480">        MIDI_DUMP {</span>
+            /**
+             * Parse the MIDI and/or MEI files referred to in args (either a single file or a directory
+             * holding MIDI and/or MEI files) and print out ordered reports on the file(s) and the MIDI
+             * messages they contain to standard out. If it is an MEI file, it is converted to MIDI before
+             * reporting. In the case of directories, processing is recursive, and only files with qualifying
+             * MIDI or MEI file extensions are included.
+             *
+             * @param args    Arguments with which jSymbolic was run at the command line.
+             */
+            @Override
+            public void runProcessing(String[] args) {
+                // Check valid number of command line arguments
+<span class="nc bnc" id="L493" title="All 2 branches missed.">                if (2 != args.length)</span>
+<span class="nc" id="L494">                    UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(System.err, args);</span>
+
+                try {
+                    // Prepare the set of files (after recursive directory parsing and extension filtering, if
+                    // appropriate), to report on
+<span class="nc" id="L499">                    File[] midi_or_mei_file_list = SymbolicMusicFileUtilities.getRecursiveListOfFiles(args[1],</span>
+                            new MusicFilter(),
+                            System.err,
+                            new ArrayList&lt;&gt;());
+
+                    // Prepare and output the reports
+<span class="nc bnc" id="L505" title="All 2 branches missed.">                    if (null != midi_or_mei_file_list) {</span>
+                        // Report on each file
+<span class="nc bnc" id="L507" title="All 2 branches missed.">                        for (int i = 0; i &lt; midi_or_mei_file_list.length; i++) {</span>
+                            // Note progress
+<span class="nc" id="L509">                            UserFeedbackGenerator.simplePrint(System.out, &quot;\n============ MIDI MESSAGES REPORT FOR FILE &quot; + (i + 1) + &quot; / &quot; + midi_or_mei_file_list.length + &quot; ============\n&quot;);</span>
+
+                            // Parse and check the MIDI file
+<span class="nc" id="L512">                            MIDIReporter midi_debugger = new MIDIReporter(midi_or_mei_file_list[i]);</span>
+
+                            // Output the reports
+<span class="nc" id="L515">                            UserFeedbackGenerator.simplePrint(System.out, midi_debugger.prepareHeaderReport());</span>
+<span class="nc" id="L516">                            UserFeedbackGenerator.simplePrint(System.out, midi_debugger.prepareMetaMessageReport(true, true, true, true, true, true));</span>
+<span class="nc" id="L517">                            UserFeedbackGenerator.simplePrint(System.out, midi_debugger.prepareProgramChangeAndUnpitchedInstrumentsReport());</span>
+<span class="nc" id="L518">                            UserFeedbackGenerator.simplePrint(System.out, midi_debugger.prepareControllerMessageReport());</span>
+<span class="nc" id="L519">                            UserFeedbackGenerator.simplePrintln(System.out, midi_debugger.prepareNoteReport(false, true));</span>
+                        }
+                    }
+                }
+                // If the MIDI file is not valid
+<span class="nc" id="L524">                catch (Exception e) {</span>
+<span class="nc" id="L525">                    UserFeedbackGenerator.printExceptionErrorMessage(System.err, e);</span>
+<span class="nc" id="L526">                }</span>
+<span class="nc" id="L527">            }</span>
+        },
+
+<span class="nc" id="L530">        HELP {</span>
+            /**
+             * Print general jSymbolic command line usage to standard out.
+             *
+             * @param args    Arguments with which jSymbolic was run at the command line.
+             */
+            @Override
+            public void runProcessing(String[] args) {
+<span class="nc" id="L538">                UserFeedbackGenerator.simplePrintln(System.out, CommandLineUtilities.getCommandLineCorrectUsage());</span>
+<span class="nc" id="L539">            }</span>
+        };
+
+
+        /* ABSTRACT METHOD **********************************************************************************/
+
+
+        /**
+         * Execute processing appropriate for the the given command line arguments, as specified by this
+         * particular SwitchCommandEnum.
+         *
+         * @param args Arguments with which jSymbolic was run at the command line.
+         */
+        public abstract void runProcessing(String[] args);
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

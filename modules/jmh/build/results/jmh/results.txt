@@ -1,0 +1,2 @@
+Benchmark                                                            (configFilePath)  Mode  Cnt      Score     Error  Units
+ExtractBenchmark.benchmark  src/jmh/resources/configs/0_10000/all-features-config.txt  avgt   25  19245,089 ± 205,351  ms/op

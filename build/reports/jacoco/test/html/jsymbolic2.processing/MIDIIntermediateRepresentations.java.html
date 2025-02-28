@@ -1,0 +1,2358 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MIDIIntermediateRepresentations.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.processing</a> &gt; <span class="el_source">MIDIIntermediateRepresentations.java</span></div><h1>MIDIIntermediateRepresentations.java</h1><pre class="source lang-java linenums">package jsymbolic2.processing;
+
+import jsymbolic2.featureutils.CollectedNoteInfo;
+import jsymbolic2.featureutils.NoteInfo;
+import mckay.utilities.staticlibraries.ArrayMethods;
+import mckay.utilities.staticlibraries.MathAndStatsMethods;
+
+import javax.sound.midi.MetaMessage;
+import javax.sound.midi.MidiEvent;
+import javax.sound.midi.MidiMessage;
+import javax.sound.midi.Sequence;
+import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Track;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * An object of this class is instantiated with a MIDI sequence. The constructor parses this sequence and
+ * extracts a range of information from it, which is stored in the public fields of this class. The
+ * information stored in the fields of an object of this class can be useful in calculating a range of
+ * features.
+ *
+ * &lt;p&gt;After instantiation, an object of this class should simply have its public fields accessed (no changes
+ * to these fields should be made). All public methods are simply static convenience classes for interpreting
+ * information stored in public fields (they should never change values in the public fields). Private methods
+ * and fields are only used to fill the public fields with values during instantiation, and should not be
+ * used in any other context.&lt;/p&gt;
+ *
+ * &lt;p&gt;It should be noted that this design is messy. Ultimately, each of the public fields of this class should
+ * be re-implemented as individual MEIFeatureExtractor objects.&lt;/p&gt;
+ *
+ * &lt;p&gt;&lt;b&gt;Important Notes:&lt;/b&gt;&lt;/p&gt;
+ *
+ * &lt;ul&gt;
+ * &lt;li&gt;Instrument patches are numbered one unit lower here than in their General MIDI patch names, so
+ * remember to raise by one when processing.&lt;/li&gt;
+ *
+ * &lt;li&gt;Channels are numbered 1 lower here than in proper MIDI, so, for example, check for Channel 9 when
+ * actually looking for Channel 10.&lt;/li&gt;
+ *
+ * &lt;li&gt;The MIDI data starts at tick 0.&lt;/li&gt;
+ *
+ * &lt;li&gt;MIDI sequences that use SMPTE time encoding are not compatible with this software.&lt;/li&gt;
+ * &lt;/ul&gt;
+ *
+ * @author Cory McKay and Tristano Tenaglia
+ */
+public class MIDIIntermediateRepresentations {
+    /* PUBLIC FIELDS ****************************************************************************************/
+
+
+    /**
+     * Holds miscellaneous metadata read from the MIDI sequence. Note that this information is based purely on
+     * metadata directly specified in the MIDI sequence, not on any sophisticated analysis. Indices of this
+     * field correspond to the following pieces of information:
+     *
+     * &lt;ul&gt;
+     * &lt;li&gt;&lt;i&gt;Indice 0:&lt;/i&gt; Major/minor quality of the piece, based on the first MIDI key signature
+     * metamessage encountered in the piece (any key signature metamessages after the first are ignored).
+     * The value is stored as an Integer, with 0 indicating major and 1 indicating minor. A default value of 0
+     * is stored if no key signature metamessage is present.&lt;/li&gt;
+     *
+     * &lt;li&gt;&lt;i&gt;Indice 1:&lt;/i&gt; LinkedList of all time signature numerators in the order that they appear in the
+     * MIDI sequence. Stored individually as Integers, and based on time signature metamessages. Empty if no
+     * time signature metamessages are present.&lt;/li&gt;
+     *
+     * &lt;li&gt;&lt;i&gt;Indice 2:&lt;/i&gt; LinkedList of all time signature denominators in the order that they appear in the
+     * MIDI sequence. Stored individually as Integers, and based on time signature metamessages. Empty if no
+     * time signature metamessages are present.&lt;/li&gt;
+     *
+     * &lt;li&gt;&lt;i&gt;Indice 3:&lt;/i&gt; Integer storing the initial tempo in beats per minute. Based on the first
+     * encountered tempo metamessage. Any further tempo metamessages are ignored. Set to the MIDI default of
+     * 120 BPM if no tempo metamessage is present.&lt;/li&gt;
+     * &lt;/ul&gt;
+     */
+    public Object[] overall_metadata;
+
+    /**
+     * The total duration in seconds of the sequence (as an integer).
+     */
+    public int sequence_duration;
+
+    /**
+     * The total duration in seconds of the sequence (as a double).
+     */
+    public double sequence_duration_precise;
+
+    /**
+     * The average duration in seconds of a MIDI tick. This is averaged across the sequence, since the
+     * moment-to-moment duration of a tick can vary due to tempo change messages.
+     */
+    public double average_tick_duration;
+
+    /**
+     * An array with an entry for each MIDI tick. The value at each entry specifies the duration of that
+     * particular MIDI tick in seconds.
+     */
+    public double[] duration_of_ticks_in_seconds;
+
+    /**
+     * A table with rows (first index) corresponding to MIDI ticks and columns (second index) corresponding to
+     * MIDI channels. Each entry's value is set to the channel volume at that tick, as set by channel volume
+     * controller messages divided by 127. The default is set to 1.0, which corresponds to a controller value
+     * of 127. IMPORTANT: only coarse channel volume (CC 7) messages are considered, not expression (CC 11) or
+     * fine channel volume (CC 39) messages are considered.
+     */
+    public double[][] volume_of_channels_tick_map;
+
+    /**
+     * A table with rows (first index) corresponding to General MIDI patch numbers. The first column (second
+     * index) specifies the total number of Note Ons played using each patch. The second column gives the
+     * total time in seconds (rounded) that at least one note was being held by each patch.
+     */
+    public int[][] pitched_instrument_prevalence;
+
+    /**
+     * A table with rows (first index) corresponding to MIDI ticks in the MIDI sequence and columns (second
+     * index) corresponding to each of the pitched General MIDI patches. An entry is set to true if a
+     * particular patch is playing at least one note during a particular MIDI tick.
+     */
+    public boolean[][] pitched_instrumentation_tick_map;
+
+    /**
+     * An array whose index is matched to patches from the MIDI Percussion Key Map. Each entry indicates the
+     * total number of Note Ons played by the specified percussion patch. Note that values for all 128
+     * possible values are collected here, although perhaps only notes 35 to 81 should be used. This is
+     * because some MIDI sequences actually use these other values, even though they should not (when they are
+     * used, these other values typically simply duplicate the allowed values).
+     */
+    public int[] non_pitched_instrument_prevalence;
+
+    /**
+     * The total number of Note Ons in the sequence.
+     */
+    public int total_number_note_ons;
+
+    /**
+     * The total number of Note Ons in the sequence that were played using a General MIDI pitched instrument
+     * (i.e. not Channel 10).
+     */
+    public int total_number_pitched_note_ons;
+
+    /**
+     * The total number of Note Ons in the sequence that were played using a MIDI Percussion Key Map
+     * instrument (i.e. on Channel 10). &lt;b&gt;NOTE:&lt;/b&gt; although values for all 128 Channel 10 notes values are
+     * collected here, perhaps only notes 35 to 81 should be used. This is because some MIDI sequences
+     * actually use these other values, even though they should not (when they are used, these other values
+     * typically simply duplicate the allowed values).
+     */
+    public int total_number_non_pitched_note_ons;
+
+    /**
+     * The duration in seconds of a quarter note. The average value for the piece as a whole (since tempo
+     * changes can cause it to vary.
+     */
+    public double average_quarter_note_duration_in_seconds;
+
+    /**
+     * A normalized histogram where the value of each bin specifies the fraction of all notes in the piece
+     * with a rhythmic value corresponding to that of the given bin. The bins are numbered as follows:
+     * &lt;p&gt;
+     * 0: thirty second notes (or less)
+     * 1: sixteenth notes
+     * 2: eighth notes
+     * 3: dotted eighth notes
+     * 4: quarter notes
+     * 5: dotted quarter notes
+     * 6: half notes
+     * 7: dotted half notes
+     * 8: whole notes
+     * 9: dotted whole notes
+     * 10: double whole notes
+     * 11: dotted double whole notes (or more)
+     * &lt;p&gt;
+     * Both pitched and unpitched notes are included in this histogram. Tempo is, of course, not relevant to
+     * this feature. Notes with durations not precisely matching one of these rhythmic note values are mapped
+     * to the closest note value (to filter out the effects of rubato or uneven human rhythmic performances,
+     * for example). This histogram is calculated without regard to the dynamics, voice or instrument of any
+     * given note.
+     */
+    public double[] rhythmic_value_histogram;
+
+    /**
+     * Each dimension of this array is associated with a different rhythmic value (using the same numbering
+     * scheme as the rhythmic_value_histogram). Each value of this array contains a list. There is an entry in
+     * each list for each time a note with the list's associated rhythmic value is encountered in a context
+     * where its rhythmic value differs from the preceding note's rhythmic value on the same channel and
+     * track. Each such value indicates the number of notes of this same rhythmic value that occurred on the
+     * same channel and track before a new rhythmic value was encountered on that channel and track.
+     */
+    public LinkedList&lt;Integer&gt;[] runs_of_same_rhythmic_value;
+
+    /**
+     * An array with one entry for each note, where the value of each entry indicates the quantized duration
+     * of the note in quarter notes (e.g. a value of 0.5 corresponds to a duration of an eighth note). The
+     * order of the durations in this array is completely unrelated to the order in which the corresponding
+     * notes each occur. Reported rhythmic values are after quantization as done for the
+     * rhythmic_value_histogram. Both pitched and unpitched notes are included. This is calculated without
+     * regard to the dynamics, voice or instrument of any given note.
+     */
+    public double[] rhythmic_value_of_each_note_in_quarter_notes;
+
+    /**
+     * The offset in duration of each note from the exact idealized duration of its nearest rhythmic value,
+     * expressed as a fraction of the duration of an idealized quarter note. This is an absolute value, so
+     * offsets that are longer or shorter than each idealized duration are identical (they are both expressed
+     * here as positive numbers). For example, a value of 0.1 for a note that happens to be a whole note would
+     * indicate that the associated note has a duration that is one tenth the duration of a quarter note
+     * shorter or longer than the idealized duration of a whole note. The order of the durations in this array
+     * is completely unrelated to the order in which the corresponding notes each occur. Both pitched and
+     * unpitched notes are included. This is calculated without regard to the dynamics, voice or instrument of
+     * any given note.
+     */
+    public double[] rhythmic_value_offsets;
+
+    /**
+     * A normalized histogram, with bins corresponding to rhythmic periodicities measured in beats per minute.
+     * The magnitude of each bin is proportional to the aggregated loudnesses of the notes that occur at the
+     * bin's rhythmic periodicity, and calculation is done using autocorrelation. All bins below 40 BPM are
+     * set to 0 because autocorrelation was not performed at these lags (because the results are too noisy in
+     * this range). Bins only go up to 200 BPM. Calculations use the overall average tempo of the piece, in
+     * order to emphasize the metrical notation of the recording, and do thus do not take into account tempo
+     * variations in the piece.
+     */
+    public double[] beat_histogram;
+
+    /**
+     * Table with rows (first index) corresponding to the bins of the beat_histogram (i.e. rhythmic
+     * periodicities measured in beats per minute). Entries are set to the magnitude of the corresponding bin
+     * of beat_histogram if the magnitude in that bin of beat_histogram is high enough to meet this
+     * beat_histogram_thresholded_table column's threshold requirements, and to 0 otherwise. Column 0 has a
+     * threshold that only allows beat_histogram bins with a normalized frequency over 0.1 to be counted,
+     * column 1 has a threshold of higher than 0.01, and column 2 only counts beat_histogram bins that have a
+     * normalized frequency at least 30% as high as the normalized frequency of the highest beat_histogram
+     * bin. This table is then processed so that only peaks are included, which is to say that entries of
+     * beat_histogram_thresholded_table that are adjacent to beat_histogram_thresholded_table bins with higher
+     * magnitudes are set to 0.
+     */
+    public double[][] beat_histogram_thresholded_table;
+
+    /**
+     * A normalized histogram, with bins corresponding to rhythmic periodicities measured in beats per minute.
+     * This is similar to the beat_histogram field, except that music is effectively transformed before this
+     * feature is calculated to have a tempo of 120 beats per minute, rather than the tempo its actual tempo
+     * setting indicates that it should have. Any variations in tempo are ignored; for the purposes of this
+     * feature the tempo is consistently 120 BPM throughout the music. The magnitude of each bin is
+     * proportional to the aggregated loudnesses of the notes that occur at the bin's (virtual) rhythmic periodicity,
+     * and calculation is done using autocorrelation. All bins below the (virtual) 40 BPM periodicity (relative
+     * to the virtual 120 BPM tempo) are set to 0 because autocorrelation was not performed at these lags
+     * (because the results are too noisy in this range). Bins only go up to a (virtual) 200 BPM.
+     */
+    public double[] beat_histogram_120_bpm_standardized;
+
+    /**
+     * Table with rows (first index) corresponding to the bins of the beat_histogram_120_bpm_standardized
+     * (i.e. rhythmic periodicities measured in beats per minute, after a tempo transformation to 120 BPM
+     * consistently throughout the music). Entries are set to the magnitude of the corresponding bin of
+     * beat_histogram_120_bpm_standardized if the magnitude in that bin of beat_histogram_120_bpm_standardized
+     * is high enough to meet this beat_histogram_thresholded_table_120_bpm_standardized column's threshold
+     * requirements, and to 0 otherwise. Column 0 has a threshold that only allows
+     * beat_histogram_120_bpm_standardized bins with a normalized frequency over 0.1 to be counted, column 1
+     * has a threshold of higher than 0.01, and column 2 only counts beat_histogram_120_bpm_standardized bins
+     * that have a normalized frequency at least 30% as high as the normalized frequency of the highest
+     * beat_histogram bin. This table is then processed so that only peaks are included, which is to say that
+     * entries of beat_histogram_thresholded_table_120_bpm_standardized that are adjacent to
+     * beat_histogram_thresholded_table_120_bpm_standardized bins with higher magnitudes are set to 0.
+     */
+    public double[][] beat_histogram_thresholded_table_120_bpm_standardized;
+
+    /**
+     * A list of the duration of each note in the sequence, in seconds. This includes all notes, including
+     * non-pitched notes on Channel 10. Ordering of notes is iterated first by track, and only then by tick;
+     * this means that this list does NOT necessarily match the temporal order of the notes.
+     */
+    public LinkedList&lt;Double&gt; note_durations;
+
+    /**
+     * A table with rows (first index) corresponding to MIDI ticks, and columns (second index) corresponding
+     * to MIDI channels. Entries are set to true whenever a Note On event occurs on a given tick and channel,
+     * and to false otherwise. A different, final summary aggregate column (column 16) is also present; its
+     * entry is set to true if at least one Note On occurs on any channel at the corresponding tick, and to
+     * false otherwise.
+     */
+    public boolean[][] note_attack_tick_map;
+
+    /**
+     * Information on the pitch, start tick, end tick, track and channel of every note (including Channel 10
+     * unpitched notes). The notes can be accessed simply as a List of notes, or a query can be made (using
+     * the getNotesStartingOnTick method) to find all notes starting on a particular MIDI tick. Additional
+     * information is also available, such as a list of all notes on a particular channel (via the
+     * getNotesOnChannel method).
+     */
+    public CollectedNoteInfo all_notes;
+
+    /**
+     * A normalized histogram with bins corresponding to MIDI pitches (0 to 127). The magnitude of each bin
+     * is proportional to the number of Note Ons in the MIDI sequence at the pitch of the bin. Any Note Ons on
+     * Channel 10 (non-pitched percussion) are ignored for the purpose of this histogram.
+     */
+    public double[] basic_pitch_histogram;
+
+    /**
+     * A normalized histogram with bins corresponding to MIDI pitch classes (0 to 11). The magnitude of each
+     * bin is proportional to the number of Note Ons in the MIDI sequence at the pitch class of the bin. Any
+     * Note Ons on Channel 10 (non-pitched percussion) are ignored for the purpose of this histogram.
+     * Enharmonic equivalents are assigned the same pitch class number. Index 0 refers to C, and index pitches
+     * increase by semitone from there. IMPORTANT: The PitchClassHistogramFeature reorders these pitch classes
+     * to start with the most common pitch class at Index 0, but this reordering is NOT performed in this
+     * field.
+     */
+    public double[] pitch_class_histogram;
+
+    /**
+     * A normalized histogram with bins corresponding to MIDI pitch classes (0 to 11). The bins are ordered
+     * such that Index 0 refers to C, and adjacent bins are separated by a perfect fifth rather than a
+     * semitone (as is the case with the pitch_class_histogram). The magnitude of each bin is proportional to
+     * the number of Note Ons in the MIDI sequence at the pitch class of the bin. Any Note Ons on Channel 10
+     * (non-pitched percussion) are ignored for the purpose of this histogram. Enharmonic equivalents are
+     * assigned the same pitch class number.
+     */
+    public double[] fifths_pitch_histogram;
+
+    /**
+     * A list of lists of pitch bends associated with pitched (i.e. not Channel 10) notes. Each entry of the
+     * root list corresponds to a Note On that has at least one pitch bend message associated with it. Each
+     * such entry contains a list of all MIDI pitchbend values (the second MIDI data byte stored as an
+     * Integer) associated with the Note On, in the order that they occurred. Note that the order of the root
+     * list is based on an iteration through tracks, and then through MIDI events on that track; this means
+     * that the order of the Note Ons may not necessarily be in the temporal order that they occur. Note that
+     * this only takes the second (more significant) pitch bend byte into account.
+     */
+    public LinkedList&lt;LinkedList&lt;Integer&gt;&gt; pitch_bends_list;
+
+    /**
+     * Each bin corresponds to a melodic interval, and the bin index indicates the number of semitones
+     * comprising the interval associated with the bin (there are 128 bins in all). For example, bin 0
+     * corresponds to repeated pitches, bin 1 to a melodic interval of one semitone, bin 2 to a melodic
+     * interval of 2 semitones, etc. The magnitude of each bin is proportional to the fraction of melodic
+     * intervals in the piece that are of the kind associated with the bin (this histogram is normalized).
+     * Rising and falling intervals are treated as identical. Melodies are assumed to be contained within
+     * individual MIDI tracks and channels, so melodic intervals are found separately for each track and
+     * channel before being combined in this histogram. It is also assumed that there is only one melody at a
+     * time per MIDI channel (if multiple notes occur simultaneously on the same MIDI tick on the same MIDI
+     * track and channel, then all notes but the first note on that tick are ignored). Other than this, all
+     * notes on the same track and the same channel are treated as if they are part of a single melody. It is
+     * also assumed that melodies do not cross MIDI tracks or channels (i.e. that they are each separately
+     * contained in their own track and channel). Only pitched notes are considered, so all notes on the
+     * unpitched MIDI Channel 10 are ignored.
+     */
+    public double[] melodic_interval_histogram;
+
+    /**
+     * A list of data structures, where the outer list contains a separate entry for each MIDI track. The
+     * inner structure is an array of lists where the array index corresponds to MIDI channel, and each entry
+     * in the array consists of a list of all melodic intervals that occurred in that channel on that track,
+     * in the order that they occurred. Each entry in these lists of melodic intervals is an Integer that
+     * indicates the number of semitones comprising the melodic interval, with positive values indicating
+     * upwards motion and negative values indicating downwards motion. Any notes on Channel 10 (non-pitched
+     * percussion) are ignored (i.e. the Channel 10 entry on the array is left empty). It is assumed that
+     * there is only one melody per channel (if multiple notes occur simultaneously on the same MIDI tick on
+     * the same MIDI track and channel, then all notes but the first note on that tick are ignored). Other
+     * than this, all notes on the same track and the same channel are treated as if they are part of a single
+     * melody. It is also assumed that melodies do not cross MIDI tracks or channels (i.e. that they are each
+     * separately contained in their own track and channel).
+     */
+    public LinkedList&lt;LinkedList&lt;Integer&gt;[]&gt; melodic_intervals_by_track_and_channel;
+
+    /**
+     * A table with rows (first index) corresponding to MIDI channels and column (second index) designations
+     * as follows:
+     *
+     * &lt;ul&gt;
+     * &lt;li&gt;&lt;i&gt;Column 0:&lt;/i&gt; Total number of Note Ons on the given channel.&lt;/li&gt;
+     *
+     * &lt;li&gt;&lt;i&gt;Column 1:&lt;/i&gt; Total amount of time in seconds that one or more notes were sounding on the given
+     * channel. Warning: This could suffer from rounding error. Use total_time_notes_sounding_per_channel if
+     * more precision is needed.&lt;/li&gt;
+     *
+     * &lt;li&gt;&lt;i&gt;Column 2:&lt;/i&gt; Average loudness (velocity scaled by channel volume, still falls between 0 and
+     * 127) of notes on the given channel.&lt;/li&gt;
+     *
+     * &lt;li&gt;&lt;i&gt;Column 3:&lt;/i&gt; Average melodic leap on the given channel (in semitones). This includes leaps
+     * across rests, and ignores direction. Note that this will give potentially problematic values if there
+     * is more than one melody per channel, or if a channel is polyphonic.&lt;/li&gt;
+     *
+     * &lt;li&gt;&lt;i&gt;Column 4:&lt;/i&gt; Lowest MIDI pitch on the given channel (a value of 1000 means no pitches on the
+     * given channel).&lt;/li&gt;
+     *
+     * &lt;li&gt;&lt;i&gt;Column 5:&lt;/i&gt; Highest MIDI pitch on the given channel (a value of -1000 means no pitches on
+     * the given channel).&lt;/li&gt;
+     *
+     * &lt;li&gt;&lt;i&gt;Column 6:&lt;/i&gt; Mean MIDI pitch on the given channel (a value of 0 means there are no pitches on
+     * the given channel).&lt;/li&gt;
+     * &lt;/ul&gt;
+     *
+     * &lt;p&gt;NOTE: This data includes MIDI Channel 10, even though it is understood that notes on Channel 10 are
+     * in fact unpitched percussion patches.
+     *
+     * &lt;p&gt;NOTE: This data combines data in all MIDI tracks.
+     */
+    public int[][] channel_statistics;
+
+    /**
+     * The number of MIDI channels that contain at least one note. This DOES include MIDI Channel 10.
+     */
+    public double number_of_active_voices;
+
+    /**
+     * Total amount of time in seconds that one or more notes were sounding on the channel corresponding to
+     * the index. This data includes MIDI Channel 10, even though it is understood that notes on Channel 10
+     * are in fact unpitched percussion patches. This data combines data in all MIDI tracks.
+     */
+    public double[] total_time_notes_sounding_per_channel;
+
+    /**
+     * The first list contains a list for each channel. Each channel's list in turn contains the MIDI pitch
+     * of each Note On in that channel, with one entry for each Note On. Note that the order of the pitches
+     * may not in fact reflect the temporal order in which they occurred.
+     *
+     * &lt;p&gt;NOTE: This data includes MIDI Channel 10, even though it is understood that notes on Channel 10 are
+     * in fact unpitched percussion patches.
+     */
+    public List&lt;List&lt;Integer&gt;&gt; list_of_note_on_pitches_by_channel;
+
+    /**
+     * The MIDI pitches of all pitched note ons in the piece (unpitched notes on Channel 10 are excluded).
+     * There is one entry for every note on, but they will not necessarily be in the same temporal order as
+     * they occur in the piece. Each entry indicates the MIDI pitch of one of the sounding notes.
+     */
+    public short[] pitches_of_all_note_ons;
+
+    /**
+     * The pitch classes of all pitched note ons in the piece (unpitched notes on Channel 10 are excluded).
+     * There is one entry for every note on, but they will not necessarily be in the same temporal order as
+     * they occur in the piece. Each entry indicates the pitch class (0 to 11, where 0 is C) of one of the
+     * sounding notes.
+     */
+    public short[] pitch_classes_of_all_note_ons;
+
+    /**
+     * A table with rows (first index) corresponding to MIDI ticks. The columns (second index) correspond to
+     * the MIDI channels. An entry is set to true if one or more notes was sounding on the given channel
+     * during the given MIDI tick.
+     *
+     * &lt;p&gt;NOTE: This data includes MIDI Channel 10, even though it is understood that notes on Channel 10 are
+     * in fact unpitched percussion patches.
+     */
+    public boolean[][] note_sounding_on_a_channel_tick_map;
+
+    /**
+     * A table indicating what pitches are sounding during each MIDI tick. The first index indicates tick and
+     * the second indicates MIDI pitch (and is always set to size 128). Each entry indicates the cumulative
+     * velocity of all notes (NOT including Channel 10 unpitched notes) sounding at that tick with that
+     * pitch.
+     */
+    public short[][] pitch_strength_by_tick_chart;
+
+    /**
+     * Total combined velocity of all notes involved in a vertical unison, summed over the the entire piece.
+     */
+    public int total_vertical_unison_velocity;
+
+    /**
+     * A data structure indicating all MIDI pitches (NOT including Channel 10 unpitched notes) sounding at
+     * each MIDI tick. However, all ticks during which no notes are playing are excluded from this data
+     * structure, so the tick index will most likely not correspond to the actual MIDI ticks in the MIDI
+     * stream. The first dimension indicates the MIDI tick (after removal of rest ticks) and the second
+     * dimension indicates the note index (there will be one entry for each MIDI pitch sounding during the
+     * given MIDI tick). Each entry indicates the MIDI pitch number (0 to 127) of one of the sounding notes.
+     * The pitch values are sorted from lowest to highest. Will be empty if there are no pitched notes.
+     */
+    public short[][] pitches_present_by_tick_excluding_rests;
+
+    /**
+     * A data structure indicating all pitch classes (NOT including Channel 10 unpitched notes) sounding at
+     * each MIDI tick. However, all ticks during which no notes are playing are excluded from this data
+     * structure, so the tick index will most likely not correspond to the actual MIDI ticks in the MIDI
+     * stream. The first dimension indicates the MIDI tick (after removal of rest ticks) and the second
+     * dimension indicates the note index (there will be one entry for each pitch class sounding during the
+     * given MIDI tick). Each entry indicates the pitch class (0 to 11, where 0 is C) of one of the sounding
+     * notes. The pitch class values are sorted from lowest to highest. Will be empty if there are no pitched
+     * notes.
+     */
+    public short[][] pitch_classes_present_by_tick_excluding_rests;
+
+    /**
+     * Fraction of movements between voices that consist of parallel motion (the fraction is calculated
+     * relative to the total amount of qualifying transitions, including all parallel, similar, contrary and
+     * oblique transitions). If more than two voices are involved in a given pitch transition, then each
+     * possible pair of voices comprising the transition is included in the calculation. Note that only
+     * transitions from one set of pitches to another set of pitches comprising the same number of pitches as
+     * the first are included in this calculation, although a brief lookahead is performed in order to
+     * accommodate small rhythmic desynchronizations (e.g. if a MIDI file is a transcription of a human
+     * performance). Only unique pitches are included in this calculation (unisons are treated as a single
+     * pitch). All pitches present are considered, regardless of their MIDI channel or track; this has the
+     * advantage of accommodating polyphonic instruments such as piano or guitar, but the consequence is that
+     * this feature does not incorporate an awareness of voice crossing.
+     */
+    public double parallel_motion_fraction;
+
+    /**
+     * Fraction of movements between voices that consist of similar motion (the fraction is calculated
+     * relative to the total amount of qualifying transitions, including all parallel, similar, contrary and
+     * oblique transitions). If more than two voices are involved in a given pitch transition, then each
+     * possible pair of voices comprising the transition is included in the calculation. Note that only
+     * transitions from one set of pitches to another set of pitches comprising the same number of pitches as
+     * the first are included in this calculation, although a brief lookahead is performed in order to
+     * accommodate small rhythmic desynchronizations (e.g. if a MIDI file is a transcription of a human
+     * performance). Only unique pitches are included in this calculation (unisons are treated as a single
+     * pitch). All pitches present are considered, regardless of their MIDI channel or track; this has the
+     * advantage of accommodating polyphonic instruments such as piano or guitar, but the consequence is that
+     * this feature does not incorporate an awareness of voice crossing.
+     */
+    public double similar_motion_fraction;
+
+    /**
+     * Fraction of movements between voices that consist of contrary motion (the fraction is calculated
+     * relative to the total amount of qualifying transitions, including all parallel, similar, contrary and
+     * oblique transitions). If more than two voices are involved in a given pitch transition, then each
+     * possible pair of voices comprising the transition is included in the calculation. Note that only
+     * transitions from one set of pitches to another set of pitches comprising the same number of pitches as
+     * the first are included in this calculation, although a brief lookahead is performed in order to
+     * accommodate small rhythmic desynchronizations (e.g. if a MIDI file is a transcription of a human
+     * performance). Only unique pitches are included in this calculation (unisons are treated as a single
+     * pitch). All pitches present are considered, regardless of their MIDI channel or track; this has the
+     * advantage of accommodating polyphonic instruments such as piano or guitar, but the consequence is that
+     * this feature does not incorporate an awareness of voice crossing.
+     */
+    public double contrary_motion_fraction;
+
+    /**
+     * Fraction of movements between voices that consist of oblique motion (the fraction is calculated
+     * relative to the total amount of qualifying transitions, including all parallel, similar, contrary and
+     * oblique transitions). If more than two voices are involved in a given pitch transition, then each
+     * possible pair of voices comprising the transition is included in the calculation. Note that only
+     * transitions from one set of pitches to another set of pitches comprising the same number of pitches as
+     * the first are included in this calculation, although a brief lookahead is performed in order to
+     * accommodate small rhythmic desynchronizations (e.g. if a MIDI file is a transcription of a human
+     * performance). Only unique pitches are included in this calculation (unisons are treated as a single
+     * pitch). All pitches present are considered, regardless of their MIDI channel or track; this has the
+     * advantage of accommodating polyphonic instruments such as piano or guitar, but the consequence is that
+     * this feature does not incorporate an awareness of voice crossing.
+     */
+    public double oblique_motion_fraction;
+
+    /**
+     * Fraction of movements between voices that consist of parallel fifths (the fraction is calculated
+     * relative to the total amount of qualifying transitions, including all parallel, similar, contrary and
+     * oblique transitions). If more than two voices are involved in a given pitch transition, then each
+     * possible pair of voices comprising the transition is included in the calculation. Note that only
+     * transitions from one set of pitches to another set of pitches comprising the same number of pitches as
+     * the first are included in this calculation, although a brief lookahead is performed in order to
+     * accommodate small rhythmic desynchronizations (e.g. if a MIDI file is a transcription of a human
+     * performance). Only unique pitches are included in this calculation (unisons are treated as a single
+     * pitch). All pitches present are considered, regardless of their MIDI channel or track; this has the
+     * advantage of accommodating polyphonic instruments such as piano or guitar, but the consequence is that
+     * this feature does not incorporate an awareness of voice crossing.
+     */
+    public double parallel_fifths_fraction;
+
+    /**
+     * Fraction of movements between voices that consist of parallel octaves (the fraction is calculated
+     * relative to the total amount of qualifying transitions, including all parallel, similar, contrary and
+     * oblique transitions). If more than two voices are involved in a given pitch transition, then each
+     * possible pair of voices comprising the transition is included in the calculation. Note that only
+     * transitions from one set of pitches to another set of pitches comprising the same number of pitches as
+     * the first are included in this calculation, although a brief lookahead is performed in order to
+     * accommodate small rhythmic desynchronizations (e.g. if a MIDI file is a transcription of a human
+     * performance). Only unique pitches are included in this calculation (unisons are treated as a single
+     * pitch). All pitches present are considered, regardless of their MIDI channel or track; this has the
+     * advantage of accommodating polyphonic instruments such as piano or guitar, but the consequence is that
+     * this feature does not incorporate an awareness of voice crossing.
+     */
+    public double parallel_octaves_fraction;
+
+    /**
+     * A table with rows (first index) corresponding to MIDI channel number, and columns (second index)
+     * corresponding to separate notes (in the temporal order that the Note On for each note occurred). Each
+     * entry specifies the velocity of the Note On scaled by the channel volume at the time of the Note On,
+     * such that each value ranges from 0 to 127. Note that the order of the notes may not always  precisely
+     * reflect the temporal order in which they occurred (because the outer iteration is by MIDI track).
+     */
+    public int[][] note_loudnesses;
+
+    /**
+     * An array indicating channel-by-channel durations of rests, expressed in terms of a fraction of a
+     * quarter note's duration (e.g. a half rest would have a value of 2). The first index corresponds to
+     * channel, but not necessarily the actual channel number, since only channels that contain at least one
+     * note and at least one rest are included here. The second index refers to the index of the rest (there
+     * is one entry per rest), where rests are listed in the order in which they occur. A rest in this case is
+     * defined as a period of time during which there are no notes being held on the particular channel in
+     * question. Rests shorter than 0.1 of a quarter note are ignored (i.e. omitted from this listing). A
+     * value of null for this field as a whole indicates that there are no rests at all. Individual channel
+     * rows cannot be null.
+     *
+     * &lt;p&gt;NOTE: This data includes MIDI Channel 10, even though it is understood that notes on Channel 10 are
+     * in fact unpitched percussion patches.
+     */
+    public double[][] rest_durations_separated_by_channel;
+
+    /**
+     * An array indicating the durations of all complete rests, expressed in terms of a fraction of a quarter
+     * note's duration (e.g. a half rest would have a value of 2). A complete rest is defined as a period in
+     * which no pitched notes are sounding on any MIDI channel. Non-pitched (MIDI channel 10) notes are NOT
+     * considered in this calculation. The index indicates the index of the rest, and the rests are ordered
+     * based on the order they occur in the piece. Rests shorter than 0.1 of a quarter note are ignored (i.e.
+     * omitted from this listing). A value of null for this field indicates that there are no complete rests
+     * of sufficient duration in the piece.
+     */
+    public double[] complete_rest_durations;
+
+
+    /* PRIVATE FIELDS ***************************************************************************************/
+
+
+    /**
+     * The MIDI sequence from which data is extracted by this object.
+     */
+    private final Sequence sequence;
+
+    /**
+     * All the MIDI tracks loaded from the MIDI sequence.
+     */
+    private final Track[] tracks;
+
+    /**
+     * Average number of MIDI ticks corresponding to 1 second of score time. Tempo change messages can cause
+     * variations in the number of ticks per second, which is why this is a mean value.
+     */
+    private final double mean_ticks_per_second;
+
+
+    /* CONSTRUCTOR ******************************************************************************************/
+
+
+    /**
+     * Parse the specified MIDI sequence and fill this object's fields with the appropriate information
+     * extracted from the sequence.
+     *
+     * @param midi_sequence The MIDI sequence to extract information from.
+     * @throws Exception Informative exceptions are thrown if problems are encountered during parsing.
+     */
+    public MIDIIntermediateRepresentations(Sequence midi_sequence)
+<span class="fc" id="L645">            throws Exception {</span>
+        // Check the MIDI sequence. Throw exceptions if it uses SMPTE timing or if it is too long.
+        // Fill sequence and all_tracks fields otherwise.
+<span class="fc" id="L648">        sequence = midi_sequence;</span>
+<span class="fc" id="L649">        tracks = sequence.getTracks();</span>
+<span class="pc bpc" id="L650" title="1 of 2 branches missed.">        if (Sequence.PPQ != sequence.getDivisionType())</span>
+<span class="nc" id="L651">            throw new Exception(&quot;The MIDI sequence uses SMPTE time encoding.\n&quot;</span>
+                    + &quot;Only PPQ time encoding is accepted by this software.&quot;);
+<span class="pc bpc" id="L653" title="1 of 2 branches missed.">        if (Integer.MAX_VALUE - 1.0 &lt; ((double) sequence.getTickLength()))</span>
+<span class="nc" id="L654">            throw new Exception(&quot;The MIDI sequence could not be processed because it is too long.&quot;);</span>
+
+        // Caclulate mean_ticks_per_second
+<span class="fc" id="L657">        mean_ticks_per_second = sequence.getTickLength() / (sequence.getMicrosecondLength() / 1000000.0);</span>
+
+        // Fill in the public fields of this class
+        // Commented out code is for the purpose of testing calculated values in case changes are made
+
+<span class="fc" id="L662">        generateOverallMetadata();</span>
+
+<span class="fc" id="L664">        generateSequenceDurationIntermediateRepresentations();</span>
+
+<span class="fc" id="L666">        generateAverageTickDuration();</span>
+
+<span class="fc" id="L668">        generateTempoAndChannelVolumeMaps();</span>
+
+<span class="fc" id="L670">        generatePitchedInstrumentIntermediateRepresentations();</span>
+
+<span class="fc" id="L672">        generateNonPitchedInstrumentPrevalence();</span>
+
+<span class="fc" id="L674">        generateNoteCountIntermediateRepresentations();</span>
+
+<span class="fc" id="L676">        generateRhythmicValueFeatures();</span>
+
+<span class="fc" id="L678">        generateBeatHistograms();</span>
+
+<span class="fc" id="L680">        generateBeatHistogramThresholdedTables();</span>
+
+<span class="fc" id="L682">        generateNoteDurations();</span>
+
+<span class="fc" id="L684">        generateNoteAttackTickMap();</span>
+
+<span class="fc" id="L686">        generateAllNotes();</span>
+
+<span class="fc" id="L688">        generatePitchHistogramsIntermediateRepresentations();</span>
+
+<span class="fc" id="L690">        generatePitchBendsList();</span>
+
+<span class="fc" id="L692">        generateMelodicIntermediateRepresentations();</span>
+
+<span class="fc" id="L694">        generateChannelNoteOnIntermediateRepresentations();</span>
+
+<span class="fc" id="L696">        generatePitchAndPitchClaessesOfAllNoteOns();</span>
+
+<span class="fc" id="L698">        generatePitchStrengthByTickChartAndCalculateTotalVerticalUnsionVelocity();</span>
+
+<span class="fc" id="L700">        generatePitchesAndPitchClassesPresentByTickExcludingRests();</span>
+
+<span class="fc" id="L702">        generateContrapuntalCounts();</span>
+<span class="fc" id="L703">        generateNoteLoudnesses();</span>
+
+<span class="fc" id="L705">        generateRestDurationsSeparatedByChannel();</span>
+
+<span class="fc" id="L707">        generateCompleteRestDurations();</span>
+<span class="fc" id="L708">    }</span>
+
+
+    /* STATIC PUBLIC METHOD *********************************************************************************/
+
+
+    /**
+     * Return the fraction of Note Ons in the MIDI sequence from which the given
+     * MIDIIntermediateRepresentations has been generated that are played by one of the General MIDI patches
+     * included in the the given set of MIDI instrument patch numbers.
+     *
+     * @param instruments   An array holding the General MIDI patches of interest.
+     * @param sequence_info Data extracted from a MIDI sequence.
+     * @return The fraction of Note Ons played by the specified MIDI instrument patches.
+     */
+    public static double calculateInstrumentGroupFrequency(int[] instruments,
+                                                           MIDIIntermediateRepresentations sequence_info) {
+<span class="fc" id="L725">        int notes_played = 0;</span>
+<span class="fc bfc" id="L726" title="All 2 branches covered.">        for (int i = 0; i &lt; instruments.length; i++)</span>
+<span class="fc" id="L727">            notes_played += sequence_info.pitched_instrument_prevalence[instruments[i]][0];</span>
+<span class="pc bpc" id="L728" title="1 of 2 branches missed.">        if (0 == sequence_info.total_number_note_ons)</span>
+<span class="nc" id="L729">            return 0.0;</span>
+        else
+<span class="fc" id="L731">            return ((double) notes_played) / sequence_info.total_number_note_ons;</span>
+    }
+
+
+    /* PRIVATE METHODS **************************************************************************************/
+
+
+    /**
+     * Calculate values for the overall_metadata field.
+     */
+    private void generateOverallMetadata() {
+        // Instantiat overall_metadata
+<span class="fc" id="L743">        overall_metadata = new Object[4];</span>
+<span class="fc" id="L744">        overall_metadata[0] = 0; // major or minor</span>
+<span class="fc" id="L745">        overall_metadata[1] = new LinkedList(); // time signature numerators</span>
+<span class="fc" id="L746">        overall_metadata[2] = new LinkedList(); // time signature denominators</span>
+<span class="fc" id="L747">        overall_metadata[3] = 120; // default MIDI tempo</span>
+
+        // Note that a key signature and initial tempo have not yet been found
+<span class="fc" id="L750">        boolean key_sig_found = false;</span>
+<span class="fc" id="L751">        boolean tempo_found = false;</span>
+
+        // Search for MetaMessages
+<span class="fc bfc" id="L754" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+            // Go through all the events in the current track, searching for meta messages
+<span class="fc" id="L756">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L757" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+                // Get the MIDI message corresponding to the next MIDI event
+<span class="fc" id="L759">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L760">                MidiMessage message = event.getMessage();</span>
+
+                // If MIDI message is a MetaMessage
+<span class="fc bfc" id="L763" title="All 2 branches covered.">                if (message instanceof MetaMessage) {</span>
+<span class="fc" id="L764">                    byte[] data = ((MetaMessage) message).getData();</span>
+
+                    // Check if major or minor, based on first key signature
+<span class="fc bfc" id="L767" title="All 2 branches covered.">                    if (0x59 == ((MetaMessage) message).getType()) {</span>
+<span class="fc bfc" id="L768" title="All 2 branches covered.">                        if (!key_sig_found) {</span>
+<span class="fc bfc" id="L769" title="All 2 branches covered.">                            if (0 == data[1]) // major</span>
+<span class="fc" id="L770">                                overall_metadata[0] = 0;</span>
+<span class="pc bpc" id="L771" title="1 of 2 branches missed.">                            else if (1 == data[1]) // minor</span>
+<span class="fc" id="L772">                                overall_metadata[0] = 1;</span>
+<span class="fc" id="L773">                            key_sig_found = true;</span>
+                        }
+                    }
+
+                    // Check time signature, based on first time signature
+<span class="fc bfc" id="L778" title="All 2 branches covered.">                    if (0x58 == ((MetaMessage) message).getType()) {</span>
+<span class="fc" id="L779">                        ((LinkedList) overall_metadata[1]).add(Integer.valueOf(data[0] &amp; 0xFF));</span>
+<span class="fc" id="L780">                        ((LinkedList) overall_metadata[2]).add(Integer.valueOf(1 &lt;&lt; (data[1] &amp; 0xFF)));</span>
+                    }
+
+                    // Check initial tempo
+<span class="fc bfc" id="L784" title="All 2 branches covered.">                    if (0x51 == ((MetaMessage) message).getType()) {</span>
+<span class="fc bfc" id="L785" title="All 2 branches covered.">                        if (!tempo_found) {</span>
+                            // Find tempo in microseconds per beat
+<span class="fc" id="L787">                            int ms_tempo = ((data[0] &amp; 0xFF) &lt;&lt; 16) | ((data[1] &amp; 0xFF) &lt;&lt; 8) | (data[2] &amp; 0xFF);</span>
+
+                            // Convert to beats per minute
+<span class="fc" id="L790">                            float ms_tempo_float = ms_tempo;</span>
+<span class="pc bpc" id="L791" title="1 of 2 branches missed.">                            if (0 &gt;= ms_tempo_float) ms_tempo_float = 0.1f;</span>
+<span class="fc" id="L792">                            int bpm = Math.round(60000000.0f / ms_tempo_float);</span>
+<span class="fc" id="L793">                            overall_metadata[3] = bpm;</span>
+
+                            // Note that the tempo has been found
+<span class="fc" id="L796">                            tempo_found = true;</span>
+                        }
+                    }
+                }
+            }
+        }
+
+        // Default tihe time signature to 4 / 4 if no time signature is
+<span class="fc bfc" id="L804" title="All 2 branches covered.">        if (((LinkedList) overall_metadata[1]).isEmpty()) {</span>
+<span class="fc" id="L805">            ((LinkedList) overall_metadata[1]).add(4);</span>
+<span class="fc" id="L806">            ((LinkedList) overall_metadata[2]).add(4);</span>
+        }
+<span class="fc" id="L808">    }</span>
+
+
+    /**
+     * Calculate the values of the sequence_duration and sequence_duration_precise fields.
+     */
+    private void generateSequenceDurationIntermediateRepresentations() {
+<span class="fc" id="L815">        sequence_duration = (int) (sequence.getMicrosecondLength() / 1000000);</span>
+<span class="fc" id="L816">        sequence_duration_precise = sequence.getMicrosecondLength() / 1000000.0;</span>
+<span class="fc" id="L817">    }</span>
+
+
+    /**
+     * Calculate the value of the average_tick_duration field.
+     */
+    private void generateAverageTickDuration() {
+<span class="fc" id="L824">        average_tick_duration = sequence_duration_precise / sequence.getTickLength();</span>
+<span class="fc" id="L825">    }</span>
+
+
+    /**
+     * Calculate the value of the duration_of_ticks_in_seconds and volume_of_channels_tick_map fields based on
+     * tempo change and channel volume controller messages messages.
+     */
+    private void generateTempoAndChannelVolumeMaps() {
+        // Instantiate duration_of_ticks_in_seconds and initialize entries to the average number of ticks per
+        // second
+<span class="fc" id="L835">        duration_of_ticks_in_seconds = new double[(int) sequence.getTickLength() + 1];</span>
+<span class="fc bfc" id="L836" title="All 2 branches covered.">        for (int i = 0; i &lt; duration_of_ticks_in_seconds.length; i++)</span>
+<span class="fc" id="L837">            duration_of_ticks_in_seconds[i] = 1.0 / mean_ticks_per_second;</span>
+
+        // Instantiate volume_of_channels_tick_map and initialize entries to 1.0
+<span class="fc" id="L840">        volume_of_channels_tick_map = new double[(int) sequence.getTickLength() + 1][16];</span>
+<span class="fc bfc" id="L841" title="All 2 branches covered.">        for (int i = 0; i &lt; volume_of_channels_tick_map.length; i++)</span>
+<span class="fc bfc" id="L842" title="All 2 branches covered.">            for (int j = 0; j &lt; volume_of_channels_tick_map[i].length; j++)</span>
+<span class="fc" id="L843">                volume_of_channels_tick_map[i][j] = 1.0;</span>
+
+        // Fill in duration_of_ticks_in_seconds based on tempo change messagess
+<span class="fc bfc" id="L846" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+            // Go through all the events in the current track, searching for tempo change messages
+<span class="fc" id="L848">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L849" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+                // Get the MIDI message corresponding to the next MIDI event
+<span class="fc" id="L851">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L852">                MidiMessage message = event.getMessage();</span>
+
+                // If message is a MetaMessage (which tempo change messages are)
+<span class="fc bfc" id="L855" title="All 2 branches covered.">                if (message instanceof MetaMessage meta_message) {</span>
+
+<span class="fc bfc" id="L857" title="All 2 branches covered.">                    if (0x51 == meta_message.getType()) // tempo change message</span>
+                    {
+                        // Find the number of PPQ ticks per beat
+<span class="fc" id="L860">                        int ticks_per_beat = sequence.getResolution();</span>
+
+                        // Find the number of microseconds per beat
+<span class="fc" id="L863">                        byte[] meta_data = meta_message.getData();</span>
+<span class="fc" id="L864">                        int microseconds_per_beat = ((meta_data[0] &amp; 0xFF) &lt;&lt; 16)</span>
+                                | ((meta_data[1] &amp; 0xFF) &lt;&lt; 8)
+                                | (meta_data[2] &amp; 0xFF);
+
+                        // Find the number of seconds per tick
+<span class="fc" id="L869">                        double current_seconds_per_tick = ((double) microseconds_per_beat) / ticks_per_beat;</span>
+<span class="fc" id="L870">                        current_seconds_per_tick = current_seconds_per_tick / 1000000.0;</span>
+
+                        // System.out.println(&quot;Tick: &quot; + event.getTick() + &quot;  Current: &quot; + current_seconds_per_tick  + &quot;   Average: &quot; + (1.0 / mean_ticks_per_second));
+
+                        // Make all subsequent tempos be at the current_seconds_per_tick rate
+<span class="fc bfc" id="L875" title="All 2 branches covered.">                        for (int i = (int) event.getTick(); i &lt; duration_of_ticks_in_seconds.length; i++)</span>
+<span class="fc" id="L876">                            duration_of_ticks_in_seconds[i] = current_seconds_per_tick;</span>
+                    }
+                }
+
+                // If message is a ShortMessage (which volume controller messages are)
+<span class="fc bfc" id="L881" title="All 2 branches covered.">                if (message instanceof ShortMessage short_message) {</span>
+
+<span class="fc bfc" id="L883" title="All 2 branches covered.">                    if (0xb0 == short_message.getCommand()) // Controller message</span>
+                    {
+<span class="fc bfc" id="L885" title="All 2 branches covered.">                        if (7 == short_message.getData1()) // Volume controller</span>
+                        {
+                            // Make all subsequent channel volumes be at the given channel
+<span class="fc bfc" id="L888" title="All 2 branches covered.">                            for (int i = (int) event.getTick(); i &lt; duration_of_ticks_in_seconds.length; i++)</span>
+<span class="fc" id="L889">                                volume_of_channels_tick_map[i][short_message.getChannel()] = short_message.getData2() / 127.0;</span>
+
+                            //System.out.println(&quot;-&gt; &quot; + event.getTick() + &quot; &quot; + short_message.getChannel() + &quot; &quot; + short_message.getData2());
+                        }
+                    }
+                }
+            }
+        }
+<span class="fc" id="L897">    }</span>
+
+
+    /**
+     * Calculate the values of the pitched_instrument_prevalence and pitched_instrumentation_tick_map fields.
+     */
+    private void generatePitchedInstrumentIntermediateRepresentations() {
+        // Instantiate pitched_instrument_prevalence and initialize entries to 0
+<span class="fc" id="L905">        pitched_instrument_prevalence = new int[128][2];</span>
+<span class="fc bfc" id="L906" title="All 2 branches covered.">        for (int i = 0; i &lt; pitched_instrument_prevalence.length; i++) {</span>
+<span class="fc" id="L907">            pitched_instrument_prevalence[i][0] = 0;</span>
+<span class="fc" id="L908">            pitched_instrument_prevalence[i][1] = 0;</span>
+        }
+
+        // Instantiate pitched_instrumentation_tick_map and initialize entries to false
+<span class="fc" id="L912">        pitched_instrumentation_tick_map = new boolean[(int) sequence.getTickLength() + 1][128];</span>
+<span class="fc bfc" id="L913" title="All 2 branches covered.">        for (int i = 0; i &lt; pitched_instrumentation_tick_map.length; i++)</span>
+<span class="fc bfc" id="L914" title="All 2 branches covered.">            for (int j = 0; j &lt; pitched_instrumentation_tick_map[i].length; j++)</span>
+<span class="fc" id="L915">                pitched_instrumentation_tick_map[i][j] = false;</span>
+
+        // Fill in fields
+<span class="fc bfc" id="L918" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+            // Keep track of what patch is being used for each channel. Default is 0.
+<span class="fc" id="L920">            int[] current_patch_numbers = new int[16];</span>
+<span class="fc bfc" id="L921" title="All 2 branches covered.">            for (int i = 0; i &lt; current_patch_numbers.length; i++)</span>
+<span class="fc" id="L922">                current_patch_numbers[i] = 0;</span>
+
+            // Go through all the events in the current track, searching for note ons, note offs and program
+            // change messages
+<span class="fc" id="L926">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L927" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+                // Get the MIDI message corresponding to the next MIDI event
+<span class="fc" id="L929">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L930">                MidiMessage message = event.getMessage();</span>
+
+                // If message is a ShortMessage (which Note Ons, Note Offs and Program Change messages are)
+<span class="fc bfc" id="L933" title="All 2 branches covered.">                if (message instanceof ShortMessage short_message) {</span>
+<span class="fc bfc" id="L934" title="All 2 branches covered.">                    if (10 - 1 != short_message.getChannel()) // not channel 10 (percussion)</span>
+                    {
+                        // If a Program Change message is encountered, then update current_patch_numbers
+<span class="fc bfc" id="L937" title="All 2 branches covered.">                        if (0xc0 == short_message.getCommand())</span>
+<span class="fc" id="L938">                            current_patch_numbers[short_message.getChannel()] = short_message.getData1();</span>
+
+                        // If a Note On message is encountered, then increment first column of
+                        // pitched_instrument_prevalence and note that have started playing/ the appropriate
+                        // instrument
+<span class="fc bfc" id="L943" title="All 2 branches covered.">                        if (0x90 == short_message.getCommand()) {</span>
+<span class="pc bpc" id="L944" title="1 of 2 branches missed.">                            if (0 != short_message.getData2()) // not velocity 0</span>
+                            {
+                                // Increment the Note On count in pitched_instrument_prevalence
+<span class="fc" id="L947">                                pitched_instrument_prevalence[current_patch_numbers[short_message.getChannel()]][0]++;</span>
+
+                                // Look ahead to find the corresponding note off for this note on. Defaults
+                                // to the last tick if no corresponding note off is found.
+<span class="fc" id="L951">                                int event_start_tick = (int) event.getTick();</span>
+<span class="fc" id="L952">                                int event_end_tick = MIDIIntermediateRepresentations.findCorrespondingNoteOffEndTick(short_message, n_event, track);</span>
+
+                                // Fill in pitched_instrumentation_tick_map for all the ticks corresponding to this note
+<span class="fc bfc" id="L955" title="All 2 branches covered.">                                for (int i = event_start_tick; i &lt; event_end_tick; i++)</span>
+<span class="fc" id="L956">                                    pitched_instrumentation_tick_map[i][current_patch_numbers[short_message.getChannel()]] = true;</span>
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Note the total time that each instrument was sounding in pitched_instrument_prevalence
+<span class="fc" id="L965">        double[] total = new double[pitched_instrument_prevalence.length];</span>
+<span class="fc bfc" id="L966" title="All 2 branches covered.">        for (int i = 0; i &lt; total.length; i++)</span>
+<span class="fc" id="L967">            total[i] = 0.0;</span>
+<span class="fc bfc" id="L968" title="All 2 branches covered.">        for (int instrument = 0; instrument &lt; pitched_instrument_prevalence.length; instrument++)</span>
+<span class="fc bfc" id="L969" title="All 2 branches covered.">            for (int tick = 0; tick &lt; pitched_instrumentation_tick_map.length; tick++)</span>
+<span class="fc bfc" id="L970" title="All 2 branches covered.">                if (pitched_instrumentation_tick_map[tick][instrument])</span>
+<span class="fc" id="L971">                    total[instrument] = total[instrument] + duration_of_ticks_in_seconds[tick];</span>
+<span class="fc bfc" id="L972" title="All 2 branches covered.">        for (int i = 0; i &lt; total.length; i++)</span>
+<span class="fc" id="L973">            pitched_instrument_prevalence[i][1] = (int) total[i];</span>
+<span class="fc" id="L974">    }</span>
+
+
+    /**
+     * Calculate the values of the non_pitched_instrument_prevalence field. Note that all 128 note values are
+     * collected, although in general only note values 35 to 81 should be used.
+     */
+    private void generateNonPitchedInstrumentPrevalence() {
+        // Instantiate non_pitched_instrument_prevalence and initialize entries to 0
+<span class="fc" id="L983">        non_pitched_instrument_prevalence = new int[128];</span>
+<span class="fc bfc" id="L984" title="All 2 branches covered.">        for (int i = 0; i &lt; non_pitched_instrument_prevalence.length; i++)</span>
+<span class="fc" id="L985">            non_pitched_instrument_prevalence[i] = 0;</span>
+
+        // Fill in non_pitched_instrument_prevalence
+<span class="fc bfc" id="L988" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+            // Go through all the events in the current track, searching for note ons
+<span class="fc" id="L990">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L991" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+                // Get the MIDI message corresponding to the next MIDI event
+<span class="fc" id="L993">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L994">                MidiMessage message = event.getMessage();</span>
+
+                // If message is a ShortMessage (which Note Ons are)
+<span class="fc bfc" id="L997" title="All 2 branches covered.">                if (message instanceof ShortMessage short_message) {</span>
+<span class="fc bfc" id="L998" title="All 2 branches covered.">                    if (10 - 1 == short_message.getChannel()) // is channel 10 (percussion)</span>
+                    {
+                        // If a Note On message is encountered, then increment appropriate row of
+                        // non_pitched_instrument_prevalence
+<span class="fc bfc" id="L1002" title="All 2 branches covered.">                        if (0x90 == short_message.getCommand()) {</span>
+<span class="fc bfc" id="L1003" title="All 2 branches covered.">                            if (0 != short_message.getData2()) // not velocity 0</span>
+                            {
+                                // Increment the Note On count in non_pitched_instrument_prevalence
+<span class="fc" id="L1006">                                non_pitched_instrument_prevalence[short_message.getData1()]++;</span>
+                            }
+                        }
+                    }
+                }
+            }
+        }
+<span class="fc" id="L1013">    }</span>
+
+
+    /**
+     * Calculate the values of the total_number_note_ons, total_number_pitched_note_ons and
+     * total_number_non_pitched_note_ons fields.
+     */
+    private void generateNoteCountIntermediateRepresentations() {
+        // Calculate total_number_note_ons
+<span class="fc" id="L1022">        total_number_note_ons = 0;</span>
+<span class="fc bfc" id="L1023" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+            // Go through all the events in the current track, searching for note ons
+<span class="fc" id="L1025">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L1026" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+                // Get the MIDI message corresponding to the next MIDI event
+<span class="fc" id="L1028">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L1029">                MidiMessage message = event.getMessage();</span>
+
+                // If message is a ShortMessage (which Note Ons are)
+<span class="fc bfc" id="L1032" title="All 2 branches covered.">                if (message instanceof ShortMessage short_message) {</span>
+<span class="fc bfc" id="L1033" title="All 2 branches covered.">                    if (0x90 == short_message.getCommand())</span>
+<span class="fc bfc" id="L1034" title="All 2 branches covered.">                        if (0 != short_message.getData2()) // not velocity 0</span>
+<span class="fc" id="L1035">                            total_number_note_ons++;</span>
+                }
+            }
+        }
+
+        // Calculate total_number_pitched_note_ons
+<span class="fc" id="L1041">        total_number_pitched_note_ons = 0;</span>
+<span class="fc bfc" id="L1042" title="All 2 branches covered.">        for (int i = 0; i &lt; pitched_instrument_prevalence.length; i++)</span>
+<span class="fc" id="L1043">            total_number_pitched_note_ons += pitched_instrument_prevalence[i][0];</span>
+
+        // Calculate total_number_non_pitched_note_ons
+<span class="fc" id="L1046">        total_number_non_pitched_note_ons = 0;</span>
+<span class="fc bfc" id="L1047" title="All 2 branches covered.">        for (int i = 0; i &lt; non_pitched_instrument_prevalence.length; i++)</span>
+<span class="fc" id="L1048">            total_number_non_pitched_note_ons += non_pitched_instrument_prevalence[i];</span>
+<span class="fc" id="L1049">    }</span>
+
+
+    /**
+     * Calculate the values of the average_quarter_note_duration_in_seconds, rhythmic_value_histogram,
+     * runs_of_same_rhythmic_value, rhythmic_value_of_each_note_in_quarter_notes and rhythmic_value_offsets
+     * fields.
+     */
+    private void generateRhythmicValueFeatures() {
+        // The number of ticks per quarter note for the entire sequence
+<span class="fc" id="L1059">        int ppqn_ticks_per_beat = sequence.getResolution();</span>
+
+        // The number of ticks corresponding to each note value
+<span class="fc" id="L1062">        int ticks_per_thirty_second_note = ppqn_ticks_per_beat / 8;</span>
+<span class="fc" id="L1063">        int ticks_per_sixteenth_note = ppqn_ticks_per_beat / 4;</span>
+<span class="fc" id="L1064">        int ticks_per_eighth_note = ppqn_ticks_per_beat / 2;</span>
+<span class="fc" id="L1065">        int ticks_per_dotted_eighth_note = ppqn_ticks_per_beat * 3 / 4;</span>
+<span class="fc" id="L1066">        int ticks_per_quarter_note = ppqn_ticks_per_beat;</span>
+<span class="fc" id="L1067">        int ticks_per_dotted_quarter_note = ppqn_ticks_per_beat * 3 / 2;</span>
+<span class="fc" id="L1068">        int ticks_per_half_note = ppqn_ticks_per_beat * 2;</span>
+<span class="fc" id="L1069">        int ticks_per_dotted_half_note = ppqn_ticks_per_beat * 3;</span>
+<span class="fc" id="L1070">        int ticks_per_whole_note = ppqn_ticks_per_beat * 4;</span>
+<span class="fc" id="L1071">        int ticks_per_dotted_whole_note = ppqn_ticks_per_beat * 6;</span>
+<span class="fc" id="L1072">        int ticks_per_double_whole_note = ppqn_ticks_per_beat * 8;</span>
+<span class="fc" id="L1073">        int ticks_per_dotted_double_whole_note = ppqn_ticks_per_beat * 12;</span>
+
+        // The average duration in seconds of a quarter note
+<span class="fc" id="L1076">        average_quarter_note_duration_in_seconds = ticks_per_quarter_note * average_tick_duration;</span>
+
+        // The number of ticks corresponding to each note value in the form of an array
+<span class="fc" id="L1079">        int[] central_ticks_per_note_value = {ticks_per_thirty_second_note, // i=0</span>
+                ticks_per_sixteenth_note, // i=1
+                ticks_per_eighth_note, // i=2
+                ticks_per_dotted_eighth_note, // i=3
+                ticks_per_quarter_note, // i=4
+                ticks_per_dotted_quarter_note, // i=5
+                ticks_per_half_note, // i=6
+                ticks_per_dotted_half_note, // i=7
+                ticks_per_whole_note, // i=8
+                ticks_per_dotted_whole_note, // i=9
+                ticks_per_double_whole_note, // i=10
+                ticks_per_dotted_double_whole_note}; // i=11
+
+        // The lowest number of ticks that a note of the given value can have
+<span class="fc" id="L1093">        int[] lower_bound_ticks_per_note_value = new int[central_ticks_per_note_value.length];</span>
+<span class="fc" id="L1094">        lower_bound_ticks_per_note_value[0] = 0;</span>
+<span class="fc bfc" id="L1095" title="All 2 branches covered.">        for (int i = 1; i &lt; lower_bound_ticks_per_note_value.length; i++)</span>
+<span class="fc" id="L1096">            lower_bound_ticks_per_note_value[i] = central_ticks_per_note_value[i - 1] + ((central_ticks_per_note_value[i] - central_ticks_per_note_value[i - 1]) / 2);</span>
+
+        // The number of notes corresponding to each note value
+<span class="fc" id="L1099">        int[] rhythmic_duration_note_counts = new int[lower_bound_ticks_per_note_value.length];</span>
+
+        // Initialize runs_of_same_rhythmic_value
+<span class="fc" id="L1102">        runs_of_same_rhythmic_value = new LinkedList[central_ticks_per_note_value.length];</span>
+<span class="fc bfc" id="L1103" title="All 2 branches covered.">        for (int i = 0; i &lt; runs_of_same_rhythmic_value.length; i++)</span>
+<span class="fc" id="L1104">            runs_of_same_rhythmic_value[i] = new LinkedList&lt;&gt;();</span>
+
+        // The offset in duration of each note from the exact idealized duration of its nearest rhythmic
+        // value, expressed as a fraction of the duration of an idealized quarter note
+<span class="fc" id="L1108">        LinkedList&lt;Double&gt; quantization_offsets_in_quarter_note_fractions = new LinkedList&lt;&gt;();</span>
+
+        // Fill rhythmic_duration_note_counts for the entire sequence
+<span class="fc bfc" id="L1111" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+            // The rhythmic value of each note on this track, divided by channel, and in the order they occur
+            // on that channel
+<span class="fc" id="L1114">            LinkedList&lt;Integer&gt;[] ordered_rhythmic_values_by_channel = new LinkedList[16];</span>
+<span class="fc bfc" id="L1115" title="All 2 branches covered.">            for (int i = 0; i &lt; ordered_rhythmic_values_by_channel.length; i++)</span>
+<span class="fc" id="L1116">                ordered_rhythmic_values_by_channel[i] = new LinkedList&lt;&gt;();</span>
+
+            // Process this track
+<span class="fc" id="L1119">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L1120" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+                // Get the MIDI message corresponding to the next MIDI event
+<span class="fc" id="L1122">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L1123">                MidiMessage message = event.getMessage();</span>
+
+                // If message is a ShortMessage (which Note Ons are)
+<span class="fc bfc" id="L1126" title="All 2 branches covered.">                if (message instanceof ShortMessage short_message) {</span>
+
+                    // If a Note On message is encountered
+<span class="fc bfc" id="L1129" title="All 2 branches covered.">                    if (0x90 == short_message.getCommand()) {</span>
+<span class="fc bfc" id="L1130" title="All 2 branches covered.">                        if (0 != short_message.getData2()) // not velocity 0</span>
+                        {
+                            // Look ahead to find the corresponding note off for this note on. Defaults
+                            // to the last tick if no corresponding note off is found.
+<span class="fc" id="L1134">                            int event_start_tick = (int) event.getTick();</span>
+<span class="fc" id="L1135">                            int event_end_tick = MIDIIntermediateRepresentations.findCorrespondingNoteOffEndTick(short_message, n_event, track);</span>
+
+                            // Calculate duration in ticks of the note
+<span class="fc" id="L1138">                            int duration_in_ticks = event_end_tick - event_start_tick;</span>
+
+                            // System.out.println(&quot;NOTE FOUND: lasts &quot; + duration_in_ticks + &quot; ticks at &quot; + ppqn_ticks_per_beat + &quot; ticks per beat&quot;);
+
+                            // Map each note to its appropriate rhythmic value
+<span class="fc bfc" id="L1143" title="All 2 branches covered.">                            for (int i = 0; i &lt; rhythmic_duration_note_counts.length; i++) {</span>
+<span class="fc bfc" id="L1144" title="All 2 branches covered.">                                if (i == rhythmic_duration_note_counts.length - 1) {</span>
+                                    // Fill in rhythmic_duration_note_counts
+<span class="fc" id="L1146">                                    rhythmic_duration_note_counts[i]++;</span>
+                                    // System.out.println(&quot;\tSet to rhythmic_duration_note_counts entry &quot; + i);
+
+                                    // Fill in ordered_rhythmic_values_by_channel
+<span class="fc" id="L1150">                                    ordered_rhythmic_values_by_channel[short_message.getChannel()].add(i);</span>
+
+                                    // Fill in quantization_offsets_in_quarter_note_fractions
+<span class="fc" id="L1153">                                    double quantization_offset_in_ticks = Math.abs(duration_in_ticks - central_ticks_per_note_value[i]);</span>
+<span class="fc" id="L1154">                                    double quantization_offset_in_quarter_note_fractions = quantization_offset_in_ticks / central_ticks_per_note_value[4];</span>
+                                    // System.out.println(&quot;\t\tOffset: &quot; + quantization_offset_in_ticks + &quot; ticks &quot; + quantization_offset_in_quarter_note_fractions + &quot; quarter note fractions&quot;);
+<span class="fc" id="L1156">                                    quantization_offsets_in_quarter_note_fractions.add(quantization_offset_in_quarter_note_fractions);</span>
+<span class="fc bfc" id="L1157" title="All 2 branches covered.">                                } else if (duration_in_ticks &lt; lower_bound_ticks_per_note_value[i + 1]) {</span>
+                                    // Fill in rhythmic_duration_note_counts
+<span class="fc" id="L1159">                                    rhythmic_duration_note_counts[i]++;</span>
+                                    // System.out.println(&quot;\tSet to rhythmic_duration_note_counts entry &quot; + i);
+
+                                    // Fill in ordered_rhythmic_values_by_channel
+<span class="fc" id="L1163">                                    ordered_rhythmic_values_by_channel[short_message.getChannel()].add(i);</span>
+
+                                    // Fill in quantization_offsets_in_quarter_note_fractions
+<span class="fc" id="L1166">                                    double quantization_offset_in_ticks = Math.abs(duration_in_ticks - central_ticks_per_note_value[i]);</span>
+<span class="fc" id="L1167">                                    double quantization_offset_in_quarter_note_fractions = quantization_offset_in_ticks / central_ticks_per_note_value[4];</span>
+                                    // System.out.println(&quot;\t\tOffset: &quot; + quantization_offset_in_ticks + &quot; ticks &quot; + quantization_offset_in_quarter_note_fractions + &quot; quarter note fractions&quot;);
+<span class="fc" id="L1169">                                    quantization_offsets_in_quarter_note_fractions.add(quantization_offset_in_quarter_note_fractions);</span>
+
+                                    // Exit the loop
+<span class="fc" id="L1172">                                    break;</span>
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Update runs_of_same_rhythmic_value for this track
+<span class="fc bfc" id="L1181" title="All 2 branches covered.">            for (int chan = 0; chan &lt; ordered_rhythmic_values_by_channel.length; chan++) {</span>
+<span class="fc" id="L1182">                int current_run_length = 0;</span>
+<span class="fc" id="L1183">                int last_rhythmic_value = -1;</span>
+<span class="fc bfc" id="L1184" title="All 2 branches covered.">                for (int note = 0; note &lt; ordered_rhythmic_values_by_channel[chan].size(); note++) {</span>
+<span class="fc" id="L1185">                    int this_rhythmic_value = ordered_rhythmic_values_by_channel[chan].get(note);</span>
+                    // System.out.println(&quot;Track: &quot; + n_track + &quot; Channel : &quot; + chan + &quot; Rhythmic Value: &quot; + this_rhythmic_value);
+<span class="fc bfc" id="L1187" title="All 2 branches covered.">                    if (-1 == last_rhythmic_value) {</span>
+<span class="fc" id="L1188">                        last_rhythmic_value = this_rhythmic_value;</span>
+<span class="fc" id="L1189">                        current_run_length = 1;</span>
+<span class="fc bfc" id="L1190" title="All 2 branches covered.">                    } else if (this_rhythmic_value == last_rhythmic_value)</span>
+<span class="fc" id="L1191">                        current_run_length++;</span>
+                    else {
+<span class="fc" id="L1193">                        runs_of_same_rhythmic_value[last_rhythmic_value].add(current_run_length);</span>
+                        // System.out.println(&quot;\t1) ADD Rhythmic Value: &quot; + last_rhythmic_value + &quot; Run Length: &quot; + current_run_length);
+<span class="fc" id="L1195">                        last_rhythmic_value = this_rhythmic_value;</span>
+<span class="fc" id="L1196">                        current_run_length = 1;</span>
+                    }
+                }
+<span class="fc bfc" id="L1199" title="All 2 branches covered.">                if (-1 != last_rhythmic_value) {</span>
+<span class="fc" id="L1200">                    runs_of_same_rhythmic_value[last_rhythmic_value].add(current_run_length);</span>
+                    // System.out.println(&quot;\t2) ADD Rhythmic Value: &quot; + last_rhythmic_value + &quot; Run Length: &quot; + current_run_length);
+                }
+            }
+        }
+
+        // Calculate the total number of notes
+<span class="fc" id="L1207">        int total_notes = 0;</span>
+<span class="fc bfc" id="L1208" title="All 2 branches covered.">        for (int i = 0; i &lt; rhythmic_duration_note_counts.length; i++)</span>
+<span class="fc" id="L1209">            total_notes += rhythmic_duration_note_counts[i];</span>
+
+        // Calculate the normalized fraction of notes corresponding to each rhythmic value
+<span class="fc" id="L1212">        rhythmic_value_histogram = new double[rhythmic_duration_note_counts.length];</span>
+<span class="fc bfc" id="L1213" title="All 2 branches covered.">        for (int i = 0; i &lt; rhythmic_value_histogram.length; i++) {</span>
+<span class="pc bpc" id="L1214" title="1 of 2 branches missed.">            if (0 == total_notes)</span>
+<span class="nc" id="L1215">                rhythmic_value_histogram[i] = 0.0;</span>
+<span class="fc" id="L1216">            else rhythmic_value_histogram[i] = ((double) rhythmic_duration_note_counts[i]) / total_notes;</span>
+        }
+
+        // Construct an array with one entry for each note, where the value indicates the quantized duration
+        // of the note in quarter notes (e.g. 0.5 dorresponds to a duration of an eighth note).
+<span class="fc" id="L1221">        rhythmic_value_of_each_note_in_quarter_notes = new double[total_notes];</span>
+<span class="fc" id="L1222">        int rvofeniqn_index = 0;</span>
+<span class="fc bfc" id="L1223" title="All 2 branches covered.">        for (int i = 0; i &lt; rhythmic_duration_note_counts.length; i++) {</span>
+<span class="pc bpc" id="L1224" title="1 of 13 branches missed.">            double quarter_note_fraction = switch (i) {</span>
+<span class="fc" id="L1225">                case 0 -&gt; 1.0 / 8.0;</span>
+<span class="fc" id="L1226">                case 1 -&gt; 1.0 / 4.0;</span>
+<span class="fc" id="L1227">                case 2 -&gt; 1.0 / 2.0;</span>
+<span class="fc" id="L1228">                case 3 -&gt; 3.0 / 4.0;</span>
+<span class="fc" id="L1229">                case 4 -&gt; 1.0;</span>
+<span class="fc" id="L1230">                case 5 -&gt; 1.5;</span>
+<span class="fc" id="L1231">                case 6 -&gt; 2.0;</span>
+<span class="fc" id="L1232">                case 7 -&gt; 3.0;</span>
+<span class="fc" id="L1233">                case 8 -&gt; 4.0;</span>
+<span class="fc" id="L1234">                case 9 -&gt; 6.0;</span>
+<span class="fc" id="L1235">                case 10 -&gt; 8.0;</span>
+<span class="fc" id="L1236">                case 11 -&gt; 12.0;</span>
+<span class="pc" id="L1237">                default -&gt; 0.0;</span>
+            };
+
+<span class="fc bfc" id="L1240" title="All 2 branches covered.">            for (int j = 0; j &lt; rhythmic_duration_note_counts[i]; j++) {</span>
+<span class="fc" id="L1241">                rhythmic_value_of_each_note_in_quarter_notes[rvofeniqn_index] = quarter_note_fraction;</span>
+<span class="fc" id="L1242">                rvofeniqn_index++;</span>
+            }
+        }
+
+        // Prepare rhythmic_value_offsets
+<span class="fc" id="L1247">        rhythmic_value_offsets = new double[quantization_offsets_in_quarter_note_fractions.size()];</span>
+<span class="fc bfc" id="L1248" title="All 2 branches covered.">        for (int i = 0; i &lt; rhythmic_value_offsets.length; i++)</span>
+<span class="fc" id="L1249">            rhythmic_value_offsets[i] = quantization_offsets_in_quarter_note_fractions.get(i);</span>
+<span class="fc" id="L1250">    }</span>
+
+
+    /**
+     * Calculate the values of the beat_histogram and beat_histogram_120_bpm_standardized fields.
+     */
+    private void generateBeatHistograms() {
+        // Set the minimum and maximum periodicities that will be used in the autocorrelation
+<span class="fc" id="L1258">        int min_BPM = 40;</span>
+<span class="fc" id="L1259">        int max_BPM = 200;</span>
+
+        // Instantiate beat_histogram and initialize entries to 0
+<span class="fc" id="L1262">        beat_histogram = new double[max_BPM + 1];</span>
+<span class="fc" id="L1263">        beat_histogram_120_bpm_standardized = new double[max_BPM + 1];</span>
+<span class="fc bfc" id="L1264" title="All 2 branches covered.">        for (int i = 0; i &lt; beat_histogram.length; i++) {</span>
+<span class="fc" id="L1265">            beat_histogram[i] = 0.0;</span>
+<span class="fc" id="L1266">            beat_histogram_120_bpm_standardized[i] = 0.0;</span>
+        }
+
+        // Generate an array whose indices correspond to ticks and whose contents
+        // correspond to total velocity of all notes occuring at each given tick
+<span class="fc" id="L1271">        int[] rhythm_score = new int[((int) sequence.getTickLength()) + 1];</span>
+<span class="fc bfc" id="L1272" title="All 2 branches covered.">        for (int i = 0; i &lt; rhythm_score.length; i++)</span>
+<span class="fc" id="L1273">            rhythm_score[i] = 0;</span>
+<span class="fc bfc" id="L1274" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+<span class="fc" id="L1275">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L1276" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+                // Get the MIDI message corresponding to the next MIDI event and find the MIDI tick
+                // that it corresponds to
+<span class="fc" id="L1279">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L1280">                MidiMessage message = event.getMessage();</span>
+<span class="fc" id="L1281">                int current_tick = (int) event.getTick();</span>
+
+                // Mark rhythm_score with combined loudness on a tick with a note on
+<span class="fc bfc" id="L1284" title="All 2 branches covered.">                if (message instanceof ShortMessage short_message) {</span>
+<span class="fc bfc" id="L1285" title="All 2 branches covered.">                    if (0x90 == short_message.getCommand()) // note on</span>
+<span class="fc" id="L1286">                        rhythm_score[current_tick] += (int) (short_message.getData2() * volume_of_channels_tick_map[current_tick][short_message.getChannel()]);</span>
+                }
+            }
+        }
+
+        // Histogram based on tick interval bins
+<span class="fc" id="L1292">        double[] tick_histogram = new double[MIDIIntermediateRepresentations.convertBPMtoTicks(min_BPM - 1, mean_ticks_per_second)];</span>
+<span class="fc bfc" id="L1293" title="All 2 branches covered.">        for (int lag = MIDIIntermediateRepresentations.convertBPMtoTicks(max_BPM, mean_ticks_per_second); lag &lt; tick_histogram.length; lag++)</span>
+<span class="fc" id="L1294">            tick_histogram[lag] = MIDIIntermediateRepresentations.autoCorrelate(rhythm_score, lag);</span>
+
+        // Histogram based on tick interval bins (standardized to 120 BPM)
+<span class="fc" id="L1297">        int ticks_per_beat = sequence.getResolution();</span>
+<span class="fc" id="L1298">        int ticks_per_second_at_120_bpm = ticks_per_beat * 2;</span>
+<span class="fc" id="L1299">        double[] tick_histogram_120_bpm_standardized = new double[MIDIIntermediateRepresentations.convertBPMtoTicks(min_BPM - 1, ticks_per_second_at_120_bpm)];</span>
+<span class="fc bfc" id="L1300" title="All 2 branches covered.">        for (int lag = MIDIIntermediateRepresentations.convertBPMtoTicks(max_BPM, ticks_per_second_at_120_bpm); lag &lt; tick_histogram_120_bpm_standardized.length; lag++)</span>
+<span class="fc" id="L1301">            tick_histogram_120_bpm_standardized[lag] = MIDIIntermediateRepresentations.autoCorrelate(rhythm_score, lag);</span>
+
+        // Histograms with tick intervals collected into beats per minute bins
+<span class="fc bfc" id="L1304" title="All 2 branches covered.">        for (int bin = min_BPM; bin &lt;= max_BPM; bin++) {</span>
+<span class="fc" id="L1305">            beat_histogram[bin] = 0.0;</span>
+<span class="fc bfc" id="L1306" title="All 2 branches covered.">            for (int tick = MIDIIntermediateRepresentations.convertBPMtoTicks(bin, mean_ticks_per_second); tick &lt; MIDIIntermediateRepresentations.convertBPMtoTicks(bin - 1, mean_ticks_per_second); tick++)</span>
+<span class="fc" id="L1307">                beat_histogram[bin] += tick_histogram[tick];</span>
+
+<span class="fc" id="L1309">            beat_histogram_120_bpm_standardized[bin] = 0.0;</span>
+<span class="fc bfc" id="L1310" title="All 2 branches covered.">            for (int tick = MIDIIntermediateRepresentations.convertBPMtoTicks(bin, ticks_per_second_at_120_bpm); tick &lt; MIDIIntermediateRepresentations.convertBPMtoTicks(bin - 1, ticks_per_second_at_120_bpm); tick++)</span>
+<span class="fc" id="L1311">                beat_histogram_120_bpm_standardized[bin] += tick_histogram_120_bpm_standardized[tick];</span>
+        }
+
+        // Normalize beat_histogram and beat_histogram_120_bpm_standardized
+<span class="fc" id="L1315">        beat_histogram = MathAndStatsMethods.normalize(beat_histogram);</span>
+<span class="fc" id="L1316">        beat_histogram_120_bpm_standardized = MathAndStatsMethods.normalize(beat_histogram_120_bpm_standardized);</span>
+<span class="fc" id="L1317">    }</span>
+
+
+    /**
+     * Calculate the contents of the beat_histogram_thresholded_table and
+     * beat_histogram_thresholded_table_120_bpm_standardized field fields.
+     */
+    private void generateBeatHistogramThresholdedTables() {
+<span class="fc" id="L1325">        beat_histogram_thresholded_table = MathAndStatsMethods.calculateTablesOfThresholdedPeaks(beat_histogram);</span>
+<span class="fc" id="L1326">        beat_histogram_thresholded_table_120_bpm_standardized = MathAndStatsMethods.calculateTablesOfThresholdedPeaks(beat_histogram_120_bpm_standardized);</span>
+<span class="fc" id="L1327">    }</span>
+
+
+    /**
+     * Calculate the contents of the note_durations field.
+     */
+    private void generateNoteDurations() {
+        // Instantiate note_durations as an empty list
+<span class="fc" id="L1335">        note_durations = new LinkedList&lt;&gt;();</span>
+
+        // Fill in the list
+<span class="fc bfc" id="L1338" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+<span class="fc" id="L1339">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L1340" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+                // Get the MIDI message corresponding to the next MIDI event
+<span class="fc" id="L1342">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L1343">                MidiMessage message = event.getMessage();</span>
+
+                // If message is a ShortMessage (which Note Ons are)
+<span class="fc bfc" id="L1346" title="All 2 branches covered.">                if (message instanceof ShortMessage short_message) {</span>
+
+                    // If a Note On message is encountered
+<span class="fc bfc" id="L1349" title="All 2 branches covered.">                    if (0x90 == short_message.getCommand()) {</span>
+<span class="fc bfc" id="L1350" title="All 2 branches covered.">                        if (0 != short_message.getData2()) // not velocity 0</span>
+                        {
+                            // Look ahead to find the corresponding note off for this note on. Defaults
+                            // to the last tick if no corresponding note off is found.
+<span class="fc" id="L1354">                            int event_start_tick = (int) event.getTick();</span>
+<span class="fc" id="L1355">                            int event_end_tick = MIDIIntermediateRepresentations.findCorrespondingNoteOffEndTick(short_message, n_event, track);</span>
+
+                            // Calculate duration of note
+<span class="fc" id="L1358">                            double duration = 0;</span>
+<span class="fc bfc" id="L1359" title="All 2 branches covered.">                            for (int i = event_start_tick; i &lt; event_end_tick; i++)</span>
+<span class="fc" id="L1360">                                duration += duration_of_ticks_in_seconds[i];</span>
+
+                            // Add note to list
+<span class="fc" id="L1363">                            note_durations.add(duration);</span>
+                        }
+                    }
+                }
+            }
+        }
+<span class="fc" id="L1369">    }</span>
+
+
+    /**
+     * Find the values of the note_attack_tick_map field
+     */
+    private void generateNoteAttackTickMap() {
+        // Instantiate note_attack_tick_map and set entries to false
+<span class="fc" id="L1377">        note_attack_tick_map = new boolean[((int) sequence.getTickLength()) + 1][17];</span>
+<span class="fc bfc" id="L1378" title="All 2 branches covered.">        for (int i = 0; i &lt; note_attack_tick_map.length; i++)</span>
+<span class="fc bfc" id="L1379" title="All 2 branches covered.">            for (int j = 0; j &lt; note_attack_tick_map[i].length; j++)</span>
+<span class="fc" id="L1380">                note_attack_tick_map[i][j] = false;</span>
+
+        // Fill in note_attack_tick_map for all channels
+<span class="fc bfc" id="L1383" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+            // Go through all the events in the current track, searching for note ons
+<span class="fc" id="L1385">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L1386" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+                // Get the MIDI message corresponding to the next MIDI event
+<span class="fc" id="L1388">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L1389">                MidiMessage message = event.getMessage();</span>
+
+                // If message is a ShortMessage (which Note Ons are)
+<span class="fc bfc" id="L1392" title="All 2 branches covered.">                if (message instanceof ShortMessage short_message) {</span>
+<span class="fc bfc" id="L1393" title="All 2 branches covered.">                    if (0x90 == short_message.getCommand()) // note on</span>
+<span class="fc bfc" id="L1394" title="All 2 branches covered.">                        if (0 != short_message.getData2()) // not velocity 0</span>
+<span class="fc" id="L1395">                            note_attack_tick_map[(int) event.getTick()][short_message.getChannel()] = true;</span>
+                }
+            }
+        }
+
+        // Fill in column 16 of note_attack_tick_map to show if a Note On occured on at least one channel
+        // during the corresponding tick
+<span class="fc bfc" id="L1402" title="All 2 branches covered.">        for (int i = 0; i &lt; note_attack_tick_map.length; i++) {</span>
+<span class="fc bfc" id="L1403" title="All 2 branches covered.">            for (int j = 0; j &lt; note_attack_tick_map[i].length - 1; j++) {</span>
+<span class="fc bfc" id="L1404" title="All 2 branches covered.">                if (note_attack_tick_map[i][j]) {</span>
+<span class="fc" id="L1405">                    note_attack_tick_map[i][16] = true;</span>
+<span class="fc" id="L1406">                    j = note_attack_tick_map[i].length; // exit loop</span>
+                }
+            }
+        }
+<span class="fc" id="L1410">    }</span>
+
+
+    /**
+     * Fill the all_notes field.
+     */
+    private void generateAllNotes() {
+<span class="fc" id="L1417">        all_notes = new CollectedNoteInfo(tracks);</span>
+<span class="fc" id="L1418">    }</span>
+
+
+    /**
+     * Calculate the values of the basic_pitch_histogram, pitch_class_histogram and fifths_pitch_histogram
+     * fields.
+     */
+    private void generatePitchHistogramsIntermediateRepresentations() {
+        // Initialize basic_pitch_histogram
+<span class="fc" id="L1427">        basic_pitch_histogram = new double[128];</span>
+<span class="fc bfc" id="L1428" title="All 2 branches covered.">        for (int i = 0; i &lt; basic_pitch_histogram.length; i++)</span>
+<span class="fc" id="L1429">            basic_pitch_histogram[i] = 0.0;</span>
+
+        // Fill basic_pitch_histogram
+<span class="fc bfc" id="L1432" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+<span class="fc" id="L1433">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L1434" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+<span class="fc" id="L1435">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L1436">                MidiMessage message = event.getMessage();</span>
+
+                // Increment pitch of a note on
+<span class="fc bfc" id="L1439" title="All 2 branches covered.">                if (message instanceof ShortMessage short_message) {</span>
+<span class="fc bfc" id="L1440" title="All 2 branches covered.">                    if (10 - 1 != short_message.getChannel()) // not channel 10 (percussion)</span>
+<span class="fc bfc" id="L1441" title="All 2 branches covered.">                        if (0x90 == short_message.getCommand()) // note on</span>
+<span class="pc bpc" id="L1442" title="1 of 2 branches missed.">                            if (0 != short_message.getData2()) // not velocity 0</span>
+<span class="fc" id="L1443">                                basic_pitch_histogram[short_message.getData1()]++;</span>
+                }
+            }
+        }
+
+        // Normalize basic_pitch_histogram
+<span class="fc" id="L1449">        basic_pitch_histogram = MathAndStatsMethods.normalize(basic_pitch_histogram);</span>
+
+        // Generate pitch_class_histogram
+<span class="fc" id="L1452">        pitch_class_histogram = new double[12];</span>
+<span class="fc bfc" id="L1453" title="All 2 branches covered.">        for (int i = 0; i &lt; pitch_class_histogram.length; i++)</span>
+<span class="fc" id="L1454">            pitch_class_histogram[i] = 0;</span>
+<span class="fc bfc" id="L1455" title="All 2 branches covered.">        for (int i = 0; i &lt; basic_pitch_histogram.length; i++)</span>
+<span class="fc" id="L1456">            pitch_class_histogram[i % 12] += basic_pitch_histogram[i];</span>
+
+        // Generate fifths_pitch_histogram
+<span class="fc" id="L1459">        fifths_pitch_histogram = new double[12];</span>
+<span class="fc bfc" id="L1460" title="All 2 branches covered.">        for (int i = 0; i &lt; fifths_pitch_histogram.length; i++)</span>
+<span class="fc" id="L1461">            fifths_pitch_histogram[i] = 0;</span>
+<span class="fc bfc" id="L1462" title="All 2 branches covered.">        for (int i = 0; i &lt; fifths_pitch_histogram.length; i++)</span>
+<span class="fc" id="L1463">            fifths_pitch_histogram[(7 * i) % 12] += pitch_class_histogram[i];</span>
+<span class="fc" id="L1464">    }</span>
+
+
+    /**
+     * Calculate the values of the pitch_bends_list field.
+     */
+    private void generatePitchBendsList() {
+        // The list of lists of pitch bends
+<span class="fc" id="L1472">        pitch_bends_list = new LinkedList&lt;&gt;();</span>
+
+        // The lists of pitch bends for the most recently found note on each channel. An entry will be null
+        // unless a pitch bend message has been received on the given channel since the last Note Off on that
+        // channel
+<span class="fc" id="L1477">        LinkedList[] going = new LinkedList[16];</span>
+<span class="fc bfc" id="L1478" title="All 2 branches covered.">        for (int i = 0; i &lt; going.length; i++)</span>
+<span class="fc" id="L1479">            going[i] = null;</span>
+
+        // Fill pitch_bends_list
+<span class="fc bfc" id="L1482" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+<span class="fc" id="L1483">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L1484" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+<span class="fc" id="L1485">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L1486">                MidiMessage message = event.getMessage();</span>
+<span class="fc bfc" id="L1487" title="All 2 branches covered.">                if (message instanceof ShortMessage short_message) {</span>
+<span class="fc bfc" id="L1488" title="All 2 branches covered.">                    if (10 - 1 != short_message.getChannel()) // not channel 10 (percussion)</span>
+                    {
+                        // If message is a pitch bend
+<span class="fc bfc" id="L1491" title="All 2 branches covered.">                        if (0xe0 == short_message.getCommand()) {</span>
+<span class="fc" id="L1492">                            int pitch_bend_value = short_message.getData2();</span>
+
+                            // If a pitch bend has already been given for this note
+<span class="fc bfc" id="L1495" title="All 2 branches covered.">                            if (null != going[short_message.getChannel()])</span>
+<span class="fc" id="L1496">                                going[short_message.getChannel()].add(pitch_bend_value);</span>
+
+                                // If a pitch bend has not already been given for this note
+                            else {
+<span class="fc" id="L1500">                                LinkedList this_note = new LinkedList();</span>
+<span class="fc" id="L1501">                                this_note.add(pitch_bend_value);</span>
+<span class="fc" id="L1502">                                pitch_bends_list.add(this_note);</span>
+
+<span class="fc" id="L1504">                                going[short_message.getChannel()] = this_note;</span>
+                            }
+<span class="fc" id="L1506">                        }</span>
+
+                        // If message is a Note Off
+<span class="fc bfc" id="L1509" title="All 2 branches covered.">                        else if (0x80 == short_message.getCommand()) // note off</span>
+<span class="fc" id="L1510">                            going[short_message.getChannel()] = null;</span>
+<span class="fc bfc" id="L1511" title="All 2 branches covered.">                        else if (0x90 == short_message.getCommand()) // note on with velocity 0</span>
+                        {
+<span class="pc bpc" id="L1513" title="1 of 2 branches missed.">                            if (0 == short_message.getData2()) // velocity 0</span>
+<span class="nc" id="L1514">                                going[short_message.getChannel()] = null;</span>
+                        }
+                    }
+                }
+            }
+        }
+<span class="fc" id="L1520">    }</span>
+
+
+    /**
+     * Calculate the values of the melodic_interval_histogram and melodic_intervals_by_track_and_channel
+     * fields.
+     */
+    private void generateMelodicIntermediateRepresentations() {
+        // Initialize the melodic_intervals_by_track_and_channel field
+<span class="fc" id="L1529">        melodic_intervals_by_track_and_channel = new LinkedList&lt;&gt;();</span>
+
+        // Initialize melodic_interval_histogram
+<span class="fc" id="L1532">        melodic_interval_histogram = new double[128];</span>
+<span class="fc bfc" id="L1533" title="All 2 branches covered.">        for (int i = 0; i &lt; melodic_interval_histogram.length; i++)</span>
+<span class="fc" id="L1534">            melodic_interval_histogram[i] = 0.0;</span>
+
+        // Fill melodic_interval_histogram and melodic_intervals_by_track_and_channel
+<span class="fc bfc" id="L1537" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+            // Prepare melodic_intervals_by_channel for this track, and add it to
+            // melodic_intervals_by_track_and_channel
+<span class="fc" id="L1540">            LinkedList&lt;Integer&gt;[] melodic_intervals_by_channel = new LinkedList[16];</span>
+<span class="fc bfc" id="L1541" title="All 2 branches covered.">            for (int i = 0; i &lt; melodic_intervals_by_channel.length; i++)</span>
+<span class="fc" id="L1542">                melodic_intervals_by_channel[i] = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L1543">            melodic_intervals_by_track_and_channel.add(melodic_intervals_by_channel);</span>
+
+            // The last MIDI pitch encountered on each channel
+            // -1 means none was encountered yet
+<span class="fc" id="L1547">            int[] previous_pitches = new int[16];</span>
+<span class="fc bfc" id="L1548" title="All 2 branches covered.">            for (int i = 0; i &lt; previous_pitches.length; i++)</span>
+<span class="fc" id="L1549">                previous_pitches[i] = -1;</span>
+
+            // The last tick on which a note on was encountered for each channel
+            // -1 means none was encountered yet
+<span class="fc" id="L1553">            int[] last_tick = new int[16];</span>
+<span class="fc bfc" id="L1554" title="All 2 branches covered.">            for (int i = 0; i &lt; last_tick.length; i++)</span>
+<span class="fc" id="L1555">                last_tick[i] = -1;</span>
+
+            // Go through all MIDI events on this track
+<span class="fc" id="L1558">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L1559" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+<span class="fc" id="L1560">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L1561">                MidiMessage message = event.getMessage();</span>
+<span class="fc bfc" id="L1562" title="All 2 branches covered.">                if (message instanceof ShortMessage short_message) {</span>
+<span class="fc bfc" id="L1563" title="All 2 branches covered.">                    if (0x90 == short_message.getCommand()) // note on</span>
+                    {
+<span class="fc bfc" id="L1565" title="All 2 branches covered.">                        if (10 - 1 != short_message.getChannel()) // not channel 10 (percussion)</span>
+                        {
+<span class="pc bpc" id="L1567" title="1 of 2 branches missed.">                            if (0 != short_message.getData2()) // not velocity 0</span>
+                            {
+<span class="fc" id="L1569">                                int current_tick = (int) event.getTick();</span>
+<span class="fc bfc" id="L1570" title="All 2 branches covered.">                                if (-1 != previous_pitches[short_message.getChannel()]) {</span>
+                                    // Check if the note is occuring on the same tick as the previous note
+                                    // on this channel (which would indicate a vertical interval, not a
+                                    // melodic interval)
+<span class="fc bfc" id="L1574" title="All 2 branches covered.">                                    if (current_tick != last_tick[short_message.getChannel()]) {</span>
+<span class="fc" id="L1575">                                        int interval = short_message.getData1() - previous_pitches[short_message.getChannel()];</span>
+<span class="fc" id="L1576">                                        melodic_interval_histogram[Math.abs(interval)]++;</span>
+<span class="fc" id="L1577">                                        melodic_intervals_by_channel[short_message.getChannel()].add(interval);</span>
+                                    }
+                                }
+<span class="fc" id="L1580">                                last_tick[short_message.getChannel()] = current_tick;</span>
+<span class="fc" id="L1581">                                previous_pitches[short_message.getChannel()] = short_message.getData1();</span>
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Normalize melodic_interval_histogram
+<span class="fc" id="L1590">        melodic_interval_histogram = MathAndStatsMethods.normalize(melodic_interval_histogram);</span>
+<span class="fc" id="L1591">    }</span>
+
+
+    /**
+     * Calculate the values of the channel_statistics, number_of_active_voices,
+     * total_time_notes_sounding_per_channel, list_of_note_on_pitches_by_channel and
+     * note_sounding_on_a_channel_tick_map fields.
+     */
+    private void generateChannelNoteOnIntermediateRepresentations() {
+        // Instantiate channel_statistics and initialize entries to 0
+<span class="fc" id="L1601">        channel_statistics = new int[16][7];</span>
+<span class="fc bfc" id="L1602" title="All 2 branches covered.">        for (int i = 0; i &lt; channel_statistics.length; i++)</span>
+<span class="fc bfc" id="L1603" title="All 2 branches covered.">            for (int j = 0; j &lt; channel_statistics[i].length; j++)</span>
+<span class="fc" id="L1604">                channel_statistics[i][j] = 0;</span>
+
+        // Instantiate list_of_note_on_pitches_by_channel with one empty list per channel
+<span class="fc" id="L1607">        list_of_note_on_pitches_by_channel = new ArrayList&lt;&gt;(16);</span>
+<span class="fc bfc" id="L1608" title="All 2 branches covered.">        for (int channel = 0; 16 &gt; channel; channel++)</span>
+<span class="fc" id="L1609">            list_of_note_on_pitches_by_channel.add(new ArrayList&lt;&gt;());</span>
+
+        // Instantiate note_sounding_on_a_channel_tick_map and initialize entries to false
+<span class="fc" id="L1612">        note_sounding_on_a_channel_tick_map = new boolean[(int) sequence.getTickLength() + 1][16];</span>
+<span class="fc bfc" id="L1613" title="All 2 branches covered.">        for (int i = 0; i &lt; note_sounding_on_a_channel_tick_map.length; i++)</span>
+<span class="fc bfc" id="L1614" title="All 2 branches covered.">            for (int j = 0; j &lt; note_sounding_on_a_channel_tick_map[i].length; j++)</span>
+<span class="fc" id="L1615">                note_sounding_on_a_channel_tick_map[i][j] = false;</span>
+
+        // Last MIDI tick on which a Note On was encountered, by channel, initialized to -1 for none
+<span class="fc" id="L1618">        int[] tick_of_last_note_on = new int[16];</span>
+<span class="fc bfc" id="L1619" title="All 2 branches covered.">        for (int i = 0; i &lt; tick_of_last_note_on.length; i++)</span>
+<span class="fc" id="L1620">            tick_of_last_note_on[i] = -1;</span>
+
+        // Total sum of the MIDI pitches of al Note Ons encountered, by channel
+<span class="fc" id="L1623">        int[] sum_of_pitches = new int[16];</span>
+<span class="fc bfc" id="L1624" title="All 2 branches covered.">        for (int i = 0; i &lt; sum_of_pitches.length; i++)</span>
+<span class="fc" id="L1625">            sum_of_pitches[i] = 0;</span>
+
+        // Lowest MIDI pitch encountered on each channel, initialized to 1000 for none
+<span class="fc" id="L1628">        int[] lowest_pitch_so_far = new int[16];</span>
+<span class="fc bfc" id="L1629" title="All 2 branches covered.">        for (int i = 0; i &lt; lowest_pitch_so_far.length; i++)</span>
+<span class="fc" id="L1630">            lowest_pitch_so_far[i] = 1000;</span>
+
+        // Highest MIDI pitch encountered on each channel, initialized to -1000 for none
+<span class="fc" id="L1633">        int[] highest_pitch_so_far = new int[16];</span>
+<span class="fc bfc" id="L1634" title="All 2 branches covered.">        for (int i = 0; i &lt; highest_pitch_so_far.length; i++)</span>
+<span class="fc" id="L1635">            highest_pitch_so_far[i] = -1000;</span>
+
+        // Total number of melodic intervals, by channel
+<span class="fc" id="L1638">        int[] total_number_melodic_intervals = new int[16];</span>
+<span class="fc bfc" id="L1639" title="All 2 branches covered.">        for (int i = 0; i &lt; total_number_melodic_intervals.length; i++)</span>
+<span class="fc" id="L1640">            total_number_melodic_intervals[i] = 0;</span>
+
+        // Total combined distance (in semitones) of all melodic leaps, by channel
+<span class="fc" id="L1643">        int[] sum_of_melodic_intervals = new int[16];</span>
+<span class="fc bfc" id="L1644" title="All 2 branches covered.">        for (int i = 0; i &lt; sum_of_melodic_intervals.length; i++)</span>
+<span class="fc" id="L1645">            sum_of_melodic_intervals[i] = 0;</span>
+
+        // Go through all MIDI tracks, and all MIDI events on each track, searching for Notes Ons and Off
+<span class="fc bfc" id="L1648" title="All 2 branches covered.">        for (int track_i = 0; track_i &lt; tracks.length; track_i++) {</span>
+            // The MIDI pitch of the last Note On encountered on each channel, initialized to -1 for none
+<span class="fc" id="L1650">            int[] previous_pitch = new int[16];</span>
+<span class="fc bfc" id="L1651" title="All 2 branches covered.">            for (int i = 0; i &lt; previous_pitch.length; i++)</span>
+<span class="fc" id="L1652">                previous_pitch[i] = -1;</span>
+
+            // Go through all the MIDI events on this track
+<span class="fc" id="L1655">            Track this_track = tracks[track_i];</span>
+<span class="fc bfc" id="L1656" title="All 2 branches covered.">            for (int event_i = 0; event_i &lt; this_track.size(); event_i++) {</span>
+<span class="fc bfc" id="L1657" title="All 2 branches covered.">                if (this_track.get(event_i).getMessage() instanceof ShortMessage short_message) // If message is a ShortMessage (which Note Ons and Note Offs are)</span>
+                {
+<span class="fc bfc" id="L1659" title="All 2 branches covered.">                    if (0x90 == short_message.getCommand()) // Note On</span>
+                    {
+                        // Note information about this Note On
+<span class="fc" id="L1662">                        int on_tick = (int) this_track.get(event_i).getTick();</span>
+<span class="fc" id="L1663">                        int on_channel = short_message.getChannel();</span>
+<span class="fc" id="L1664">                        int on_pitch = short_message.getData1();</span>
+<span class="fc" id="L1665">                        int on_velocity = short_message.getData2();</span>
+
+                        // Update values based on this Note On
+<span class="fc bfc" id="L1668" title="All 2 branches covered.">                        if (0 != on_velocity) // Not velocity 0</span>
+                        {
+                            // Add the pitch of this note to list_of_note_on_pitches_by_channel
+<span class="fc" id="L1671">                            list_of_note_on_pitches_by_channel.get(on_channel).add(on_pitch);</span>
+
+                            // Update the total number of Note Ons
+<span class="fc" id="L1674">                            channel_statistics[on_channel][0]++;</span>
+
+                            // Total the loudnesses of Note Ons for each channel
+<span class="fc" id="L1677">                            channel_statistics[on_channel][2] += (int) (on_velocity * volume_of_channels_tick_map[on_tick][on_channel]);</span>
+
+                            // Update sum_of_pitches
+<span class="fc" id="L1680">                            sum_of_pitches[on_channel] += on_pitch;</span>
+
+                            // Update lowest_pitch_so_far, if appropriate
+<span class="fc bfc" id="L1683" title="All 2 branches covered.">                            if (on_pitch &lt; lowest_pitch_so_far[on_channel])</span>
+<span class="fc" id="L1684">                                lowest_pitch_so_far[on_channel] = on_pitch;</span>
+
+                            // Update highest_pitch_so_far, if appropriate
+<span class="fc bfc" id="L1687" title="All 2 branches covered.">                            if (on_pitch &gt; highest_pitch_so_far[on_channel])</span>
+<span class="fc" id="L1688">                                highest_pitch_so_far[on_channel] = on_pitch;</span>
+
+                            // Update variables relating to melodic intervals
+<span class="fc bfc" id="L1691" title="All 2 branches covered.">                            if (-1 != previous_pitch[on_channel]) {</span>
+                                // Check if the note is occuring on the same tick as the previous note on this
+                                // channel (which would indicate a vertical interval, not a melodic leap)
+<span class="fc bfc" id="L1694" title="All 2 branches covered.">                                if (on_tick != tick_of_last_note_on[on_channel]) {</span>
+<span class="fc" id="L1695">                                    sum_of_melodic_intervals[on_channel] += Math.abs(previous_pitch[on_channel] - on_pitch);</span>
+<span class="fc" id="L1696">                                    total_number_melodic_intervals[on_channel]++;</span>
+                                }
+                            }
+<span class="fc" id="L1699">                            tick_of_last_note_on[on_channel] = on_tick;</span>
+<span class="fc" id="L1700">                            previous_pitch[on_channel] = on_pitch;</span>
+
+                            // Look ahead to find the Note Off corresponding to this Note On
+<span class="fc" id="L1703">                            int end_tick = (int) this_track.ticks(); // When the Note Off occurs, defaulted to the last tick</span>
+<span class="fc bfc" id="L1704" title="All 2 branches covered.">                            for (int i = event_i + 1; i &lt; this_track.size(); i++) {</span>
+<span class="fc" id="L1705">                                MidiEvent end_event = this_track.get(i);</span>
+<span class="fc bfc" id="L1706" title="All 2 branches covered.">                                if (end_event.getMessage() instanceof ShortMessage end_message) {</span>
+<span class="fc bfc" id="L1707" title="All 2 branches covered.">                                    if (end_message.getChannel() == on_channel) // Must be on same channel as Note On</span>
+                                    {
+<span class="fc bfc" id="L1709" title="All 2 branches covered.">                                        if (0x80 == end_message.getCommand()) // Note off</span>
+                                        {
+<span class="fc bfc" id="L1711" title="All 2 branches covered.">                                            if (end_message.getData1() == on_pitch) // Pitch must match</span>
+                                            {
+<span class="fc" id="L1713">                                                end_tick = (int) end_event.getTick();</span>
+<span class="fc" id="L1714">                                                break;</span>
+                                            }
+                                        }
+<span class="fc bfc" id="L1717" title="All 2 branches covered.">                                        if (0x90 == end_message.getCommand()) // Note On (with velocity 0 is equivalent to Note Off)</span>
+                                        {
+<span class="fc bfc" id="L1719" title="All 2 branches covered.">                                            if (0 == end_message.getData2()) // Velocity 0</span>
+                                            {
+<span class="fc bfc" id="L1721" title="All 2 branches covered.">                                                if (end_message.getData1() == on_pitch) //Pitch must match</span>
+                                                {
+<span class="fc" id="L1723">                                                    end_tick = (int) end_event.getTick();</span>
+<span class="fc" id="L1724">                                                    break;</span>
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Fill in note_sounding_on_a_channel_tick_map for all the ticks corresponding to this note
+<span class="fc bfc" id="L1733" title="All 2 branches covered.">                            for (int i = on_tick; i &lt; end_tick; i++)</span>
+<span class="fc" id="L1734">                                note_sounding_on_a_channel_tick_map[i][on_channel] = true;</span>
+                        }
+                    }
+                }
+            }
+        }
+
+        // Fill column 1 of channel_statistics by finding the total amount of time that one or more notes were
+        // playing on each channel
+<span class="fc" id="L1743">        total_time_notes_sounding_per_channel = new double[channel_statistics.length];</span>
+<span class="fc bfc" id="L1744" title="All 2 branches covered.">        for (int ch = 0; ch &lt; total_time_notes_sounding_per_channel.length; ch++)</span>
+<span class="fc" id="L1745">            total_time_notes_sounding_per_channel[ch] = 0.0;</span>
+<span class="fc bfc" id="L1746" title="All 2 branches covered.">        for (int ti = 0; ti &lt; note_sounding_on_a_channel_tick_map.length; ti++)</span>
+<span class="fc bfc" id="L1747" title="All 2 branches covered.">            for (int ch = 0; ch &lt; note_sounding_on_a_channel_tick_map[ti].length; ch++)</span>
+<span class="fc bfc" id="L1748" title="All 2 branches covered.">                if (note_sounding_on_a_channel_tick_map[ti][ch])</span>
+<span class="fc" id="L1749">                    total_time_notes_sounding_per_channel[ch] += duration_of_ticks_in_seconds[ti];</span>
+<span class="fc bfc" id="L1750" title="All 2 branches covered.">        for (int ch = 0; ch &lt; channel_statistics.length; ch++)</span>
+<span class="fc" id="L1751">            channel_statistics[ch][1] = (int) total_time_notes_sounding_per_channel[ch];</span>
+
+        // Fill column 2 of channel_statistics by dividing by the total number of notes per channel notes on
+        // each channel
+<span class="fc bfc" id="L1755" title="All 2 branches covered.">        for (int i = 0; i &lt; channel_statistics.length; i++)</span>
+<span class="fc" id="L1756">            channel_statistics[i][2] = (int) (((double) channel_statistics[i][2]) / channel_statistics[i][0]);</span>
+
+        // Fill column 3 of channel_statistics by dividing the total melodic leaps in semi-tones by the number
+        // of melodic intervals for each channel
+<span class="fc bfc" id="L1760" title="All 2 branches covered.">        for (int i = 0; i &lt; channel_statistics.length; i++)</span>
+<span class="fc" id="L1761">            channel_statistics[i][3] = (int) (((double) sum_of_melodic_intervals[i]) / total_number_melodic_intervals[i]);</span>
+
+        // Fill columns 4 and 5 (lowest and highest pitches) of channel_statistics
+<span class="fc bfc" id="L1764" title="All 2 branches covered.">        for (int i = 0; i &lt; channel_statistics.length; i++) {</span>
+<span class="fc" id="L1765">            channel_statistics[i][4] = lowest_pitch_so_far[i];</span>
+<span class="fc" id="L1766">            channel_statistics[i][5] = highest_pitch_so_far[i];</span>
+        }
+
+        // Fill column 6 of channel_statistics
+<span class="fc bfc" id="L1770" title="All 2 branches covered.">        for (int i = 0; i &lt; channel_statistics.length; i++) {</span>
+<span class="fc bfc" id="L1771" title="All 2 branches covered.">            if (0 == channel_statistics[i][0])</span>
+<span class="fc" id="L1772">                channel_statistics[i][6] = 0;</span>
+            else
+<span class="fc" id="L1774">                channel_statistics[i][6] = sum_of_pitches[i] / channel_statistics[i][0];</span>
+        }
+
+        // Calculate number_of_active_voices
+<span class="fc" id="L1778">        int num_of_active_voices = 0;</span>
+<span class="fc bfc" id="L1779" title="All 2 branches covered.">        for (int chan = 0; chan &lt; channel_statistics.length; chan++)</span>
+<span class="fc bfc" id="L1780" title="All 2 branches covered.">            if (0 != channel_statistics[chan][0])</span>
+<span class="fc" id="L1781">                num_of_active_voices++;</span>
+<span class="fc" id="L1782">        number_of_active_voices = num_of_active_voices;</span>
+<span class="fc" id="L1783">    }</span>
+
+
+    /**
+     * Calculate the value of the pitch_classes_of_all_note_ons field.
+     */
+    private void generatePitchAndPitchClaessesOfAllNoteOns() {
+<span class="fc" id="L1790">        List&lt;NoteInfo&gt; all_notes_in_piece = all_notes.getNoteList();</span>
+<span class="fc" id="L1791">        List&lt;Short&gt; list_of_midi_pitches_of_all_notes_in_piece = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L1792" title="All 2 branches covered.">        for (NoteInfo this_note : all_notes_in_piece)</span>
+<span class="fc bfc" id="L1793" title="All 2 branches covered.">            if (10 - 1 != this_note.getChannel()) // Excluding Channel 10</span>
+<span class="fc" id="L1794">                list_of_midi_pitches_of_all_notes_in_piece.add((short) (this_note.getPitch()));</span>
+
+<span class="fc" id="L1796">        pitches_of_all_note_ons = new short[list_of_midi_pitches_of_all_notes_in_piece.size()];</span>
+<span class="fc" id="L1797">        pitch_classes_of_all_note_ons = new short[list_of_midi_pitches_of_all_notes_in_piece.size()];</span>
+<span class="fc bfc" id="L1798" title="All 2 branches covered.">        for (int i = 0; i &lt; pitch_classes_of_all_note_ons.length; i++) {</span>
+<span class="fc" id="L1799">            short pitch = list_of_midi_pitches_of_all_notes_in_piece.get(i);</span>
+<span class="fc" id="L1800">            pitches_of_all_note_ons[i] = pitch;</span>
+
+<span class="fc" id="L1802">            short pitch_class = (short) (pitch % 12);</span>
+<span class="fc" id="L1803">            pitch_classes_of_all_note_ons[i] = pitch_class;</span>
+        }
+<span class="fc" id="L1805">    }</span>
+
+
+    /**
+     * Calculate the values of the pitch_strength_by_tick_chart and the total_vertical_unison_velocity fields.
+     */
+    private void generatePitchStrengthByTickChartAndCalculateTotalVerticalUnsionVelocity() {
+        // Duration of the piece in MIDI ticks
+<span class="fc" id="L1813">        int duration_in_ticks = (int) sequence.getTickLength() + 1;</span>
+
+        // Number of piches in the MIDI specification
+<span class="fc" id="L1816">        int candidate_midi_pitches = 128;</span>
+
+        // Instantiate pitch_strength_by_tick_chart with 0 values
+<span class="fc" id="L1819">        pitch_strength_by_tick_chart = new short[duration_in_ticks][candidate_midi_pitches];</span>
+
+        // Initialize total_vertical_unison_velocity
+<span class="fc" id="L1822">        total_vertical_unison_velocity = 0;</span>
+
+        // Intantiate a chart indicating the number of notes sounding at each pitch during each tick.
+        // The first index indicates the MIDI tick and the second index indicates the MIDI pitch (this is
+        // always set to size 128). Each entry indicates the number of notes sounding. For example, a value of
+        // 1 means on note is sounding at the given tick and pitch, a value of 2 means 2 notes are sounding
+        // (and thus there is 1 unison), a value of 3 means 3 notes are sounding (and thus there are 2
+        // unisons), etc. Instantiated with 0 values.
+<span class="fc" id="L1830">        short[][] number_notes_sounding_by_tick_and_pitch_chart = new short[duration_in_ticks][candidate_midi_pitches];</span>
+
+        // Go through all MIDI events in all MIDI tracks, searching for Note On events. When a Note On is
+        // found, fill in the pitch_strength_by_tick_chart based on it. Channel 10 (non-pitched) Note Ons are
+        // excluded, as are velocity 0 Note Ons (i.e. effective Note Offs).
+<span class="fc bfc" id="L1835" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+<span class="fc" id="L1836">            Track track = tracks[n_track];</span>
+<span class="fc bfc" id="L1837" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; track.size(); n_event++) {</span>
+<span class="fc" id="L1838">                MidiEvent event = track.get(n_event);</span>
+<span class="fc" id="L1839">                MidiMessage message = event.getMessage();</span>
+<span class="fc bfc" id="L1840" title="All 2 branches covered.">                if (message instanceof ShortMessage short_message) {</span>
+<span class="fc bfc" id="L1841" title="All 2 branches covered.">                    if (10 - 1 != short_message.getChannel() &amp;&amp; // is not on Channel 10</span>
+<span class="fc bfc" id="L1842" title="All 2 branches covered.">                            0x90 == short_message.getCommand() &amp;&amp; // is a Note On message</span>
+<span class="pc bpc" id="L1843" title="1 of 2 branches missed.">                            0 != short_message.getData2()) // does not have velocity 0</span>
+                    {
+<span class="fc" id="L1845">                        total_vertical_unison_velocity = MIDIIntermediateRepresentations.lookAheadForNoteOffAndUpdate(</span>
+                                track,
+                                n_event,
+<span class="fc" id="L1848">                                (int) event.getTick(),</span>
+<span class="fc" id="L1849">                                short_message.getChannel(),</span>
+<span class="fc" id="L1850">                                short_message.getData1(),</span>
+<span class="fc" id="L1851">                                short_message.getData2(),</span>
+                                number_notes_sounding_by_tick_and_pitch_chart,
+                                pitch_strength_by_tick_chart,
+                                total_vertical_unison_velocity);
+                    }
+                }
+            }
+        }
+<span class="fc" id="L1859">    }</span>
+
+
+    /**
+     * Calculate the values of the pitches_present_by_tick_excluding_rests and
+     * pitches_classes_present_by_tick_excluding_rests fields.
+     */
+    private void generatePitchesAndPitchClassesPresentByTickExcludingRests() {
+        // An ArrayList version of pitches_present_by_tick_excluding_rests
+<span class="fc" id="L1868">        ArrayList&lt;short[]&gt; pitches_present_by_tick_excluding_rests_arli = new ArrayList&lt;&gt;();</span>
+
+        // An ArrayList version of pitch_classes_present_by_tick_excluding_rests
+<span class="fc" id="L1871">        ArrayList&lt;short[]&gt; pitch_classes_present_by_tick_excluding_rests_arli = new ArrayList&lt;&gt;();</span>
+
+        // Fill in number_pitch_classes_by_tick tick by tick
+<span class="fc bfc" id="L1874" title="All 2 branches covered.">        for (int tick = 0; tick &lt; pitch_strength_by_tick_chart.length; tick++) {</span>
+            // Find the MIDI pitch numbers of all pitches found this tick
+<span class="fc" id="L1876">            ArrayList&lt;Short&gt; pitches_this_tick = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L1877" title="All 2 branches covered.">            for (int pitch = 0; pitch &lt; pitch_strength_by_tick_chart[tick].length; pitch++)</span>
+<span class="fc bfc" id="L1878" title="All 2 branches covered.">                if (0 != pitch_strength_by_tick_chart[tick][pitch])</span>
+<span class="fc" id="L1879">                    pitches_this_tick.add((short) pitch);</span>
+
+            // If not a rest
+<span class="fc bfc" id="L1882" title="All 2 branches covered.">            if (!pitches_this_tick.isEmpty()) {</span>
+                // Store pitches present this tick
+<span class="fc" id="L1884">                short[] these_pitches = new short[pitches_this_tick.size()];</span>
+<span class="fc bfc" id="L1885" title="All 2 branches covered.">                for (int i = 0; i &lt; these_pitches.length; i++)</span>
+<span class="fc" id="L1886">                    these_pitches[i] = pitches_this_tick.get(i);</span>
+<span class="fc" id="L1887">                pitches_present_by_tick_excluding_rests_arli.add(these_pitches);</span>
+
+                // Store pitch classes present this tick
+<span class="fc" id="L1890">                ArrayList&lt;Short&gt; pitch_classes_this_tick = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L1891" title="All 2 branches covered.">                for (int i = 0; i &lt; these_pitches.length; i++) {</span>
+<span class="fc" id="L1892">                    short pitch_class = (short) (these_pitches[i] % 12);</span>
+<span class="fc bfc" id="L1893" title="All 2 branches covered.">                    if (0 == i)</span>
+<span class="fc" id="L1894">                        pitch_classes_this_tick.add(pitch_class);</span>
+                    else {
+<span class="fc" id="L1896">                        boolean repeated_pitch_class = false;</span>
+<span class="fc bfc" id="L1897" title="All 2 branches covered.">                        for (int j = 0; j &lt; pitch_classes_this_tick.size(); j++) {</span>
+<span class="fc bfc" id="L1898" title="All 2 branches covered.">                            if (pitch_classes_this_tick.get(j) == pitch_class) {</span>
+<span class="fc" id="L1899">                                repeated_pitch_class = true;</span>
+<span class="fc" id="L1900">                                break;</span>
+                            }
+                        }
+<span class="fc bfc" id="L1903" title="All 2 branches covered.">                        if (!repeated_pitch_class)</span>
+<span class="fc" id="L1904">                            pitch_classes_this_tick.add(pitch_class);</span>
+                    }
+                }
+<span class="fc" id="L1907">                short[] these_pitch_classes = new short[pitch_classes_this_tick.size()];</span>
+<span class="fc bfc" id="L1908" title="All 2 branches covered.">                for (int i = 0; i &lt; these_pitch_classes.length; i++)</span>
+<span class="fc" id="L1909">                    these_pitch_classes[i] = pitch_classes_this_tick.get(i);</span>
+<span class="fc" id="L1910">                pitch_classes_present_by_tick_excluding_rests_arli.add(these_pitch_classes);</span>
+            }
+        }
+
+        // Convert ArrayLists to arrays
+<span class="fc" id="L1915">        pitches_present_by_tick_excluding_rests = pitches_present_by_tick_excluding_rests_arli.toArray(new short[pitches_present_by_tick_excluding_rests_arli.size()][]);</span>
+<span class="fc" id="L1916">        pitch_classes_present_by_tick_excluding_rests = pitch_classes_present_by_tick_excluding_rests_arli.toArray(new short[pitch_classes_present_by_tick_excluding_rests_arli.size()][]);</span>
+<span class="fc" id="L1917">    }</span>
+
+
+    /**
+     * Calculate the values of the parallel_motion_fraction, similar_motion_fraction,
+     * contrary_motion_fraction, oblique_motion_fraction, parallel_fifths_fraction and
+     * parallel_octaves_fraction fields.
+     */
+    private void generateContrapuntalCounts() {
+        // The number of ticks that this method will look ahead if the number of sounding voices changes from
+        // one tick to the next (this is because of rhythmic desynching that can occur between note onsets and
+        // offsets. Note that this is counted in addition to ticks on which no notes are sounding (rests).
+<span class="fc" id="L1929">        final int TICK_DELAY_TOLERANCE = 150;</span>
+
+        // The number of times each type of movement occurs
+<span class="fc" id="L1932">        int parallel_count = 0;</span>
+<span class="fc" id="L1933">        int similar_count = 0;</span>
+<span class="fc" id="L1934">        int contrary_count = 0;</span>
+<span class="fc" id="L1935">        int oblique_count = 0;</span>
+<span class="fc" id="L1936">        int parallel_fifths_count = 0;</span>
+<span class="fc" id="L1937">        int parallel_octaves_count = 0;</span>
+
+        // The unique sorted pitches on the last tick on which one or more pitches were sounding
+<span class="fc" id="L1940">        short[] previous_pitches = null;</span>
+
+        // The unique sorted pitches on the current tick (on which pitches are sounding)
+<span class="fc" id="L1943">        short[] current_pitches = null;</span>
+
+        // Iterate through all ticks on which one or more pitches were sounding
+<span class="fc bfc" id="L1946" title="All 2 branches covered.">        for (int tick = 0; tick &lt; pitches_present_by_tick_excluding_rests.length; tick++) {</span>
+            // Fill previous_pitches and move to the next tick if it has not been filled yet
+<span class="pc bpc" id="L1948" title="1 of 4 branches missed.">            if (null == previous_pitches || 0 == previous_pitches.length) {</span>
+<span class="fc" id="L1949">                previous_pitches = pitches_present_by_tick_excluding_rests[tick];</span>
+<span class="fc" id="L1950">                continue;</span>
+            }
+
+            // Update current_pitches and previous_pitches
+<span class="pc bpc" id="L1954" title="1 of 4 branches missed.">            if (null == current_pitches || 0 == current_pitches.length)</span>
+<span class="fc" id="L1955">                current_pitches = pitches_present_by_tick_excluding_rests[tick];</span>
+            else {
+<span class="fc" id="L1957">                previous_pitches = current_pitches;</span>
+<span class="fc" id="L1958">                current_pitches = pitches_present_by_tick_excluding_rests[tick];</span>
+            }
+
+            // Output current_pitches for debugging
+            //System.out.print(tick + &quot;: &quot;);
+            //for (int i = 0; i &lt; current_pitches.length; i++)
+            //	System.out.print(current_pitches[i] + &quot; &quot;);
+            //System.out.print(&quot;\n&quot;);
+
+            // Move on to the next tick if current_pitches and previous_pitches are of different sizes,
+            // allowing for a look ahead of TICK_DELAY_TOLERANCE ticks (if a set of pitches of the same size
+            // as previous_pitches is found in the lookahead, then we jump ahead to that tick).
+<span class="fc bfc" id="L1970" title="All 2 branches covered.">            if (previous_pitches.length != current_pitches.length) {</span>
+<span class="fc" id="L1971">                boolean move_on = true;</span>
+<span class="fc bfc" id="L1972" title="All 2 branches covered.">                if (tick &lt; (pitches_present_by_tick_excluding_rests.length - TICK_DELAY_TOLERANCE - 1)) {</span>
+<span class="fc bfc" id="L1973" title="All 2 branches covered.">                    for (int look_ahead_tick = tick + 1; look_ahead_tick &lt; (tick + TICK_DELAY_TOLERANCE); look_ahead_tick++) {</span>
+<span class="fc bfc" id="L1974" title="All 2 branches covered.">                        if (pitches_present_by_tick_excluding_rests[look_ahead_tick].length == previous_pitches.length) {</span>
+<span class="fc" id="L1975">                            tick = look_ahead_tick;</span>
+<span class="fc" id="L1976">                            current_pitches = pitches_present_by_tick_excluding_rests[look_ahead_tick];</span>
+<span class="fc" id="L1977">                            move_on = false;</span>
+<span class="fc" id="L1978">                            break;</span>
+                        }
+                    }
+                }
+<span class="fc bfc" id="L1982" title="All 2 branches covered.">                if (move_on) continue;</span>
+            }
+
+            // Move on to the next tick if only one or no notes are sounding
+<span class="fc bfc" id="L1986" title="All 2 branches covered.">            if (1 &gt;= current_pitches.length)</span>
+<span class="fc" id="L1987">                continue;</span>
+
+            // Move on to the next tick if current_pitches and previous_pitches are the same
+<span class="fc" id="L1990">            boolean prev_and_cur_are_identical = true;</span>
+<span class="fc bfc" id="L1991" title="All 2 branches covered.">            for (int i = 0; i &lt; current_pitches.length; i++)</span>
+<span class="fc bfc" id="L1992" title="All 2 branches covered.">                if (previous_pitches[i] != current_pitches[i]) {</span>
+<span class="fc" id="L1993">                    prev_and_cur_are_identical = false;</span>
+<span class="fc" id="L1994">                    break;</span>
+                }
+<span class="fc bfc" id="L1996" title="All 2 branches covered.">            if (prev_and_cur_are_identical)</span>
+<span class="fc" id="L1997">                continue;</span>
+
+            // Count the different types of motion by comparing each pair of voices
+<span class="fc bfc" id="L2000" title="All 2 branches covered.">            for (int bottom_ind = 0; bottom_ind &lt; current_pitches.length - 1; bottom_ind++) {</span>
+<span class="fc bfc" id="L2001" title="All 2 branches covered.">                for (int top_ind = bottom_ind + 1; top_ind &lt; current_pitches.length; top_ind++) {</span>
+                    // Note each of the four pitches involved
+<span class="fc" id="L2003">                    short prev_bottom_pitch = previous_pitches[bottom_ind];</span>
+<span class="fc" id="L2004">                    short prev_top_pitch = previous_pitches[top_ind];</span>
+<span class="fc" id="L2005">                    short cur_bottom_pitch = current_pitches[bottom_ind];</span>
+<span class="fc" id="L2006">                    short cur_top_pitch = current_pitches[top_ind];</span>
+
+                    // Output the pair's pitch transition for debugging
+                    //System.out.println(tick + &quot;: &quot; + prev_bottom_pitch + &quot; to &quot; + cur_bottom_pitch + &quot; and &quot; + prev_top_pitch + &quot; to &quot; + cur_top_pitch);
+
+                    // Move to the next pair if there is no change between this pair's pitches
+<span class="fc bfc" id="L2012" title="All 4 branches covered.">                    if (prev_bottom_pitch == cur_bottom_pitch &amp;&amp; prev_top_pitch == cur_top_pitch)</span>
+<span class="fc" id="L2013">                        continue;</span>
+
+                    // Note oblique motion
+<span class="fc bfc" id="L2016" title="All 4 branches covered.">                    if (prev_bottom_pitch == cur_bottom_pitch || prev_top_pitch == cur_top_pitch)</span>
+<span class="fc" id="L2017">                        oblique_count++;</span>
+
+                        // Note contrary motion
+<span class="fc bfc" id="L2020" title="All 8 branches covered.">                    else if ((0 &gt; (cur_bottom_pitch - prev_bottom_pitch) &amp;&amp; 0 &lt; (cur_top_pitch - prev_top_pitch)) ||</span>
+                            (0 &lt; (cur_bottom_pitch - prev_bottom_pitch) &amp;&amp; 0 &gt; (cur_top_pitch - prev_top_pitch)))
+<span class="fc" id="L2022">                        contrary_count++;</span>
+
+                        // Note parallel motion
+<span class="fc bfc" id="L2025" title="All 2 branches covered.">                    else if ((cur_top_pitch - cur_bottom_pitch) == (prev_top_pitch - prev_bottom_pitch)) {</span>
+<span class="fc" id="L2026">                        parallel_count++;</span>
+
+                        // Also look for parallel fifths and octaves
+<span class="fc bfc" id="L2029" title="All 2 branches covered.">                        if (7 == (cur_top_pitch - cur_bottom_pitch))</span>
+<span class="fc" id="L2030">                            parallel_fifths_count++;</span>
+<span class="fc bfc" id="L2031" title="All 2 branches covered.">                        if (12 == (cur_top_pitch - cur_bottom_pitch))</span>
+<span class="fc" id="L2032">                            parallel_octaves_count++;</span>
+                    }
+
+                    // Note similar motion
+<span class="fc" id="L2036">                    else similar_count++;</span>
+                }
+            }
+        }
+
+        // Caculate the total amount of qualifying motion
+<span class="fc" id="L2042">        double total_motion_count = (double) parallel_count + similar_count +</span>
+                contrary_count + oblique_count;
+
+        // Calculate the fractions of each type of motion
+<span class="fc bfc" id="L2046" title="All 2 branches covered.">        if (0.0 &lt; total_motion_count) {</span>
+<span class="fc" id="L2047">            parallel_motion_fraction = parallel_count / total_motion_count;</span>
+<span class="fc" id="L2048">            similar_motion_fraction = similar_count / total_motion_count;</span>
+<span class="fc" id="L2049">            contrary_motion_fraction = contrary_count / total_motion_count;</span>
+<span class="fc" id="L2050">            oblique_motion_fraction = oblique_count / total_motion_count;</span>
+<span class="fc" id="L2051">            parallel_fifths_fraction = parallel_fifths_count / total_motion_count;</span>
+<span class="fc" id="L2052">            parallel_octaves_fraction = parallel_octaves_count / total_motion_count;</span>
+        }
+<span class="fc" id="L2054">    }</span>
+
+
+    /**
+     * Calculate the values of the note_loudnesses field.
+     */
+    private void generateNoteLoudnesses() {
+        // Instantiate note_loudnesses
+<span class="fc" id="L2062">        note_loudnesses = new int[16][];</span>
+<span class="fc bfc" id="L2063" title="All 2 branches covered.">        for (int i = 0; i &lt; note_loudnesses.length; i++)</span>
+<span class="fc" id="L2064">            note_loudnesses[i] = new int[channel_statistics[i][0]];</span>
+
+        // Keep track of how many notes have occured on each channel
+<span class="fc" id="L2067">        int[] notes_so_far = new int[16];</span>
+<span class="fc bfc" id="L2068" title="All 2 branches covered.">        for (int i = 0; i &lt; notes_so_far.length; i++)</span>
+<span class="fc" id="L2069">            notes_so_far[i] = 0;</span>
+
+        // Fill in note_loudnesses
+<span class="fc bfc" id="L2072" title="All 2 branches covered.">        for (int n_track = 0; n_track &lt; tracks.length; n_track++) {</span>
+<span class="fc bfc" id="L2073" title="All 2 branches covered.">            for (int n_event = 0; n_event &lt; tracks[n_track].size(); n_event++) {</span>
+<span class="fc" id="L2074">                MidiEvent event = tracks[n_track].get(n_event);</span>
+<span class="fc bfc" id="L2075" title="All 2 branches covered.">                if (event.getMessage() instanceof ShortMessage short_message) {</span>
+<span class="fc bfc" id="L2076" title="All 2 branches covered.">                    if (0x90 == short_message.getCommand()) // Note on</span>
+                    {
+<span class="fc bfc" id="L2078" title="All 2 branches covered.">                        if (0 != short_message.getData2()) // Not velocity 0</span>
+                        {
+<span class="fc" id="L2080">                            int channel = short_message.getChannel();</span>
+<span class="fc" id="L2081">                            int tick = (int) event.getTick();</span>
+<span class="fc" id="L2082">                            note_loudnesses[channel][notes_so_far[channel]] = (int) (short_message.getData2() * volume_of_channels_tick_map[tick][channel]);</span>
+<span class="fc" id="L2083">                            notes_so_far[channel]++;</span>
+                        }
+                    }
+                }
+            }
+        }
+<span class="fc" id="L2089">    }</span>
+
+
+    /**
+     * Calculate the values of the rest_durations_separated_by_channel field.
+     */
+    private void generateRestDurationsSeparatedByChannel() {
+        // Set non_empty_channels to true for channels that have at least one note
+<span class="fc" id="L2097">        boolean[] non_empty_channels = new boolean[channel_statistics.length];</span>
+<span class="fc bfc" id="L2098" title="All 2 branches covered.">        for (int i = 0; i &lt; non_empty_channels.length; i++) {</span>
+<span class="fc bfc" id="L2099" title="All 2 branches covered.">            non_empty_channels[i] = 0 != channel_statistics[i][0];</span>
+        }
+
+        // A list of the duration of all rests (in seconds) in each channel, in the order that they appear
+        // in that channel. Only channels including at least one note are included.
+<span class="fc" id="L2104">        ArrayList&lt;ArrayList&lt;Double&gt;&gt; rest_dration_list = new ArrayList&lt;&gt;();</span>
+
+        // The number of ticks to examine (the minus 1 is because Java doesn't count the last tick
+<span class="fc" id="L2107">        int ticks_to_test = note_sounding_on_a_channel_tick_map.length - 1;</span>
+
+        // Fill rest_dration_list channel by channel
+<span class="fc bfc" id="L2110" title="All 2 branches covered.">        for (int chan = 0; chan &lt; non_empty_channels.length; chan++) {</span>
+<span class="fc bfc" id="L2111" title="All 2 branches covered.">            if (non_empty_channels[chan]) {</span>
+                // Note the amount of time during which there is a rest on each tick of this channel
+<span class="fc" id="L2113">                double[] seconds_of_rest_per_tick = new double[ticks_to_test];</span>
+<span class="fc bfc" id="L2114" title="All 2 branches covered.">                for (int tick = 0; tick &lt; ticks_to_test; tick++) {</span>
+<span class="fc bfc" id="L2115" title="All 2 branches covered.">                    if (!note_sounding_on_a_channel_tick_map[tick][chan])</span>
+<span class="fc" id="L2116">                        seconds_of_rest_per_tick[tick] = duration_of_ticks_in_seconds[tick];</span>
+<span class="fc" id="L2117">                    else seconds_of_rest_per_tick[tick] = 0.0;</span>
+                }
+
+                // Find the duration of each rest in this channel (combined across ticks)
+<span class="fc" id="L2121">                ArrayList&lt;Double&gt; rest_durations_on_this_channel = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L2122">                double current_rest_duration = 0.0;</span>
+<span class="fc bfc" id="L2123" title="All 2 branches covered.">                for (int tick = 0; tick &lt; seconds_of_rest_per_tick.length; tick++) {</span>
+<span class="fc bfc" id="L2124" title="All 4 branches covered.">                    if (0.0 == seconds_of_rest_per_tick[tick] &amp;&amp; 0.0 != current_rest_duration) {</span>
+<span class="fc" id="L2125">                        rest_durations_on_this_channel.add(current_rest_duration);</span>
+<span class="fc" id="L2126">                        current_rest_duration = 0.0;</span>
+<span class="fc bfc" id="L2127" title="All 2 branches covered.">                    } else if (0.0 != seconds_of_rest_per_tick[tick])</span>
+<span class="fc" id="L2128">                        current_rest_duration += seconds_of_rest_per_tick[tick];</span>
+                }
+<span class="fc bfc" id="L2130" title="All 2 branches covered.">                if (0.0 != current_rest_duration)</span>
+<span class="fc" id="L2131">                    rest_durations_on_this_channel.add(current_rest_duration);</span>
+
+                // Add the list of durations to rest_dration_list
+<span class="fc bfc" id="L2134" title="All 2 branches covered.">                if (0 &lt; rest_durations_on_this_channel.size())</span>
+<span class="fc" id="L2135">                    rest_dration_list.add(rest_durations_on_this_channel);</span>
+            }
+        }
+
+        // Fill rest_durations_separated_by_channel based on rest_dration_list, after conversion from seconds
+        // to fraction of a quarter note
+<span class="fc bfc" id="L2141" title="All 2 branches covered.">        if (0 &lt; rest_dration_list.size()) {</span>
+<span class="fc" id="L2142">            rest_durations_separated_by_channel = new double[rest_dration_list.size()][];</span>
+<span class="fc bfc" id="L2143" title="All 2 branches covered.">            for (int i = 0; i &lt; rest_durations_separated_by_channel.length; i++) {</span>
+<span class="fc" id="L2144">                rest_durations_separated_by_channel[i] = new double[rest_dration_list.get(i).size()];</span>
+<span class="fc bfc" id="L2145" title="All 2 branches covered.">                for (int j = 0; j &lt; rest_durations_separated_by_channel[i].length; j++) {</span>
+<span class="fc" id="L2146">                    double quarter_note_value = rest_dration_list.get(i).get(j) / average_quarter_note_duration_in_seconds;</span>
+<span class="fc" id="L2147">                    rest_durations_separated_by_channel[i][j] = quarter_note_value;</span>
+                }
+            }
+        }
+
+        // Filter out all rests shorter than 0.1 of a quarter note.
+<span class="fc bfc" id="L2153" title="All 2 branches covered.">        if (null != rest_durations_separated_by_channel)</span>
+<span class="fc" id="L2154">            rest_durations_separated_by_channel = ArrayMethods.removeEntriesLessThan(rest_durations_separated_by_channel, 0.1);</span>
+<span class="fc" id="L2155">    }</span>
+
+
+    /**
+     * Calculate the values of the complete_rest_durations field.
+     */
+    private void generateCompleteRestDurations() {
+        // A list of the duration of all complete rests (in seconds) in the piece, in the order that they
+        // appear. Channel 10 notes are NOT included.
+<span class="fc" id="L2164">        ArrayList&lt;Double&gt; complete_rest_durations_list = new ArrayList();</span>
+
+        // The number of ticks to examine (the minus 1 is because Java doesn't count the last tick
+<span class="fc" id="L2167">        int ticks_to_test = note_sounding_on_a_channel_tick_map.length - 1;</span>
+
+        // Note the amount of time during which there is a complete rest on each tick
+<span class="fc" id="L2170">        double[] seconds_of_rest_per_tick = new double[ticks_to_test];</span>
+<span class="fc bfc" id="L2171" title="All 2 branches covered.">        for (int tick = 0; tick &lt; ticks_to_test; tick++) {</span>
+<span class="fc bfc" id="L2172" title="All 2 branches covered.">            if (ArrayMethods.doesArrayContainOnlyThisValue(pitch_strength_by_tick_chart[tick], 0))</span>
+<span class="fc" id="L2173">                seconds_of_rest_per_tick[tick] = duration_of_ticks_in_seconds[tick];</span>
+<span class="fc" id="L2174">            else seconds_of_rest_per_tick[tick] = 0.0;</span>
+        }
+
+        // Find the duration of each complete rest
+<span class="fc" id="L2178">        double current_rest_duration = 0.0;</span>
+<span class="fc bfc" id="L2179" title="All 2 branches covered.">        for (int tick = 0; tick &lt; seconds_of_rest_per_tick.length; tick++) {</span>
+<span class="fc bfc" id="L2180" title="All 4 branches covered.">            if (0.0 == seconds_of_rest_per_tick[tick] &amp;&amp; 0.0 != current_rest_duration) {</span>
+<span class="fc" id="L2181">                complete_rest_durations_list.add(current_rest_duration);</span>
+<span class="fc" id="L2182">                current_rest_duration = 0.0;</span>
+<span class="fc bfc" id="L2183" title="All 2 branches covered.">            } else if (0.0 != seconds_of_rest_per_tick[tick])</span>
+<span class="fc" id="L2184">                current_rest_duration += seconds_of_rest_per_tick[tick];</span>
+        }
+<span class="fc bfc" id="L2186" title="All 2 branches covered.">        if (0.0 != current_rest_duration)</span>
+<span class="fc" id="L2187">            complete_rest_durations_list.add(current_rest_duration);</span>
+
+        // Fill complete_rest_durations based on complete_rest_durations_list, after conversion from seconds
+        // to fraction of a quarter note
+<span class="fc bfc" id="L2191" title="All 2 branches covered.">        if (0 &lt; complete_rest_durations_list.size()) {</span>
+<span class="fc" id="L2192">            complete_rest_durations = new double[complete_rest_durations_list.size()];</span>
+<span class="fc bfc" id="L2193" title="All 2 branches covered.">            for (int i = 0; i &lt; complete_rest_durations.length; i++) {</span>
+<span class="fc" id="L2194">                double quarter_note_value = complete_rest_durations_list.get(i) / average_quarter_note_duration_in_seconds;</span>
+<span class="fc" id="L2195">                complete_rest_durations[i] = quarter_note_value;</span>
+            }
+        }
+
+        // Filter out all rests shorter than 0.1 of a quarter note.
+<span class="fc bfc" id="L2200" title="All 2 branches covered.">        if (null != complete_rest_durations)</span>
+<span class="fc" id="L2201">            complete_rest_durations = ArrayMethods.removeEntriesLessThan(complete_rest_durations, 0.1);</span>
+<span class="fc" id="L2202">    }</span>
+
+
+    /* PRIVATE STATIC METHODS *******************************************************************************/
+
+
+    /**
+     * Look ahead on a MIDI track to find the tick corresponding to the note off (or velocity 0 note on) for
+     * the specified note on.
+     *
+     * @param note_on            The note on message for which the note off is being searched for.
+     * @param note_on_start_tick The MIDI tick on which note_on occurred.
+     * @param track              The MIDI track on which note_on is found.
+     * @return The tick of the note off corresponding to note_on. If the note off never
+     * occurs, then the last tick is returned.
+     */
+    private static int findCorrespondingNoteOffEndTick(ShortMessage note_on,
+                                                       int note_on_start_tick,
+                                                       Track track) {
+<span class="fc bfc" id="L2221" title="All 2 branches covered.">        for (int i = note_on_start_tick + 1; i &lt; track.size(); i++) {</span>
+<span class="fc" id="L2222">            MidiEvent end_event = track.get(i);</span>
+<span class="fc" id="L2223">            MidiMessage end_message = end_event.getMessage();</span>
+<span class="fc bfc" id="L2224" title="All 2 branches covered.">            if (end_message instanceof ShortMessage end_short_message) {</span>
+<span class="fc bfc" id="L2225" title="All 2 branches covered.">                if (end_short_message.getChannel() == note_on.getChannel()) // must be on same channel</span>
+                {
+<span class="fc bfc" id="L2227" title="All 2 branches covered.">                    if (0x80 == end_short_message.getCommand()) // note off</span>
+                    {
+<span class="fc bfc" id="L2229" title="All 2 branches covered.">                        if (end_short_message.getData1() == note_on.getData1()) // same pitch</span>
+<span class="fc" id="L2230">                            return (int) end_event.getTick();</span>
+                    }
+<span class="fc bfc" id="L2232" title="All 2 branches covered.">                    if (0x90 == end_short_message.getCommand()) // note on (with vel 0 is equiv to note off)</span>
+                    {
+<span class="fc bfc" id="L2234" title="All 2 branches covered.">                        if (0 == end_short_message.getData2()) // velocity 0</span>
+<span class="fc bfc" id="L2235" title="All 2 branches covered.">                            if (end_short_message.getData1() == note_on.getData1()) // same pitch</span>
+<span class="fc" id="L2236">                                return (int) end_event.getTick();</span>
+                    }
+                }
+            }
+        }
+
+        // Default to the total number of ticks if the note off is not found
+<span class="fc" id="L2243">        return (int) track.ticks();</span>
+    }
+
+
+    /**
+     * Given information for a MIDI Note On event, find the corresponding Note Off event, and update the
+     * number_notes_sounding_by_tick_and_pitch_chart and pitch_strength_by_tick_chart_to_fill variables
+     * correspondingly. Also return an updated version of total_vertical_unison_velocity_so_far.
+     *
+     * @param midi_track                                    The track the Note On occurred on.
+     * @param note_on_event_index                           The event index of the Note On event.
+     * @param note_on_tick                                  The MIDI tick the Note On occurred at.
+     * @param note_on_channel                               The MIDI channel the Note On occurred on.
+     * @param note_on_pitch                                 The MIDI pitch of the Note On.
+     * @param note_on_velocity                              The MIDI velocity of the Not On.
+     * @param number_notes_sounding_by_tick_and_pitch_chart A chart indicating the number of notes sounding at
+     *                                                      each pitch during each tick. The first index
+     *                                                      indicates the MIDI tick and the second index
+     *                                                      indicates the MIDI pitch (this is always set to
+     *                                                      size 128). Each entry indicates the number of
+     *                                                      notes sounding.
+     * @param pitch_strength_by_tick_chart_to_fill          A chart indicating what pitches are sounding
+     *                                                      during each tick. The first index indicates MIDI
+     *                                                      tick and the second indicates MIDI pitch (this is
+     *                                                      always set to size 128). Each entry indicates the
+     *                                                      cumulative velocity of all notes (not including
+     *                                                      Channel 10 non-pitched percussion instruments)
+     *                                                      sounding at that tick on that pitch.
+     * @param total_vertical_unison_velocity_so_far         Total velocity (so far) of all notes involved in a
+     *                                                      vertical unison.
+     * @return The value of total_vertical_unison_velocity_so_far
+     * after updating to account for this Note On.
+     */
+    private static int lookAheadForNoteOffAndUpdate(Track midi_track,
+                                                    int note_on_event_index,
+                                                    int note_on_tick,
+                                                    int note_on_channel,
+                                                    int note_on_pitch,
+                                                    int note_on_velocity,
+                                                    short[][] number_notes_sounding_by_tick_and_pitch_chart,
+                                                    short[][] pitch_strength_by_tick_chart_to_fill,
+                                                    int total_vertical_unison_velocity_so_far) {
+<span class="fc bfc" id="L2285" title="All 2 branches covered.">        for (int n_event = note_on_event_index; n_event &lt; midi_track.size(); n_event++) {</span>
+<span class="fc" id="L2286">            MidiEvent event = midi_track.get(n_event);</span>
+<span class="fc" id="L2287">            MidiMessage message = event.getMessage();</span>
+<span class="fc bfc" id="L2288" title="All 2 branches covered.">            if (message instanceof ShortMessage short_message) {</span>
+                // Is this a Note Off message (or equivalent Note On with velocity 0)?
+<span class="fc bfc" id="L2290" title="All 2 branches covered.">                if (0x80 == short_message.getCommand()</span>
+<span class="pc bpc" id="L2291" title="1 of 4 branches missed.">                        || (0x90 == short_message.getCommand() &amp;&amp; 0 == short_message.getData2())) {</span>
+                    // Is this Note Off message on the same channel, and does it have the same pitch as the
+                    // Note On message under consideration?
+<span class="fc bfc" id="L2294" title="All 4 branches covered.">                    if (short_message.getChannel() == note_on_channel &amp;&amp; short_message.getData1() == note_on_pitch) {</span>
+                        // Fill in pitch_strength_by_tick_chart_to_fill now that the start and end ticks are
+                        // known for this note
+<span class="fc" id="L2297">                        int note_off_tick = (int) event.getTick();</span>
+<span class="fc bfc" id="L2298" title="All 2 branches covered.">                        for (int tick = note_on_tick; tick &lt; note_off_tick; tick++) {</span>
+                            // Update total_vertical_unison_velocity_so_far
+<span class="fc bfc" id="L2300" title="All 2 branches covered.">                            if (0 &lt; number_notes_sounding_by_tick_and_pitch_chart[tick][note_on_pitch]) {</span>
+<span class="fc" id="L2301">                                int number_previously_detected_notes_at_this_pitch = number_notes_sounding_by_tick_and_pitch_chart[tick][note_on_pitch];</span>
+<span class="fc bfc" id="L2302" title="All 2 branches covered.">                                if (1 == number_previously_detected_notes_at_this_pitch)</span>
+<span class="fc" id="L2303">                                    total_vertical_unison_velocity_so_far += pitch_strength_by_tick_chart_to_fill[tick][note_on_pitch] + note_on_velocity;</span>
+<span class="pc bpc" id="L2304" title="1 of 2 branches missed.">                                else if (1 &lt; number_previously_detected_notes_at_this_pitch)</span>
+<span class="fc" id="L2305">                                    total_vertical_unison_velocity_so_far += note_on_velocity;</span>
+                            }
+
+                            // Update number_notes_sounding_by_tick_and_pitch_chart
+<span class="fc" id="L2309">                            number_notes_sounding_by_tick_and_pitch_chart[tick][note_on_pitch]++;</span>
+
+                            // Update pitch_strength_by_tick_chart_to_fill
+<span class="fc" id="L2312">                            pitch_strength_by_tick_chart_to_fill[tick][note_on_pitch] += note_on_velocity;</span>
+                        }
+
+                        // Stop looping through MIDI events, since the appropriate Note Off has been
+                        // found, and processing has proceded accordingly.
+<span class="fc" id="L2317">                        break;</span>
+                    }
+                }
+            }
+        }
+
+        // Return the given total_vertical_unison_velocity_so_far, updated to include the information
+        // associated with the Note On that this method was called for
+<span class="fc" id="L2325">        return total_vertical_unison_velocity_so_far;</span>
+    }
+
+
+    /**
+     * Finds the number of MIDI ticks corresponding to the duration of a single beat at the given tempo in
+     * beats per minute (assuming the specified average tempo in ticks per second).
+     *
+     * @param bpm              The tempo to convert, in beats per minute.
+     * @param ticks_per_second The number of MIDI ticks in one second.
+     * @return The number of MIDI ticks in one beat at the given bpm tempo.
+     */
+    private static int convertBPMtoTicks(int bpm, double ticks_per_second) {
+<span class="fc" id="L2338">        return (int) ((ticks_per_second * 60.0) / bpm);</span>
+    }
+
+
+    /**
+     * Perform an autocorrelation calculation as follows on the specified data with the specified lag:
+     * &lt;p&gt;
+     * y[lag] = (1/N) SUM(n to N){ x[n] * x[n-lag] }
+     *
+     * @param data The data to be correlated.
+     * @param lag  The lag for each data point.
+     * @return The resultant auto correlation.
+     */
+    private static double autoCorrelate(int[] data, int lag) {
+<span class="fc" id="L2352">        double result = 0.0;</span>
+<span class="fc bfc" id="L2353" title="All 2 branches covered.">        for (int i = lag; i &lt; data.length; i++)</span>
+<span class="fc" id="L2354">            result += (data[i] * data[i - lag]);</span>
+<span class="fc" id="L2355">        return result / data.length; // divide by N</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

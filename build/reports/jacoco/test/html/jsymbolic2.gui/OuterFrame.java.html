@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OuterFrame.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.gui</a> &gt; <span class="el_source">OuterFrame.java</span></div><h1>OuterFrame.java</h1><pre class="source lang-java linenums">package jsymbolic2.gui;
+
+import jsymbolic2.commandline.CommandLineSwitchEnum;
+import jsymbolic2.configuration.ConfigurationFileData;
+import jsymbolic2.configuration.txtimplementation.ConfigurationFileValidatorTxtImpl;
+import jsymbolic2.featureutils.FeatureExtractorAccess;
+import jsymbolic2.processing.UserFeedbackGenerator;
+import mckay.utilities.gui.templates.AboutDialog;
+import mckay.utilities.gui.templates.HelpDialog;
+
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.text.DefaultCaret;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+
+/**
+ * A JFrame holding the components of the jSymbolic Feature Extractor GUI, including the
+ * MusicFileSelectorPanel (for selecting symbolic music files to extract features from), the
+ * FeatureSelectorPanel (for choosing the features to extract), the ExtractionConfigurationsPanel (for loading
+ * and saving configuration files, for setting feature extraction settings and paths, and for initiating
+ * feature extractions. This JFrame also holds two text areas that can be written to (via the
+ * status_print_stream and error_print_stream fields). Finally, this JFrame includes a menu that allows the
+ * user to display the on-line manual and an about dialog box.
+ *
+ * @author Cory McKay and Tristano Tenaglia
+ */
+public class OuterFrame
+        extends JFrame
+        implements ActionListener {
+    /* PUBLIC STATIC FINAL FIELDS ***************************************************************************/
+
+
+    /**
+     * The horizontal gap between GUI elements.
+     */
+    public static final int HORIZONTAL_GAP = 5;
+
+    /**
+     * The vertical gap between GUI elements.
+     */
+    public static final int VERTICAL_GAP = 5;
+
+    /**
+     * The maximum number of characters a single line of text displayed in a JOptionPane should have.
+     */
+    public static final int DIALOG_BOX_MAX_CHARS_PER_LINE = 115;
+
+    /**
+     * The number of characters to indent all lines but the first in each paragraph in a JOptionPane after
+     * line wrapping.
+     */
+    public static final int DIALOG_BOX_HANGING_INDENT_CHARS = 5;
+
+
+    /* PRIVATE STATIC FINAL FIELDS ***************************************************************************/
+
+
+    /**
+     * The title to include in the GUI title bar.
+     */
+    private static final String WINDOW_TITLE = &quot;jSymbolic 2.2&quot;;
+
+    /**
+     * The name of this software's author.
+     */
+    private static final String AUTHOR_STRING = &quot;Cory McKay&quot;;
+
+    /**
+     * The string indicating licensing credit.
+     */
+    private static final String LICENSING_STRING = &quot;2018 (GNU GPL)&quot;;
+
+    /**
+     * The credited institution.
+     */
+    private static final String INSTITUTION_CREDIT_STRING = &quot;CIRMMT / Marianopolis College / McGill University&quot;;
+
+    /**
+     * The horizontal dimension of the GUI window, in pixels.
+     */
+    private static final int WINDOW_WIDTH_HORIZONTAL = 1250;
+
+    /**
+     * The vertical dimension of the GUI window, in pixels.
+     */
+    private static final int WINDOW_WIDTH_VERTICAL = 940;
+
+
+    /* PUBLIC FIELDS ****************************************************************************************/
+
+
+    /**
+     * A panel listing the symbolic files from which features are to be extracted. The user may add files to
+     * this list, delete files from it, view information about the files or play the files.
+     */
+    public MusicFileSelectorPanel music_file_selector_panel;
+
+    /**
+     * A panel allowing the user to select the features to be extracted and to see information about each
+     * feature.
+     */
+    public FeatureSelectorPanel feature_selector_panel;
+
+    /**
+     * A panel allowing the user to specify all feature extraction and configuration file settings other than
+     * the particular symbolic files from which features are to be extracted (this is set in the
+     * MusicFileSelectorPanel) and the particular features that are to be extracted and saved from them (this
+     * is set in the FeatureSelectorPanel). The user may use buttons on this panel to initiate feature
+     * extraction and saving, to save the settings currently entered on the GUI in a configuration file, or to
+     * load settings from an existing configuration file.
+     */
+    public ExtractionConfigurationsPanel extraction_configurations_panel;
+
+    /**
+     * The stream to which processing status updates are written to.
+     */
+    public PrintStream status_print_stream;
+
+    /**
+     * The stream to which errors are written to.
+     */
+    public PrintStream error_print_stream;
+
+
+    /* PRIVATE FIELDS ***************************************************************************************/
+
+
+    /**
+     * Where processing status messages are displayed.
+     */
+    private JTextArea status_text_area;
+
+    /**
+     * Where error messages are displayed during processing.
+     */
+    private JTextArea error_text_area;
+
+    /**
+     * Displays ownership and version information.
+     */
+    private JMenuItem about_menu_item;
+
+    /**
+     * Makes the help_dialog visible.
+     */
+    private JMenuItem help_menu_item;
+
+    /**
+     * Makes the tutorial_dialog visible.
+     */
+    private JMenuItem tutorial_menu_item;
+
+    /**
+     * Displays the on-line manual.
+     */
+    private HelpDialog help_dialog;
+
+    /**
+     * Displays the on-line tutorial.
+     */
+    private HelpDialog tutorial_dialog;
+
+
+    /* CONSTRUCTOR ******************************************************************************************/
+
+
+    /**
+     * Basic constructor that sets up the GUI.
+     *
+     * @param config_file_data Data parsed from a configuration file. Null if no configuration file data is
+     *                         available or specified.
+     */
+<span class="nc" id="L181">    public OuterFrame(ConfigurationFileData config_file_data) {</span>
+        // Determine the proper window size based on the current display settings. Use default size if there
+        // is enough room, otherwise choose a size that will fit the screen.
+<span class="nc" id="L184">        int frame_width = OuterFrame.WINDOW_WIDTH_HORIZONTAL;</span>
+<span class="nc" id="L185">        int frame_height = OuterFrame.WINDOW_WIDTH_VERTICAL;</span>
+<span class="nc" id="L186">        Dimension current_screen_size = Toolkit.getDefaultToolkit().getScreenSize();</span>
+<span class="nc bnc" id="L187" title="All 2 branches missed.">        if (frame_width &gt; current_screen_size.getWidth())</span>
+<span class="nc" id="L188">            frame_width = (int) current_screen_size.getWidth();</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">        if (frame_height &gt; current_screen_size.getHeight())</span>
+<span class="nc" id="L190">            frame_height = (int) current_screen_size.getHeight() - 80;</span>
+
+        // Position the GUI window at the left corner of the an appropriate size
+<span class="nc" id="L193">        setBounds(0, 0, frame_width, frame_height);</span>
+
+        // Set the GUI window title
+<span class="nc" id="L196">        setTitle(OuterFrame.WINDOW_TITLE);</span>
+
+        // Make jSymbolic quit when exit box is pressed
+<span class="nc" id="L199">        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);</span>
+
+        // Create an outer border
+<span class="nc" id="L202">        JPanel outer_padding_panel = new JPanel();</span>
+<span class="nc" id="L203">        Border outer_padding = BorderFactory.createEmptyBorder(OuterFrame.VERTICAL_GAP, OuterFrame.HORIZONTAL_GAP, OuterFrame.VERTICAL_GAP, OuterFrame.HORIZONTAL_GAP);</span>
+<span class="nc" id="L204">        outer_padding_panel.setBorder(outer_padding);</span>
+<span class="nc" id="L205">        setContentPane(outer_padding_panel);</span>
+
+        // Set up the menu bar
+<span class="nc" id="L208">        JMenuBar menu_bar = new JMenuBar();</span>
+<span class="nc" id="L209">        JMenu information_menu = new JMenu(&quot;Information&quot;);</span>
+<span class="nc" id="L210">        information_menu.setMnemonic('i');</span>
+<span class="nc" id="L211">        about_menu_item = new JMenuItem(&quot;About&quot;);</span>
+<span class="nc" id="L212">        about_menu_item.setMnemonic('a');</span>
+<span class="nc" id="L213">        about_menu_item.addActionListener(this);</span>
+<span class="nc" id="L214">        information_menu.add(about_menu_item);</span>
+<span class="nc" id="L215">        help_menu_item = new JMenuItem(&quot;Help&quot;);</span>
+<span class="nc" id="L216">        help_menu_item.setMnemonic('h');</span>
+<span class="nc" id="L217">        help_menu_item.addActionListener(this);</span>
+<span class="nc" id="L218">        information_menu.add(help_menu_item);</span>
+<span class="nc" id="L219">        tutorial_menu_item = new JMenuItem(&quot;Tutorial&quot;);</span>
+<span class="nc" id="L220">        tutorial_menu_item.setMnemonic('t');</span>
+<span class="nc" id="L221">        tutorial_menu_item.addActionListener(this);</span>
+<span class="nc" id="L222">        information_menu.add(tutorial_menu_item);</span>
+<span class="nc" id="L223">        menu_bar.add(information_menu);</span>
+<span class="nc" id="L224">        setJMenuBar(menu_bar);</span>
+
+        // Set up help dialog box
+<span class="nc" id="L227">        help_dialog = new HelpDialog(&quot;manual&quot; + File.separator + &quot;home_files&quot; + File.separator + &quot;contents.html&quot;,</span>
+                &quot;manual&quot; + File.separator + &quot;home_files&quot; + File.separator + &quot;splash.html&quot;);
+
+        // Set up tutorial dialog box
+<span class="nc" id="L231">        tutorial_dialog = new HelpDialog(&quot;tutorial&quot; + File.separator + &quot;contents.html&quot;,</span>
+                &quot;tutorial&quot; + File.separator + &quot;introduction.html&quot;);
+
+        // Set up the music_file_selector_panel and feature_selector_panel
+<span class="nc" id="L235">        JPanel music_and_feature_panel = new JPanel(new GridLayout(1, 2, OuterFrame.HORIZONTAL_GAP, OuterFrame.VERTICAL_GAP));</span>
+<span class="nc" id="L236">        music_file_selector_panel = new MusicFileSelectorPanel(this);</span>
+<span class="nc" id="L237">        OuterFrame.addFormattedBorder(music_file_selector_panel);</span>
+<span class="nc" id="L238">        feature_selector_panel = new FeatureSelectorPanel(this, config_file_data);</span>
+<span class="nc" id="L239">        OuterFrame.addFormattedBorder(feature_selector_panel);</span>
+<span class="nc" id="L240">        music_and_feature_panel.add(music_file_selector_panel);</span>
+<span class="nc" id="L241">        music_and_feature_panel.add(feature_selector_panel);</span>
+
+        // Set up the extraction_configurations_panel
+<span class="nc" id="L244">        extraction_configurations_panel = new ExtractionConfigurationsPanel(this, config_file_data);</span>
+
+        // Set up the message_print_stream and its associated message_text_area
+<span class="nc" id="L247">        JPanel status_text_panel = new JPanel(new BorderLayout(OuterFrame.HORIZONTAL_GAP, OuterFrame.VERTICAL_GAP));</span>
+<span class="nc" id="L248">        OuterFrame.addFormattedBorder(status_text_panel);</span>
+<span class="nc" id="L249">        status_text_area = new JTextArea();</span>
+<span class="nc" id="L250">        DefaultCaret status_text_area_caret = (DefaultCaret) status_text_area.getCaret();</span>
+<span class="nc" id="L251">        status_text_area_caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);</span>
+<span class="nc" id="L252">        status_text_area.setLineWrap(true);</span>
+<span class="nc" id="L253">        status_text_area.setWrapStyleWord(true);</span>
+<span class="nc" id="L254">        status_text_area.setEditable(false);</span>
+<span class="nc" id="L255">        status_text_area.setTabSize(2);</span>
+<span class="nc" id="L256">        status_text_area.setText(&quot;&quot;);</span>
+<span class="nc" id="L257">        JLabel status_text_panel_label = new JLabel(&quot;PROCESSING INFORMATION&quot;);</span>
+<span class="nc" id="L258">        OuterFrame.formatLabel(status_text_panel_label);</span>
+<span class="nc" id="L259">        status_text_panel.add(status_text_panel_label, BorderLayout.NORTH);</span>
+<span class="nc" id="L260">        JScrollPane status_text_area_scrollpane = new JScrollPane(status_text_area);</span>
+<span class="nc" id="L261">        JScrollBar status_text_area_scrollbar = status_text_area_scrollpane.getVerticalScrollBar();</span>
+<span class="nc" id="L262">        status_text_panel.add(status_text_area_scrollpane, BorderLayout.CENTER);</span>
+<span class="nc" id="L263">        status_print_stream = OuterFrame.getPrintStream(status_text_area, status_text_area_scrollbar);</span>
+
+        // Set up the error_print_stream and its associated error_text_area
+<span class="nc" id="L266">        JPanel error_text_panel = new JPanel(new BorderLayout(OuterFrame.HORIZONTAL_GAP, OuterFrame.VERTICAL_GAP));</span>
+<span class="nc" id="L267">        OuterFrame.addFormattedBorder(error_text_panel);</span>
+<span class="nc" id="L268">        error_text_area = new JTextArea();</span>
+<span class="nc" id="L269">        DefaultCaret error_text_area_caret = (DefaultCaret) error_text_area.getCaret();</span>
+<span class="nc" id="L270">        error_text_area_caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);</span>
+<span class="nc" id="L271">        error_text_area.setLineWrap(true);</span>
+<span class="nc" id="L272">        error_text_area.setWrapStyleWord(true);</span>
+<span class="nc" id="L273">        error_text_area.setEditable(false);</span>
+<span class="nc" id="L274">        error_text_area.setTabSize(2);</span>
+<span class="nc" id="L275">        error_text_area.setForeground(Color.RED);</span>
+<span class="nc" id="L276">        error_text_area.setText(&quot;&quot;);</span>
+<span class="nc" id="L277">        JLabel error_text_panel_label = new JLabel(&quot;ERROR REPORTS&quot;);</span>
+<span class="nc" id="L278">        OuterFrame.formatLabel(error_text_panel_label);</span>
+<span class="nc" id="L279">        error_text_panel.add(error_text_panel_label, BorderLayout.NORTH);</span>
+<span class="nc" id="L280">        JScrollPane error_text_area_scrollpane = new JScrollPane(error_text_area);</span>
+<span class="nc" id="L281">        JScrollBar error_text_area_scrollbar = error_text_area_scrollpane.getVerticalScrollBar();</span>
+<span class="nc" id="L282">        error_text_panel.add(error_text_area_scrollpane, BorderLayout.CENTER);</span>
+<span class="nc" id="L283">        error_print_stream = OuterFrame.getPrintStream(error_text_area, error_text_area_scrollbar);</span>
+
+        // Print out a warning if no default configuration file was found at startup
+<span class="nc bnc" id="L286" title="All 2 branches missed.">        if (null == config_file_data)</span>
+<span class="nc" id="L287">            error_print_stream.println(&quot;NON-CRITICAL WARNING: Could not find a valid configurations file called &quot; + CommandLineSwitchEnum.default_config_file_path + &quot; in the jSymbolic home directory. As a result, the jSymbolic GUI was launched with standard settings. Although a default configurations file is by no means necessary to use jSymbolic, it is often convenient. You can save one at anytime using the jSymbolic GUI, if you wish (see the manual for more details).\n&quot;);</span>
+
+            // Verify that the input files specified in the config file are valid. Print out warnings if any
+            // invalid files are present.
+        else {
+            try {
+<span class="nc" id="L293">                UserFeedbackGenerator.printParsingConfigFileMessage(status_print_stream, config_file_data.getConfigurationFilePath());</span>
+<span class="nc" id="L294">                new ConfigurationFileValidatorTxtImpl().parseConfigFileTwoThreeOrFour(config_file_data.getConfigurationFilePath(), error_print_stream);</span>
+<span class="nc" id="L295">            } catch (Exception e) {</span>
+<span class="nc" id="L296">            }</span>
+        }
+
+        // Print out basic welcome information for the user
+<span class="nc" id="L300">        status_print_stream.println(&quot;Welcome to jSymbolic!\n&quot;);</span>
+        try {
+<span class="nc" id="L302">            status_print_stream.println(&quot;SUMMARY INFORMATION ON FEATURES SELECTED FOR EXTRACTION AT STARTUP:&quot;);</span>
+<span class="nc" id="L303">            status_print_stream.println(FeatureExtractorAccess.getFeatureCatalogueOverviewReport(feature_selector_panel.getFeaturesToSave()));</span>
+<span class="nc" id="L304">        } catch (Exception e) {</span>
+<span class="nc" id="L305">            status_print_stream.println(&quot;Unable to summarize this information.\n&quot;);</span>
+<span class="nc" id="L306">        }</span>
+<span class="nc" id="L307">        status_print_stream.println(&quot;SUMMARY INFORMATION ON ALL IMPLEMENTED FEATURES:&quot;);</span>
+<span class="nc" id="L308">        status_print_stream.println(FeatureExtractorAccess.getFeatureCatalogueOverviewReport(null));</span>
+
+        // Load references to any potential symbolic music files from a config file
+<span class="nc" id="L311">        music_file_selector_panel.addMusicFilesParsedFromConfigFile(config_file_data);</span>
+
+        // Set up the combined_text_panels
+<span class="nc" id="L314">        JPanel combined_text_panels = new JPanel(new GridLayout(1, 2, OuterFrame.HORIZONTAL_GAP, OuterFrame.VERTICAL_GAP));</span>
+<span class="nc" id="L315">        combined_text_panels.add(status_text_panel);</span>
+<span class="nc" id="L316">        combined_text_panels.add(error_text_panel);</span>
+
+        // Set up the all_but_extraction_configuration_panels
+<span class="nc" id="L319">        GridBagLayout all_but_extraction_configuration_panels_layout = new GridBagLayout();</span>
+<span class="nc" id="L320">        JPanel all_but_extraction_configuration_panels = new JPanel(all_but_extraction_configuration_panels_layout);</span>
+<span class="nc" id="L321">        GridBagConstraints all_but_extraction_configuration_panels_constraints = new GridBagConstraints();</span>
+<span class="nc" id="L322">        all_but_extraction_configuration_panels_constraints.weightx = 1.0;</span>
+<span class="nc" id="L323">        all_but_extraction_configuration_panels_constraints.weighty = 0.7;</span>
+<span class="nc" id="L324">        all_but_extraction_configuration_panels_constraints.fill = GridBagConstraints.BOTH;</span>
+<span class="nc" id="L325">        all_but_extraction_configuration_panels_constraints.gridwidth = GridBagConstraints.REMAINDER;</span>
+<span class="nc" id="L326">        all_but_extraction_configuration_panels_layout.setConstraints(music_and_feature_panel, all_but_extraction_configuration_panels_constraints);</span>
+<span class="nc" id="L327">        all_but_extraction_configuration_panels.add(music_and_feature_panel);</span>
+<span class="nc" id="L328">        all_but_extraction_configuration_panels_constraints.insets = new Insets(OuterFrame.VERTICAL_GAP, 0, 0, 0);</span>
+<span class="nc" id="L329">        all_but_extraction_configuration_panels_constraints.weighty = 0.3;</span>
+<span class="nc" id="L330">        all_but_extraction_configuration_panels_layout.setConstraints(combined_text_panels, all_but_extraction_configuration_panels_constraints);</span>
+<span class="nc" id="L331">        all_but_extraction_configuration_panels.add(combined_text_panels);</span>
+
+        // Add items to the GUI
+<span class="nc" id="L334">        setLayout(new BorderLayout(OuterFrame.HORIZONTAL_GAP, OuterFrame.VERTICAL_GAP));</span>
+<span class="nc" id="L335">        add(all_but_extraction_configuration_panels, BorderLayout.CENTER);</span>
+<span class="nc" id="L336">        add(extraction_configurations_panel, BorderLayout.SOUTH);</span>
+
+        // Display the GUI
+<span class="nc" id="L339">        setVisible(true);</span>
+<span class="nc" id="L340">    }</span>
+
+
+    /* PUBLIC METHODS ***************************************************************************************/
+
+
+    /**
+     * Respond to menu commands.
+     *
+     * @param    event    The event that is to be reacted to.
+     */
+    @Override
+    public void actionPerformed(ActionEvent event) {
+        // React to the about_menu_item
+<span class="nc bnc" id="L354" title="All 2 branches missed.">        if (event.getSource().equals(about_menu_item)) {</span>
+<span class="nc" id="L355">            new AboutDialog(this,</span>
+                    OuterFrame.WINDOW_TITLE,
+                    OuterFrame.AUTHOR_STRING,
+                    OuterFrame.LICENSING_STRING,
+                    OuterFrame.INSTITUTION_CREDIT_STRING);
+        }
+
+        // React to the help_menu_item
+<span class="nc bnc" id="L363" title="All 2 branches missed.">        if (event.getSource().equals(help_menu_item))</span>
+<span class="nc" id="L364">            help_dialog.setVisible(true);</span>
+
+        // React to the tutorial_menu_item
+<span class="nc bnc" id="L367" title="All 2 branches missed.">        if (event.getSource().equals(tutorial_menu_item))</span>
+<span class="nc" id="L368">            tutorial_dialog.setVisible(true);</span>
+<span class="nc" id="L369">    }</span>
+
+
+    /**
+     * Delete all contents in the status_text_area and error_text_area.
+     */
+    public void clearTextAreas() {
+<span class="nc" id="L376">        status_text_area.setText(&quot;&quot;);</span>
+<span class="nc" id="L377">        status_text_area.setCaretPosition(0);</span>
+<span class="nc" id="L378">        status_text_area.update(status_text_area.getGraphics());</span>
+
+<span class="nc" id="L380">        error_text_area.setText(&quot;&quot;);</span>
+<span class="nc" id="L381">        error_text_area.setCaretPosition(0);</span>
+<span class="nc" id="L382">        error_text_area.update(error_text_area.getGraphics());</span>
+<span class="nc" id="L383">    }</span>
+
+
+    /* PUBLIC STATIC METHODS*********************************************************************************/
+
+
+    /**
+     * Adjust the formatting of the given JLabel.
+     *
+     * @param to_format The JLabel to format.
+     */
+    public static void formatLabel(JLabel to_format) {
+        // Change the font, style and/or size
+<span class="nc" id="L396">        Font old_font = to_format.getFont();</span>
+<span class="nc" id="L397">        Font new_font = new Font(old_font.getFontName(), Font.BOLD, (old_font.getSize() + 1));</span>
+<span class="nc" id="L398">        to_format.setFont(new_font);</span>
+
+        // Change the alignment
+<span class="nc" id="L401">        to_format.setHorizontalAlignment(SwingConstants.CENTER);</span>
+
+        // Change the colour
+<span class="nc" id="L404">        to_format.setForeground(Color.BLACK);</span>
+<span class="nc" id="L405">    }</span>
+
+
+    /**
+     * Add a compound border to the given JPanel, including one which is just empty space for the sake of
+     * spacing.
+     *
+     * @param to_format The JPanel to add the border to.
+     */
+    public static void addFormattedBorder(JPanel to_format) {
+<span class="nc" id="L415">        Border basic_border = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);</span>
+<span class="nc" id="L416">        Border spacing_border = BorderFactory.createEmptyBorder(OuterFrame.VERTICAL_GAP, OuterFrame.HORIZONTAL_GAP, OuterFrame.VERTICAL_GAP, OuterFrame.HORIZONTAL_GAP);</span>
+<span class="nc" id="L417">        to_format.setBorder(BorderFactory.createCompoundBorder(basic_border, spacing_border));</span>
+<span class="nc" id="L418">    }</span>
+
+
+    /* PRIVATE STATIC METHODS *******************************************************************************/
+
+
+    /**
+     * Return a PrintStream that, when written to, will append the supplied text to the specified JTextArea
+     * and cause scrolling to follow text as it is written.
+     *
+     * @param text_area           The JTextArea to append text to when the returned PrintStream is written
+     *                            to.
+     * @param vertical_scroll_bar The vertical scroll bar associated with the JTextArea that will be written
+     *                            to. Needed to ensure scrolling updates properly.
+     * @return The PrintStream that can be used to write to the text_area.
+     */
+    private static PrintStream getPrintStream(JTextArea text_area, JScrollBar vertical_scroll_bar) {
+<span class="nc" id="L435">        OutputStream new_stream = new OutputStream() {</span>
+            @Override
+            public void write(int b) throws IOException {
+<span class="nc" id="L438">                text_area.append(String.valueOf((char) b));</span>
+                // text_area.update(text_area.getGraphics());
+<span class="nc" id="L440">                vertical_scroll_bar.setValue(vertical_scroll_bar.getMaximum());</span>
+                // vertical_scroll_bar.paint(vertical_scroll_bar.getGraphics());
+<span class="nc" id="L442">                text_area.scrollRectToVisible(text_area.getVisibleRect());</span>
+<span class="nc" id="L443">                text_area.paint(text_area.getGraphics());</span>
+<span class="nc" id="L444">            }</span>
+
+            @Override
+            public void write(byte[] b, int off, int len) throws IOException {
+<span class="nc" id="L448">                text_area.append(new String(b, off, len, StandardCharsets.UTF_8));</span>
+                // text_area.update(text_area.getGraphics());
+<span class="nc" id="L450">                vertical_scroll_bar.setValue(vertical_scroll_bar.getMaximum());</span>
+                // vertical_scroll_bar.paint(vertical_scroll_bar.getGraphics());
+<span class="nc" id="L452">                text_area.scrollRectToVisible(text_area.getVisibleRect());</span>
+<span class="nc" id="L453">                text_area.paint(text_area.getGraphics());</span>
+<span class="nc" id="L454">            }</span>
+
+            @Override
+            public void write(byte[] b)
+                    throws IOException {
+<span class="nc" id="L459">                write(b, 0, b.length);</span>
+<span class="nc" id="L460">            }</span>
+        };
+
+<span class="nc" id="L463">        return new PrintStream(new_stream);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

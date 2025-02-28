@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ContraryMotionFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">ContraryMotionFeature.java</span></div><h1>ContraryMotionFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import jsymbolic2.featureutils.Feature;
+import javax.sound.midi.Sequence;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the fraction fraction of movements between voices that consist of contrary
+ * motion (the fraction is calculated relative to the total amount of qualifying transitions, including all
+ * parallel, similar, contrary and oblique transitions). If more than two voices are involved in a given pitch
+ * transition, then each possible pair of voices comprising the transition is included in the calculation.
+ * Note that only transitions from one set of pitches to another set of pitches comprising the same number of
+ * pitches as the first are included in this calculation, although a brief lookahead is performed in order to
+ * accommodate small rhythmic desynchronizations (e.g. if a MIDI file is a transcription of a human
+ * performance). Only unique pitches are included in this calculation (unisons are treated as a single pitch).
+ * All pitches present are considered, regardless of their MIDI channel or track; this has the advantage of
+ * accommodating polyphonic instruments such as piano or guitar, but the consequence is that this feature does
+ * not incorporate an awareness of voice crossing.
+ *
+ * @author Cory McKay
+ */
+<span class="fc" id="L24">public class ContraryMotionFeature implements Feature {</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getName() {
+<span class="fc" id="L31">        return &quot;Contrary Motion&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getCode() {
+<span class="fc" id="L39">        return &quot;T-21&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getDescription() {
+<span class="fc" id="L47">        return &quot;Fraction of movements between voices that consist of contrary motion (the fraction is calculated relative to the total amount of qualifying transitions, including all parallel, similar, contrary and oblique transitions). If more than two voices are involved in a given pitch transition, then each possible pair of voices comprising the transition is included in the calculation. Note that only transitions from one set of pitches to another set of pitches comprising the same number of pitches as the first are included in this calculation, although a brief lookahead is performed in order to accommodate small rhythmic desynchronizations (e.g. if a MIDI file is a transcription of a human performance). Only unique pitches are included in this calculation (unisons are treated as a single pitch). All pitches present are considered, regardless of their MIDI channel or track; this has the advantage of accommodating polyphonic instruments such as piano or guitar, but the consequence is that this feature does not incorporate an awareness of voice crossing.&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
+<span class="fc" id="L55">        double[] result = new double[1];</span>
+<span class="fc" id="L56">        result[0] = sequence_info.contrary_motion_fraction;</span>
+<span class="fc" id="L57">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

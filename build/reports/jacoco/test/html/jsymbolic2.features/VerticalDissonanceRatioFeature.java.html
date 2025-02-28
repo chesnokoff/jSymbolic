@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>VerticalDissonanceRatioFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">VerticalDissonanceRatioFeature.java</span></div><h1>VerticalDissonanceRatioFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import jsymbolic2.featureutils.Feature;
+import javax.sound.midi.Sequence;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * Ratio of all wrapped vertical intervals that are dissonant (2nds, tritones, and 7ths to all wrapped
+ * vertical intervals that are consonant (unisons, 3rds, 4ths, 5ths, 6ths, octaves). This is weighted by how
+ * long each of these intervals are held (e.g. an interval lasting a whole note will be weighted four times as
+ * strongly as an interval lasting a quarter note). Set to 0 if there are no dissonant vertical intervals or
+ * no consonant vertical intervals.
+ *
+ * @author Tristano Tenaglia Cory McKay
+ */
+<span class="fc" id="L18">public class VerticalDissonanceRatioFeature implements Feature {</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getName() {
+<span class="fc" id="L25">        return &quot;Vertical Dissonance Ratio&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String[] getDependencies() {
+<span class="fc" id="L33">        return new String[] { &quot;Wrapped Vertical Interval Histogram&quot; };</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getCode() {
+<span class="fc" id="L41">        return &quot;C-24&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getDescription() {
+<span class="fc" id="L49">        return &quot;Ratio of all wrapped vertical intervals that are dissonant (2nds, tritones, and 7ths to all wrapped vertical intervals that are consonant (unisons, 3rds, 4ths, 5ths, 6ths, octaves). This is weighted by how long each of these intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note). Set to 0 if there are no dissonant vertical intervals or no consonant vertical intervals.&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
+        double value;
+<span class="pc bpc" id="L58" title="1 of 2 branches missed.">        if (sequence_info != null) {</span>
+<span class="fc" id="L59">            double[] wrappped_vertical_interval_histogram = other_feature_values[0];</span>
+<span class="fc" id="L60">            double dissonance = wrappped_vertical_interval_histogram[1] + wrappped_vertical_interval_histogram[2] + wrappped_vertical_interval_histogram[6] + wrappped_vertical_interval_histogram[10] + wrappped_vertical_interval_histogram[11];</span>
+<span class="fc" id="L61">            double consonance = wrappped_vertical_interval_histogram[0] + wrappped_vertical_interval_histogram[3] + wrappped_vertical_interval_histogram[4] + wrappped_vertical_interval_histogram[5] + wrappped_vertical_interval_histogram[7] + wrappped_vertical_interval_histogram[8] + wrappped_vertical_interval_histogram[9];</span>
+<span class="pc bpc" id="L62" title="1 of 4 branches missed.">            if (dissonance == 0.0 || consonance == 0.0)</span>
+<span class="fc" id="L63">                value = 0.0;</span>
+            else
+<span class="fc" id="L65">                value = dissonance / consonance;</span>
+<span class="fc" id="L66">        } else</span>
+<span class="nc" id="L67">            value = -1.0;</span>
+<span class="fc" id="L68">        double[] result = new double[1];</span>
+<span class="fc" id="L69">        result[0] = value;</span>
+<span class="fc" id="L70">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

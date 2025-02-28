@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CLI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.processing.cli</a> &gt; <span class="el_source">CLI.java</span></div><h1>CLI.java</h1><pre class="source lang-java linenums">package jsymbolic2.processing.cli;
+
+import jsymbolic2.processing.PrintStreams;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
+<span class="fc" id="L9">public class CLI {</span>
+<span class="fc" id="L10">    private final PrintStreams printStreams = new PrintStreams(System.out, System.err);</span>
+<span class="fc" id="L11">    private final Map&lt;String, Consumer&lt;String[]&gt;&gt; commands = initCommands();</span>
+
+    private Map&lt;String, Consumer&lt;String[]&gt;&gt; initCommands() {
+<span class="fc" id="L14">        Map&lt;String, Consumer&lt;String[]&gt;&gt; commands = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L15">        commands.put(&quot;-configgui&quot;, new ConfigGui(printStreams));</span>
+<span class="fc" id="L16">        commands.put(&quot;-configrun&quot;, new ConfigRun(printStreams));</span>
+<span class="fc" id="L17">        commands.put(&quot;-validateconfigallheaders&quot;, new ValidateConfigAllHeaders(printStreams));</span>
+<span class="fc" id="L18">        commands.put(&quot;-validateconfigfeatureoption&quot;, new ValidateConfigFeatureOption(printStreams));</span>
+<span class="fc" id="L19">        commands.put(&quot;-consistencycheck&quot;, new ConsistencyCheck(printStreams));</span>
+<span class="fc" id="L20">        commands.put(&quot;-mididump&quot;, new MidiDump(printStreams));</span>
+<span class="fc" id="L21">        commands.put(&quot;-help&quot;, new Help(printStreams));</span>
+<span class="fc" id="L22">        return commands;</span>
+    }
+
+
+    public void run(String[] args) {
+        {
+            // If there are no command line arguments
+<span class="pc bpc" id="L29" title="2 of 4 branches missed.">            if (null == args || 0 == args.length) {</span>
+<span class="nc" id="L30">                new PlainGui(printStreams).accept(args);</span>
+<span class="nc" id="L31">                return;</span>
+            }
+            // If there are command line arguments
+            // If the first command line argument is known
+<span class="fc" id="L35">            commands.getOrDefault(args[0], new CommandLine(printStreams)).accept(args);</span>
+            // If the first command line argument is not a known switch. This could mean that invalid command
+            // line arguments were specified, or it could mean that there is no switch, but three valid I/O
+            // file paths were specified.
+        }
+<span class="fc" id="L40">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

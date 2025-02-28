@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RelativeNoteDurationsOfLowestLineFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">RelativeNoteDurationsOfLowestLineFeature.java</span></div><h1>RelativeNoteDurationsOfLowestLineFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import jsymbolic2.featureutils.Feature;
+import javax.sound.midi.Sequence;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the average duration of notes (in seconds) in the channel with the lowest
+ * average pitch, divided by the average duration of notes in all channels that contain at least one note.
+ *
+ * @author Tristano Tenaglia and Cory McKay
+ */
+<span class="fc" id="L15">public class RelativeNoteDurationsOfLowestLineFeature implements Feature {</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getName() {
+<span class="fc" id="L22">        return &quot;Relative Note Durations of Lowest Line&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getCode() {
+<span class="fc" id="L30">        return &quot;T-14&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getDescription() {
+<span class="fc" id="L38">        return &quot;Average duration of notes (in seconds) in the channel with the lowest average pitch, divided by the average duration of notes in all channels that contain at least one note.&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
+        double value;
+<span class="pc bpc" id="L47" title="1 of 2 branches missed.">        if (sequence_info != null) {</span>
+            // Access pre-calculated information in sequence_info
+<span class="fc" id="L49">            int[][] channel_stats = sequence_info.channel_statistics;</span>
+            // Find the channel with the lowest average pitch, while also accumulating note counts and note
+            // durations across channels
+<span class="fc" id="L52">            int lowest_average_pitch = 128;</span>
+<span class="fc" id="L53">            int lowest_average_pitch_channel = 0;</span>
+<span class="fc" id="L54">            double total_note_durations = 0;</span>
+<span class="fc" id="L55">            double total_number_notes = 0;</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            for (int channel = 0; channel &lt; channel_stats.length; channel++) {</span>
+<span class="fc bfc" id="L57" title="All 4 branches covered.">                if (channel_stats[channel][0] != 0 &amp;&amp; channel != (10 - 1)) {</span>
+                    // Get lowest average pitch that is &gt; 0 (since 0 means no notes)
+<span class="fc" id="L59">                    int average_pitch = channel_stats[channel][6];</span>
+                    // Take note if this is the lowest voice
+<span class="fc bfc" id="L61" title="All 2 branches covered.">                    if (average_pitch &lt; lowest_average_pitch) {</span>
+<span class="fc" id="L62">                        lowest_average_pitch = average_pitch;</span>
+<span class="fc" id="L63">                        lowest_average_pitch_channel = channel;</span>
+                    }
+                    // Count total durations and numbers of notes
+<span class="fc" id="L66">                    total_note_durations += channel_stats[channel][1];</span>
+<span class="fc" id="L67">                    total_number_notes += channel_stats[channel][0];</span>
+                }
+            }
+            // Calculate the average note duration for lowest average pitch
+<span class="fc" id="L71">            double total_durations_in_lowest_channel = channel_stats[lowest_average_pitch_channel][1];</span>
+<span class="fc" id="L72">            double total_number_notes_in_lowest_channel = channel_stats[lowest_average_pitch_channel][0];</span>
+<span class="pc bpc" id="L73" title="3 of 8 branches missed.">            if (total_durations_in_lowest_channel == 0.0 || total_number_notes_in_lowest_channel == 0. || total_note_durations == 0.0 || total_number_notes == 0.0)</span>
+<span class="fc" id="L74">                value = 0.0;</span>
+            else {
+<span class="fc" id="L76">                double average_duration_of_notes_in_lowest_channel = total_durations_in_lowest_channel / total_number_notes_in_lowest_channel;</span>
+<span class="fc" id="L77">                double average_duration_of_notes_in_all_channels = total_note_durations / total_number_notes;</span>
+<span class="fc" id="L78">                value = average_duration_of_notes_in_lowest_channel / average_duration_of_notes_in_all_channels;</span>
+            }
+<span class="fc" id="L80">        } else</span>
+<span class="nc" id="L81">            value = -1.0;</span>
+<span class="fc" id="L82">        double[] result = new double[1];</span>
+<span class="fc" id="L83">        result[0] = value;</span>
+<span class="fc" id="L84">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

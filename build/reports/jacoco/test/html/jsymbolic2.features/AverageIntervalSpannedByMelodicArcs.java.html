@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AverageIntervalSpannedByMelodicArcs.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">AverageIntervalSpannedByMelodicArcs.java</span></div><h1>AverageIntervalSpannedByMelodicArcs.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import jsymbolic2.featureutils.Feature;
+import java.util.LinkedList;
+import javax.sound.midi.*;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the average melodic interval (in semitones) separating the top note of
+ * melodic peaks and the bottom note of adjacent melodic troughs. Similar assumptions are made in the
+ * calculation of this feature as for the Melodic Interval Histogram.
+ *
+ * @author Cory McKay
+ */
+<span class="fc" id="L17">public class AverageIntervalSpannedByMelodicArcs implements Feature {</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getName() {
+<span class="fc" id="L24">        return &quot;Average Interval Spanned by Melodic Arcs&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getCode() {
+<span class="fc" id="L32">        return &quot;M-24&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getDescription() {
+<span class="fc" id="L40">        return &quot;Average melodic interval (in semitones) separating the top note of melodic peaks and the bottom note of adjacent melodic troughs. Similar assumptions are made in the calculation of this feature as for the Melodic Interval Histogram.&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
+        double value;
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (sequence_info != null) {</span>
+<span class="fc" id="L50">            int total_intervals = 0;</span>
+<span class="fc" id="L51">            int number_intervals = 0;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">            for (int track = 0; track &lt; sequence_info.melodic_intervals_by_track_and_channel.size(); track++) {</span>
+<span class="fc" id="L53">                LinkedList&lt;Integer&gt;[] melodic_intervals_by_channel = sequence_info.melodic_intervals_by_track_and_channel.get(track);</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">                for (int chan = 0; chan &lt; melodic_intervals_by_channel.length; chan++) {</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">                    if (// Exclude unpitched Channel 10 notes</span>
+                    chan != (10 - 1)) {
+                        // Convert the list of melodic intervals in this channel to an array
+<span class="fc" id="L58">                        Object[] list_contents = melodic_intervals_by_channel[chan].toArray();</span>
+<span class="fc" id="L59">                        int[] intervals = new int[list_contents.length];</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">                        for (int i = 0; i &lt; intervals.length; i++) intervals[i] = ((Integer) list_contents[i]).intValue();</span>
+                        // Find the number of arcs
+<span class="fc" id="L62">                        int direction = 0;</span>
+<span class="fc" id="L63">                        int interval_so_far = 0;</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">                        for (int i = 0; i &lt; intervals.length; i++) {</span>
+                            // If arc is currently decending
+<span class="fc bfc" id="L66" title="All 2 branches covered.">                            if (direction == -1) {</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">                                if (intervals[i] &lt; 0)</span>
+<span class="fc" id="L68">                                    interval_so_far += Math.abs(intervals[i]);</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">                                else if (intervals[i] &gt; 0) {</span>
+<span class="fc" id="L70">                                    total_intervals += interval_so_far;</span>
+<span class="fc" id="L71">                                    number_intervals++;</span>
+<span class="fc" id="L72">                                    interval_so_far = Math.abs(intervals[i]);</span>
+<span class="fc" id="L73">                                    direction = 1;</span>
+                                }
+                            } else // If arc is currently ascending
+<span class="fc bfc" id="L76" title="All 2 branches covered.">                            if (direction == 1) {</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">                                if (intervals[i] &gt; 0)</span>
+<span class="fc" id="L78">                                    interval_so_far += Math.abs(intervals[i]);</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">                                else if (intervals[i] &lt; 0) {</span>
+<span class="fc" id="L80">                                    total_intervals += interval_so_far;</span>
+<span class="fc" id="L81">                                    number_intervals++;</span>
+<span class="fc" id="L82">                                    interval_so_far = Math.abs(intervals[i]);</span>
+<span class="fc" id="L83">                                    direction = -1;</span>
+                                }
+                            } else // If arc is currently stationary
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">                            if (direction == 0) {</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">                                if (intervals[i] &gt; 0) {</span>
+<span class="fc" id="L88">                                    direction = 1;</span>
+<span class="fc" id="L89">                                    interval_so_far += Math.abs(intervals[i]);</span>
+                                }
+<span class="fc bfc" id="L91" title="All 2 branches covered.">                                if (intervals[i] &lt; 0) {</span>
+<span class="fc" id="L92">                                    direction = -1;</span>
+<span class="fc" id="L93">                                    interval_so_far += Math.abs(intervals[i]);</span>
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // Calculate the value
+<span class="fc bfc" id="L101" title="All 2 branches covered.">            if (number_intervals == 0)</span>
+<span class="fc" id="L102">                value = 0.0;</span>
+            else
+<span class="fc" id="L104">                value = (double) total_intervals / (double) number_intervals;</span>
+<span class="fc" id="L105">        } else</span>
+<span class="nc" id="L106">            value = -1.0;</span>
+<span class="fc" id="L107">        double[] result = new double[1];</span>
+<span class="fc" id="L108">        result[0] = value;</span>
+<span class="fc" id="L109">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

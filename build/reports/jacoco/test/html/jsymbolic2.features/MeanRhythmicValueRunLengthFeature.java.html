@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MeanRhythmicValueRunLengthFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">MeanRhythmicValueRunLengthFeature.java</span></div><h1>MeanRhythmicValueRunLengthFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import jsymbolic2.featureutils.Feature;
+import java.util.LinkedList;
+import javax.sound.midi.*;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature calculator that finds the mean number of notes of the same rhythmic value that occur
+ * consecutively (either vertically or horizontally) in the same voice (MIDI channel and track). This
+ * calculation includes both pitched and unpitched notes, is calculated after rhythmic quantization and not
+ * influenced by neither tempo nor dynamics.
+ *
+ * @author Cory McKay
+ */
+<span class="fc" id="L18">public class MeanRhythmicValueRunLengthFeature implements Feature {</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getName() {
+<span class="fc" id="L25">        return &quot;Mean Rhythmic Value Run Length&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getCode() {
+<span class="fc" id="L33">        return &quot;R-34&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getDescription() {
+<span class="fc" id="L41">        return &quot;Mean number of notes of the same rhythmic value that occur consecutively (either vertically or horizontally) in the same voice (MIDI channel and track). This calculation includes both pitched and unpitched notes, is calculated after rhythmic quantization and not influenced by neither tempo nor dynamics.&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
+        double value;
+<span class="pc bpc" id="L50" title="1 of 2 branches missed.">        if (sequence_info != null) {</span>
+            // Access the runs
+<span class="fc" id="L52">            LinkedList&lt;Integer&gt;[] runs_of_same_rhythmic_value = sequence_info.runs_of_same_rhythmic_value;</span>
+<span class="fc" id="L53">            LinkedList&lt;Integer&gt; collapsed_runs_of_same_rhythmic_value = new LinkedList&lt;&gt;();</span>
+<span class="fc bfc" id="L54" title="All 4 branches covered.">            for (int i = 0; i &lt; runs_of_same_rhythmic_value.length; i++) for (int j = 0; j &lt; runs_of_same_rhythmic_value[i].size(); j++) collapsed_runs_of_same_rhythmic_value.add(runs_of_same_rhythmic_value[i].get(j));</span>
+<span class="fc" id="L55">            double[] array_of_all_runs_of_same_rhythmic_value = new double[collapsed_runs_of_same_rhythmic_value.size()];</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            for (int i = 0; i &lt; array_of_all_runs_of_same_rhythmic_value.length; i++) array_of_all_runs_of_same_rhythmic_value[i] = (double) collapsed_runs_of_same_rhythmic_value.get(i);</span>
+            // Calculate the final value
+<span class="fc" id="L58">            value = mckay.utilities.staticlibraries.MathAndStatsMethods.getAverage(array_of_all_runs_of_same_rhythmic_value);</span>
+<span class="fc" id="L59">        } else</span>
+<span class="nc" id="L60">            value = -1.0;</span>
+<span class="fc" id="L61">        double[] result = new double[1];</span>
+<span class="fc" id="L62">        result[0] = value;</span>
+<span class="fc" id="L63">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

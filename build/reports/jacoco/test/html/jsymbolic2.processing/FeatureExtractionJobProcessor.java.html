@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FeatureExtractionJobProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.processing</a> &gt; <span class="el_source">FeatureExtractionJobProcessor.java</span></div><h1>FeatureExtractionJobProcessor.java</h1><pre class="source lang-java linenums">package jsymbolic2.processing;
+
+import ace.datatypes.DataBoard;
+import jsymbolic2.configuration.ConfigurationFileData;
+import jsymbolic2.featureutils.FeatureExtractorAccess;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.ddmal.jmei2midi.MeiSequence;
+import org.ddmal.jmei2midi.meielements.meispecific.MeiSpecificStorage;
+
+import javax.sound.midi.Sequence;
+import javax.swing.*;
+import java.io.File;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Static methods for performing outer layer feature extraction jobs.
+ *
+ * @author Cory McKay and Tristano Tenaglia
+ */
+<span class="fc" id="L22">public enum FeatureExtractionJobProcessor {</span>
+    ;
+    /* PUBLIC STATIC METHODS ********************************************************************************/
+
+    /**
+     * Extracts features from all the files in the specified files_and_folders_to_parse list and saves them in
+     * an ACE XML feature values file and (if specified in the passed arguments) as Weka ARFF and/or CSV
+     * files. Qualifying files (i.e. MIDI or MEI) in directories specified in this list are also processed.
+     * Also saves an ACE XML feature definitions file. Only the features specified in features_to_extract will
+     * be extracted. Provides status updates as processing continues. Any errors occurring during processing
+     * are reported on error_print_stream, and are also collected for summarization at the end of processing.
+     * Processing continues even if errors are encountered, with three exceptions: if the JVM runs out of
+     * memory, if an MEI-specific feature is set to be extracted from a non-MEI file, or if
+     * MIDIFeatureProcessor cannot be initialized. In the latter three cases, execution is terminated
+     * immediately.
+     *
+     * @param paths_of_files_or_folders_to_parse A list of files and folders from which features should be
+     *                                           extracted.
+     * @param saveInfo
+     * @param features_to_extract                An array indicating which features are to be saved. This
+     *                                           array is ordered to match the array returned by the
+     *                                           FeatureExtractorAccess.findSpecifiedFeatures.
+     * @param windowInfo
+     * @param printStreams
+     * @param gui_processing                     True if this method is being called by a GUI, false
+     *                                           otherwise. If it is true, then error summaries will only
+     *                                           be partially printed, and out of memory errors will result
+     *                                           in an error window being displayed and a direct printing
+     *                                           of the associated error message to standard error.
+     * @return A list of errors that may have occurred during processing.
+     * Will be empty if no errors occurred. Note that this often
+     * simply duplicates what is written to error_print_stream.
+     */
+    public static List&lt;String&gt; extractAndSaveSpecificFeatures(List&lt;File&gt; paths_of_files_or_folders_to_parse,
+                                                              SaveInfo saveInfo, boolean[] features_to_extract,
+                                                              WindowInfo windowInfo,
+                                                              PrintStreams printStreams, boolean gui_processing) {
+        // To hold reports of errors that may occur. Note that this often simply duplicates what is written to
+        // error_print_stream.
+<span class="fc" id="L61">        List&lt;String&gt; error_log = new ArrayList&lt;&gt;();</span>
+
+        try {
+            // Prepare the feature extractor
+<span class="fc" id="L65">            MIDIFeatureProcessor processor = new MIDIFeatureProcessor(windowInfo,</span>
+<span class="fc" id="L66">                    FeatureExtractorAccess.getAllImplementedFeatureExtractors(),</span>
+                    features_to_extract,
+<span class="fc" id="L68">                    saveInfo.save_overall_recording_features());</span>
+<span class="fc" id="L69">            FilesPreprocessor filesPreprocessor = new FilesPreprocessor(paths_of_files_or_folders_to_parse,</span>
+<span class="fc" id="L70">                    printStreams.error_print_stream(), error_log);</span>
+<span class="fc" id="L71">            FilesReader filesReader = new FilesReader(List.of(new SequencePreprocessor()));</span>
+<span class="fc" id="L72">            List&lt;ImmutablePair&lt;String, Sequence&gt;&gt; midiPairs = filesReader.extractMidi(filesPreprocessor.getMidiFilesList());</span>
+<span class="fc" id="L73">            List&lt;ImmutablePair&lt;String, MeiSequence&gt;&gt; meiPairs = filesReader.extractMei(filesPreprocessor.getMeiFilesList());</span>
+            // Extract features and save the feature values in DataBoard
+<span class="fc" id="L75">            DataBoard dataBoard = FeatureExtractionJobProcessor.extractFeatures(midiPairs, meiPairs,</span>
+                    processor,
+<span class="fc" id="L77">                    saveInfo.feature_values_save_path(),</span>
+                    printStreams, error_log,
+                    gui_processing);
+
+            // Save features from DataBoard
+<span class="fc" id="L82">            FeatureExtractionJobProcessor.saveFeatures(dataBoard, saveInfo.feature_definitions_save_path(),</span>
+                    saveInfo,
+<span class="fc" id="L84">                    printStreams.status_print_stream());</span>
+            // Indicate that processing is done
+<span class="fc" id="L86">            UserFeedbackGenerator.printExecutionFinished(printStreams.status_print_stream());</span>
+            // Return any errors that may have occurred
+<span class="fc" id="L88">            return error_log;</span>
+<span class="fc" id="L89">        } catch (Exception e) {</span>
+<span class="fc" id="L90">            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.error_print_stream(), e);</span>
+<span class="fc" id="L91">            error_log.add(e + &quot;:&quot; + e.getMessage());</span>
+<span class="fc" id="L92">            return error_log;</span>
+        }
+    }
+
+
+    /**
+     * Extracts features from the specified path_of_file_or_folder_to_parse and saves feature values in an ACE
+     * XML feature values file and (if specified in the passed arguments) as Weka ARFF and/or CSV files. Also
+     * saves an ACE XML feature definitions file. The default jSymbolic features will be extracted, which will
+     * be less than the total number of implemented features. If path_of_file_or_folder_to_parse refers to a
+     * folder rather than a file, then all qualifying files (i.e. MIDI or MEI) in it have their features
+     * extracted. Provides status updates as processing continues. Any errors occurring during processing are
+     * reported on error_print_stream, and are also collected for summarization at the end of processing.
+     * Processing continues even if errors are encountered, with three exceptions: if the JVM runs out of
+     * memory, if an MEI-specific feature is set to be extracted from a non-MEI file, or if
+     * MIDIFeatureProcessor cannot be initialized. In the latter three cases, execution is terminated
+     * immediately.
+     *
+     * @param path_of_file_or_folder_to_parse The path of a file to extract features from, or of a directory
+     *                                        holding files to extract features from.
+     * @param saveInfo
+     * @param windowInfo
+     * @param printStreams
+     * @param gui_processing                  True if this method is being called by a GUI, false
+     *                                        otherwise. If it is true, then error summaries will only
+     *                                        be partially printed, and out of memory errors will result
+     *                                        in an error window being displayed and a direct printing
+     *                                        of the associated error message to standard error.
+     * @return A list of errors that may have occurred during processing.
+     * Will be empty if no errors occurred. Note that this often
+     * simply duplicates what is written to error_print_stream.
+     */
+    public static List&lt;String&gt; extractAndSaveDefaultFeatures(String path_of_file_or_folder_to_parse,
+                                                             SaveInfo saveInfo, WindowInfo windowInfo,
+                                                             PrintStreams printStreams, boolean gui_processing) {
+<span class="nc" id="L127">        return FeatureExtractionJobProcessor.extractAndSaveSpecificFeatures(List.of(new File(path_of_file_or_folder_to_parse)),</span>
+                saveInfo,
+<span class="nc" id="L129">                FeatureExtractorAccess.getDefaultFeaturesToSave(),</span>
+                windowInfo,
+                printStreams,
+                gui_processing);
+    }
+
+
+    /**
+     * Extracts features from all the files in the specified paths_of_files_or_folders_to_parse list and saves
+     * them in an ACE XML feature values file and (if specified in the config_file_data) as Weka ARFF and/or
+     * CSV files. Qualifying files (i.e. MIDI or MEI) in directories specified in this
+     * paths_of_files_or_folders_to_parse list are also processed. Also saves an ACE XML feature definitions
+     * file. Extraction settings are based on the config_file_data, except for the output save paths, which
+     * are specified in feature_values_save_path and feature_definitions_save_path, and the input files, which
+     * are specified in paths_of_files_or_folders_to_parse. Provides status updates as processing continues.
+     * Any errors occurring during processing are reported on error_print_stream, and are also collected for
+     * summarization at the end of processing. Processing continues even if errors are encountered, with three
+     * exceptions: if the JVM runs out of memory, if an MEI-specific feature is set to be extracted from a
+     * non-MEI file, or if MIDIFeatureProcessor cannot be initialized. In the latter three cases, execution is
+     * terminated immediately.
+     *
+     * @param paths_of_files_or_folders_to_parse A list of files and folders from which features should be
+     *                                           extracted.
+     * @param config_file_data                   Extraction settings parsed from a jSymbolic configuration
+     *                                           settings file.
+     * @param feature_values_save_path           The path to save the extracted features to (in the form of
+     *                                           an ACE XML feature values file).
+     * @param feature_definitions_save_path      The path to save the feature definitions of all features
+     *                                           to be extracted (in the form of an ACE XML feature
+     *                                           definitions file).
+     * @param printStreams
+     * @param gui_processing                     True if this method is being called by a GUI, false
+     *                                           otherwise. If it is true, then error summaries will only
+     *                                           be partially printed, and out of memory errors will result
+     *                                           in an error window being displayed and a direct printing
+     *                                           of the associated error message to standard error.
+     * @return A list of errors that may have occurred during processing.
+     * Will be empty if no errors occurred. Note that this often
+     * simply duplicates what is written to error_print_stream.
+     */
+    public static List&lt;String&gt; extractAndSaveFeaturesConfigFileSettings(List&lt;File&gt; paths_of_files_or_folders_to_parse,
+                                                                        ConfigurationFileData config_file_data,
+                                                                        String feature_values_save_path,
+                                                                        String feature_definitions_save_path,
+                                                                        PrintStreams printStreams, boolean gui_processing) {
+<span class="fc" id="L174">        SaveInfo saveInfo = new SaveInfo(feature_values_save_path, feature_definitions_save_path, config_file_data.saveOverall(), config_file_data.convertToArff(), config_file_data.convertToCsv());</span>
+<span class="fc" id="L175">        WindowInfo windowInfo = new WindowInfo(config_file_data.saveWindow(), config_file_data.getWindowSize(), config_file_data.getWindowOverlap());</span>
+<span class="fc" id="L176">        return FeatureExtractionJobProcessor.extractAndSaveSpecificFeatures(paths_of_files_or_folders_to_parse,</span>
+<span class="fc" id="L177">                saveInfo, config_file_data.getFeaturesToSaveBoolean(),</span>
+                windowInfo,
+                printStreams, gui_processing);
+    }
+
+    /* PRIVATE STATIC METHODS *******************************************************************************/
+
+    /**
+     * Extracts features from all the files in the specified files_and_folders_to_parse list and saves them in
+     * an ACE XML feature values file. Qualifying files (i.e. MIDI or MEI) in directories specified in this
+     * list are also processed. Provides status updates as processing continues. Any errors occurring during
+     * processing are reported on error_print_stream, and are also collected for summarization at the end of
+     * processing. Processing continues even if errors are encountered, with two exceptions: if the JVM runs
+     * out of memory or if an MEI-specific feature is set to be extracted from a non-MEI file. In the latter
+     * two cases, execution is terminated immediately. Also saves the feature definitions of the features
+     * selected for extraction in an ACE XML feature definitions file.
+     *
+     * @param midiSequences            A list of pairs. Key is name of sequence, value is Sequence to process.
+     * @param meiSequences             A list of pairs. Key is name of sequence, value is MeiSequence to process.
+     * @param processor                The MIDIFeatureProcessor holding feature extraction settings.
+     * @param feature_values_save_path The path to save the extracted features to in the form of an ACE
+     *                                 XML feature values file.
+     * @param printStreams
+     * @param error_log                A list of errors encountered so far. Errors are added to it if
+     *                                 encountered. This will be printed to error_print_stream at the end
+     *                                 of processing.
+     * @param gui_processing           True if this method is being called by a GUI, false otherwise. If
+     *                                 it is true, then error summaries will only be partially printed,
+     *                                 and out of memory errors will result in an error window being
+     *                                 displayed and a direct printing	of the associated error message to
+     *                                 standard error.
+     */
+    private static DataBoard extractFeatures(List&lt;ImmutablePair&lt;String, Sequence&gt;&gt; midiSequences,
+                                             List&lt;ImmutablePair&lt;String, MeiSequence&gt;&gt; meiSequences,
+                                             MIDIFeatureProcessor processor,
+                                             String feature_values_save_path,
+                                             PrintStreams printStreams, List&lt;String&gt; error_log,
+                                             boolean gui_processing) {
+        // Verify that, if MEI-specific features have been chosen to be extracted, then none of the files
+        // chosen to be parsed are non-MEI files. End execution if some are.
+
+<span class="pc bpc" id="L218" title="1 of 4 branches missed.">        if (midiSequences.isEmpty() &amp;&amp; meiSequences.isEmpty()) {</span>
+<span class="fc" id="L219">            throw new IllegalArgumentException(&quot;There are no files to parse!&quot;);</span>
+        }
+
+<span class="fc" id="L222">        int midiSequenceNumberToProcess = midiSequences.size();</span>
+<span class="fc" id="L223">        int meiSequenceNumberToProcess = meiSequences.size();</span>
+<span class="pc bpc" id="L224" title="1 of 2 branches missed.">        if (processor.containsMeiFeatures()) {</span>
+<span class="nc" id="L225">            midiSequenceNumberToProcess = 0;</span>
+        }
+<span class="fc" id="L227">        UserFeedbackGenerator.printFeatureExtractionStartingMessage(printStreams.status_print_stream(), midiSequenceNumberToProcess + meiSequenceNumberToProcess);</span>
+        // Extract features from each file
+<span class="fc bfc" id="L229" title="All 2 branches covered.">        for (int i = 0; i &lt; midiSequenceNumberToProcess; ++i) {</span>
+<span class="fc" id="L230">            FeatureExtractionJobProcessor.extractFeaturesFromSequence(midiSequences.get(i).getLeft(), midiSequences.get(i).getRight(),</span>
+                    processor, i,
+                    midiSequenceNumberToProcess + meiSequenceNumberToProcess,
+                    printStreams, error_log, gui_processing);
+
+        }
+<span class="fc bfc" id="L236" title="All 2 branches covered.">        for (int i = 0; i &lt; meiSequenceNumberToProcess; ++i) {</span>
+<span class="fc" id="L237">            FeatureExtractionJobProcessor.extractFeaturesFromMeiSequence(</span>
+<span class="fc" id="L238">                    midiSequences.get(i).getLeft(),</span>
+                    processor,
+                    midiSequenceNumberToProcess + i,
+                    midiSequenceNumberToProcess + meiSequenceNumberToProcess,
+                    printStreams,
+                    error_log,
+                    gui_processing,
+<span class="fc" id="L245">                    meiSequences.get(i).getRight().getNonMidiStorage(),</span>
+<span class="fc" id="L246">                    meiSequences.get(i).getRight().getSequence());</span>
+
+        }
+<span class="fc" id="L249">        DataBoard dataBoard = null;</span>
+        try {
+<span class="fc" id="L251">            dataBoard = processor.generateDataBoard();</span>
+<span class="nc" id="L252">        } catch (Exception e) {</span>
+<span class="nc" id="L253">            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.error_print_stream(), e);</span>
+<span class="nc" id="L254">            error_log.add(e + &quot;: &quot; + e.getMessage());</span>
+<span class="fc" id="L255">        }</span>
+
+        // Finalize the saving of the feature values ACE XML file
+<span class="fc" id="L258">        UserFeedbackGenerator.printGeneratingAceXmlFeatureValuesFile(printStreams.status_print_stream(), feature_values_save_path);</span>
+
+        // Indicate that feature extraction is done, and provide a summary of results
+<span class="fc" id="L261">        UserFeedbackGenerator.printFeatureExtractionCompleteMessage(printStreams.status_print_stream(),</span>
+                feature_values_save_path,
+                midiSequenceNumberToProcess + meiSequenceNumberToProcess);
+
+        // Print the error log summary
+<span class="fc" id="L266">        UserFeedbackGenerator.printErrorSummary(printStreams.error_print_stream(), error_log, gui_processing);</span>
+<span class="fc" id="L267">        return dataBoard;</span>
+    }
+
+
+    /**
+     * Extracts all available features from a single MIDI file. Any errors encountered are printed to standard
+     * error. Save the features as they are extracted to an ACE XML feature values file, and save the feature
+     * definitions in an ACE XML feature definitions file.
+     *
+     * @param name                     Name of given sequence.
+     * @param sequence                 The sequence to process.
+     * @param processor                The MIDIFeatureProcessor to extract features with.
+     * @param current_extraction_index Indicates the number of this particular input file in the overall
+     *                                 extraction order.
+     * @param total_files_to_process   The total number of input files that are being processed.
+     * @param printStreams
+     * @param error_log                A list of errors encountered so far. Errors are added to it if
+     *                                 encountered.
+     * @param gui_processing           True if this method is being called by a GUI, false otherwise. If
+     *                                 it is true, then out of memory errors will result in an error window
+     *                                 being displayed and a direct printing of the associated error
+     *                                 message to standard error.
+     */
+    private static void extractFeaturesFromSequence(String name, Sequence sequence,
+                                                    MIDIFeatureProcessor processor,
+                                                    int current_extraction_index,
+                                                    int total_files_to_process,
+                                                    PrintStreams printStreams, List&lt;String&gt; error_log,
+                                                    boolean gui_processing) {
+<span class="fc" id="L296">        FeatureExtractionJobProcessor.extractFeaturesFromMeiSequence(name, processor, current_extraction_index, total_files_to_process, printStreams, error_log, gui_processing, null, sequence);</span>
+<span class="fc" id="L297">    }</span>
+
+
+    private static void extractFeaturesFromMeiSequence(String name,
+                                                       MIDIFeatureProcessor processor,
+                                                       int current_extraction_index,
+                                                       int total_files_to_process,
+                                                       PrintStreams printStreams,
+                                                       List&lt;String&gt; error_log,
+                                                       boolean gui_processing, MeiSpecificStorage nonMidiStorage, Sequence sequence) {
+        try {
+            // Extract features from input_file_path and save them in an ACE XML feature values file
+<span class="fc" id="L309">            UserFeedbackGenerator.printFeatureExtractionProgressMessage(printStreams.status_print_stream(), name, current_extraction_index, total_files_to_process);</span>
+<span class="fc" id="L310">            processor.extractFeaturesFromSequence(name, sequence, nonMidiStorage);</span>
+<span class="fc" id="L311">            UserFeedbackGenerator.printFeatureExtractionDoneAFileProgressMessage(printStreams.status_print_stream(), name, current_extraction_index, total_files_to_process);</span>
+<span class="nc" id="L312">        } catch (OutOfMemoryError e) // Terminate execution if this happens</span>
+        {
+<span class="nc" id="L314">            FeatureExtractionJobProcessor.processOutOfMemory(name, printStreams.error_print_stream(), gui_processing);</span>
+<span class="nc" id="L315">        } catch (Exception e) {</span>
+<span class="nc" id="L316">            String error_message = &quot;Problem extracting features from &quot; + name + &quot;.&quot; +</span>
+<span class="nc" id="L317">                    &quot;\n\tDetailed error message: &quot; + e + &quot;: &quot; + e.getMessage();</span>
+<span class="nc" id="L318">            UserFeedbackGenerator.printErrorMessage(printStreams.error_print_stream(), error_message);</span>
+<span class="nc" id="L319">            error_log.add(error_message);</span>
+<span class="nc" id="L320">            e.printStackTrace(printStreams.error_print_stream());</span>
+<span class="pc" id="L321">        }</span>
+<span class="fc" id="L322">    }</span>
+
+    private static void processOutOfMemory(String name, PrintStream error_print_stream, boolean gui_processing) {
+<span class="nc" id="L325">        String error_message = &quot;The Java Runtime ran out of memory while processing:\n&quot; +</span>
+                &quot;     &quot; + name + &quot;\n&quot; +
+                &quot;Please rerun jSymbolic with more memory assigned to the Java runtime heap.\n\n&quot;;
+<span class="nc" id="L328">        UserFeedbackGenerator.printErrorMessage(error_print_stream, error_message);</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">        if (gui_processing) {</span>
+<span class="nc" id="L330">            System.err.println(error_message);</span>
+<span class="nc" id="L331">            java.awt.Toolkit.getDefaultToolkit().beep();</span>
+<span class="nc" id="L332">            JOptionPane.showMessageDialog(null,</span>
+                    error_message,
+                    &quot;Error&quot;,
+                    JOptionPane.ERROR_MESSAGE);
+        }
+<span class="nc" id="L337">        System.exit(-1);</span>
+<span class="nc" id="L338">    }</span>
+
+
+    /**
+     * Convert the given ACE XML Feature Values file to a Weka ARFF and/or to a CSV file. Each file will have
+     * the same file name as the ACE XML Feature Values file, but with an appropriately modified extension.
+     * Does nothing if ace_xml_feature_values_file_path is null or empty, or if both save_ARFF and save_CSV
+     * are false (null is returned in any of these cases).
+     *
+     * &lt;p&gt;The ARFF file will have a relation name &quot;Music&quot;.&lt;/p
+     *
+     * @param dataBoard                  DataBoard with extracted features.
+     * @param featureDefinitionsSavePath The path to save the ACE XML feature definitions file
+     *                                   matching the featureValuesSavePath file.
+     * @param saveInfo
+     * @param status_print_stream
+     */
+    private static void saveFeatures(DataBoard dataBoard,
+                                     String featureDefinitionsSavePath,
+                                     SaveInfo saveInfo,
+                                     PrintStream status_print_stream) {
+<span class="pc bpc" id="L359" title="1 of 2 branches missed.">        if (1 &gt; dataBoard.getNumOverall()) {</span>
+<span class="nc" id="L360">            return;</span>
+        }
+<span class="fc" id="L362">        FeaturesSaver.SaveXML(dataBoard, featureDefinitionsSavePath, saveInfo.feature_values_save_path(),</span>
+                status_print_stream);
+<span class="fc bfc" id="L364" title="All 2 branches covered.">        if (saveInfo.save_arff_file()) {</span>
+<span class="fc" id="L365">            FeaturesSaver.SaveARFF(dataBoard, saveInfo.feature_values_save_path(), status_print_stream);</span>
+        }
+<span class="fc bfc" id="L367" title="All 2 branches covered.">        if (saveInfo.save_csv_file()) {</span>
+<span class="fc" id="L368">            FeaturesSaver.SaveCSV(dataBoard, saveInfo.feature_values_save_path(), status_print_stream);</span>
+        }
+<span class="fc" id="L370">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

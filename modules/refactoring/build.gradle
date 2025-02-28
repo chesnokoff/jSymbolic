@@ -1,0 +1,10 @@
+plugins {
+    id 'application'
+    id 'jvm-test-suite'
+}
+
+dependencies {
+    implementation group: 'com.github.javaparser', name: 'javaparser-core', version: '3.23.1'
+    implementation 'org.apache.commons:commons-lang3:3.17.0'
+    implementation 'commons-io:commons-io:2.18.0'
+}

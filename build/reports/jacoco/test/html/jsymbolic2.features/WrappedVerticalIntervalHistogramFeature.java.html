@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WrappedVerticalIntervalHistogramFeature.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.features</a> &gt; <span class="el_source">WrappedVerticalIntervalHistogramFeature.java</span></div><h1>WrappedVerticalIntervalHistogramFeature.java</h1><pre class="source lang-java linenums">package jsymbolic2.features;
+
+import jsymbolic2.featureutils.Feature;
+import javax.sound.midi.Sequence;
+import ace.datatypes.FeatureDefinition;
+import jsymbolic2.featureutils.MIDIFeatureExtractor;
+import jsymbolic2.processing.MIDIIntermediateRepresentations;
+
+/**
+ * A feature vector consisting of bin magnitudes of the wrapped vertical interval histogram described in the
+ * jSymbolic manual. Each of the bins is associated with a different vertical pitch interval, and is labeled
+ * with the number of semitones in that corresponding interval. More specifically, these are numbered from 0
+ * (a unison) to 11 (a vertical interval of 11 semitones). The magnitude of each bin is found by going through
+ * a recoding MIDI tick by MIDI tick and noting all vertical intervals that are sounding at each tick, as well
+ * as the MIDI velocities of the pair of notes involved in each vertical interval. Intervals larger than 11
+ * semitones are wrapped (e.g. an octave (12 semitones) is added to the bin for unisons (0 semitones)). The
+ * end result is a histogram that indicates which vertical intervals are present, and how significant these
+ * vertical intervals are relative to one another, with a weighting based on both MIDI velocity and the
+ * aggregated durations with which each interval is held throughout the piece. Finally, the histogram is
+ * normalized.
+ *
+ * @author Tristano Tenaglia and Cory McKay
+ */
+<span class="fc" id="L24">public class WrappedVerticalIntervalHistogramFeature implements Feature {</span>
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public int getDimensions() {
+<span class="fc" id="L31">        return 12;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getName() {
+<span class="fc" id="L39">        return &quot;Wrapped Vertical Interval Histogram&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String[] getDependencies() {
+<span class="fc" id="L47">        return new String[] { &quot;Vertical Interval Histogram&quot; };</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getCode() {
+<span class="fc" id="L55">        return &quot;C-2&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public String getDescription() {
+<span class="fc" id="L63">        return &quot;A feature vector consisting of bin magnitudes of the wrapped vertical interval histogram described in the jSymbolic manual. Each of the bins is associated with a different vertical pitch interval, and is labeled with the number of semitones in that corresponding interval. More specifically, these are numbered from 0 (a unison) to 11 (a vertical interval of 11 semitones). The magnitude of each bin is found by going through a recoding MIDI tick by MIDI tick and noting all vertical intervals that are sounding at each tick, as well as the MIDI velocities of the pair of notes involved in each vertical interval. Intervals larger than 11 semitones are wrapped (e.g. an octave (12 semitones) is added to the bin for unisons (0 semitones)). The end result is a histogram that indicates which vertical intervals are present, and how significant these vertical intervals are relative to one another, with a weighting based on both MIDI velocity and the aggregated durations with which each interval is held throughout the piece. Finally, the histogram is normalized.&quot;;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override()
+    public double[] extractFeature(Sequence sequence, MIDIIntermediateRepresentations sequence_info, double[][] other_feature_values) throws Exception {
+<span class="fc" id="L71">        double[] wrapped_vertical_interval_histogram = null;</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">        if (sequence_info != null) {</span>
+<span class="fc" id="L73">            wrapped_vertical_interval_histogram = new double[12];</span>
+<span class="fc" id="L74">            double[] vertical_interval_histogram = other_feature_values[0];</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">            for (int i = 0; i &lt; vertical_interval_histogram.length; i++) wrapped_vertical_interval_histogram[i % 12] += vertical_interval_histogram[i];</span>
+        }
+<span class="fc" id="L77">        return wrapped_vertical_interval_histogram;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

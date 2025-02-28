@@ -1,0 +1,20 @@
+<jSymbolic_options>
+window_size=5.0
+window_overlap=0.0
+save_features_for_each_window=true
+save_overall_recording_features=false
+convert_to_arff=false
+convert_to_csv=false
+<input_files>
+src/test/java/jsymbolic2/scenario/resources/dataset/005ed798038238d8666457bc61ec5dd1.mid
+src/test/java/jsymbolic2/scenario/resources/dataset/0a4fe1154dc96ed40d3c49017a163a11.mid
+src/test/java/jsymbolic2/scenario/resources/dataset/007237d19324d40117332173dcb16738.mid
+src/test/java/jsymbolic2/scenario/resources/dataset/7d2e363a699917c37b274d173e183d30.mid
+src/test/java/jsymbolic2/scenario/resources/dataset/0095961e638da8a451f9712f35cc4d56.mid
+<output_files>
+feature_values_save_path=src/test/java/jsymbolic2/scenario/resources/values/window_values_actual.xml
+feature_definitions_save_path=src/test/java/jsymbolic2/scenario/resources/values/window_definitions_actual.xml
+<features_to_extract>
+Melodic Octaves
+Range
+Vibrato Prevalence

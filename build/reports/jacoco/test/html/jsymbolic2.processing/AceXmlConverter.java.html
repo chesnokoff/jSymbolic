@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AceXmlConverter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.processing</a> &gt; <span class="el_source">AceXmlConverter.java</span></div><h1>AceXmlConverter.java</h1><pre class="source lang-java linenums">package jsymbolic2.processing;
+
+import java.io.File;
+import java.io.PrintStream;
+
+/**
+ * Class relating to methods and objects for converting ACE XML Feature Value files to other formats.
+ *
+ * @author Cory McKay and Tristano Tenaglia
+ */
+<span class="fc" id="L11">public enum AceXmlConverter {</span>
+    ;
+    /* PUBLIC STATIC METHODS ********************************************************************************/
+
+
+    /**
+     * Convert the given ACE XML Feature Values file to a Weka ARFF and/or to a CSV file. Each file will have
+     * the same file name as the ACE XML Feature Values file, but with an appropriately modified extension.
+     * Does nothing if ace_xml_feature_values_file_path is null or empty, or if both save_ARFF and save_CSV
+     * are false (null is returned in any of these cases).
+     *
+     * &lt;p&gt;The ARFF file will have a relation name of Converted_from_ACE_XML.&lt;/p&gt;
+     *
+     * &lt;p&gt; The first row of the CSV file will list the feature names (multi-dimensional features will have a
+     * feature index number appended to the end of their feature name). Each other row will consist of, first,
+     * the instance identifier, followed by the value of each feature.&lt;/p&gt;
+     *
+     * @param ace_xml_feature_values_file_path      The path of the ACE XML Feature Values file to
+     *                                              convert.
+     * @param ace_xml_feature_definitions_file_path The path of the ACE XML Feature Definitions file
+     *                                              corresponding to the ACE XML Feature Values file at
+     *                                              ace_xml_feature_values_file_path.
+     * @param save_ARFF                             True if a Weka ARFF file is to be generated and saved.
+     * @param save_CSV                              True if a Weka ARFF file is to be generated and saved.
+     * @param status_print_stream                   Stream to print progress messages to.
+     * @throws Exception An informative exception is thrown if the feature
+     *                   values file could not be successfully parsed and
+     *                   converted.
+     * @return An object containing the paths of the saved ARFF
+     * and/or CSV files. Returns null if
+     * ace_xml_feature_values_file_path is null or empty, or
+     * if both save_ARFF and save_CSV are false.
+     */
+    public static AceConversionPaths saveAsArffOrCsvFiles(String ace_xml_feature_values_file_path,
+                                                          String ace_xml_feature_definitions_file_path,
+                                                          boolean save_ARFF,
+                                                          boolean save_CSV,
+                                                          PrintStream status_print_stream)
+            throws Exception {
+<span class="pc bpc" id="L50" title="2 of 6 branches missed.">        if ((save_ARFF || save_CSV) &amp;&amp;</span>
+                null != ace_xml_feature_values_file_path &amp;&amp;
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">                !ace_xml_feature_values_file_path.isEmpty()) {</span>
+            // Set output file paths. Make sure extensions are appropriate.
+            String output_arff_file_path;
+            String output_csv_file_path;
+<span class="fc bfc" id="L56" title="All 2 branches covered.">            if (ace_xml_feature_values_file_path.endsWith(&quot;.xml&quot;)) {</span>
+<span class="fc" id="L57">                output_arff_file_path = ace_xml_feature_values_file_path.replaceAll(&quot;.xml&quot;, &quot;.arff&quot;);</span>
+<span class="fc" id="L58">                output_csv_file_path = ace_xml_feature_values_file_path.replaceAll(&quot;.xml&quot;, &quot;.csv&quot;);</span>
+            } else {
+<span class="fc" id="L60">                output_arff_file_path = ace_xml_feature_values_file_path + &quot;.arff&quot;;</span>
+<span class="fc" id="L61">                output_csv_file_path = ace_xml_feature_values_file_path + &quot;.csv&quot;;</span>
+            }
+
+            // Parse the ACE XML file
+<span class="fc" id="L65">            ace.datatypes.DataBoard instance_data = null;</span>
+            try {
+<span class="fc" id="L67">                String[] input_files = {ace_xml_feature_values_file_path};</span>
+<span class="fc" id="L68">                instance_data = new ace.datatypes.DataBoard(null, ace_xml_feature_definitions_file_path, input_files, null);</span>
+<span class="nc" id="L69">            } catch (Exception e) {</span>
+<span class="nc" id="L70">                throw new Exception(&quot;Could not succesfully parse the file specified at that path: &quot; + ace_xml_feature_values_file_path + &quot;. Perhaps this file does not exist, or is not a valid ACE XML Feature Values file?&quot;);</span>
+<span class="fc" id="L71">            }</span>
+
+            // Convert feature values to Weka ARFF format and save the ARFF file
+<span class="fc bfc" id="L74" title="All 2 branches covered.">            if (save_ARFF) {</span>
+                try {
+<span class="fc" id="L76">                    UserFeedbackGenerator.printGeneratingArffFile(status_print_stream, output_arff_file_path);</span>
+<span class="fc" id="L77">                    String relation_name = &quot;Converted_from_ACE_XML&quot;;</span>
+<span class="fc" id="L78">                    instance_data.saveToARFF(relation_name, new File(output_arff_file_path), true, true);</span>
+<span class="nc" id="L79">                } catch (Exception e) {</span>
+<span class="nc" id="L80">                    throw new Exception(&quot;Could not succesfully save the Weka ARFF file to the path:&quot; + output_arff_file_path + &quot;. Perhaps you do not have write permission?&quot;);</span>
+<span class="fc" id="L81">                }</span>
+            }
+
+            // Convert feature values to CSV format and save the CSV file
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            if (save_CSV) {</span>
+                try {
+<span class="fc" id="L87">                    UserFeedbackGenerator.printGeneratingCsvFile(status_print_stream, output_csv_file_path);</span>
+<span class="fc" id="L88">                    instance_data.saveToCSV(new File(output_csv_file_path), true, true, true, true, true);</span>
+<span class="nc" id="L89">                } catch (Exception e) {</span>
+<span class="nc" id="L90">                    throw new Exception(&quot;Could not succesfully save the CSV file to the path:&quot; + output_csv_file_path + &quot;. Perhaps you do not have write permission?&quot;);</span>
+<span class="fc" id="L91">                }</span>
+            }
+
+            // Return the paths of the saved files
+<span class="fc" id="L95">            return new AceConversionPaths(ace_xml_feature_values_file_path,</span>
+                    ace_xml_feature_definitions_file_path,
+                    output_arff_file_path,
+                    output_csv_file_path);
+<span class="nc" id="L99">        } else return null;</span>
+    }
+
+
+    /* INTERNAL CLASS ***************************************************************************************/
+
+
+    /**
+     * Objects of this class hold the paths of an associated ACE XML Feature Values file, ACE XML Feature
+     * Definitions file, Weka ARFF file and CSV file. Typically the ARFF and CSV files were converted from
+     * the ACE XML file.
+     */
+    public static class AceConversionPaths {
+        /**
+         * Fields holding file paths.
+         */
+        private final String ace_xml_feature_values_file_path;
+        private final String ace_xml_feature_definitions_file_path;
+        private final String arff_file_path;
+        private final String csv_arff_file_path;
+
+
+        /**
+         * Instantiate an object of this class. Field values cannot be changed after instantiation.
+         *
+         * @param ace_xml_feature_values_file_path      The path of the associated ACE XML Feature Values
+         *                                              file.
+         * @param ace_xml_feature_definitions_file_path The path of the associated ACE XML Feature Definitions
+         *                                              file.
+         * @param arff_file_path                        The path of the associated Weka ARFF file.
+         * @param csv_arff_file_path                    The path of the associated CSV file.
+         */
+        public AceConversionPaths(String ace_xml_feature_values_file_path,
+                                  String ace_xml_feature_definitions_file_path,
+                                  String arff_file_path,
+<span class="fc" id="L134">                                  String csv_arff_file_path) {</span>
+<span class="fc" id="L135">            this.ace_xml_feature_values_file_path = ace_xml_feature_values_file_path;</span>
+<span class="fc" id="L136">            this.ace_xml_feature_definitions_file_path = ace_xml_feature_definitions_file_path;</span>
+<span class="fc" id="L137">            this.arff_file_path = arff_file_path;</span>
+<span class="fc" id="L138">            this.csv_arff_file_path = csv_arff_file_path;</span>
+<span class="fc" id="L139">        }</span>
+
+
+        /**
+         * @return The path of the associated ACE XML Feature Values file.
+         */
+        public String getAceXmlFeatureValuesFilePath() {
+<span class="nc" id="L146">            return ace_xml_feature_values_file_path;</span>
+        }
+
+
+        /**
+         * @return The path of the associated ACE XML Feature Definitions file.
+         */
+        public String getAceXmlFeatureDefinitionsFilePath() {
+<span class="nc" id="L154">            return ace_xml_feature_definitions_file_path;</span>
+        }
+
+
+        /**
+         * @return The path of the associated Weka ARFF file.
+         */
+        public String getArffFilePath() {
+<span class="nc" id="L162">            return arff_file_path;</span>
+        }
+
+
+        /**
+         * @return The path of the associated CSV file.
+         */
+        public String getCsvFilePath() {
+<span class="nc" id="L170">            return csv_arff_file_path;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

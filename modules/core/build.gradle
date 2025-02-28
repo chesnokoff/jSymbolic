@@ -1,0 +1,45 @@
+plugins {
+    id 'application'
+    id "org.sonarqube" version "6.0.1.5171"
+    id 'jacoco'
+}
+
+dependencies {
+    implementation fileTree(dir: './libs')
+    testImplementation fileTree(dir: './libs')
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.3'
+}
+
+version = "2.3"
+
+tasks.test {
+    useJUnitPlatform() // Убедись, что ты используешь правильную платформу для тестов
+    finalizedBy jacocoTestReport // Запускаем отчёт после тестов
+}
+
+tasks.jacocoTestReport {
+    dependsOn test // Указываем, что отчёт зависит от тестов
+
+    reports {
+        xml.required = true  // Генерируем XML-отчёт для SonarQube
+        xml.destination = file("$buildDir/reports/jacoco/jacocoTestReport.xml") // Указываем путь к XML-отчёту
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.coverage.jacoco.xmlReportPaths", "$buildDir/reports/jacoco/jacocoTestReport.xml"
+    }
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes "Main-Class": "jsymbolic2.Main"
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}

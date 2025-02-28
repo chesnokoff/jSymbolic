@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConfigurationFileData.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jSymbolic2</a> &gt; <a href="index.source.html" class="el_package">jsymbolic2.configuration</a> &gt; <span class="el_source">ConfigurationFileData.java</span></div><h1>ConfigurationFileData.java</h1><pre class="source lang-java linenums">package jsymbolic2.configuration;
+
+import jsymbolic2.featureutils.FeatureExtractorAccess;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * A state object for all the data specified by a configuration file. This is to be used in order to conveniently
+ * move around and access the configuration file data of a particular jSymbolic instance,
+ * from one central place.
+ */
+public class ConfigurationFileData {
+
+    /**
+     * Name of the features to be saved.
+     * These names are based off the unique {@link ace.datatypes.FeatureDefinition} names.
+     */
+    private List&lt;String&gt; featuresToSave;
+
+    /**
+     * A boolean array associated to the features that need to be saved in the particular order
+     * specified in {@link FeatureExtractorAccess}.
+     */
+    private boolean[] featuresToSaveBoolean;
+
+    /**
+     * The current state of the option from the configuration file.
+     */
+    private ConfigurationOptionState optionState;
+
+    /**
+     * The output file paths from the configuration file.
+     */
+    private ConfigurationOutputFiles outputFileList;
+
+    /**
+     * A String representation of the path of the configuration file.
+     */
+    private String configurationFilePath;
+
+    /**
+     * All valid and invalid input files from the configuration file.
+     */
+    private ConfigurationInputFiles inputFileList;
+
+    /**
+     * Constructor
+     *
+     * @param featuresToSave        Name of features to save for this configuration file.
+     * @param optionState           State of the options for this configuration file.
+     * @param outputFileList        All the output file paths for this configuration file.
+     * @param configurationFilePath File path for the configuration file.
+     * @param inputFileList         Valid and invalid files for this configuration file.
+     * @throws Exception Thrown if a particular feature is non-existing in jSymbolic.
+     */
+    public ConfigurationFileData(List&lt;String&gt; featuresToSave,
+                                 ConfigurationOptionState optionState,
+                                 ConfigurationOutputFiles outputFileList,
+                                 String configurationFilePath,
+                                 ConfigurationInputFiles inputFileList)
+<span class="fc" id="L63">            throws Exception {</span>
+<span class="fc" id="L64">        this.featuresToSave = featuresToSave;</span>
+<span class="fc" id="L65">        this.optionState = optionState;</span>
+<span class="fc" id="L66">        this.outputFileList = outputFileList;</span>
+<span class="fc" id="L67">        this.configurationFilePath = configurationFilePath;</span>
+<span class="fc" id="L68">        this.inputFileList = inputFileList;</span>
+<span class="fc" id="L69">        featuresToSaveBoolean = FeatureExtractorAccess.findSpecifiedFeatures(featuresToSave);</span>
+<span class="fc" id="L70">    }</span>
+
+    /**
+     * @return List of Name of the features to be saved.
+     * These names are based off the unique {@link ace.datatypes.FeatureDefinition} names.
+     */
+    public List&lt;String&gt; getFeaturesToSave() {
+<span class="nc" id="L77">        return featuresToSave;</span>
+    }
+
+    /**
+     * @return A boolean array associated to the features that need to be saved in the particular order
+     * specified in {@link FeatureExtractorAccess}.
+     */
+    public boolean[] getFeaturesToSaveBoolean() {
+<span class="fc" id="L85">        return featuresToSaveBoolean;</span>
+    }
+
+    /**
+     * @return The window size from the option state of the configuration file.
+     */
+    public double getWindowSize() {
+<span class="fc" id="L92">        return optionState.getWindow_size();</span>
+    }
+
+    /**
+     * @return The window overlap of the option state of the configuration file.
+     */
+    public double getWindowOverlap() {
+<span class="fc" id="L99">        return optionState.getWindow_overlap();</span>
+    }
+
+    /**
+     * @return True if configuration file specifies that piece must be split up into windows,
+     * otherwise false.
+     */
+    public boolean saveWindow() {
+<span class="fc" id="L107">        return optionState.isSave_features_for_each_window();</span>
+    }
+
+    /**
+     * @return True if configuration specifies that features must only be saved for overall piece,
+     * otherwise false.
+     */
+    public boolean saveOverall() {
+<span class="fc" id="L115">        return optionState.isSave_overall_recording_features();</span>
+    }
+
+    /**
+     * @return True if the ARFF format must be converted to as specified by configuration file, otherwise false.
+     */
+    public boolean convertToArff() {
+<span class="fc" id="L122">        return optionState.isConvert_to_arff();</span>
+    }
+
+    /**
+     * @return True if the CSV format must be converted to as specified by the configuration file, otherwise false.
+     */
+    public boolean convertToCsv() {
+<span class="fc" id="L129">        return optionState.isConvert_to_csv();</span>
+    }
+
+    /**
+     * @return The path that the feature value ACE XML file will be saved to.
+     */
+    public String getFeatureValueSavePath() {
+<span class="fc" id="L136">        return outputFileList.getFeature_values_save_path();</span>
+    }
+
+    /**
+     * @return The path that the feature value ACE XML file will be saved to.
+     */
+    public String getFeatureDefinitionSavePath() {
+<span class="fc" id="L143">        return outputFileList.getFeature_definition_save_path();</span>
+    }
+
+    /**
+     * @return The path that the configuration file is saved at.
+     */
+    public String getConfigurationFilePath() {
+<span class="nc" id="L150">        return configurationFilePath;</span>
+    }
+
+    /**
+     * @return The list of input files specified by the configuration file.
+     */
+    public ConfigurationInputFiles getInputFileList() {
+<span class="fc" id="L157">        return inputFileList;</span>
+    }
+
+    /**
+     * @return The state of the options specified by the configuration file.
+     */
+    public ConfigurationOptionState getOptionState() {
+<span class="nc" id="L164">        return optionState;</span>
+    }
+
+    /**
+     * @return The list of output files specified by the configuration file.
+     */
+    public ConfigurationOutputFiles getOutputFileList() {
+<span class="nc" id="L171">        return outputFileList;</span>
+    }
+
+    @Override
+    public boolean equals(Object o) {
+<span class="pc bpc" id="L176" title="1 of 2 branches missed.">        if (this == o) return true;</span>
+<span class="pc bpc" id="L177" title="2 of 4 branches missed.">        if (null == o || getClass() != o.getClass()) return false;</span>
+
+<span class="fc" id="L179">        ConfigurationFileData that = (ConfigurationFileData) o;</span>
+
+<span class="pc bpc" id="L181" title="1 of 2 branches missed.">        if (!Objects.equals(featuresToSave, that.featuresToSave))</span>
+<span class="nc" id="L182">            return false;</span>
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">        if (!Arrays.equals(featuresToSaveBoolean, that.featuresToSaveBoolean)) return false;</span>
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">        if (!Objects.equals(optionState, that.optionState)) return false;</span>
+<span class="pc bpc" id="L185" title="1 of 2 branches missed.">        if (!Objects.equals(outputFileList, that.outputFileList))</span>
+<span class="nc" id="L186">            return false;</span>
+<span class="pc bpc" id="L187" title="1 of 2 branches missed.">        if (!Objects.equals(configurationFilePath, that.configurationFilePath))</span>
+<span class="nc" id="L188">            return false;</span>
+<span class="fc" id="L189">        return Objects.equals(inputFileList, that.inputFileList);</span>
+
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc bnc" id="L195" title="All 2 branches missed.">        int result = null != featuresToSave ? featuresToSave.hashCode() : 0;</span>
+<span class="nc" id="L196">        result = 31 * result + Arrays.hashCode(featuresToSaveBoolean);</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">        result = 31 * result + (null != optionState ? optionState.hashCode() : 0);</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">        result = 31 * result + (null != outputFileList ? outputFileList.hashCode() : 0);</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">        result = 31 * result + (null != configurationFilePath ? configurationFilePath.hashCode() : 0);</span>
+<span class="nc bnc" id="L200" title="All 2 branches missed.">        result = 31 * result + (null != inputFileList ? inputFileList.hashCode() : 0);</span>
+<span class="nc" id="L201">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

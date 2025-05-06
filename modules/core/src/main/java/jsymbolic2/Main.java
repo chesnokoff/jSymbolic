@@ -15,15 +15,6 @@ public class Main {
      * @param args Command line input parameter arguments.
      */
     public static void main(String[] args) {
-        try {
-            new CLI().run(args);
-        }
-
-        // Note that this should never need to be executed, since internal processing should catch all errors.
-        catch (Exception e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace(System.err);
-            // CommandLineUtils.printMessageAndTerminate(CommandLineUtils.getCommandLineCorrectUsage(), -1);
-        }
+        new CLI().run(args);
     }
 }

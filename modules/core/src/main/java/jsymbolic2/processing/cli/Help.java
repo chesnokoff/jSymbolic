@@ -15,6 +15,6 @@ class Help implements Consumer<String[]> {
 
     @Override
     public void accept(String[] args) {
-        UserFeedbackGenerator.simplePrintln(printStreams.status_print_stream(), CommandLineUtilities.getCommandLineCorrectUsage());
+        UserFeedbackGenerator.simplePrintln(printStreams.statusPrintStream(), CommandLineUtilities.getCommandLineCorrectUsage());
     }
 }

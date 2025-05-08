@@ -17,15 +17,15 @@ class ConfigGui implements Consumer<String[]> {
     @Override
     public void accept(String[] args) {
         if (2 != args.length)
-            UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.error_print_stream(), args);
+            UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.errorPrintStream(), args);
 
         String config_file_path = args[1];
         try {
-            UserFeedbackGenerator.printParsingConfigFileMessage(printStreams.status_print_stream(), config_file_path);
-            ConfigurationFileData config_file_data = new ConfigurationFileValidatorTxtImpl().parseConfigFileTwoThreeOrFour(config_file_path, printStreams.error_print_stream());
+            UserFeedbackGenerator.printParsingConfigFileMessage(printStreams.statusPrintStream(), config_file_path);
+            ConfigurationFileData config_file_data = new ConfigurationFileValidatorTxtImpl().parseConfigFileTwoThreeOrFour(config_file_path, printStreams.errorPrintStream());
             new jsymbolic2.gui.OuterFrame(config_file_data);
         } catch (Exception e) {
-            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.error_print_stream(), e);
+            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.errorPrintStream(), e);
         }
     }
 }

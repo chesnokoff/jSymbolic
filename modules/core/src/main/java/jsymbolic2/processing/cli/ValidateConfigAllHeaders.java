@@ -17,21 +17,21 @@ class ValidateConfigAllHeaders implements Consumer<String[]> {
     public void accept(String[] args) {
         // Check valid number of command line arguments
         if (2 != args.length)
-            UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.error_print_stream(), args);
+            UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.errorPrintStream(), args);
 
         String config_file_path = args[1];
         try {
             // Try parsing configuration file to see if it is valid
-            UserFeedbackGenerator.printParsingConfigFileMessage(printStreams.status_print_stream(), config_file_path);
-            new ConfigurationFileValidatorTxtImpl().parseConfigFileAllHeaders(config_file_path, printStreams.error_print_stream());
+            UserFeedbackGenerator.printParsingConfigFileMessage(printStreams.statusPrintStream(), config_file_path);
+            new ConfigurationFileValidatorTxtImpl().parseConfigFileAllHeaders(config_file_path, printStreams.errorPrintStream());
 
             // If the configuration file is valid as defined by this method
-            UserFeedbackGenerator.simplePrintln(printStreams.status_print_stream(), "\n" + config_file_path + " is a valid configuration file that specifies features to be extracted, extraction options, input file paths and output file paths.\n");
+            UserFeedbackGenerator.simplePrintln(printStreams.statusPrintStream(), "\n" + config_file_path + " is a valid configuration file that specifies features to be extracted, extraction options, input file paths and output file paths.\n");
         }
 
         // If the configuration file is not valid as defined by this method
         catch (Exception e) {
-            UserFeedbackGenerator.simplePrintln(printStreams.status_print_stream(), "\n" + e.getMessage() + "\n");
+            UserFeedbackGenerator.simplePrintln(printStreams.statusPrintStream(), "\n" + e.getMessage() + "\n");
         }
     }
 }

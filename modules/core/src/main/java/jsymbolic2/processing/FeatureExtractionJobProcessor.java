@@ -3,7 +3,6 @@ package jsymbolic2.processing;
 import ace.datatypes.DataBoard;
 import jsymbolic2.configuration.ConfigurationFileData;
 import jsymbolic2.featureutils.FeatureExtractorAccess;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.ddmal.jmei2midi.MeiSequence;
 import org.ddmal.jmei2midi.meielements.meispecific.MeiSpecificStorage;
@@ -81,13 +80,13 @@ public class FeatureExtractionJobProcessor {
             // Save features from DataBoard
             FeatureExtractionJobProcessor.saveFeatures(dataBoard, saveInfo.feature_definitions_save_path(),
                     saveInfo,
-                    printStreams.status_print_stream());
+                    printStreams.statusPrintStream());
             // Indicate that processing is done
-            UserFeedbackGenerator.printExecutionFinished(printStreams.status_print_stream());
+            UserFeedbackGenerator.printExecutionFinished(printStreams.statusPrintStream());
             // Return any errors that may have occurred
             return error_log;
         } catch (Exception e) {
-            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.error_print_stream(), e);
+            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.errorPrintStream(), e);
             error_log.add(e + ":" + e.getMessage());
             return error_log;
         }
@@ -224,7 +223,7 @@ public class FeatureExtractionJobProcessor {
         if (processor.containsMeiFeatures()) {
             midiSequenceNumberToProcess = 0;
         }
-        UserFeedbackGenerator.printFeatureExtractionStartingMessage(printStreams.status_print_stream(), midiSequenceNumberToProcess + meiSequenceNumberToProcess);
+        UserFeedbackGenerator.printFeatureExtractionStartingMessage(printStreams.statusPrintStream(), midiSequenceNumberToProcess + meiSequenceNumberToProcess);
         // Extract features from each file
         for (int i = 0; i < midiSequenceNumberToProcess; ++i) {
             FeatureExtractionJobProcessor.extractFeaturesFromSequence(midiSequences.get(i).getLeft(), midiSequences.get(i).getRight(),
@@ -250,20 +249,20 @@ public class FeatureExtractionJobProcessor {
         try {
             dataBoard = processor.generateDataBoard();
         } catch (Exception e) {
-            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.error_print_stream(), e);
+            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.errorPrintStream(), e);
             error_log.add(e + ": " + e.getMessage());
         }
 
         // Finalize the saving of the feature values ACE XML file
-        UserFeedbackGenerator.printGeneratingAceXmlFeatureValuesFile(printStreams.status_print_stream(), feature_values_save_path);
+        UserFeedbackGenerator.printGeneratingAceXmlFeatureValuesFile(printStreams.statusPrintStream(), feature_values_save_path);
 
         // Indicate that feature extraction is done, and provide a summary of results
-        UserFeedbackGenerator.printFeatureExtractionCompleteMessage(printStreams.status_print_stream(),
+        UserFeedbackGenerator.printFeatureExtractionCompleteMessage(printStreams.statusPrintStream(),
                 feature_values_save_path,
                 midiSequenceNumberToProcess + meiSequenceNumberToProcess);
 
         // Print the error log summary
-        UserFeedbackGenerator.printErrorSummary(printStreams.error_print_stream(), error_log, gui_processing);
+        UserFeedbackGenerator.printErrorSummary(printStreams.errorPrintStream(), error_log, gui_processing);
         return dataBoard;
     }
 
@@ -306,18 +305,18 @@ public class FeatureExtractionJobProcessor {
                                                        boolean gui_processing, MeiSpecificStorage nonMidiStorage, Sequence sequence) {
         try {
             // Extract features from input_file_path and save them in an ACE XML feature values file
-            UserFeedbackGenerator.printFeatureExtractionProgressMessage(printStreams.status_print_stream(), name, current_extraction_index, total_files_to_process);
+            UserFeedbackGenerator.printFeatureExtractionProgressMessage(printStreams.statusPrintStream(), name, current_extraction_index, total_files_to_process);
             processor.extractFeaturesFromSequence(name, sequence, nonMidiStorage);
-            UserFeedbackGenerator.printFeatureExtractionDoneAFileProgressMessage(printStreams.status_print_stream(), name, current_extraction_index, total_files_to_process);
+            UserFeedbackGenerator.printFeatureExtractionDoneAFileProgressMessage(printStreams.statusPrintStream(), name, current_extraction_index, total_files_to_process);
         } catch (OutOfMemoryError e) // Terminate execution if this happens
         {
-            FeatureExtractionJobProcessor.processOutOfMemory(name, printStreams.error_print_stream(), gui_processing);
+            FeatureExtractionJobProcessor.processOutOfMemory(name, printStreams.errorPrintStream(), gui_processing);
         } catch (Exception e) {
             String error_message = "Problem extracting features from " + name + "." +
                     "\n\tDetailed error message: " + e + ": " + e.getMessage();
-            UserFeedbackGenerator.printErrorMessage(printStreams.error_print_stream(), error_message);
+            UserFeedbackGenerator.printErrorMessage(printStreams.errorPrintStream(), error_message);
             error_log.add(error_message);
-            e.printStackTrace(printStreams.error_print_stream());
+            e.printStackTrace(printStreams.errorPrintStream());
         }
     }
 

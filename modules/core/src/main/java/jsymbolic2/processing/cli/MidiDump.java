@@ -21,13 +21,13 @@ class MidiDump implements Consumer<String[]> {
     public void accept(String[] args) {
         // Check valid number of command line arguments
         if (2 != args.length)
-            UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.error_print_stream(), args);
+            UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.errorPrintStream(), args);
         try {
             // Prepare the set of files (after recursive directory parsing and extension filtering, if
             // appropriate), to report on
             File[] midi_or_mei_file_list = SymbolicMusicFileUtilities.getRecursiveListOfFiles(args[1],
                     new MusicFilter(),
-                    printStreams.error_print_stream(),
+                    printStreams.errorPrintStream(),
                     new ArrayList<>());
 
             // Prepare and output the reports
@@ -37,22 +37,22 @@ class MidiDump implements Consumer<String[]> {
             // Report on each file
             for (int i = 0; i < midi_or_mei_file_list.length; i++) {
                 // Note progress
-                UserFeedbackGenerator.simplePrint(printStreams.status_print_stream(), "\n============ MIDI MESSAGES REPORT FOR FILE " + (i + 1) + " / " + midi_or_mei_file_list.length + " ============\n");
+                UserFeedbackGenerator.simplePrint(printStreams.statusPrintStream(), "\n============ MIDI MESSAGES REPORT FOR FILE " + (i + 1) + " / " + midi_or_mei_file_list.length + " ============\n");
 
                 // Parse and check the MIDI file
                 MIDIReporter midi_debugger = new MIDIReporter(midi_or_mei_file_list[i]);
 
                 // Output the reports
-                UserFeedbackGenerator.simplePrint(printStreams.status_print_stream(), midi_debugger.prepareHeaderReport());
-                UserFeedbackGenerator.simplePrint(printStreams.status_print_stream(), midi_debugger.prepareMetaMessageReport(true, true, true, true, true, true));
-                UserFeedbackGenerator.simplePrint(printStreams.status_print_stream(), midi_debugger.prepareProgramChangeAndUnpitchedInstrumentsReport());
-                UserFeedbackGenerator.simplePrint(printStreams.status_print_stream(), midi_debugger.prepareControllerMessageReport());
-                UserFeedbackGenerator.simplePrintln(printStreams.status_print_stream(), midi_debugger.prepareNoteReport(false, true));
+                UserFeedbackGenerator.simplePrint(printStreams.statusPrintStream(), midi_debugger.prepareHeaderReport());
+                UserFeedbackGenerator.simplePrint(printStreams.statusPrintStream(), midi_debugger.prepareMetaMessageReport(true, true, true, true, true, true));
+                UserFeedbackGenerator.simplePrint(printStreams.statusPrintStream(), midi_debugger.prepareProgramChangeAndUnpitchedInstrumentsReport());
+                UserFeedbackGenerator.simplePrint(printStreams.statusPrintStream(), midi_debugger.prepareControllerMessageReport());
+                UserFeedbackGenerator.simplePrintln(printStreams.statusPrintStream(), midi_debugger.prepareNoteReport(false, true));
             }
         }
         // If the MIDI file is not valid
         catch (Exception e) {
-            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.error_print_stream(), e);
+            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.errorPrintStream(), e);
         }
     }
 }

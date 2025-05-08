@@ -20,23 +20,23 @@ class ValidateConfigFeatureOption implements Consumer<String[]> {
     public void accept(String[] args) {
         // Check valid number of command line arguments
         if (2 != args.length)
-            UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.error_print_stream(), args);
+            UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.errorPrintStream(), args);
 
         String config_file_path = args[1];
         List<ConfigFileHeaderEnum> config_headers_to_check = Arrays.asList(ConfigFileHeaderEnum.FEATURE_HEADER,
                 ConfigFileHeaderEnum.OPTION_HEADER);
         try {
             // Try parsing configuration file to see if it is valid
-            UserFeedbackGenerator.printParsingConfigFileMessage(printStreams.status_print_stream(), config_file_path);
-            new ConfigurationFileValidatorTxtImpl().parseConfigFile(config_file_path, config_headers_to_check, printStreams.error_print_stream());
+            UserFeedbackGenerator.printParsingConfigFileMessage(printStreams.statusPrintStream(), config_file_path);
+            new ConfigurationFileValidatorTxtImpl().parseConfigFile(config_file_path, config_headers_to_check, printStreams.errorPrintStream());
 
             // If the configuration file is valid as defined by this method
-            UserFeedbackGenerator.simplePrintln(printStreams.status_print_stream(), "\n" + config_file_path + " is a valid configuration file that specifies features to be extracted and extraction options, but does not specify input or output files.\n");
+            UserFeedbackGenerator.simplePrintln(printStreams.statusPrintStream(), "\n" + config_file_path + " is a valid configuration file that specifies features to be extracted and extraction options, but does not specify input or output files.\n");
         }
 
         // If the configuration file is not valid as defined by this method
         catch (Exception e) {
-            UserFeedbackGenerator.simplePrintln(printStreams.status_print_stream(), "\n" + e.getMessage() + "\n");
+            UserFeedbackGenerator.simplePrintln(printStreams.statusPrintStream(), "\n" + e.getMessage() + "\n");
         }
     }
 }

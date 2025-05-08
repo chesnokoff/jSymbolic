@@ -43,7 +43,7 @@ class CommandLine implements Consumer<String[]> {
 
             // Run without configuration file if does not exist at default path
             catch (Exception ex) {
-                UserFeedbackGenerator.simplePrintln(printStreams.status_print_stream(), "NON-CRITICAL WARNING: Could not find a configurations file called " + default_config_file_path + "  in the jSymbolic home directory that is valid under current settings. As a result, processing will continue using standard settings (unless specified manually). Although a default configurations file is by no means necessary to use jSymbolic, it is often convenient. You can save one at anytime either manually or using the jSymbolic GUI, if you wish (see the manual for more details).\n");
+                UserFeedbackGenerator.simplePrintln(printStreams.statusPrintStream(), "NON-CRITICAL WARNING: Could not find a configurations file called " + default_config_file_path + "  in the jSymbolic home directory that is valid under current settings. As a result, processing will continue using standard settings (unless specified manually). Although a default configurations file is by no means necessary to use jSymbolic, it is often convenient. You can save one at anytime either manually or using the jSymbolic GUI, if you wish (see the manual for more details).\n");
                 parseNoConfigFileCommandLineAndExtractAndSaveFeatures(args);
             }
             return;
@@ -52,7 +52,7 @@ class CommandLine implements Consumer<String[]> {
         // Or run without configuration file if does not exist at default path if three are some other
         // number of command line arguments than 3
         if (3 == args.length) {
-            UserFeedbackGenerator.simplePrintln(printStreams.status_print_stream(), "NON-CRITICAL WARNING: Could not find a configurations file called " + default_config_file_path + " in the jSymbolic home directory that is valid under current settings. As a result, processing will continue using standard settings (unless specified manually). Although a default configurations file is by no means necessary to use jSymbolic, it is often convenient. You can save one at anytime either manually or using the jSymbolic GUI, if you wish (see the manual for more details).\n");
+            UserFeedbackGenerator.simplePrintln(printStreams.statusPrintStream(), "NON-CRITICAL WARNING: Could not find a configurations file called " + default_config_file_path + " in the jSymbolic home directory that is valid under current settings. As a result, processing will continue using standard settings (unless specified manually). Although a default configurations file is by no means necessary to use jSymbolic, it is often convenient. You can save one at anytime either manually or using the jSymbolic GUI, if you wish (see the manual for more details).\n");
         }
         parseNoConfigFileCommandLineAndExtractAndSaveFeatures(args);
     }
@@ -62,8 +62,8 @@ class CommandLine implements Consumer<String[]> {
         String feature_values_save_path = args[1];
         String feature_definitions_save_path = args[2];
         List<ConfigFileHeaderEnum> config_file_headers_to_check = Arrays.asList(ConfigFileHeaderEnum.FEATURE_HEADER, ConfigFileHeaderEnum.OPTION_HEADER);
-        UserFeedbackGenerator.printParsingConfigFileMessage(printStreams.status_print_stream(), default_config_file_path);
-        ConfigurationFileData config_file_data = new ConfigurationFileValidatorTxtImpl().parseConfigFile(default_config_file_path, config_file_headers_to_check, printStreams.error_print_stream());
+        UserFeedbackGenerator.printParsingConfigFileMessage(printStreams.statusPrintStream(), default_config_file_path);
+        ConfigurationFileData config_file_data = new ConfigurationFileValidatorTxtImpl().parseConfigFile(default_config_file_path, config_file_headers_to_check, printStreams.errorPrintStream());
         FeatureExtractionJobProcessor.extractAndSaveFeaturesConfigFileSettings(input_file_list,
                 config_file_data,
                 feature_values_save_path,
@@ -91,7 +91,7 @@ class CommandLine implements Consumer<String[]> {
             return;
         }
         // Indicate invalid choice of command line arguments
-        UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.error_print_stream(), args);
+        UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.errorPrintStream(), args);
     }
 
     private void processNoWindowing(String[] reduced_args) {

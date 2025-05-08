@@ -21,14 +21,14 @@ class ConsistencyCheck implements Consumer<String[]> {
     public void accept(String[] args) {
         // Check valid number of command line arguments
         if (2 != args.length) {
-            UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.error_print_stream(), args);
+            UserFeedbackGenerator.indicateIncorrectCommandLineArgumentsAndEndExecution(printStreams.errorPrintStream(), args);
         }
         try {
             // Prepare the set of files (after recursive directory parsing and extension filtering, if
             // appropriate), to report on
             File[] midi_or_mei_file_list = SymbolicMusicFileUtilities.getRecursiveListOfFiles(args[1],
                     new MusicFilter(),
-                    printStreams.error_print_stream(),
+                    printStreams.errorPrintStream(),
                     new ArrayList<>());
 
             // Prepare and output the reports
@@ -37,12 +37,12 @@ class ConsistencyCheck implements Consumer<String[]> {
                         true,
                         true,
                         true);
-                UserFeedbackGenerator.simplePrint(printStreams.status_print_stream(), report);
+                UserFeedbackGenerator.simplePrint(printStreams.statusPrintStream(), report);
             }
         }
         // If the MIDI file is not valid
         catch (Exception e) {
-            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.error_print_stream(), e);
+            UserFeedbackGenerator.printExceptionErrorMessage(printStreams.errorPrintStream(), e);
         }
     }
 }

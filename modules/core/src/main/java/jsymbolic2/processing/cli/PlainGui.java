@@ -23,8 +23,8 @@ class PlainGui implements Consumer<String[]> {
         // Try parsing default configuration file if it exists
         if (Files.exists(Paths.get(default_config_file_path))) {
             try {
-                UserFeedbackGenerator.printParsingConfigFileMessage(printStreams.status_print_stream(), default_config_file_path);
-                ConfigurationFileData config_file_data = new ConfigurationFileValidatorTxtImpl().parseConfigFileTwoThreeOrFour(default_config_file_path, printStreams.error_print_stream());
+                UserFeedbackGenerator.printParsingConfigFileMessage(printStreams.statusPrintStream(), default_config_file_path);
+                ConfigurationFileData config_file_data = new ConfigurationFileValidatorTxtImpl().parseConfigFileTwoThreeOrFour(default_config_file_path, printStreams.errorPrintStream());
                 new jsymbolic2.gui.OuterFrame(config_file_data);
             } catch (Exception e) {
                 new jsymbolic2.gui.OuterFrame(null);

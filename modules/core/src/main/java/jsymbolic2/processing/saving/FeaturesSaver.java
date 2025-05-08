@@ -1,6 +1,7 @@
-package jsymbolic2.processing;
+package jsymbolic2.processing.saving;
 
 import ace.datatypes.DataBoard;
+import jsymbolic2.processing.UserFeedbackGenerator;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -8,9 +9,7 @@ import java.io.PrintStream;
 /**
  * This class is used to save extracted features to files. Extracted features are passed in DataBoard
  */
-public enum FeaturesSaver {
-    ;
-
+public class FeaturesSaver {
     /**
      * Validates filepath to write and writes into CSV file
      *
@@ -19,7 +18,7 @@ public enum FeaturesSaver {
      * @throws RuntimeException Throws an informative
      *                          Runtime exception if it cannot write into file.
      */
-    static void SaveCSV(DataBoard dataBoard, String filePath, PrintStream status_print_stream)
+    public static void SaveCSV(DataBoard dataBoard, String filePath, PrintStream status_print_stream)
             throws RuntimeException {
         File file = new File(FeaturesSaver.addExtension(filePath, "csv"));
         FeaturesSaver.validateFile(file);
@@ -41,7 +40,7 @@ public enum FeaturesSaver {
      * @throws RuntimeException Throws an informative
      *                          Runtime exception if it cannot write into file.
      */
-    static void SaveARFF(DataBoard dataBoard, String filePath,
+    public static void SaveARFF(DataBoard dataBoard, String filePath,
                          PrintStream status_print_stream) throws RuntimeException {
         File file = new File(FeaturesSaver.addExtension(filePath, "arff"));
         FeaturesSaver.validateFile(file);
@@ -63,7 +62,7 @@ public enum FeaturesSaver {
      * @throws RuntimeException Throws an informative
      *                          Runtime exception if it cannot write into file.
      */
-    static void SaveXML(DataBoard dataBoard, String filePathDefinitions, String filePathValues,
+    public static void SaveXML(DataBoard dataBoard, String filePathDefinitions, String filePathValues,
                         PrintStream status_print_stream) throws RuntimeException {
         File fileDefinitions = null;
         if (null != filePathDefinitions) {

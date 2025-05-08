@@ -1,4 +1,4 @@
-package jsymbolic2.processing;
+package jsymbolic2.processing.extraction;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
@@ -6,7 +6,7 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.Track;
 import java.util.function.UnaryOperator;
 
-public class SequencePreprocessor implements UnaryOperator<Sequence> {
+class SequencePreprocessor implements UnaryOperator<Sequence> {
     private final int desiredMaxPpqn;
     private final int desiredMaxTickLength;
     private final long desiredMaxMicrosecondsLength;

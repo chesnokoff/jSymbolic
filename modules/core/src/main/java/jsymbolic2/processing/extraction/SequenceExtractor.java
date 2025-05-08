@@ -1,4 +1,4 @@
-package jsymbolic2.processing;
+package jsymbolic2.processing.extraction;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,11 +14,11 @@ public class SequenceExtractor {
   private final List<File> filesList;
   SequencePreprocessor sequencePreprocessor = new SequencePreprocessor();
 
-  SequenceExtractor(List<File> filesList) {
+  public SequenceExtractor(List<File> filesList) {
     this.filesList = filesList;
   }
 
-  List<Pair<String, Sequence>> getMIDISequences() {
+  public List<Pair<String, Sequence>> getMIDISequences() {
     return filesList.stream()
         .filter(file -> file.getName().endsWith(".mid") || file.getName().endsWith(".midi"))
         .map(file -> {
@@ -32,7 +32,7 @@ public class SequenceExtractor {
         .toList();
   }
 
-  List<Pair<String, MeiSequence>> getMEISequences() {
+  public List<Pair<String, MeiSequence>> getMEISequences() {
     return filesList.stream()
         .filter(file -> file.getName().endsWith(".mei"))
         .map(file -> {
@@ -43,20 +43,5 @@ public class SequenceExtractor {
           }
         })
         .toList();
-  }
-
-  public static Sequence getMidiSequenceFromMidiFile(File file, List<String> error_log)
-      throws IOException, InvalidMidiDataException {
-    Sequence sequence = null;
-    try {
-      sequence = MidiSystem.getSequence(file);
-    } catch (IOException e) {
-      error_log.add("The specified path, " + file + ", does not refer to a valid file.");
-      throw e;
-    } catch (InvalidMidiDataException e) {
-      error_log.add("The specified file, " + file + ", is not a valid MIDI or MEI file.");
-      throw e;
-    }
-    return sequence;
   }
 }

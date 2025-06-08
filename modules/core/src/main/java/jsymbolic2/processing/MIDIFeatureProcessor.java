@@ -3,10 +3,9 @@ package jsymbolic2.processing;
 import ace.datatypes.DataBoard;
 import ace.datatypes.DataSet;
 import ace.datatypes.FeatureDefinition;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinTask;
-import jsymbolic2.featureutils.FeatureExtractorAccess;
 import jsymbolic2.featureutils.MIDIFeatureExtractor;
 import mckay.utilities.sound.midi.MIDIMethods;
 import org.apache.commons.lang3.ArrayUtils;
@@ -135,8 +134,11 @@ public class MIDIFeatureProcessor {
         if (windowOverlapOffset > windowSize)
             throw new Exception("Window overlap offset is greater than window size, this is not possible.");
 
-        // Find which features need to be extracted and in what order. Also find
-        // the indices of dependencies and the maximum offsets for each feature.
+        featureExtractorsNamesToSave = IntStream.range(0, allFeatureExtractors.length)
+            .filter(i -> featuresToSaveAmongAll[i])
+            .mapToObj(i -> allFeatureExtractors[i].getName())
+            .toList();
+
 
         featureExtractorsDefinitions = new FeatureDefinition[allFeatureExtractors.length];
         featureExtractorsNames = new String[allFeatureExtractors.length];
@@ -147,11 +149,6 @@ public class MIDIFeatureProcessor {
 
         List<FeatureDefinition> overallFeatureDefinitions = generateOverallFeatureDefinitions();
         overallFeatureNames = overallFeatureDefinitions.stream().map(definition -> definition.name).toList();
-
-        featureExtractorsNamesToSave = IntStream.range(0, allFeatureExtractors.length)
-            .filter(i -> featuresToSaveAmongAll[i])
-            .mapToObj(i -> allFeatureExtractors[i].getName())
-            .toList();
     }
 
     private void checkExtractors(MIDIFeatureExtractor[] allFeatureExtractors) throws Exception {
@@ -246,9 +243,9 @@ public class MIDIFeatureProcessor {
         }
         //Mei Specific Storage added here and null is set if the file is not an mei file
         // Extract the feature values from the samples
-        double[][][] windowFeatureValues = getFeatures(windows, meiSpecificStorage);
+        Map<String, double[][]> windowFeatureValues = getFeatures(windows, meiSpecificStorage);
         // Find the feature averages and standard deviations if appropriate
-        double[][] overallFeatureValues = null;
+        Map<String, double[]> overallFeatureValues = null;
         if (saveOverallRecordingFeatures) {
             overallFeatureValues = generateOverallRecordingFeatures(windowFeatureValues);
         }
@@ -328,12 +325,7 @@ public class MIDIFeatureProcessor {
      * for the given window.
      * @throws Exception Throws an exception if a problem occurs.
      */
-    public double[][][] getFeatures(Sequence[] windows, MeiSpecificStorage meiSpecificStorage) throws Exception {
-        // The extracted feature values for this recording. The first indice
-        // identifies the window, the second identifies the feature and the
-        // third identifies the feature value.
-        double[][][] results = new double[windows.length][midiFeatureExtractors.length][];
-
+    public Map<String, double[][]> getFeatures(Sequence[] windows, MeiSpecificStorage meiSpecificStorage) throws Exception {
         // Extract features from each window one by one and add save the results.
         // The last window is zero-padded at the end if it falls off the edge of the
         // provided samples.
@@ -363,13 +355,7 @@ public class MIDIFeatureProcessor {
             }
         });
 
-        for (int i = 0; i < results.length; i++) {
-            for (int j = 0; j < midiFeatureExtractors.length; j++) {
-                MIDIFeatureExtractor feature = midiFeatureExtractors[j];
-                results[i][j] = resultsMap.get(feature.getName())[i];
-            }
-        }
-        return results;
+        return resultsMap;
     }
 
     /**
@@ -385,10 +371,9 @@ public class MIDIFeatureProcessor {
                     .mapToObj(i -> featureExtractorsDefinitions[i])
                     .toArray(FeatureDefinition[]::new);
         } else {
-            dataBoard.feature_definitions = IntStream.range(0, featureExtractorsDefinitions.length)
-                    .filter(i -> featuresToSaveMask[i])
-                    .mapToObj(i -> featureExtractorsDefinitions[i])
-                    .toArray(FeatureDefinition[]::new);
+            dataBoard.feature_definitions = featureExtractorsNamesToSave.stream()
+                .map(featureName -> name2extractor.get(featureName).getFeatureDefinition())
+                .toArray(FeatureDefinition[]::new);
         }
         return dataBoard;
     }
@@ -420,45 +405,46 @@ public class MIDIFeatureProcessor {
      * overallFeatureDefinitions
      * parameter is filled with.
      */
-    private double[][] generateOverallRecordingFeatures(double[][][] windowFeatureValues) {
-        double[][] featureOverallValues;
-        if (windowFeatureValues.length == 1) {
-            featureOverallValues = windowFeatureValues[0];
+    private Map<String, double[]> generateOverallRecordingFeatures(Map<String, double[][]> windowFeatureValues) {
+        Map<String, double[]> featureOverallValues = new HashMap<>(featureExtractorsNamesToSave.size() * 2);
+        if (!saveFeaturesForEachWindow) {
             return featureOverallValues;
         }
-        featureOverallValues = new double[midiFeatureExtractors.length * 2][];
-        for (int feat = 0; feat < midiFeatureExtractors.length; feat++) {
-            if (windowFeatureValues[windowFeatureValues.length - 1][feat] == null || !featuresToSaveMask[feat]) {
-                featureOverallValues[2 * feat] = null;
-                featureOverallValues[2 * feat + 1] = null;
-                continue;
-            }
-            // Find the averages and standard deviations
-            double[] averages = new double[windowFeatureValues[windowFeatureValues.length - 1][feat].length];
-            double[] stdvs = new double[windowFeatureValues[windowFeatureValues.length - 1][feat].length];
-            for (int val = 0; val < windowFeatureValues[windowFeatureValues.length - 1][feat].length; val++) {
-                // Find the number of windows that have featureOverallValues for this value feature
-                int count = 0;
-                for (double[][] windowFeaturesValues : windowFeatureValues) {
-                    if (windowFeaturesValues[feat] != null) count++;
-                }
 
-                // Find the featureOverallValues to find the average and standard deviations of
-                double[] valuesToProcess = new double[count];
-                int current = 0;
-                for (double[][] windowFeaturesValues : windowFeatureValues)
-                    if (windowFeaturesValues[feat] != null) {
-                        valuesToProcess[current] = windowFeaturesValues[feat][val];
-                        current++;
-                    }
-                // Calculate the averages and standard deviations
-                averages[val] = mckay.utilities.staticlibraries.MathAndStatsMethods.getAverage(valuesToProcess);
-                stdvs[val] = mckay.utilities.staticlibraries.MathAndStatsMethods.getStandardDeviation(valuesToProcess);
+        for (int feat = 0; feat < overallFeatureNames.size(); feat += 2) {
+            String originalName = featureExtractorsNamesToSave.get(feat / 2);
+            double[][] data = windowFeatureValues.get(originalName);
+
+            int nonNullCnt = 0;
+
+            double[] averages = new double[data[0].length];
+            for (int i = 0; i < data.length; i++) {
+                if (data[i] == null) {
+                    continue;
+                }
+                nonNullCnt++;
+                for (int j = 0; j < averages.length; j++) {
+                    averages[j] += data[i][j];
+                }
             }
-            // Store the results
-            featureOverallValues[2 * feat] = averages;
-            featureOverallValues[2 * feat + 1] = stdvs;
+            for (int i = 0; i < averages.length; i++) {
+                averages[i] /= nonNullCnt;
+            }
+
+            double[] stdvs = Arrays.copyOf(averages, averages.length);
+            for (int i = 0; i < data.length; i++) {
+                for (int j = 0; j < averages.length; j++) {
+                    stdvs[j] += Math.sqrt(data[i][j] - averages[j]);
+                }
+            }
+            for (int i = 0; i < stdvs.length; i++) {
+                stdvs[i] = Math.sqrt(stdvs[i] / (nonNullCnt - 1));
+            }
+
+            featureOverallValues.put(overallFeatureNames.get(feat), averages);
+            featureOverallValues.put(overallFeatureNames.get(feat + 1), stdvs);
         }
+
         return featureOverallValues;
     }
 
@@ -509,43 +495,67 @@ public class MIDIFeatureProcessor {
      * @param endTicks             The end ticks that correspond to each MIDI window.
      * @param secondsPerTick       The number of seconds in a MIDI tick given by the sequence.
      */
-    private void addDataSet(double[][][] windowFeatureValues, String identifier,
-                            double[][] overallFeatureValues,
+    private void addDataSet(Map<String, double[][]> windowFeatureValues, String identifier,
+                            Map<String, double[]> overallFeatureValues,
                             int[] startTicks,
                             int[] endTicks,
                             double[] secondsPerTick) {
         DataSet rootDataSet = new DataSet(identifier, null, Double.NaN, Double.NaN,
                 null, null, null);
 
-        if (saveOverallRecordingFeatures) {
-            rootDataSet.feature_values = windowFeatureValues[0];
-            rootDataSet.feature_names = IntStream.range(0, featureExtractorsNames.length)
-                    .filter(i -> featuresToSaveMask[i])
-                    .mapToObj(i -> featureExtractorsNames[i])
-                    .toArray(String[]::new);
+        if (!saveFeaturesForEachWindow) {
+
+            rootDataSet.feature_values = new double[windowFeatureValues.size()][];
+            rootDataSet.feature_names = new String[windowFeatureValues.size()];
+
+            int cnt = 0;
+
+            for (Map.Entry<String, double[][]> entry : windowFeatureValues.entrySet()) {
+                rootDataSet.feature_values[cnt] = entry.getValue()[0];
+                rootDataSet.feature_names[cnt] = entry.getKey();
+                cnt++;
+            }
+
             dataSets.add(rootDataSet);
+
             return;
         }
 
-        rootDataSet.sub_sets = new DataSet[windowFeatureValues.length];
-        for (int win = 0; win < windowFeatureValues.length; ++win) {
+        rootDataSet.sub_sets = new DataSet[startTicks.length];
+
+        for (int win = 0; win < startTicks.length; ++win) {
             double startTime = MIDIMethods.getSecondsAtTick(startTicks[win], secondsPerTick);
             //check for non-negative
             startTime = (startTime > 0) ? startTime : 0;
             double endTime = MIDIMethods.getSecondsAtTick(endTicks[win], secondsPerTick);
 
-            DataSet windowDataSet = new DataSet(null, null,
-                    startTime, endTime,
-                    windowFeatureValues[win], IntStream.range(0, featureExtractorsNames.length)
-                    .filter(i -> featuresToSaveMask[i])
-                    .mapToObj(i -> featureExtractorsNames[i])
-                    .toArray(String[]::new), rootDataSet);
+            DataSet windowDataSet = new DataSet(null, null, startTime, endTime, null, null, rootDataSet);
+
+            windowDataSet.feature_values = new double[windowFeatureValues.size()][];
+            windowDataSet.feature_names = new String[windowFeatureValues.size()];
+
+            int cnt = 0;
+            for (Map.Entry<String, double[][]> entry : windowFeatureValues.entrySet()) {
+                windowDataSet.feature_values[cnt] = entry.getValue()[win];
+                windowDataSet.feature_names[cnt] = entry.getKey();
+                cnt++;
+            }
+
             rootDataSet.sub_sets[win] = windowDataSet;
         }
+
         if (overallFeatureValues != null) {
-            rootDataSet.feature_values = overallFeatureValues;
-            rootDataSet.feature_names = overallFeatureNames;
+            rootDataSet.feature_values = new double[windowFeatureValues.size()][];
+            rootDataSet.feature_names = new String[windowFeatureValues.size()];
+
+            int cnt = 0;
+            for (Map.Entry<String, double[]> entry : overallFeatureValues.entrySet()) {
+                rootDataSet.feature_values[cnt] = entry.getValue();
+                rootDataSet.feature_names[cnt] = entry.getKey();
+                cnt++;
+            }
         }
+
         dataSets.add(rootDataSet);
     }
 }

@@ -22,9 +22,13 @@ public class MaximumNoteDurationFeature
 	public MaximumNoteDurationFeature()
 	{
 		code = "RT-12";
-		name = "Maximum Note Duration";
-		description = "Duration of the longest note in the piece (in seconds).";
-
+		String name = "Maximum Note Duration";
+		String description = "Duration of the longest note in the piece (in seconds).";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

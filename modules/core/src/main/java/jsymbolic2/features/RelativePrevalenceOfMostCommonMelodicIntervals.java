@@ -23,9 +23,13 @@ public class RelativePrevalenceOfMostCommonMelodicIntervals
 	public RelativePrevalenceOfMostCommonMelodicIntervals()
 	{
 		code = "M-7";
-		name = "Relative Prevalence of Most Common Melodic Intervals";
-		description = "Relative frequency of the second most common melodic interval in the piece, divided by the relative frequency of the most common melodic interval..";
-
+		String name = "Relative Prevalence of Most Common Melodic Intervals";
+		String description = "Relative frequency of the second most common melodic interval in the piece, divided by the relative frequency of the most common melodic interval..";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

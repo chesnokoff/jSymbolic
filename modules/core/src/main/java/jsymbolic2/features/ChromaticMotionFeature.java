@@ -22,9 +22,13 @@ public class ChromaticMotionFeature
 	public ChromaticMotionFeature()
 	{
 		code = "M-10";
-		name = "Chromatic Motion";
-		description = "Fraction of melodic intervals that correspond to a semitone.";
-
+		String name = "Chromatic Motion";
+		String description = "Fraction of melodic intervals that correspond to a semitone.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

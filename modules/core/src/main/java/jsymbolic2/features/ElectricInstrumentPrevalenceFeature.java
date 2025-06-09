@@ -23,9 +23,13 @@ public class ElectricInstrumentPrevalenceFeature
 	public ElectricInstrumentPrevalenceFeature()
 	{
 		code = "I-20";
-		name = "Electric Instrument Prevalence";
-		description = "Fraction of all Note Ons played by electric non-\"synth\" instruments (General MIDI patches 5, 6, 17, 19, 27 to 32, 34 to 40).";
-
+		String name = "Electric Instrument Prevalence";
+		String description = "Fraction of all Note Ons played by electric non-\"synth\" instruments (General MIDI patches 5, 6, 17, 19, 27 to 32, 34 to 40).";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

@@ -329,6 +329,10 @@ public final class FeatureExtractorAccess
 			new VariationOfDynamicsFeature(),
 			new VariationOfDynamicsInEachVoiceFeature(),
 			new AverageNoteToNoteChangeInDynamics(),
+			
+			// Add MEI-specific features
+			new NumberOfGraceNotesMeiFeature(),
+			new NumberOfSlursMeiFeature()
 		};
 
 		default_features_to_save = new boolean[]
@@ -593,6 +597,9 @@ public final class FeatureExtractorAccess
 			true, // VariationOfDynamicsInEachVoiceFeature
 			true, // AverageNoteToNoteChangeInDynamicsFeature
 
+			// MEI-specific features
+			false, // NumberOfGraceNotesFeature
+			false // NumberOfSlurNotesFeature
 		};
 
 		names_of_all_implemented_features = new ArrayList<>();
@@ -771,7 +778,7 @@ public final class FeatureExtractorAccess
 		{
             if (features_to_include[i])
             {
-				MIDIFeatureExtractor feat = all_implemented_feature_extractors[i];
+                MIDIFeatureExtractor feat = all_implemented_feature_extractors[i];
 
                 total_unique_features++;
                 
@@ -783,7 +790,7 @@ public final class FeatureExtractorAccess
                 if (feat.getFeatureDefinition().is_sequential)
                     total_sequential_features++;
 
-                char code = feat.getCode().charAt(0);
+                char code = feat.getFeatureCode().charAt(0);
                 switch (code)
                 {
                     case 'P':
@@ -909,13 +916,13 @@ public final class FeatureExtractorAccess
 		// all_implemented_feature_extractors
 		String[] all_feature_codes = new String[all_implemented_feature_extractors.length];
 		for (int i = 0; i < all_feature_codes.length; i++)
-			all_feature_codes[i] = all_implemented_feature_extractors[i].getCode();
+			all_feature_codes[i] = all_implemented_feature_extractors[i].getFeatureCode();
 		int[][] duplicate_codes = mckay.utilities.staticlibraries.StringMethods.getIndexesOfDuplicateEntries(all_feature_codes);
 		if (duplicate_codes != null)
 		{
 			for (int i = 0; i < duplicate_codes.length; i++)
 			{
-				String duplicated_feature_code = all_implemented_feature_extractors[duplicate_codes[i][0]].getCode();
+				String duplicated_feature_code = all_implemented_feature_extractors[duplicate_codes[i][0]].getFeatureCode();
 				int number_of_occurrences = duplicate_codes[i].length;
 				problem_report += "WARNING: The feature code " + duplicated_feature_code + " has been added to jSymbolic in " + number_of_occurrences + " features. No feature code should be used more than once. This is not a serious problem, but it could result in confusion or redundant feature extraction.\n";
 			}
@@ -929,7 +936,7 @@ public final class FeatureExtractorAccess
 		{
 			try
 			{
-				String[] split_code = all_implemented_feature_extractors[feat].getCode().split("-");
+				String[] split_code = all_implemented_feature_extractors[feat].getFeatureCode().split("-");
 				String this_group = split_code[0];
 				int this_number = Integer.parseInt(split_code[1]);
 
@@ -938,10 +945,10 @@ public final class FeatureExtractorAccess
 					if (this_group.equals(last_group))
 					{
 						if (this_number != (last_number + 1))
-							problem_report += "WARNING: The feature " + all_implemented_feature_extractors[feat].getCode() + " has been added to jSymbolic out of sequence (its code does not numerically follow the previous feature in its group). This is not a serious problem, but it could result in confusion.\n";
+							problem_report += "WARNING: The feature " + all_implemented_feature_extractors[feat].getFeatureCode() + " has been added to jSymbolic out of sequence (its code does not numerically follow the previous feature in its group). This is not a serious problem, but it could result in confusion.\n";
 					}
 					else if (this_number != 1)
-						problem_report += "WARNING: The feature " + all_implemented_feature_extractors[feat].getCode() + " has been added to jSymbolic out of sequence (a new feature group should be numbered as 0). This is not a serious problem, but it could result in confusion.\n";
+						problem_report += "WARNING: The feature " + all_implemented_feature_extractors[feat].getFeatureCode() + " has been added to jSymbolic out of sequence (a new feature group should be numbered as 0). This is not a serious problem, but it could result in confusion.\n";
 				}
 
 				last_group = this_group;
@@ -949,7 +956,7 @@ public final class FeatureExtractorAccess
 			}
 			catch (Exception e)
 			{
-				problem_report += "WARNING: The feature " + all_implemented_feature_extractors[feat].getCode() + " has an improperly formatted code. The code should consist of one or more letters identifying the feature group the feature belongs to, followed by a hyphen, followed by the number of the feature within that group. For example, a code of I-7 would be appropriate for the seventh feature of the Instrumentation feature group. This is not a serious problem, but it could result in confusion.\n";
+				problem_report += "WARNING: The feature " + all_implemented_feature_extractors[feat].getFeatureCode() + " has an improperly formatted code. The code should consist of one or more letters identifying the feature group the feature belongs to, followed by a hyphen, followed by the number of the feature within that group. For example, a code of I-7 would be appropriate for the seventh feature of the Instrumentation feature group. This is not a serious problem, but it could result in confusion.\n";
 			}
 		}
 		
@@ -989,8 +996,8 @@ public final class FeatureExtractorAccess
 	{
 		System.out.println("ALL " + all_implemented_feature_extractors.length + " IMPLEMENTED FEATURES:");
 		for (int i = 0; i < all_implemented_feature_extractors.length; i++)
-			System.out.println( (i+1) + ":\t" + all_implemented_feature_extractors[i].getCode() + "\t" +
-			                    all_implemented_feature_extractors[i].getName());
+			System.out.println( (i+1) + ":\t" + all_implemented_feature_extractors[i].getFeatureCode() + "\t" +
+			                    all_implemented_feature_extractors[i].definition.name);
 	}
 	
 	/**
@@ -1002,12 +1009,12 @@ public final class FeatureExtractorAccess
 		System.out.println("FEATURES WHOSE CALCULATION DEPENDS ON OTHER FEATURES:");
 		for (int i = 0; i < all_implemented_feature_extractors.length; i++)
 		{
-			if (all_implemented_feature_extractors[i].getDepenedencies() != null)
+			if (all_implemented_feature_extractors[i].dependencies != null)
 			{
-				System.out.println(all_implemented_feature_extractors[i].getCode() + "\t" +
-			                        all_implemented_feature_extractors[i].getName());
-				for (int j = 0; j < all_implemented_feature_extractors[i].getDepenedencies().length; j++)
-					System.out.println("\tDEPENDS ON: " + all_implemented_feature_extractors[i].getDepenedencies()[j]);
+				System.out.println(all_implemented_feature_extractors[i].getFeatureCode() + "\t" +
+			                        all_implemented_feature_extractors[i].definition.name);
+				for (int j = 0; j < all_implemented_feature_extractors[i].dependencies.length; j++)
+					System.out.println("\tDEPENDS ON: " + all_implemented_feature_extractors[i].dependencies[j]);
 			}
 		}
 	}

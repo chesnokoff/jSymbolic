@@ -23,9 +23,13 @@ public class DynamicRangeFeature
 	public DynamicRangeFeature()
 	{
 		code = "D-1";
-		name = "Dynamic Range";
-		description = "Loudness of the loudest note in the piece, minus the loudness of the softest note.";
-
+		String name = "Dynamic Range";
+		String description = "Loudness of the loudest note in the piece, minus the loudness of the softest note.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

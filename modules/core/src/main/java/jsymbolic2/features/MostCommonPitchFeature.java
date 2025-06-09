@@ -22,9 +22,13 @@ public class MostCommonPitchFeature
 	public MostCommonPitchFeature()
 	{
 		code = "P-16";
-		name = "Most Common Pitch";
-		description = "MIDI pitch value of the most frequently occuring pitch.";
-
+		String name = "Most Common Pitch";
+		String description = "MIDI pitch value of the most frequently occuring pitch.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

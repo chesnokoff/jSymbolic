@@ -27,10 +27,13 @@ public class BasicPitchHistogramFeature
 	public BasicPitchHistogramFeature()
 	{
 		code = "P-1";
-		name = "Basic Pitch Histogram";
-		description = "A feature vector consisting of bin magnitudes of the basic pitch histogram described in the jSymbolic manual. Each bin corresponds to one of the 128 MIDI pitches, ordered from lowest to highest, and with an interval of a semitone between each (enharmonic equivalents are assigned the same pitch number). Bin 60 corresponds to middle C. The magnitude of of each bin is proportional to the the number of times notes occurred at the bin's pitch in the piece, relative to all other pitches in the piece (the histogram is normalized).";
-		dimensions = 128;
-
+		String name = "Basic Pitch Histogram";
+		String description = "A feature vector consisting of bin magnitudes of the basic pitch histogram described in the jSymbolic manual. Each bin corresponds to one of the 128 MIDI pitches, ordered from lowest to highest, and with an interval of a semitone between each (enharmonic equivalents are assigned the same pitch number). Bin 60 corresponds to middle C. The magnitude of of each bin is proportional to the the number of times notes occurred at the bin's pitch in the piece, relative to all other pitches in the piece (the histogram is normalized).";
+		boolean is_sequential = true;
+		int dimensions = 128;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 
@@ -60,7 +63,8 @@ public class BasicPitchHistogramFeature
 		if (sequence_info != null)
 		{
 			result = new double[sequence_info.basic_pitch_histogram.length];
-            System.arraycopy(sequence_info.basic_pitch_histogram, 0, result, 0, result.length);
+			for (int pitch = 0; pitch < result.length; pitch++)
+				result[pitch] = sequence_info.basic_pitch_histogram[pitch];
 		}
 		return result;
 	}

@@ -23,9 +23,13 @@ public class MeanMelodicIntervalFeature
 	public MeanMelodicIntervalFeature()
 	{
 		code = "M-3";
-		name = "Mean Melodic Interval";
-		description = "Mean average (in semitones) of the intervals involved in each of the melodic intervals in the piece.";
-
+		String name = "Mean Melodic Interval";
+		String description = "Mean average (in semitones) of the intervals involved in each of the melodic intervals in the piece.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

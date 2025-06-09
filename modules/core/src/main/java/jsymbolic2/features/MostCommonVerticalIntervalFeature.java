@@ -23,8 +23,11 @@ public class MostCommonVerticalIntervalFeature
 	public MostCommonVerticalIntervalFeature()
 	{
 		code = "C-8";
-		name = "Most Common Vertical Interval";
-		description = "The interval in semitones corresponding to the wrapped vertical interval histogram bin with the highest magnitude.";
+		String name = "Most Common Vertical Interval";
+		String description = "The interval in semitones corresponding to the wrapped vertical interval histogram bin with the highest magnitude.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
 		dependencies = new String[1];
 		dependencies[0] = "Wrapped Vertical Interval Histogram";
 		offsets = null;

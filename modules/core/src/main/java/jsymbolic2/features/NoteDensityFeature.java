@@ -23,9 +23,13 @@ public class NoteDensityFeature
 	public NoteDensityFeature()
 	{
 		code = "RT-5";
-		name = "Note Density";
-		description = "Average number of notes per second. Takes into account all notes in all voices, including both pitched and unpitched notes.";
-
+		String name = "Note Density";
+		String description = "Average number of notes per second. Takes into account all notes in all voices, including both pitched and unpitched notes.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

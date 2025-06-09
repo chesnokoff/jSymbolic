@@ -25,8 +25,11 @@ public class PerfectVerticalIntervalsFeature
 	public PerfectVerticalIntervalsFeature()
 	{
 		code = "C-23";
-		name = "Perfect Vertical Intervals";
-		description = "Fraction of all wrapped vertical intervals that are unisons, perfect fourths, perfect fifths or octaves. This is weighted by how long intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note).";
+		String name = "Perfect Vertical Intervals";
+		String description = "Fraction of all wrapped vertical intervals that are unisons, perfect fourths, perfect fifths or octaves. This is weighted by how long intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note).";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
 		dependencies = new String[] { "Wrapped Vertical Interval Histogram" };
 		offsets = null;
 	}

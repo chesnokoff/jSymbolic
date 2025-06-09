@@ -1,7 +1,5 @@
 package jsymbolic2.configuration;
 
-import java.util.Objects;
-
 /**
  * The state of the output files specified by the configuration file.
  *
@@ -27,20 +25,20 @@ public class ConfigurationOutputFiles {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (null == o || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         ConfigurationOutputFiles that = (ConfigurationOutputFiles) o;
 
-        if (!Objects.equals(feature_values_save_path, that.feature_values_save_path))
+        if (feature_values_save_path != null ? !feature_values_save_path.equals(that.feature_values_save_path) : that.feature_values_save_path != null)
             return false;
-        return Objects.equals(feature_definition_save_path, that.feature_definition_save_path);
+        return feature_definition_save_path != null ? feature_definition_save_path.equals(that.feature_definition_save_path) : that.feature_definition_save_path == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = null != feature_values_save_path ? feature_values_save_path.hashCode() : 0;
-        result = 31 * result + (null != feature_definition_save_path ? feature_definition_save_path.hashCode() : 0);
+        int result = feature_values_save_path != null ? feature_values_save_path.hashCode() : 0;
+        result = 31 * result + (feature_definition_save_path != null ? feature_definition_save_path.hashCode() : 0);
         return result;
     }
 }

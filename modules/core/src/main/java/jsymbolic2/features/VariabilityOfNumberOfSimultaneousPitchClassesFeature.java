@@ -22,9 +22,13 @@ public class VariabilityOfNumberOfSimultaneousPitchClassesFeature
 	 */
 	public VariabilityOfNumberOfSimultaneousPitchClassesFeature() {
 		code = "C-5";
-		name = "Variability of Number of Simultaneous Pitch Classes";
-        description = "Standard deviation of the number of different pitch classes sounding simultaneously. Rests are excluded from this calculation.";
-
+		String name = "Variability of Number of Simultaneous Pitch Classes";
+        String description = "Standard deviation of the number of different pitch classes sounding simultaneously. Rests are excluded from this calculation.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

@@ -22,9 +22,13 @@ public class SecondStrongestRhythmicPulseFeature
 	public SecondStrongestRhythmicPulseFeature()
 	{
 		code = "RT-21";
-		name = "Second Strongest Rhythmic Pulse";
-		description = "Bin index of the beat histogram peak with the second highest magnitude.";
-
+		String name = "Second Strongest Rhythmic Pulse";
+		String description = "Bin index of the beat histogram peak with the second highest magnitude.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

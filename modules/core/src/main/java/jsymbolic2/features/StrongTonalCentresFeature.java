@@ -23,9 +23,13 @@ public class StrongTonalCentresFeature
 	public StrongTonalCentresFeature()
 	{
 		code = "P-13";
-		name = "Strong Tonal Centres";
-		description = "Number of isolated peaks in the fifths pitch histogram that each individually account for at least 9% of all notes in the piece.";
-
+		String name = "Strong Tonal Centres";
+		String description = "Number of isolated peaks in the fifths pitch histogram that each individually account for at least 9% of all notes in the piece.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 
@@ -60,7 +64,7 @@ public class StrongTonalCentresFeature
 			{
 				if (sequence_info.fifths_pitch_histogram[bin] >= 0.09)
 				{
-					int left = bin - 1;
+					int left = bin - 1;;
 					int right = bin + 1;
 
 					// Account for wrap around

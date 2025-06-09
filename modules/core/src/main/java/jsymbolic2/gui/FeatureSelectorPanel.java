@@ -294,7 +294,7 @@ public class FeatureSelectorPanel
 
 						String text
 								= "NAME: " + definition.name + "\n"
-								+ "CODE: " + all_feature_extractors[row_clicked].getCode() + "\n"
+								+ "CODE: " + all_feature_extractors[row_clicked].getFeatureCode() + "\n"
 								+ "DESCRIPTION: " + definition.description + "\n"
 								+ "DIMENSIONS: " + definition.dimensions + "\n"
 								+ "MEI-SPECIFIC: " + mei_specific + "\n"

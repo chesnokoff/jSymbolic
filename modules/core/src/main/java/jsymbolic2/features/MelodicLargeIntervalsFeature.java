@@ -22,9 +22,13 @@ public class MelodicLargeIntervalsFeature
 	public MelodicLargeIntervalsFeature()
 	{
 		code = "M-19";
-		name = "Melodic Large Intervals";
-		description = "Fraction of melodic intervals greater than one octave.";
-
+		String name = "Melodic Large Intervals";
+		String description = "Fraction of melodic intervals greater than one octave.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

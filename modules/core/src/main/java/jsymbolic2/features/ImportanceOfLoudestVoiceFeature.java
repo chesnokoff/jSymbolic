@@ -23,9 +23,13 @@ public class ImportanceOfLoudestVoiceFeature
 	public ImportanceOfLoudestVoiceFeature()
 	{
 		code = "T-9";
-		name = "Importance of Loudest Voice";
-		description = "Difference between the average loudness (MIDI velocity) of the loudest channel and the average loudness of the other channels that contain at least one note.";
-
+		String name = "Importance of Loudest Voice";
+		String description = "Difference between the average loudness (MIDI velocity) of the loudest channel and the average loudness of the other channels that contain at least one note.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

@@ -22,9 +22,13 @@ public class AverageNoteToNoteChangeInDynamics
 	 */
 	{
 		code = "D-4";
-		name = "Average Note to Note Change in Dynamics";
-		description = "Average change of loudness from one note to the next note in the same MIDI channel. ";
-
+		String name = "Average Note to Note Change in Dynamics";
+		String description = "Average change of loudness from one note to the next note in the same MIDI channel. ";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

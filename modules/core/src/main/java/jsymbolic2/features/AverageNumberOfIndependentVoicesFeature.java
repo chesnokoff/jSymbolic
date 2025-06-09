@@ -23,9 +23,13 @@ public class AverageNumberOfIndependentVoicesFeature
 	public AverageNumberOfIndependentVoicesFeature()
 	{
 		code = "T-2";
-		name = "Average Number of Independent Voices";
-		description = "Average number of different channels in which notes are sounded simultaneously. Rests are not included in this calculation.";
-
+		String name = "Average Number of Independent Voices";
+		String description = "Average number of different channels in which notes are sounded simultaneously. Rests are not included in this calculation.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 
@@ -56,8 +60,10 @@ public class AverageNumberOfIndependentVoicesFeature
 		{
 			// Instantiate of the variable holding the number of voices sounding at each tick
 			int[] number_sounding = new int[sequence_info.note_sounding_on_a_channel_tick_map.length];
+			for (int i = 0; i < number_sounding.length; i++)
+				number_sounding[i] = 0;
 
-            // Find the number of voices sounding at each tick
+			// Find the number of voices sounding at each tick
 			int rest_count = 0;
 			for (int tick = 0; tick < sequence_info.note_sounding_on_a_channel_tick_map.length; tick++)
 			{

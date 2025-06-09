@@ -1,10 +1,6 @@
 package jsymbolic2.configuration;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * All the headers (i.e. sections) required by the jSymbolic configuration file.
@@ -12,10 +8,10 @@ import java.util.Set;
  * @author Tristano Tenaglia
  */
 public enum ConfigFileHeaderEnum {
-    FEATURE_HEADER("<features_to_extract>"),
-    OPTION_HEADER("<jSymbolic_options>"),
-    INPUT_FILE_HEADER("<input_files>"),
-    OUTPUT_FILE_HEADER("<output_files>");
+    FEATURE_HEADER ("<features_to_extract>"),
+    OPTION_HEADER ("<jSymbolic_options>"),
+    INPUT_FILE_HEADER ("<input_files>"),
+    OUTPUT_FILE_HEADER ("<output_files>");
 
     /**
      * Set where all enum elements are stored for easy lookup.
@@ -24,7 +20,7 @@ public enum ConfigFileHeaderEnum {
 
     static {
         for (ConfigFileHeaderEnum value : EnumSet.allOf(ConfigFileHeaderEnum.class)) {
-            ConfigFileHeaderEnum.headerNames.add(value.toString());
+            headerNames.add(value.toString());
         }
     }
 
@@ -35,20 +31,21 @@ public enum ConfigFileHeaderEnum {
      * @return true if the given name is part of this enum
      */
     public static boolean contains(String name) {
-        return ConfigFileHeaderEnum.headerNames.contains(name);
+        return headerNames.contains(name);
     }
 
     private final String text;
 
-    ConfigFileHeaderEnum(String text) {
+    private ConfigFileHeaderEnum(final String text) {
         this.text = text;
     }
 
     /**
+     *
      * @return All the enums in this class in a list.
      */
     public static List<ConfigFileHeaderEnum> asList() {
-        return Arrays.asList(ConfigFileHeaderEnum.values());
+        return Arrays.asList(values());
     }
 
     @Override

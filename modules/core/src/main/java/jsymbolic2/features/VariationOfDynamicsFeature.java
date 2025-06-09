@@ -22,9 +22,13 @@ public class VariationOfDynamicsFeature
 	public VariationOfDynamicsFeature()
 	{
 		code = "D-2";
-		name = "Variation of Dynamics";
-		description = "Standard deviation of loudness levels across all notes.";
-
+		String name = "Variation of Dynamics";
+		String description = "Standard deviation of loudness levels across all notes.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

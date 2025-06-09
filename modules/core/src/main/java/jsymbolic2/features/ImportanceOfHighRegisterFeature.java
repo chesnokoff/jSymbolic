@@ -22,9 +22,13 @@ public class ImportanceOfHighRegisterFeature
 	public ImportanceOfHighRegisterFeature()
 	{
 		code = "P-11";
-		name = "Importance of High Register";
-		description = "Fraction of notes between MIDI pitches 73 and 127.";
-
+		String name = "Importance of High Register";
+		String description = "Fraction of notes between MIDI pitches 73 and 127.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

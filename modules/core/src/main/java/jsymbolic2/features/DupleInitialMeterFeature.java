@@ -23,8 +23,11 @@ public class DupleInitialMeterFeature
 	public DupleInitialMeterFeature()
 	{
 		code = "R-5";
-		name = "Duple Initial Meter";
-		description = "Set to 1 if the initial meter is a standard simple or compound duple meter (i.e. if the numerator of the time signature is 2 or 6) and to 0 otherwise.";
+		String name = "Duple Initial Meter";
+		String description = "Set to 1 if the initial meter is a standard simple or compound duple meter (i.e. if the numerator of the time signature is 2 or 6) and to 0 otherwise.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
 		dependencies = new String[] { "Initial Time Signature" };
 		offsets = null;
 	}

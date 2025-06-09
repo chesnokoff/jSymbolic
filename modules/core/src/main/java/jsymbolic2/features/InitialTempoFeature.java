@@ -23,9 +23,13 @@ public class InitialTempoFeature
 	public InitialTempoFeature()
 	{
 		code = "RT-1";
-		name = "Initial Tempo";
-		description = "Tempo in beats per minute at the start of the piece. Set to the default MIDI value (120 BPM) if no tempo is specified explicitly.";
-
+		String name = "Initial Tempo";
+		String description = "Tempo in beats per minute at the start of the piece. Set to the default MIDI value (120 BPM) if no tempo is specified explicitly.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 
 

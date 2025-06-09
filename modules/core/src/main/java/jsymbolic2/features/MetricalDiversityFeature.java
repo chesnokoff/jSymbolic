@@ -25,9 +25,13 @@ public class MetricalDiversityFeature
 	public MetricalDiversityFeature()
 	{
 		code = "R-8";
-		name = "Metrical Diversity";
-		description = "The number of different (unique) time signatures found in the piece. Set to 1 if no time signature is specified.";
-
+		String name = "Metrical Diversity";
+		String description = "The number of different (unique) time signatures found in the piece. Set to 1 if no time signature is specified.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

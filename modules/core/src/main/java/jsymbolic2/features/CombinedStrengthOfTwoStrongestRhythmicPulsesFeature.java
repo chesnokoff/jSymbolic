@@ -23,9 +23,13 @@ public class CombinedStrengthOfTwoStrongestRhythmicPulsesFeature
 	public CombinedStrengthOfTwoStrongestRhythmicPulsesFeature()
 	{
 		code = "RT-26";
-		name = "Combined Strength of Two Strongest Rhythmic Pulses";
-		description = "Sum of the magnitudes of the two beat histogram peaks with the highest magnitudes.";
-
+		String name = "Combined Strength of Two Strongest Rhythmic Pulses";
+		String description = "Sum of the magnitudes of the two beat histogram peaks with the highest magnitudes.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

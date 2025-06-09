@@ -22,9 +22,13 @@ public class TotalNumberOfNotesFeature
 	public TotalNumberOfNotesFeature()
 	{
 		code = "R-9";
-		name = "Total Number of Notes";
-		description = "Total number of notes, including both pitched and unpitched notes.";
-
+		String name = "Total Number of Notes";
+		String description = "Total number of notes, including both pitched and unpitched notes.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

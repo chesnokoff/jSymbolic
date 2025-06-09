@@ -24,8 +24,11 @@ public class VerticalSeventhsFeature
 	public VerticalSeventhsFeature()
 	{
 		code = "C-21";
-		name = "Vertical Sevenths";
-		description = "Fraction all wrapped vertical intervals that are minor or major sevenths. This is weighted by how long intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note).";
+		String name = "Vertical Sevenths";
+		String description = "Fraction all wrapped vertical intervals that are minor or major sevenths. This is weighted by how long intervals are held (e.g. an interval lasting a whole note will be weighted four times as strongly as an interval lasting a quarter note).";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
 		dependencies = new String[] { "Wrapped Vertical Interval Histogram" };
 		offsets = null;
 	}

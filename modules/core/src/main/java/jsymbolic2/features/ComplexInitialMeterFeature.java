@@ -23,8 +23,11 @@ public class ComplexInitialMeterFeature
 	public ComplexInitialMeterFeature()
 	{
 		code = "R-4";
-		name = "Complex Initial Meter";
-		description = "Set to 1 if the initial meter is a standard complex meter (i.e. if the numerator of the time signature is 5, 7, 9, 11, 13, 15, 22 or 25) and to 0 otherwise.";
+		String name = "Complex Initial Meter";
+		String description = "Set to 1 if the initial meter is a standard complex meter (i.e. if the numerator of the time signature is 5, 7, 9, 11, 13, 15, 22 or 25) and to 0 otherwise.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
 		dependencies = new String[] { "Initial Time Signature" };
 		offsets = null;
 	}

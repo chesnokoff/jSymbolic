@@ -1,7 +1,6 @@
 package jsymbolic2.gui;
 
 import javax.swing.table.DefaultTableModel;
-
 import jsymbolic2.featureutils.MEIFeatureExtractor;
 import jsymbolic2.featureutils.MIDIFeatureExtractor;
 
@@ -93,7 +92,7 @@ public class FeatureSelectorTableModel
 
 			row_contents[1] = features[i].getFeatureDefinition().name;
 
-			row_contents[2] = features[i].getCode();
+			row_contents[2] = features[i].getFeatureCode();
 
 			if (features[i].getFeatureDefinition().dimensions > 0)
 				row_contents[3] = features[i].getFeatureDefinition().dimensions;

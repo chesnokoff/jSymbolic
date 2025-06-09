@@ -23,9 +23,13 @@ public class NumberOfPitchClassesFeature
 	public NumberOfPitchClassesFeature()
 	{
 		code = "P-5";
-		name = "Number of Pitch Classes";
-		description = "Number of pitch classes that occur at least once in the piece. Enharmonic equivalents are grouped together for the purpose of this calculation.";
-
+		String name = "Number of Pitch Classes";
+		String description = "Number of pitch classes that occur at least once in the piece. Enharmonic equivalents are grouped together for the purpose of this calculation.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

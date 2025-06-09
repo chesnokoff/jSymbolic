@@ -22,9 +22,13 @@ public class StrengthOfStrongestRhythmicPulseFeature
 	public StrengthOfStrongestRhythmicPulseFeature()
 	{
 		code = "RT-23";
-		name = "Strength of Strongest Rhythmic Pulse";
-		description = "Magnitude of the beat histogram bin with the highest magnitude.";
-
+		String name = "Strength of Strongest Rhythmic Pulse";
+		String description = "Magnitude of the beat histogram bin with the highest magnitude.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

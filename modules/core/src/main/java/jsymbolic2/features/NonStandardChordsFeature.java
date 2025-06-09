@@ -26,8 +26,11 @@ public class NonStandardChordsFeature
 	public NonStandardChordsFeature()
 	{
 		code = "C-33";
-		name = "Non-Standard Chords";
-		description = "Fraction of all simultaneously sounding pitch groups that consist of more than two pitch classes yet are not major triads, are not minor triads and are not seventh chords. This is weighted by how long pitch groups are held (e.g. a pitch group lasting a whole note will be weighted four times as strongly as a pitch group lasting a quarter note).";
+		String name = "Non-Standard Chords";
+		String description = "Fraction of all simultaneously sounding pitch groups that consist of more than two pitch classes yet are not major triads, are not minor triads and are not seventh chords. This is weighted by how long pitch groups are held (e.g. a pitch group lasting a whole note will be weighted four times as strongly as a pitch group lasting a quarter note).";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
 		dependencies = new String[] { "Chord Type Histogram" };
 		offsets = null;
 	}

@@ -23,9 +23,13 @@ public class AcousticGuitarPrevalenceFeature
 	public AcousticGuitarPrevalenceFeature()
 	{
 		code = "I-12";
-		name = "Acoustic Guitar Prevalence";
-		description = "Fraction of all Note Ons played by acoustic guitar instruments (General MIDI patches 25 and 26).";
-
+		String name = "Acoustic Guitar Prevalence";
+		String description = "Fraction of all Note Ons played by acoustic guitar instruments (General MIDI patches 25 and 26).";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

@@ -24,8 +24,11 @@ public class NumberOfDifferentRhythmicValuesPresentFeature
 	public NumberOfDifferentRhythmicValuesPresentFeature()
 	{
 		code = "R-15";
-		name = "Number of Different Rhythmic Values Present";
-		description = "Number of different quantized rhythmic values (e.g. quarter notes, dotted quarter notes, half notes, etc.) that occur at least once in the music. This is found by finding all non-zero entries in the Rhythmic Value Histogram.";
+		String name = "Number of Different Rhythmic Values Present";
+		String description = "Number of different quantized rhythmic values (e.g. quarter notes, dotted quarter notes, half notes, etc.) that occur at least once in the music. This is found by finding all non-zero entries in the Rhythmic Value Histogram.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
 		dependencies = new String[] { "Rhythmic Value Histogram" };
 		offsets = null;
 	}

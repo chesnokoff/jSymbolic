@@ -23,9 +23,13 @@ public class VariabilityOfNumberOfIndependentVoicesFeature
 	public VariabilityOfNumberOfIndependentVoicesFeature()
 	{
 		code = "T-3";
-		name = "Variability of Number of Independent Voices";
-		description = "Standard deviation of the number of different channels in which notes are sounded simultaneously at each given moment (MIDI tick). Rests are not included in this calculation.";
-
+		String name = "Variability of Number of Independent Voices";
+		String description = "Standard deviation of the number of different channels in which notes are sounded simultaneously at each given moment (MIDI tick). Rests are not included in this calculation.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

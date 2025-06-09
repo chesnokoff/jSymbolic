@@ -25,9 +25,13 @@ public class VibratoPrevalenceFeature
 	public VibratoPrevalenceFeature()
 	{
 		code = "P-40";
-		name = "Vibrato Prevalence";
-		description = "Number of pitched notes that have associated MIDI Pitch Bend messages change direction at least twice in connection with the note in question, divided by the total number of pitched Note Ons in the piece.";
-
+		String name = "Vibrato Prevalence";
+		String description = "Number of pitched notes that have associated MIDI Pitch Bend messages change direction at least twice in connection with the note in question, divided by the total number of pitched Note Ons in the piece.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 
@@ -75,7 +79,7 @@ public class VibratoPrevalenceFeature
 				}
 
 				// Find the number of changes of direction of bend bend for each note
-				int notes_with_vibrato = 0;
+				int notes_with_vibrato = 0;;
 				for (int note = 0; note < pitch_bends.length; note++)
 				{
 					int changes = 0;

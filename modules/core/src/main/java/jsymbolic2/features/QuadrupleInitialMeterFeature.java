@@ -23,8 +23,11 @@ public class QuadrupleInitialMeterFeature
 	public QuadrupleInitialMeterFeature()
 	{
 		code = "R-7";
-		name = "Quadruple Initial Meter";
-		description = "Set to 1 if the initial meter is a standard simple or compound quadruple meter (i.e. if the numerator of the time signature is 4 or 12) and to 0 otherwise.";
+		String name = "Quadruple Initial Meter";
+		String description = "Set to 1 if the initial meter is a standard simple or compound quadruple meter (i.e. if the numerator of the time signature is 4 or 12) and to 0 otherwise.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
 		dependencies = new String[] { "Initial Time Signature" };
 		offsets = null;
 	}

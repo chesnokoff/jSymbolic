@@ -23,9 +23,13 @@ public class MostCommonMelodicIntervalFeature
 	public MostCommonMelodicIntervalFeature()
 	{
 		code = "M-2";
-		name = "Most Common Melodic Interval";
-		description = "Number of semitones corresponding to the most frequently occurring melodic interval.";
-
+		String name = "Most Common Melodic Interval";
+		String description = "Number of semitones corresponding to the most frequently occurring melodic interval.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

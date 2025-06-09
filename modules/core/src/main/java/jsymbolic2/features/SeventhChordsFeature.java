@@ -26,8 +26,11 @@ public class SeventhChordsFeature
 	public SeventhChordsFeature()
 	{
 		code = "C-32";
-		name = "Seventh Chords";
-		description = "Fraction of all simultaneously sounding pitch groups that are dominant seventh, major seventh or minor seventh chords. This is weighted by how long pitch groups are held (e.g. a pitch group lasting a whole note will be weighted four times as strongly as a pitch group lasting a quarter note).";
+		String name = "Seventh Chords";
+		String description = "Fraction of all simultaneously sounding pitch groups that are dominant seventh, major seventh or minor seventh chords. This is weighted by how long pitch groups are held (e.g. a pitch group lasting a whole note will be weighted four times as strongly as a pitch group lasting a quarter note).";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
 		dependencies = new String[] { "Chord Type Histogram" };
 		offsets = null;
 	}

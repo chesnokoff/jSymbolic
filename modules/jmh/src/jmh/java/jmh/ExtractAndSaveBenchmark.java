@@ -4,7 +4,6 @@ import jsymbolic2.configuration.ConfigFileHeaderEnum;
 import jsymbolic2.configuration.ConfigurationFileData;
 import jsymbolic2.configuration.txtimplementation.ConfigurationFileValidatorTxtImpl;
 import jsymbolic2.processing.FeatureExtractionJobProcessor;
-import jsymbolic2.processing.PrintStreams;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -48,7 +47,7 @@ public class ExtractAndSaveBenchmark {
         configFileData,
         configFileData.getFeatureValueSavePath(),
         configFileData.getFeatureValueSavePath(),
-        new PrintStreams(new PrintStream(OutputStream.nullOutputStream()), new PrintStream(OutputStream.nullOutputStream())),
+        new PrintStream(OutputStream.nullOutputStream()), new PrintStream(OutputStream.nullOutputStream()),
         false
     );
   }

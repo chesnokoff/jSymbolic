@@ -1,6 +1,6 @@
 package jsymbolic2.features;
 
-import java.util.LinkedList;
+import java.util.LinkedList;;
 import javax.sound.midi.*;
 import ace.datatypes.FeatureDefinition;
 import jsymbolic2.featureutils.MIDIFeatureExtractor;
@@ -24,9 +24,13 @@ public class DirectionOfMelodicMotionFeature
 	public DirectionOfMelodicMotionFeature()
 	{
 		code = "M-22";
-		name = "Direction of Melodic Motion";
-		description = "Fraction of melodic intervals that are rising in pitch. Set to zero if no rising or falling melodic intervals are found.";
-
+		String name = "Direction of Melodic Motion";
+		String description = "Fraction of melodic intervals that are rising in pitch. Set to zero if no rising or falling melodic intervals are found.";
+		boolean is_sequential = true;
+		int dimensions = 1;
+		definition = new FeatureDefinition(name, description, is_sequential, dimensions);
+		dependencies = null;
+		offsets = null;
 	}
 	
 

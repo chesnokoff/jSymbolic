@@ -1,13 +1,16 @@
 package jsymbolic2.processing;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.IntStream;
 import javax.sound.midi.*;
 import jsymbolic2.featureutils.CollectedNoteInfo;
 import jsymbolic2.featureutils.NoteInfo;
 import mckay.utilities.staticlibraries.ArrayMethods;
 import mckay.utilities.staticlibraries.MathAndStatsMethods;
+import org.jtransforms.fft.DoubleFFT_1D;
 
 /**
  * An object of this class is instantiated with a MIDI sequence. The constructor parses this sequence and
@@ -1115,8 +1118,7 @@ public class MIDIIntermediateRepresentations
 		// Instantiate pitched_instrumentation_tick_map and initialize entries to false
 		pitched_instrumentation_tick_map = new boolean[(int) sequence.getTickLength() + 1][128];
 		for (int i = 0; i < pitched_instrumentation_tick_map.length; i++)
-			for (int j = 0; j < pitched_instrumentation_tick_map[i].length; j++)
-				pitched_instrumentation_tick_map[i][j] = false;
+            Arrays.fill(pitched_instrumentation_tick_map[i], false);
 
 		// Fill in fields
 		for (int n_track = 0; n_track < tracks.length; n_track++)
@@ -1550,18 +1552,32 @@ public class MIDIIntermediateRepresentations
 			}
 		}
 
-		// Histogram based on tick interval bins
-		double[] tick_histogram = new double[convertBPMtoTicks(min_BPM - 1, mean_ticks_per_second)];
-		for (int lag = convertBPMtoTicks(max_BPM, mean_ticks_per_second); lag < tick_histogram.length; lag++)
-			tick_histogram[lag] = autoCorrelate(rhythm_score, lag);
-		
-		// Histogram based on tick interval bins (standardized to 120 BPM)
-		int ticks_per_beat = sequence.getResolution();
-		int ticks_per_second_at_120_bpm = ticks_per_beat * 2; 
-		double[] tick_histogram_120_bpm_standardized = new double[convertBPMtoTicks(min_BPM - 1, ticks_per_second_at_120_bpm)];
-		for (int lag = convertBPMtoTicks(max_BPM, ticks_per_second_at_120_bpm); lag < tick_histogram_120_bpm_standardized.length; lag++)
-			tick_histogram_120_bpm_standardized[lag] = autoCorrelate(rhythm_score, lag);				
-		
+        double[] fullAutocorr = fftAutoCorrelationNoCentering(rhythm_score);
+
+        int minLagTicks = convertBPMtoTicks(max_BPM, mean_ticks_per_second);
+        int maxLagTicks = convertBPMtoTicks(min_BPM - 1, mean_ticks_per_second);
+
+        double[] tick_histogram = new double[maxLagTicks + 1]; // +1 чтобы включить maxLagTicks
+        Arrays.fill(tick_histogram, 0.0); // Инициализация нулями
+
+        for (int lag = minLagTicks; lag <= maxLagTicks && lag < fullAutocorr.length; lag++) {
+            tick_histogram[lag] = fullAutocorr[lag];
+        }
+
+        fullAutocorr = fftAutoCorrelationNoCentering(rhythm_score);
+
+        int ticks_per_beat = sequence.getResolution();
+        int ticks_per_second_at_120_bpm = ticks_per_beat * 2;
+
+        int minLag120 = convertBPMtoTicks(max_BPM, ticks_per_second_at_120_bpm);
+        int maxLag120 = convertBPMtoTicks(min_BPM - 1, ticks_per_second_at_120_bpm);
+
+        double[] tick_histogram_120_bpm_standardized = new double[maxLag120 + 1];
+        Arrays.fill(tick_histogram_120_bpm_standardized, 0.0);
+
+        for (int lag = minLag120; lag <= maxLag120 && lag < fullAutocorr.length; lag++) {
+            tick_histogram_120_bpm_standardized[lag] = fullAutocorr[lag];
+        }
 		// Histograms with tick intervals collected into beats per minute bins
 		for (int bin = min_BPM; bin <= max_BPM; bin++)
 		{
@@ -1578,6 +1594,33 @@ public class MIDIIntermediateRepresentations
 		beat_histogram = MathAndStatsMethods.normalize(beat_histogram);
 		beat_histogram_120_bpm_standardized = MathAndStatsMethods.normalize(beat_histogram_120_bpm_standardized);
 	}
+
+    public static double[] fftAutoCorrelationNoCentering(int[] data) {
+        int n = data.length;
+        if (n == 0) return new double[0];
+
+        double[] x = new double[n];
+        for (int i = 0; i < n; i++) {
+            x[i] = data[i];
+        }
+
+        DoubleFFT_1D fft = new DoubleFFT_1D(n);
+
+        fft.realForward(x);
+
+        x[0] = x[0] * x[0];
+        x[1] = x[1] * x[1];
+        for (int k = 1; k < n/2; k++) {
+            double re = x[2*k];
+            double im = x[2*k + 1];
+            x[2*k] = re*re + im*im;
+            x[2*k + 1] = 0;
+        }
+
+        fft.realInverse(x, true);
+
+        return x;
+    }
 
 
 	/**
@@ -2191,18 +2234,18 @@ public class MIDIIntermediateRepresentations
 		for (int tick = 0; tick < pitch_strength_by_tick_chart.length; tick++)
 		{
 			// Find the MIDI pitch numbers of all pitches found this tick
-			ArrayList<Short> pitches_this_tick = new ArrayList<>();
-			for (int pitch = 0; pitch < pitch_strength_by_tick_chart[tick].length; pitch++)
-				if (pitch_strength_by_tick_chart[tick][pitch] != 0)
-					pitches_this_tick.add((short) pitch);
+            int finalTick = tick;
+            int[] pitches_this_tick = IntStream.range(0, pitch_strength_by_tick_chart[tick].length)
+                .filter(pitch -> pitch_strength_by_tick_chart[finalTick][pitch] != 0)
+                .toArray();
 
 			// If not a rest
-			if (!pitches_this_tick.isEmpty())
+			if (! (pitches_this_tick.length == 0))
 			{
 				// Store pitches present this tick
-				short[] these_pitches = new short[pitches_this_tick.size()];
+				short[] these_pitches = new short[pitches_this_tick.length];
 				for (int i = 0; i < these_pitches.length; i++)
-					these_pitches[i] = pitches_this_tick.get(i);
+					these_pitches[i] = (short) pitches_this_tick[i];
 				pitches_present_by_tick_excluding_rests_arli.add(these_pitches);
 				
 				// Store pitch classes present this tick

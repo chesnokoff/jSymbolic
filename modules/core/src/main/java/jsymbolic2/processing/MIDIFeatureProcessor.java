@@ -13,13 +13,14 @@ import org.ddmal.jmei2midi.meielements.meispecific.MeiSpecificStorage;
 import javax.sound.midi.Sequence;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountedCompleter;
 import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -505,6 +506,7 @@ public class MIDIFeatureProcessor {
         private final ConcurrentMap<String, double[][]> map;
         private final MIDIFeatureExtractor featureExtractor;
         private int maxOffset;
+        private final Set<String> inProgressTasks = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
         private Worker(CountedCompleter<?> completer,
             List<Sequence> sequences,
@@ -530,6 +532,7 @@ public class MIDIFeatureProcessor {
         @Override
         public void compute() {
             List<Worker> workers = Arrays.stream(ArrayUtils.nullToEmpty(featureExtractor.getDepenedencies()))
+                .filter(dependency -> inProgressTasks.add(dependency))
                 .map(dependency -> new Worker(this, sequences, representations, map, name2extractor.get(dependency)))
                 .toList();
 
